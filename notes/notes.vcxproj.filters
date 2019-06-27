@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Globals">
+      <UniqueIdentifier>{c37f5d88-971b-4f3a-bdb5-abf4e6b1ade9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{af5f52a8-3f7f-4bcf-80c4-78301eab5d9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enum">
+      <UniqueIdentifier>{f0d082c7-a9df-46ab-b559-a270a3e61056}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pch">
+      <UniqueIdentifier>{f5bd8bf8-dd18-4953-99d3-1d5f9e6aaa6c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\NotesContainer.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\NotesFolder.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Note.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Notes.cpp">
+      <Filter>Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch\Pch.cpp">
+      <Filter>Pch</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="res\Notes.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ui\Notes.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Globals.hpp">
+      <Filter>Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\Note.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\NotesContainer.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\NotesFolder.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch\Pch.hpp">
+      <Filter>Pch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\enums\NoteTag.hpp">
+      <Filter>Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="HierarchyItem.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\Notes.hpp">
+      <Filter>Globals</Filter>
+    </QtMoc>
+  </ItemGroup>
+</Project>

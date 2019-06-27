@@ -1,0 +1,9 @@
+# VS stuff
+.vs/
+
+# binaries
+bin/
+int/
+
+# generated items
+notes/gen/
