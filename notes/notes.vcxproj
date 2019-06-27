@@ -73,9 +73,9 @@
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
-      <OutputFile>.\gen\$(ConfigurationName)\%(Filename)_moc.cpp</OutputFile>
+      <OutputFile>.\gen\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -109,9 +109,9 @@
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
-      <OutputFile>.\gen\$(ConfigurationName)\%(Filename)_moc.cpp</OutputFile>
+      <OutputFile>.\gen\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -125,18 +125,19 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\entities\Note.cpp" />
-    <ClCompile Include="src\entities\NotesContainer.cpp" />
-    <ClCompile Include="src\entities\NotesFolder.cpp" />
+    <ClCompile Include="src\nodes\HierarchyNode.cpp" />
+    <ClCompile Include="src\nodes\NodesFactory.cpp" />
+    <ClCompile Include="src\nodes\Note.cpp" />
+    <ClCompile Include="src\nodes\NotesFolder.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Notes.cpp" />
+    <ClCompile Include="src\NotesWidget.cpp" />
     <ClCompile Include="src\pch\Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\Notes.hpp" />
+    <QtMoc Include="src\NotesWidget.hpp" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ui\Notes.ui" />
@@ -145,13 +146,15 @@
     <QtRcc Include="res\Notes.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HierarchyItem.hpp" />
-    <ClInclude Include="src\entities\Note.hpp" />
-    <ClInclude Include="src\entities\NotesContainer.hpp" />
-    <ClInclude Include="src\entities\NotesFolder.hpp" />
-    <ClInclude Include="src\enums\NoteTag.hpp" />
+    <ClInclude Include="src\nodes\NodesFwd.hpp" />
+    <ClInclude Include="src\nodes\HierarchyNode.hpp" />
+    <ClInclude Include="src\nodes\NodesFactory.hpp" />
+    <ClInclude Include="src\nodes\Note.hpp" />
+    <ClInclude Include="src\nodes\NotesFolder.hpp" />
+    <ClInclude Include="src\enums\NodeTag.hpp" />
     <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
+    <ClInclude Include="src\visitors\Visitor.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

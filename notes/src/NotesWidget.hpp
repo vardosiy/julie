@@ -1,18 +1,25 @@
-#ifndef __HIERARCHY_ITEM_HPP__
-#define __HIERARCHY_ITEM_HPP__
+#ifndef __NOTES_HPP__
+#define __NOTES_HPP__
 
 //-----------------------------------------------------------------------------
 
-#include <boost/noncopyable.hpp>
+#include <QtWidgets/QWidget>
+
+#include "Notes_ui.hpp"
 
 //-----------------------------------------------------------------------------
 
-class HierarchyItem : boost::noncopyable
+class NotesWidget : public QWidget
 {
+	Q_OBJECT
+
 public:
-	virtual ~HierarchyItem() noexcept = default;
+	NotesWidget(QWidget * parent = nullptr);
+
+private:
+	Ui::Notes_ui m_ui;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // __HIERARCHY_ITEM_HPP__
+#endif // __NOTES_HPP__

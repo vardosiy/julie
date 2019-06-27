@@ -1,6 +1,6 @@
 #include "Pch.hpp"
 
-#include "Notes.hpp"
+#include "NotesWidget.hpp"
 
 //-----------------------------------------------------------------------------
 

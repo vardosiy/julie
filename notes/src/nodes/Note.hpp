@@ -3,26 +3,20 @@
 
 //-----------------------------------------------------------------------------
 
-#include "HierarchyItem.hpp"
-#include "enums/NoteTag.hpp"
+#include "HierarchyNode.hpp"
 
 //-----------------------------------------------------------------------------
 
-class Note : public HierarchyItem
+class Note : public HierarchyNode
 {
 public:
 	Note(std::string_view _text) noexcept;
 
 	std::string_view getText() const noexcept;
-	NoteTag getTag() const noexcept;
-
 	void setText(std::string_view _text) noexcept;
-	void setTag(NoteTag _tag) noexcept;
 
 private:
 	std::string m_text;
-
-	NoteTag m_tag;
 };
 
 //-----------------------------------------------------------------------------

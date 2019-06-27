@@ -3,24 +3,27 @@
 
 //-----------------------------------------------------------------------------
 
-#include "HierarchyItem.hpp"
+#include "NodesFwd.hpp"
+
+#include "HierarchyNode.hpp"
 
 //-----------------------------------------------------------------------------
 
-class NotesFolder : public HierarchyItem
+class NotesFolder : public HierarchyNode
 {
 public:
-	NotesFolder();
-	~NotesFolder();
+	NotesFolder(std::string_view _name);
 
 	std::string_view getName() const noexcept;
-	void setName(std::string_view _newName) noexcept;
+	void setName(std::string_view _name) noexcept;
 
-	void addItem(std::unique_ptr<HierarchyItem> _item);
+	void addNode(HierarchyNodePtr _node);
+	int getNodesCount() const noexcept;
+	const HierarchyNode & getNode(int _idx);
 
 private:
 	std::string m_name;
-	std::vector<std::unique_ptr<HierarchyItem>> m_content;
+	std::vector<HierarchyNodePtr> m_childNodes;
 };
 
 //-----------------------------------------------------------------------------

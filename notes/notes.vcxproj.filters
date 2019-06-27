@@ -32,25 +32,33 @@
     <Filter Include="Pch">
       <UniqueIdentifier>{f5bd8bf8-dd18-4953-99d3-1d5f9e6aaa6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
       <Filter>Globals</Filter>
     </ClCompile>
-    <ClCompile Include="src\entities\NotesContainer.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entities\NotesFolder.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entities\Note.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Notes.cpp">
-      <Filter>Globals</Filter>
-    </ClCompile>
     <ClCompile Include="src\pch\Pch.cpp">
       <Filter>Pch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NotesWidget.cpp">
+      <Filter>Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nodes\HierarchyNode.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nodes\NodesFactory.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nodes\Note.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nodes\NotesFolder.cpp">
+      <Filter>Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,27 +75,33 @@
     <ClInclude Include="src\Globals.hpp">
       <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="src\entities\Note.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\NotesContainer.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\NotesFolder.hpp">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="src\pch\Pch.hpp">
       <Filter>Pch</Filter>
     </ClInclude>
-    <ClInclude Include="src\enums\NoteTag.hpp">
+    <ClInclude Include="src\enums\NodeTag.hpp">
       <Filter>Enum</Filter>
     </ClInclude>
-    <ClInclude Include="HierarchyItem.hpp">
+    <ClInclude Include="src\visitors\Visitor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\HierarchyNode.hpp">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\NodesFactory.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\Note.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\NotesFolder.hpp">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\NodesFwd.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\Notes.hpp">
+    <QtMoc Include="src\NotesWidget.hpp">
       <Filter>Globals</Filter>
     </QtMoc>
   </ItemGroup>

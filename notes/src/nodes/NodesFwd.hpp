@@ -7,13 +7,13 @@
 
 //-----------------------------------------------------------------------------
 
-class HierarchyItem;
 class Note;
 class NotesFolder;
+class HierarchyNode;
 
 using NotePtr = std::unique_ptr<Note>;
-using NotesFoldersPtr = std::unique_ptr<NotesFolder>;
-using HierarchyItemPtr = std::unique_ptr<HierarchyItem>;
+using NotesFolderPtr = std::unique_ptr<NotesFolder>;
+using HierarchyNodePtr = std::unique_ptr<HierarchyNode>;
 
 //-----------------------------------------------------------------------------
 

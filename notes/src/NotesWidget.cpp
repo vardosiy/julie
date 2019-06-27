@@ -1,13 +1,13 @@
-#ifndef __NOTE_TAG_HPP__
-#define __NOTE_TAG_HPP__
+#include "Pch.hpp"
+
+#include "Notes.hpp"
 
 //-----------------------------------------------------------------------------
 
-enum class NoteTag
+NotesWidget::NotesWidget(QWidget * parent)
+	: QWidget(parent)
 {
-	NonTaged,
-};
+	m_ui.setupUi(this);
+}
 
 //-----------------------------------------------------------------------------
-
-#endif // __NOTE_TAG_HPP__
