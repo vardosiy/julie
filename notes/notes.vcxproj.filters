@@ -45,9 +45,6 @@
     <ClCompile Include="src\pch\Pch.cpp">
       <Filter>Pch</Filter>
     </ClCompile>
-    <ClCompile Include="src\NotesWidget.cpp">
-      <Filter>Globals</Filter>
-    </ClCompile>
     <ClCompile Include="src\nodes\HierarchyNode.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -114,13 +111,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\NotesWidget.hpp">
-      <Filter>Globals</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="ui\NotesWidget.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
+    <None Include="res\ui\qtquickcontrols2.conf" />
+    <None Include="res\ui\PageLeft.ui.qml" />
+    <None Include="res\ui\PageRight.ui.qml" />
+    <None Include="res\ui\Main.qml" />
   </ItemGroup>
 </Project>

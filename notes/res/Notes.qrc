@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="notes">
+    <qresource prefix="/">
+        <file>ui/Main.qml</file>
+        <file>ui/PageLeft.ui.qml</file>
+        <file>ui/PageRight.ui.qml</file>
+        <file>ui/qtquickcontrols2.conf</file>
     </qresource>
 </RCC>
