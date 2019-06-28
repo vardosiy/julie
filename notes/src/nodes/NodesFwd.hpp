@@ -1,5 +1,5 @@
-#ifndef __ENTITIES_FWD_HPP__
-#define __ENTITIES_FWD_HPP__
+#ifndef __NODES_FWD_HPP__
+#define __NODES_FWD_HPP__
 
 //-----------------------------------------------------------------------------
 
@@ -17,4 +17,4 @@ using HierarchyNodePtr = std::unique_ptr<HierarchyNode>;
 
 //-----------------------------------------------------------------------------
 
-#endif // __ENTITIES_FWD_HPP__
+#endif // __NODES_FWD_HPP__

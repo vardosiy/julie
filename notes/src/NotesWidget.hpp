@@ -5,7 +5,7 @@
 
 #include <QtWidgets/QWidget>
 
-#include "Notes_ui.hpp"
+#include "Ui_NotesWidget.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -14,10 +14,10 @@ class NotesWidget : public QWidget
 	Q_OBJECT
 
 public:
-	NotesWidget(QWidget * parent = nullptr);
+	NotesWidget(QWidget * _parent = nullptr);
 
 private:
-	Ui::Notes_ui m_ui;
+	Ui::NotesWidget m_ui;
 };
 
 //-----------------------------------------------------------------------------

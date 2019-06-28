@@ -73,7 +73,7 @@
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
-      <OutputFile>.\gen\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
       <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
@@ -81,11 +81,11 @@
     </QtMoc>
     <QtUic>
       <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
-      <OutputFile>.\gen\%(Filename)_ui.hpp</OutputFile>
+      <OutputFile>.\gen\Ui_%(Filename).hpp</OutputFile>
     </QtUic>
     <QtRcc>
       <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
-      <OutputFile>.\gen\%(Filename)_qrc.cpp</OutputFile>
+      <OutputFile>.\gen\Qrc_%(Filename).cpp</OutputFile>
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -109,7 +109,7 @@
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
-      <OutputFile>.\gen\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
       <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
@@ -117,11 +117,11 @@
     </QtMoc>
     <QtUic>
       <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
-      <OutputFile>.\gen\%(Filename)_ui.hpp</OutputFile>
+      <OutputFile>.\gen\Ui_%(Filename).hpp</OutputFile>
     </QtUic>
     <QtRcc>
       <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
-      <OutputFile>.\gen\%(Filename)_qrc.cpp</OutputFile>
+      <OutputFile>.\gen\Qrc_%(Filename).cpp</OutputFile>
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -135,17 +135,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\visitors\StreamDeserializationVisitor.cpp" />
+    <ClCompile Include="src\visitors\StreamSerializationVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\NotesWidget.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="ui\Notes.ui" />
+    <QtUic Include="ui\NotesWidget.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\Notes.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\enums\NodeKind.hpp" />
     <ClInclude Include="src\nodes\NodesFwd.hpp" />
     <ClInclude Include="src\nodes\HierarchyNode.hpp" />
     <ClInclude Include="src\nodes\NodesFactory.hpp" />
@@ -154,6 +157,9 @@
     <ClInclude Include="src\enums\NodeTag.hpp" />
     <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
+    <ClInclude Include="src\utils\StringConverterUtils.hpp" />
+    <ClInclude Include="src\visitors\StreamDeserializationVisitor.hpp" />
+    <ClInclude Include="src\visitors\StreamSerializationVisitor.hpp" />
     <ClInclude Include="src\visitors\Visitor.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

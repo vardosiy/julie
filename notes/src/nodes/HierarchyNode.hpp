@@ -4,22 +4,28 @@
 //-----------------------------------------------------------------------------
 
 #include "enums/NodeTag.hpp"
+#include "enums/NodeKind.hpp"
 
-#include <boost/noncopyable.hpp>
+//-----------------------------------------------------------------------------
+
+class Visitor;
 
 //-----------------------------------------------------------------------------
 
 class HierarchyNode : boost::noncopyable
 {
 public:
-	HierarchyNode() noexcept;
 	virtual ~HierarchyNode() = default;
 
-	NodeTag getTag() const noexcept;
-	void setTag(NodeTag _tag) noexcept;
+	NodeTag::Enum getTag() const noexcept;
+	void setTag(NodeTag::Enum _tag) noexcept;
+
+	virtual NodeKind::Enum getKind() const noexcept = 0;
+
+	virtual void accept(Visitor & _visitor) = 0;
 
 private:
-	NodeTag m_tag;
+	NodeTag::Enum m_tag{ NodeTag::NonTaged };
 };
 
 //-----------------------------------------------------------------------------

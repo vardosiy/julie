@@ -14,7 +14,10 @@
 #include <string>
 #include <string_view>
 
+#include <fstream>
+
 #include <algorithm>
+#include <cassert>
 
 #include <boost/noncopyable.hpp>
 

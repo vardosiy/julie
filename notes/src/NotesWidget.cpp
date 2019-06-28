@@ -1,11 +1,11 @@
 #include "Pch.hpp"
 
-#include "Notes.hpp"
+#include "NotesWidget.hpp"
 
 //-----------------------------------------------------------------------------
 
-NotesWidget::NotesWidget(QWidget * parent)
-	: QWidget(parent)
+NotesWidget::NotesWidget(QWidget * _parent)
+	: QWidget(_parent)
 {
 	m_ui.setupUi(this);
 }

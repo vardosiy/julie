@@ -4,21 +4,14 @@
 
 //-----------------------------------------------------------------------------
 
-HierarchyNode::HierarchyNode()
-	: m_tag(NodeTag::NonTaged)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-NodeTag HierarchyNode::getTag() const
+NodeTag::Enum HierarchyNode::getTag() const noexcept
 {
 	return m_tag;
 }
 
 //-----------------------------------------------------------------------------
 
-void HierarchyNode::setTag(NodeTag _tag)
+void HierarchyNode::setTag(NodeTag::Enum _tag) noexcept
 {
 	m_tag = _tag;
 }

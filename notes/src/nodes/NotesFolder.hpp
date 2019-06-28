@@ -12,14 +12,20 @@
 class NotesFolder : public HierarchyNode
 {
 public:
-	NotesFolder(std::string_view _name);
+	NotesFolder() noexcept = default;
+	NotesFolder(std::string_view _name) noexcept;
 
 	std::string_view getName() const noexcept;
 	void setName(std::string_view _name) noexcept;
 
-	void addNode(HierarchyNodePtr _node);
-	int getNodesCount() const noexcept;
-	const HierarchyNode & getNode(int _idx);
+	void addChildNode(HierarchyNodePtr _node) noexcept;
+	int getChildNodesCount() const noexcept;
+
+	void forEachChildNode(std::function<void(HierarchyNode &)> _callback);
+
+	NodeKind::Enum getKind() const noexcept override;
+
+	void accept(Visitor & _visitor) override;
 
 private:
 	std::string m_name;

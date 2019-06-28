@@ -1,5 +1,5 @@
-#ifndef __NODE_TAG_HPP__
-#define __NODE_TAG_HPP__
+#ifndef __NODE_KIND_HPP__
+#define __NODE_KIND_HPP__
 
 //-----------------------------------------------------------------------------
 
@@ -10,21 +10,15 @@
 
 //-----------------------------------------------------------------------------
 
-class NodeTag
+class NodeKind
 {
 public:
 	enum Enum
 	{
-		NonTaged,
-		Red,
-		Orange,
-		Yellow,
-		Green,
-		Blue,
-		Purple,
-		Gray,
+		Note,
+		NotesFolder,
 
-		Count,
+		Count
 	};
 
 	static std::string_view toString(Enum _tag);
@@ -34,23 +28,18 @@ public:
 
 //-----------------------------------------------------------------------------
 
-inline std::string_view NodeTag::toString(Enum _tag)
+inline std::string_view NodeKind::toString(Enum _tag)
 {
-	constexpr int lastVerNodeTagsCount = 8;
+	constexpr int lastVerNodeKindsCount = 2;
 	static_assert(
-		static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount,
-		"Update NodeTag::toString converter!"
+		static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount,
+		"Update NodeKind::toString converter!"
 	);
 
 	switch (_tag)
 	{
-		TO_STRING_CASE(NonTaged);
-		TO_STRING_CASE(Red);
-		TO_STRING_CASE(Orange);
-		TO_STRING_CASE(Yellow);
-		TO_STRING_CASE(Blue);
-		TO_STRING_CASE(Purple);
-		TO_STRING_CASE(Gray);
+		TO_STRING_CASE(Note);
+		TO_STRING_CASE(NotesFolder);
 
 		default:
 			assert(0);
@@ -59,11 +48,11 @@ inline std::string_view NodeTag::toString(Enum _tag)
 
 //-----------------------------------------------------------------------------
 
-inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
+inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 {
-	return utils::enumFromString<NodeTag>(_str);
+	return utils::enumFromString<NodeKind>(_str);
 }
 
 //-----------------------------------------------------------------------------
 
-#endif // __NODE_TAG_HPP__
+#endif // __NODE_KIND_HPP__
