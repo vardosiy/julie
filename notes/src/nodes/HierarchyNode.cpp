@@ -4,16 +4,24 @@
 
 //-----------------------------------------------------------------------------
 
-NodeTag::Enum HierarchyNode::getTag() const noexcept
+namespace nodes {
+
+//-----------------------------------------------------------------------------
+
+enums::NodeTag::Enum HierarchyNode::getTag() const noexcept
 {
 	return m_tag;
 }
 
 //-----------------------------------------------------------------------------
 
-void HierarchyNode::setTag(NodeTag::Enum _tag) noexcept
+void HierarchyNode::setTag(enums::NodeTag::Enum _tag) noexcept
 {
 	m_tag = _tag;
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace nodes
 
 //-----------------------------------------------------------------------------

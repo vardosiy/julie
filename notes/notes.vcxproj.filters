@@ -97,9 +97,6 @@
     <ClInclude Include="src\nodes\NodesFwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\StringConverterUtils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\visitors\StreamSerializationVisitor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -109,11 +106,15 @@
     <ClInclude Include="src\enums\NodeKind.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\enums\utils\EnumUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ui\qtquickcontrols2.conf" />
-    <None Include="res\ui\PageLeft.ui.qml" />
-    <None Include="res\ui\PageRight.ui.qml" />
     <None Include="res\ui\Main.qml" />
+    <None Include="res\ui\Page1.ui.qml" />
+    <None Include="res\ui\Page2.ui.qml" />
+    <None Include="res\ui\Page3.ui.qml" />
   </ItemGroup>
 </Project>

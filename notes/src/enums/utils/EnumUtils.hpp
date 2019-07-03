@@ -1,16 +1,18 @@
-#ifndef __STRING_CONVERTER_HPP__
-#define __STRING_CONVERTER_HPP__
+#ifndef __ENUM_UTILS_HPP__
+#define __ENUM_UTILS_HPP__
 
 //-----------------------------------------------------------------------------
 
-#define TO_STRING_CASE(_case) case _case: return #_case
+namespace enum_utils {
 
 //-----------------------------------------------------------------------------
 
-namespace utils {
+#define ENUM_TO_STRING_CASE(_case) case _case: return #_case
+
+//-----------------------------------------------------------------------------
 
 template<typename T>
-typename T::Enum enumFromString(std::string_view _str) 
+constexpr typename T::Enum fromString(std::string_view _str)
 {
 	for (int i{ 0 }; i < T::Count; ++i)
 	{
@@ -20,11 +22,14 @@ typename T::Enum enumFromString(std::string_view _str)
 		}
 	}
 
+	// throw std::runtime_error("Invalid enumerator name");
 	assert(!"Invalid enumerator name");
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace utils
 
 //-----------------------------------------------------------------------------
 
-#endif // __STRING_CONVERTER_HPP__
+#endif // __ENUM_UTILS_HPP__

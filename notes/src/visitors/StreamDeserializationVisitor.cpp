@@ -11,23 +11,23 @@
 //-----------------------------------------------------------------------------
 
 StreamDeserializationVisitor::StreamDeserializationVisitor(std::istream & _stream) noexcept
-	: m_stream(_stream)
+	: m_stream{ _stream }
 {
 }
 
 //-----------------------------------------------------------------------------
 
-NotesFolderPtr StreamDeserializationVisitor::run()
+nodes::NotesFolderPtr StreamDeserializationVisitor::run()
 {
-	HierarchyNodePtr rootNode = deserializeNode();
-	assert(rootNode->getKind() == NodeKind::NotesFolder);
+	nodes::HierarchyNodePtr rootNode = deserializeNode();
+	assert(rootNode->getKind() == enums::NodeKind::NotesFolder);
 
-	return NotesFolderPtr(dynamic_cast<NotesFolder *>(rootNode.release()));
+	return nodes::NotesFolderPtr(dynamic_cast<nodes::NotesFolder *>(rootNode.release()));
 }
 
 //-----------------------------------------------------------------------------
 
-void StreamDeserializationVisitor::visit(Note & _note)
+void StreamDeserializationVisitor::operator() (nodes::Note & _note)
 {
 	int tag;
 	std::string text;
@@ -36,13 +36,13 @@ void StreamDeserializationVisitor::visit(Note & _note)
 		>> tag
 		>> text;
 
-	_note.setTag(static_cast<NodeTag::Enum>(tag));
+	_note.setTag(static_cast<enums::NodeTag::Enum>(tag));
 	_note.setText(text);
 }
 
 //-----------------------------------------------------------------------------
 
-void StreamDeserializationVisitor::visit(NotesFolder & _notesFolder)
+void StreamDeserializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
 	std::string folderName;
 	int tag;
@@ -54,36 +54,36 @@ void StreamDeserializationVisitor::visit(NotesFolder & _notesFolder)
 		>> childNodesCount;
 
 	_notesFolder.setName(folderName);
-	_notesFolder.setTag(static_cast<NodeTag::Enum>(tag));
+	_notesFolder.setTag(static_cast<enums::NodeTag::Enum>(tag));
 
 	for (int i{ 0 }; i < childNodesCount; ++i)
 	{
-		HierarchyNodePtr node = deserializeNode();
+		nodes::HierarchyNodePtr node = deserializeNode();
 		_notesFolder.addChildNode(std::move(node));
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
+nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 {
-	HierarchyNodePtr node;
+	nodes::HierarchyNodePtr node;
 
 	int kind;
 	m_stream >> kind;
 
 	switch (kind)
 	{
-		case NodeKind::Note:
+		case enums::NodeKind::Note:
 		{
-			node = std::make_unique<Note>();
+			node = std::make_unique<nodes::Note>();
 			node->accept(*this);
 		}
 		break;
 
-		case NodeKind::NotesFolder:
+		case enums::NodeKind::NotesFolder:
 		{
-			node = std::make_unique<NotesFolder>();
+			node = std::make_unique<nodes::NotesFolder>();
 			node->accept(*this);
 		}
 		break;

@@ -13,13 +13,13 @@ public:
 	StreamDeserializationVisitor(std::istream & _stream) noexcept;
 
 	// return root folder
-	NotesFolderPtr run();
+	nodes::NotesFolderPtr run();
 
-	void visit(Note & _note) override;
-	void visit(NotesFolder & _notesFolder) override;
+	void operator() (nodes::Note & _note) override;
+	void operator() (nodes::NotesFolder & _notesFolder) override;
 
 private:
-	HierarchyNodePtr deserializeNode();
+	nodes::HierarchyNodePtr deserializeNode();
 
 	std::istream & m_stream;
 };

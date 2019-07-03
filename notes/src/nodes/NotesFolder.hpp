@@ -9,6 +9,10 @@
 
 //-----------------------------------------------------------------------------
 
+namespace nodes {
+
+//-----------------------------------------------------------------------------
+
 class NotesFolder : public HierarchyNode
 {
 public:
@@ -23,7 +27,7 @@ public:
 
 	void forEachChildNode(std::function<void(HierarchyNode &)> _callback);
 
-	NodeKind::Enum getKind() const noexcept override;
+	enums::NodeKind::Enum getKind() const noexcept override;
 
 	void accept(Visitor & _visitor) override;
 
@@ -31,6 +35,10 @@ private:
 	std::string m_name;
 	std::vector<HierarchyNodePtr> m_childNodes;
 };
+
+//-----------------------------------------------------------------------------
+
+} // namespace nodes
 
 //-----------------------------------------------------------------------------
 

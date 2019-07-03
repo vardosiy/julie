@@ -12,12 +12,13 @@ class StreamSerializationVisitor : public Visitor
 public:
 	StreamSerializationVisitor(std::ostream & _stream) noexcept;
 
-	void visit(Note & _note) override;
-	void visit(NotesFolder & _notesFolder) override;
+	void operator() (nodes::Note & _note) override;
+	void operator() (nodes::NotesFolder & _notesFolder) override;
 
 private:
-	void serializeNodeKind(HierarchyNode & _node);
+	void serializeNodeKind(nodes::HierarchyNode & _node);
 
+private:
 	std::ostream & m_stream;
 };
 

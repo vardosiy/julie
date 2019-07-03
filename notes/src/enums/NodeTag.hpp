@@ -3,10 +3,14 @@
 
 //-----------------------------------------------------------------------------
 
-#include "utils/StringConverterUtils.hpp"
+#include "utils/EnumUtils.hpp"
 
 #include <string_view>
 #include <cassert>
+
+//-----------------------------------------------------------------------------
+
+namespace enums {
 
 //-----------------------------------------------------------------------------
 
@@ -24,19 +28,19 @@ public:
 		Purple,
 		Gray,
 
-		Count,
+		Count
 	};
 
-	static std::string_view toString(Enum _tag);
-
-	static Enum fromString(std::string_view _str);
+	constexpr static std::string_view toString(Enum _tag);
+	constexpr static Enum fromString(std::string_view _str);
 };
 
 //-----------------------------------------------------------------------------
 
-inline std::string_view NodeTag::toString(Enum _tag)
+constexpr inline std::string_view NodeTag::toString(Enum _tag)
 {
-	constexpr int lastVerNodeTagsCount = 8;
+	constexpr int lastVerNodeTagsCount{ 8 };
+
 	static_assert(
 		static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount,
 		"Update NodeTag::toString converter!"
@@ -44,25 +48,29 @@ inline std::string_view NodeTag::toString(Enum _tag)
 
 	switch (_tag)
 	{
-		TO_STRING_CASE(NonTaged);
-		TO_STRING_CASE(Red);
-		TO_STRING_CASE(Orange);
-		TO_STRING_CASE(Yellow);
-		TO_STRING_CASE(Blue);
-		TO_STRING_CASE(Purple);
-		TO_STRING_CASE(Gray);
+		ENUM_TO_STRING_CASE(NonTaged);
+		ENUM_TO_STRING_CASE(Red);
+		ENUM_TO_STRING_CASE(Orange);
+		ENUM_TO_STRING_CASE(Yellow);
+		ENUM_TO_STRING_CASE(Blue);
+		ENUM_TO_STRING_CASE(Purple);
+		ENUM_TO_STRING_CASE(Gray);
 
 		default:
-			assert(0);
+		assert(0);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
+constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
 {
-	return utils::enumFromString<NodeTag>(_str);
+	return enum_utils::fromString<NodeTag>(_str);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace enums
 
 //-----------------------------------------------------------------------------
 

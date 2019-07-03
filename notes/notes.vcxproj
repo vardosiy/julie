@@ -54,8 +54,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -70,13 +70,13 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickControls2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Guid.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickControls2d.lib;Qt5QuickWidgetsd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;%(PreprocessorDefinitions)</Define>
+      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
     <QtUic>
@@ -91,8 +91,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -106,13 +106,13 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Qml.lib;Qt5Quick.lib;Qt5QuickControls2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Gui.lib;Qt5Qml.lib;Qt5Quick.lib;Qt5QuickControls2.lib;Qt5QuickWidgets.lib;Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;%(PreprocessorDefinitions)</Define>
+      <IncludePath>C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
     <QtUic>
@@ -150,15 +150,16 @@
     <ClInclude Include="src\enums\NodeTag.hpp" />
     <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
-    <ClInclude Include="src\utils\StringConverterUtils.hpp" />
+    <ClInclude Include="src\enums\utils\EnumUtils.hpp" />
     <ClInclude Include="src\visitors\StreamDeserializationVisitor.hpp" />
     <ClInclude Include="src\visitors\StreamSerializationVisitor.hpp" />
     <ClInclude Include="src\visitors\Visitor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ui\Main.qml" />
-    <None Include="res\ui\PageLeft.ui.qml" />
-    <None Include="res\ui\PageRight.ui.qml" />
+    <None Include="res\ui\Page3.ui.qml" />
+    <None Include="res\ui\Page1.ui.qml" />
+    <None Include="res\ui\Page2.ui.qml" />
     <None Include="res\ui\qtquickcontrols2.conf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -169,7 +170,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\gen\$(ConfigurationName)" UicDir=".\gen" RccDir=".\gen" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_x64="5.12.2" MocOptions="" />
+      <UserProperties MocDir=".\gen\$(ConfigurationName)" UicDir=".\gen" RccDir=".\gen" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_x64="5.13.0" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

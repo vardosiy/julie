@@ -3,10 +3,14 @@
 
 //-----------------------------------------------------------------------------
 
-#include "utils/StringConverterUtils.hpp"
+#include "utils/EnumUtils.hpp"
 
 #include <string_view>
 #include <cassert>
+
+//-----------------------------------------------------------------------------
+
+namespace enums {
 
 //-----------------------------------------------------------------------------
 
@@ -21,16 +25,16 @@ public:
 		Count
 	};
 
-	static std::string_view toString(Enum _tag);
-
-	static Enum fromString(std::string_view _str);
+	constexpr static std::string_view toString(Enum _tag);
+	constexpr static Enum fromString(std::string_view _str);
 };
 
 //-----------------------------------------------------------------------------
 
-inline std::string_view NodeKind::toString(Enum _tag)
+constexpr inline std::string_view NodeKind::toString(Enum _tag)
 {
-	constexpr int lastVerNodeKindsCount = 2;
+	constexpr int lastVerNodeKindsCount{ 2 };
+
 	static_assert(
 		static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount,
 		"Update NodeKind::toString converter!"
@@ -38,20 +42,24 @@ inline std::string_view NodeKind::toString(Enum _tag)
 
 	switch (_tag)
 	{
-		TO_STRING_CASE(Note);
-		TO_STRING_CASE(NotesFolder);
+		ENUM_TO_STRING_CASE(Note);
+		ENUM_TO_STRING_CASE(NotesFolder);
 
 		default:
-			assert(0);
+		assert(0);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
+constexpr inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 {
-	return utils::enumFromString<NodeKind>(_str);
+	return enum_utils::fromString<NodeKind>(_str);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace enums
 
 //-----------------------------------------------------------------------------
 

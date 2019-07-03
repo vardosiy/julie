@@ -6,13 +6,13 @@ Page {
     height: 400
 
     header: Label {
-        text: "Page 1"
+        text: "IZI"
         font.pixelSize: Qt.application.font.pixelSize * 2
         padding: 10
     }
 
     Label {
-        text: "You are on Page 1."
+        text: "Hello Bitch"
         anchors.centerIn: parent
     }
 }

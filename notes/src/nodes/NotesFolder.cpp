@@ -6,8 +6,12 @@
 
 //-----------------------------------------------------------------------------
 
+namespace nodes {
+
+//-----------------------------------------------------------------------------
+
 NotesFolder::NotesFolder(std::string_view _name) noexcept
-	: m_name(_name)
+	: m_name{ _name }
 {
 }
 
@@ -30,7 +34,7 @@ void NotesFolder::setName(std::string_view _name) noexcept
 void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
 {
 	assert(_node);
-	m_childNodes.emplace_back(std::forward<HierarchyNodePtr>(_node));
+	m_childNodes.emplace_back(std::move(_node));
 }
 
 //-----------------------------------------------------------------------------
@@ -53,16 +57,20 @@ void NotesFolder::forEachChildNode(std::function<void(HierarchyNode &)> _callbac
 
 //-----------------------------------------------------------------------------
 
-NodeKind::Enum NotesFolder::getKind() const noexcept
+enums::NodeKind::Enum NotesFolder::getKind() const noexcept
 {
-	return NodeKind::NotesFolder;
+	return enums::NodeKind::NotesFolder;
 }
 
 //-----------------------------------------------------------------------------
 
 void NotesFolder::accept(Visitor & _visitor)
 {
-	_visitor.visit(*this);
+	_visitor(*this);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace nodes
 
 //-----------------------------------------------------------------------------

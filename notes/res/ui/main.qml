@@ -5,17 +5,18 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-    title: qsTr("Tabs")
+    title: "Tabs"
 
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
-        PageLeft {
+        Page1 {
         }
-
-        PageRight {
+        Page2 {
+        }
+        Page3 {
         }
     }
 
@@ -28,6 +29,9 @@ ApplicationWindow {
         }
         TabButton {
             text: "Right Page"
+        }
+        TabButton {
+            text: "Page3"
         }
     }
 }

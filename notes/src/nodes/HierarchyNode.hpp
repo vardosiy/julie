@@ -12,21 +12,29 @@ class Visitor;
 
 //-----------------------------------------------------------------------------
 
+namespace nodes {
+
+//-----------------------------------------------------------------------------
+
 class HierarchyNode : boost::noncopyable
 {
 public:
 	virtual ~HierarchyNode() = default;
 
-	NodeTag::Enum getTag() const noexcept;
-	void setTag(NodeTag::Enum _tag) noexcept;
+	enums::NodeTag::Enum getTag() const noexcept;
+	void setTag(enums::NodeTag::Enum _tag) noexcept;
 
-	virtual NodeKind::Enum getKind() const noexcept = 0;
+	virtual enums::NodeKind::Enum getKind() const noexcept = 0;
 
 	virtual void accept(Visitor & _visitor) = 0;
 
 private:
-	NodeTag::Enum m_tag{ NodeTag::NonTaged };
+	enums::NodeTag::Enum m_tag{ enums::NodeTag::NonTaged };
 };
+
+//-----------------------------------------------------------------------------
+
+} // namespace nodes
 
 //-----------------------------------------------------------------------------
 

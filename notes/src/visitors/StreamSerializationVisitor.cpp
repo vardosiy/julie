@@ -8,13 +8,13 @@
 //-----------------------------------------------------------------------------
 
 StreamSerializationVisitor::StreamSerializationVisitor(std::ostream & _stream) noexcept
-	: m_stream(_stream)
+	: m_stream{ _stream }
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void StreamSerializationVisitor::visit(Note & _note)
+void StreamSerializationVisitor::operator() (nodes::Note & _note)
 {
 	serializeNodeKind(_note);
 
@@ -25,7 +25,7 @@ void StreamSerializationVisitor::visit(Note & _note)
 
 //-----------------------------------------------------------------------------
 
-void StreamSerializationVisitor::visit(NotesFolder & _notesFolder)
+void StreamSerializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
 	serializeNodeKind(_notesFolder);
 
@@ -35,7 +35,7 @@ void StreamSerializationVisitor::visit(NotesFolder & _notesFolder)
 		<< _notesFolder.getChildNodesCount();
 
 	_notesFolder.forEachChildNode(
-		[this](HierarchyNode & _node)
+		[this](nodes::HierarchyNode & _node)
 		{
 			_node.accept(*this);
 		}
@@ -44,7 +44,7 @@ void StreamSerializationVisitor::visit(NotesFolder & _notesFolder)
 
 //-----------------------------------------------------------------------------
 
-void StreamSerializationVisitor::serializeNodeKind(HierarchyNode & _node)
+void StreamSerializationVisitor::serializeNodeKind(nodes::HierarchyNode & _node)
 {
 	m_stream << static_cast<int>(_node.getKind());
 }

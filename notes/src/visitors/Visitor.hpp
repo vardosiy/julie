@@ -10,8 +10,8 @@
 class Visitor
 {
 public:
-	virtual void visit(Note & _note) = 0;
-	virtual void visit(NotesFolder & _notesFolder) = 0;
+	virtual void operator() (nodes::Note & _note) = 0;
+	virtual void operator() (nodes::NotesFolder & _notesFolder) = 0;
 };
 
 //-----------------------------------------------------------------------------

@@ -6,8 +6,12 @@
 
 //-----------------------------------------------------------------------------
 
+namespace nodes {
+
+//-----------------------------------------------------------------------------
+
 Note::Note(std::string_view _text) noexcept
-	: m_text(_text)
+	: m_text{ _text }
 {
 }
 
@@ -27,16 +31,20 @@ void Note::setText(std::string_view _text) noexcept
 
 //-----------------------------------------------------------------------------
 
-NodeKind::Enum Note::getKind() const noexcept
+enums::NodeKind::Enum Note::getKind() const noexcept
 {
-	return NodeKind::Note;
+	return enums::NodeKind::Note;
 }
 
 //-----------------------------------------------------------------------------
 
 void Note::accept(Visitor & _visitor)
 {
-	_visitor.visit(*this);
+	_visitor(*this);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace nodes
 
 //-----------------------------------------------------------------------------
