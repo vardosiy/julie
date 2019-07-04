@@ -8,7 +8,10 @@
 
 //-----------------------------------------------------------------------------
 
-class Visitor;
+namespace visitors
+{
+	class Visitor;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -21,15 +24,19 @@ class HierarchyNode : boost::noncopyable
 public:
 	virtual ~HierarchyNode() = default;
 
+	enums::NodeKind::Enum getKind() const noexcept;
 	enums::NodeTag::Enum getTag() const noexcept;
+
 	void setTag(enums::NodeTag::Enum _tag) noexcept;
 
-	virtual enums::NodeKind::Enum getKind() const noexcept = 0;
+	virtual void accept(visitors::Visitor & _visitor) = 0;
 
-	virtual void accept(Visitor & _visitor) = 0;
+protected:
+	HierarchyNode(enums::NodeKind::Enum _kind) noexcept;
 
 private:
-	enums::NodeTag::Enum m_tag{ enums::NodeTag::NonTaged };
+	enums::NodeKind::Enum m_kind;
+	enums::NodeTag::Enum m_tag;
 };
 
 //-----------------------------------------------------------------------------

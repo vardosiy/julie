@@ -16,7 +16,7 @@ namespace nodes {
 class NotesFolder : public HierarchyNode
 {
 public:
-	NotesFolder() noexcept = default;
+	NotesFolder() noexcept;
 	NotesFolder(std::string_view _name) noexcept;
 
 	std::string_view getName() const noexcept;
@@ -27,9 +27,7 @@ public:
 
 	void forEachChildNode(std::function<void(HierarchyNode &)> _callback);
 
-	enums::NodeKind::Enum getKind() const noexcept override;
-
-	void accept(Visitor & _visitor) override;
+	void accept(visitors::Visitor & _visitor) override;
 
 private:
 	std::string m_name;

@@ -3,26 +3,34 @@
 
 //-----------------------------------------------------------------------------
 
-#include "Visitor.hpp"
+#include "visitors/Visitor.hpp"
+#include "save_restore_helpers/StreamReadingHelper.hpp"
 
 //-----------------------------------------------------------------------------
 
-class StreamDeserializationVisitor : public Visitor
+namespace visitors {
+
+//-----------------------------------------------------------------------------
+
+class StreamDeserializationVisitor
+	: public Visitor
+	, private save_restore::StreamReadingHelper
 {
 public:
 	StreamDeserializationVisitor(std::istream & _stream) noexcept;
 
-	// return root folder
-	nodes::NotesFolderPtr run();
+	nodes::HierarchyNodePtr run();
 
 	void operator() (nodes::Note & _note) override;
 	void operator() (nodes::NotesFolder & _notesFolder) override;
 
 private:
 	nodes::HierarchyNodePtr deserializeNode();
-
-	std::istream & m_stream;
 };
+
+//-----------------------------------------------------------------------------
+
+} // namespace visitors
 
 //-----------------------------------------------------------------------------
 

@@ -65,7 +65,7 @@ constexpr inline std::string_view NodeTag::toString(Enum _tag)
 
 constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
 {
-	return enum_utils::fromString<NodeTag>(_str);
+	return utils::fromString<NodeTag>(_str);
 }
 
 //-----------------------------------------------------------------------------

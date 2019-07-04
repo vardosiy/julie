@@ -7,8 +7,12 @@
 
 //-----------------------------------------------------------------------------
 
+namespace visitors {
+
+//-----------------------------------------------------------------------------
+
 StreamSerializationVisitor::StreamSerializationVisitor(std::ostream & _stream) noexcept
-	: m_stream{ _stream }
+	: StreamWritingHelper(_stream)
 {
 }
 
@@ -18,9 +22,8 @@ void StreamSerializationVisitor::operator() (nodes::Note & _note)
 {
 	serializeNodeKind(_note);
 
-	m_stream
-		<< _note.getTag()
-		<< _note.getText();
+	write(_note.getTag());
+	write(_note.getText());
 }
 
 //-----------------------------------------------------------------------------
@@ -29,10 +32,9 @@ void StreamSerializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
 	serializeNodeKind(_notesFolder);
 
-	m_stream
-		<< _notesFolder.getName()
-		<< _notesFolder.getTag()
-		<< _notesFolder.getChildNodesCount();
+	write(_notesFolder.getTag());
+	write(_notesFolder.getName());
+	write(_notesFolder.getChildNodesCount());
 
 	_notesFolder.forEachChildNode(
 		[this](nodes::HierarchyNode & _node)
@@ -46,7 +48,11 @@ void StreamSerializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 
 void StreamSerializationVisitor::serializeNodeKind(nodes::HierarchyNode & _node)
 {
-	m_stream << static_cast<int>(_node.getKind());
+	write(_node.getKind());
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace visitors
 
 //-----------------------------------------------------------------------------

@@ -66,7 +66,7 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -125,6 +125,8 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\save_restore_helpers\StreamReadingHelper.cpp" />
+    <ClCompile Include="src\save_restore_helpers\StreamWritingHelper.cpp" />
     <ClCompile Include="src\nodes\HierarchyNode.cpp" />
     <ClCompile Include="src\nodes\NodesFactory.cpp" />
     <ClCompile Include="src\nodes\Note.cpp" />
@@ -134,14 +136,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\visitors\StreamDeserializationVisitor.cpp" />
-    <ClCompile Include="src\visitors\StreamSerializationVisitor.cpp" />
+    <ClCompile Include="src\visitors\deserialization\StreamDeserializationVisitor.cpp" />
+    <ClCompile Include="src\visitors\serialization\StreamSerializationVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\Notes.qrc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\enums\NodeKind.hpp" />
+    <ClInclude Include="src\save_restore_helpers\StreamReadingHelper.hpp" />
+    <ClInclude Include="src\save_restore_helpers\StreamWritingHelper.hpp" />
     <ClInclude Include="src\nodes\NodesFwd.hpp" />
     <ClInclude Include="src\nodes\HierarchyNode.hpp" />
     <ClInclude Include="src\nodes\NodesFactory.hpp" />
@@ -151,8 +155,8 @@
     <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
     <ClInclude Include="src\enums\utils\EnumUtils.hpp" />
-    <ClInclude Include="src\visitors\StreamDeserializationVisitor.hpp" />
-    <ClInclude Include="src\visitors\StreamSerializationVisitor.hpp" />
+    <ClInclude Include="src\visitors\deserialization\StreamDeserializationVisitor.hpp" />
+    <ClInclude Include="src\visitors\serialization\StreamSerializationVisitor.hpp" />
     <ClInclude Include="src\visitors\Visitor.hpp" />
   </ItemGroup>
   <ItemGroup>

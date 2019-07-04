@@ -3,11 +3,18 @@
 
 //-----------------------------------------------------------------------------
 
-#include "Visitor.hpp"
+#include "visitors/Visitor.hpp"
+#include "save_restore_helpers/StreamWritingHelper.hpp"
 
 //-----------------------------------------------------------------------------
 
-class StreamSerializationVisitor : public Visitor
+namespace visitors {
+
+//-----------------------------------------------------------------------------
+
+class StreamSerializationVisitor
+	: public Visitor
+	, private save_restore::StreamWritingHelper
 {
 public:
 	StreamSerializationVisitor(std::ostream & _stream) noexcept;
@@ -17,10 +24,11 @@ public:
 
 private:
 	void serializeNodeKind(nodes::HierarchyNode & _node);
-
-private:
-	std::ostream & m_stream;
 };
+
+//-----------------------------------------------------------------------------
+
+} // namespace visitors
 
 //-----------------------------------------------------------------------------
 

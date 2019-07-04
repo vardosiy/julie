@@ -6,35 +6,33 @@
 #include "nodes/Note.hpp"
 #include "nodes/NotesFolder.hpp"
 
-#include "nodes/NodesFactory.hpp"
+//-----------------------------------------------------------------------------
+
+namespace visitors {
 
 //-----------------------------------------------------------------------------
 
 StreamDeserializationVisitor::StreamDeserializationVisitor(std::istream & _stream) noexcept
-	: m_stream{ _stream }
+	: StreamReadingHelper(_stream)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-nodes::NotesFolderPtr StreamDeserializationVisitor::run()
+nodes::HierarchyNodePtr StreamDeserializationVisitor::run()
 {
 	nodes::HierarchyNodePtr rootNode = deserializeNode();
 	assert(rootNode->getKind() == enums::NodeKind::NotesFolder);
 
-	return nodes::NotesFolderPtr(dynamic_cast<nodes::NotesFolder *>(rootNode.release()));
+	return rootNode;
 }
 
 //-----------------------------------------------------------------------------
 
 void StreamDeserializationVisitor::operator() (nodes::Note & _note)
 {
-	int tag;
-	std::string text;
-
-	m_stream
-		>> tag
-		>> text;
+	const int tag{ readInt32() };
+	const std::string text{ readString() };
 
 	_note.setTag(static_cast<enums::NodeTag::Enum>(tag));
 	_note.setText(text);
@@ -44,14 +42,9 @@ void StreamDeserializationVisitor::operator() (nodes::Note & _note)
 
 void StreamDeserializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
-	std::string folderName;
-	int tag;
-	int childNodesCount;
-
-	m_stream
-		>> folderName
-		>> tag
-		>> childNodesCount;
+	const int tag{ readInt32() };
+	const std::string folderName{ readString() };
+	const int childNodesCount{ readInt32() };
 
 	_notesFolder.setName(folderName);
 	_notesFolder.setTag(static_cast<enums::NodeTag::Enum>(tag));
@@ -69,9 +62,7 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 {
 	nodes::HierarchyNodePtr node;
 
-	int kind;
-	m_stream >> kind;
-
+	const int kind{ readInt32() };
 	switch (kind)
 	{
 		case enums::NodeKind::Note:
@@ -94,5 +85,9 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 
 	return node;
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace visitors
 
 //-----------------------------------------------------------------------------

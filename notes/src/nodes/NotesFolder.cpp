@@ -10,9 +10,17 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-NotesFolder::NotesFolder(std::string_view _name) noexcept
-	: m_name{ _name }
+NotesFolder::NotesFolder() noexcept
+	: HierarchyNode{ enums::NodeKind::NotesFolder }
 {
+}
+
+//-----------------------------------------------------------------------------
+
+NotesFolder::NotesFolder(std::string_view _name) noexcept
+	: NotesFolder()
+{
+	m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,14 +65,7 @@ void NotesFolder::forEachChildNode(std::function<void(HierarchyNode &)> _callbac
 
 //-----------------------------------------------------------------------------
 
-enums::NodeKind::Enum NotesFolder::getKind() const noexcept
-{
-	return enums::NodeKind::NotesFolder;
-}
-
-//-----------------------------------------------------------------------------
-
-void NotesFolder::accept(Visitor & _visitor)
+void NotesFolder::accept(visitors::Visitor & _visitor)
 {
 	_visitor(*this);
 }

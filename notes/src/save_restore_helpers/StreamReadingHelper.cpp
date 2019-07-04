@@ -1,35 +1,33 @@
-#ifndef __NOTE_HPP__
-#define __NOTE_HPP__
+#include "Pch.hpp"
+
+#include "StreamReadingHelper.hpp"
 
 //-----------------------------------------------------------------------------
 
-#include "HierarchyNode.hpp"
+namespace save_restore {
 
 //-----------------------------------------------------------------------------
 
-namespace nodes {
-
-//-----------------------------------------------------------------------------
-
-class Note : public HierarchyNode
+StreamReadingHelper::StreamReadingHelper(std::istream & _stream)
+	: m_stream{ _stream }
 {
-public:
-	Note() noexcept;
-	Note(std::string_view _text) noexcept;
-
-	std::string_view getText() const noexcept;
-	void setText(std::string_view _text) noexcept;
-
-	void accept(visitors::Visitor & _visitor) override;
-
-private:
-	std::string m_text;
-};
+}
 
 //-----------------------------------------------------------------------------
 
-} // namespace nodes
+std::string StreamReadingHelper::readString()
+{
+	const int size{ readInt32() };
+
+	char buffer[256];
+	m_stream.read(buffer, size);
+
+	std::string result(buffer, size);
+	return result;
+}
 
 //-----------------------------------------------------------------------------
 
-#endif // __NOTE_HPP__
+} // namespace save_restore
+
+//-----------------------------------------------------------------------------

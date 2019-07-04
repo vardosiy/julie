@@ -57,10 +57,16 @@
     <ClCompile Include="src\nodes\NotesFolder.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="src\visitors\StreamSerializationVisitor.cpp">
+    <ClCompile Include="src\visitors\deserialization\StreamDeserializationVisitor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\visitors\StreamDeserializationVisitor.cpp">
+    <ClCompile Include="src\visitors\serialization\StreamSerializationVisitor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\save_restore_helpers\StreamReadingHelper.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\save_restore_helpers\StreamWritingHelper.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -97,16 +103,22 @@
     <ClInclude Include="src\nodes\NodesFwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\visitors\StreamSerializationVisitor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\visitors\StreamDeserializationVisitor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\enums\NodeKind.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\enums\utils\EnumUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\visitors\deserialization\StreamDeserializationVisitor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\visitors\serialization\StreamSerializationVisitor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\save_restore_helpers\StreamReadingHelper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\save_restore_helpers\StreamWritingHelper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

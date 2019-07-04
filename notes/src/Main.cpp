@@ -1,21 +1,48 @@
 #include "Pch.hpp"
 
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <iostream>
+#include <sstream>
+
+//#include <QGuiApplication>
+//#include <QQmlApplicationEngine>
+
+#include "nodes/NodesFactory.hpp"
+
+#include "nodes/Note.hpp"
+#include "nodes/NotesFolder.hpp"
+
+#include "visitors/serialization/StreamSerializationVisitor.hpp"
+#include "visitors/deserialization/StreamDeserializationVisitor.hpp"
 
 //-----------------------------------------------------------------------------
 
 int main(int _argc, char * _argv[])
 {
-	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	//QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	//
+	//QGuiApplication app(_argc, _argv);
+	//QQmlApplicationEngine engine;
+	//
+	//const QUrl url(QStringLiteral("qrc:/ui/Main.qml"));
+	//engine.load(url);
+	//
+	//return app.exec();
 
-	QGuiApplication app(_argc, _argv);
-	QQmlApplicationEngine engine;
+	nodes::NodesFactory factory;
+	
+	auto note = factory.createNote("note");
+	auto folder = factory.createNotesFolder("folder");
+	folder->addChildNode(std::move(note));
 
-	const QUrl url(QStringLiteral("qrc:/ui/Main.qml"));
-	engine.load(url);
+	std::stringstream stream;
 
-	return app.exec();
+	visitors::StreamSerializationVisitor serializationVisitor(stream);
+	folder->accept(serializationVisitor);
+
+	visitors::StreamDeserializationVisitor deserializationVisitor(stream);
+	auto result = deserializationVisitor.run();
+
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

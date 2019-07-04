@@ -10,9 +10,17 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-Note::Note(std::string_view _text) noexcept
-	: m_text{ _text }
+Note::Note() noexcept
+	: HierarchyNode{ enums::NodeKind::Note }
 {
+}
+
+//-----------------------------------------------------------------------------
+
+Note::Note(std::string_view _text) noexcept
+	: Note()
+{
+	m_text = _text;
 }
 
 //-----------------------------------------------------------------------------
@@ -31,14 +39,7 @@ void Note::setText(std::string_view _text) noexcept
 
 //-----------------------------------------------------------------------------
 
-enums::NodeKind::Enum Note::getKind() const noexcept
-{
-	return enums::NodeKind::Note;
-}
-
-//-----------------------------------------------------------------------------
-
-void Note::accept(Visitor & _visitor)
+void Note::accept(visitors::Visitor & _visitor)
 {
 	_visitor(*this);
 }

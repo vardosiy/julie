@@ -15,4 +15,12 @@ Page {
         text: "You are on Page 2."
         anchors.centerIn: parent
     }
+
+    ScrollView {
+        id: scrollView
+        x: 13
+        y: 28
+        width: 200
+        height: 200
+    }
 }

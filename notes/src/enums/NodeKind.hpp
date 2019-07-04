@@ -54,7 +54,7 @@ constexpr inline std::string_view NodeKind::toString(Enum _tag)
 
 constexpr inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 {
-	return enum_utils::fromString<NodeKind>(_str);
+	return utils::fromString<NodeKind>(_str);
 }
 
 //-----------------------------------------------------------------------------
