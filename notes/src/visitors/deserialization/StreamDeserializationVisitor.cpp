@@ -13,7 +13,7 @@ namespace visitors {
 //-----------------------------------------------------------------------------
 
 StreamDeserializationVisitor::StreamDeserializationVisitor(std::istream & _stream) noexcept
-	: StreamReadingHelper(_stream)
+	: StreamReadingHelper{ _stream }
 {
 }
 
@@ -22,7 +22,7 @@ StreamDeserializationVisitor::StreamDeserializationVisitor(std::istream & _strea
 nodes::HierarchyNodePtr StreamDeserializationVisitor::run()
 {
 	nodes::HierarchyNodePtr rootNode = deserializeNode();
-	assert(rootNode->getKind() == enums::NodeKind::NotesFolder);
+	ASSERT(rootNode->getKind() == enums::NodeKind::NotesFolder, "Root element have to be a folder");
 
 	return rootNode;
 }
@@ -60,9 +60,10 @@ void StreamDeserializationVisitor::operator() (nodes::NotesFolder & _notesFolder
 
 nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 {
-	nodes::HierarchyNodePtr node;
-
 	const int kind{ readInt32() };
+	ASSERT(kind >= 0 && kind < enums::NodeKind::Count, "Invalid enumerator deserialized");
+
+	nodes::HierarchyNodePtr node;
 	switch (kind)
 	{
 		case enums::NodeKind::Note:
@@ -80,7 +81,7 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 		break;
 
 		default:
-			assert(0);
+		ASSERT_FALSE("Unhandled case");
 	}
 
 	return node;

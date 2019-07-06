@@ -8,6 +8,10 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
+HierarchyNode::~HierarchyNode() noexcept = default;
+
+//-----------------------------------------------------------------------------
+
 HierarchyNode::HierarchyNode(enums::NodeKind::Enum _kind) noexcept
 	: m_kind{ _kind }
 	, m_tag{ enums::NodeTag::NonTaged }

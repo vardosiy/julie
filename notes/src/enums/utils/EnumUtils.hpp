@@ -23,7 +23,7 @@ constexpr typename T::Enum fromString(std::string_view _str)
 	}
 
 	// throw std::runtime_error("Invalid enumerator name");
-	assert(!"Invalid enumerator name");
+	ASSERT_FALSE("Invalid enumerator name");
 }
 
 //-----------------------------------------------------------------------------

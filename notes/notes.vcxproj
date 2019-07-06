@@ -136,6 +136,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\utils\Assert.cpp" />
+    <ClCompile Include="src\utils\Logger.cpp" />
     <ClCompile Include="src\visitors\deserialization\StreamDeserializationVisitor.cpp" />
     <ClCompile Include="src\visitors\serialization\StreamSerializationVisitor.cpp" />
   </ItemGroup>
@@ -155,6 +157,9 @@
     <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
     <ClInclude Include="src\enums\utils\EnumUtils.hpp" />
+    <ClInclude Include="src\utils\Assert.hpp" />
+    <ClInclude Include="src\utils\LogDefs.hpp" />
+    <ClInclude Include="src\utils\Logger.hpp" />
     <ClInclude Include="src\visitors\deserialization\StreamDeserializationVisitor.hpp" />
     <ClInclude Include="src\visitors\serialization\StreamSerializationVisitor.hpp" />
     <ClInclude Include="src\visitors\Visitor.hpp" />

@@ -3,6 +3,11 @@
 
 //-----------------------------------------------------------------------------
 
+#include "utils/Assert.hpp"
+#include "utils/LogDefs.hpp"
+
+//-----------------------------------------------------------------------------
+
 #include <array>
 #include <vector>
 #include <map>
@@ -15,9 +20,9 @@
 #include <string_view>
 
 #include <fstream>
+#include <iostream>
 
 #include <algorithm>
-#include <cassert>
 
 #include <boost/noncopyable.hpp>
 

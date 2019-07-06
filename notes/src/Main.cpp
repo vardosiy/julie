@@ -7,12 +7,16 @@
 //#include <QQmlApplicationEngine>
 
 #include "nodes/NodesFactory.hpp"
-
 #include "nodes/Note.hpp"
 #include "nodes/NotesFolder.hpp"
 
 #include "visitors/serialization/StreamSerializationVisitor.hpp"
 #include "visitors/deserialization/StreamDeserializationVisitor.hpp"
+
+#include "utils/Logger.hpp"
+#include "utils/LogDefs.hpp"
+
+#include "utils/Assert.hpp"
 
 //-----------------------------------------------------------------------------
 

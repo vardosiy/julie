@@ -41,7 +41,7 @@ void NotesFolder::setName(std::string_view _name) noexcept
 
 void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
 {
-	assert(_node);
+	ASSERT(_node, "Trying to add NULL node to childs");
 	m_childNodes.emplace_back(std::move(_node));
 }
 
@@ -58,7 +58,7 @@ void NotesFolder::forEachChildNode(std::function<void(HierarchyNode &)> _callbac
 {
 	for (auto & item : m_childNodes)
 	{
-		assert(item);
+		ASSERT(item, "NULL child");
 		_callback(*item);
 	}
 }

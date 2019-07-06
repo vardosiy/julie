@@ -12,7 +12,7 @@ namespace visitors {
 //-----------------------------------------------------------------------------
 
 StreamSerializationVisitor::StreamSerializationVisitor(std::ostream & _stream) noexcept
-	: StreamWritingHelper(_stream)
+	: StreamWritingHelper{ _stream }
 {
 }
 

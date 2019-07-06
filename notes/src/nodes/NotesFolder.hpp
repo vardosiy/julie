@@ -17,7 +17,7 @@ class NotesFolder : public HierarchyNode
 {
 public:
 	NotesFolder() noexcept;
-	NotesFolder(std::string_view _name) noexcept;
+	explicit NotesFolder(std::string_view _name) noexcept;
 
 	std::string_view getName() const noexcept;
 	void setName(std::string_view _name) noexcept;

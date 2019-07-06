@@ -17,18 +17,18 @@ class StreamReadingHelper
 public:
 	StreamReadingHelper(std::istream & _stream);
 
-	bool readBool() { return readInternal<bool>(); }
-	char readChar() { return readInternal<char>(); }
-	int16_t readInt16() { return readInternal<int16_t>(); }
-	int32_t readInt32() { return readInternal<int32_t>(); }
-	int64_t readInt64() { return readInternal<int64_t>(); }
-	double readDouble() { return readInternal<double>(); }
+	bool readBool() { return readValue<bool>(); }
+	char readChar() { return readValue<char>(); }
+	int16_t readInt16() { return readValue<int16_t>(); }
+	int32_t readInt32() { return readValue<int32_t>(); }
+	int64_t readInt64() { return readValue<int64_t>(); }
+	double readDouble() { return readValue<double>(); }
 
 	std::string readString();
 
 private:
 	template<typename T>
-	T readInternal(typename std::enable_if_t<std::is_arithmetic_v<T>, void *> = nullptr);
+	T readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *> = nullptr);
 
 private:
 	std::istream & m_stream;
@@ -37,7 +37,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-T StreamReadingHelper::readInternal(typename std::enable_if_t<std::is_arithmetic_v<T>, void *>)
+T StreamReadingHelper::readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *>)
 {
 	char buffer[sizeof(T)];
 	m_stream.read(buffer, sizeof(T));

@@ -22,7 +22,7 @@ namespace nodes {
 class HierarchyNode : boost::noncopyable
 {
 public:
-	virtual ~HierarchyNode() = default;
+	virtual ~HierarchyNode() noexcept;
 
 	enums::NodeKind::Enum getKind() const noexcept;
 	enums::NodeTag::Enum getTag() const noexcept;

@@ -6,7 +6,6 @@
 #include "utils/EnumUtils.hpp"
 
 #include <string_view>
-#include <cassert>
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +56,7 @@ constexpr inline std::string_view NodeTag::toString(Enum _tag)
 		ENUM_TO_STRING_CASE(Gray);
 
 		default:
-		assert(0);
+		ASSERT_FALSE("Unhandled case");
 	}
 }
 
