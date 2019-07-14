@@ -8,12 +8,12 @@
 
 //-----------------------------------------------------------------------------
 
-namespace visitors {
+namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
 StreamDeserializationVisitor::StreamDeserializationVisitor(std::istream & _stream) noexcept
-	: StreamReadingHelper{ _stream }
+	: StreamReader{ _stream }
 {
 }
 
@@ -31,10 +31,8 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::run()
 
 void StreamDeserializationVisitor::operator() (nodes::Note & _note)
 {
-	const int tag{ readInt32() };
 	const std::string text{ readString() };
 
-	_note.setTag(static_cast<enums::NodeTag::Enum>(tag));
 	_note.setText(text);
 }
 
@@ -42,12 +40,10 @@ void StreamDeserializationVisitor::operator() (nodes::Note & _note)
 
 void StreamDeserializationVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
-	const int tag{ readInt32() };
 	const std::string folderName{ readString() };
 	const int childNodesCount{ readInt32() };
 
 	_notesFolder.setName(folderName);
-	_notesFolder.setTag(static_cast<enums::NodeTag::Enum>(tag));
 
 	for (int i{ 0 }; i < childNodesCount; ++i)
 	{
@@ -62,6 +58,8 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 {
 	const int kind{ readInt32() };
 	ASSERT(kind >= 0 && kind < enums::NodeKind::Count, "Invalid enumerator deserialized");
+	const int tag{ readInt32() };
+	ASSERT(tag >= 0 && tag < enums::NodeTag::Count, "Invalid enumerator deserialized");
 
 	nodes::HierarchyNodePtr node;
 	switch (kind)
@@ -84,11 +82,13 @@ nodes::HierarchyNodePtr StreamDeserializationVisitor::deserializeNode()
 		ASSERT_FALSE("Unhandled case");
 	}
 
+	node->setTag(static_cast<enums::NodeTag::Enum>(tag));
+
 	return node;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors
+} // namespace visitors::save_restore
 
 //-----------------------------------------------------------------------------

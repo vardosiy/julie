@@ -4,17 +4,17 @@
 //-----------------------------------------------------------------------------
 
 #include "visitors/Visitor.hpp"
-#include "save_restore_helpers/StreamWritingHelper.hpp"
+#include "utils/StreamWriter.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace visitors {
+namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
 class StreamSerializationVisitor
 	: public Visitor
-	, private save_restore::StreamWritingHelper
+	, private utils::save_restore::StreamWriter
 {
 public:
 	StreamSerializationVisitor(std::ostream & _stream) noexcept;
@@ -23,12 +23,12 @@ public:
 	void operator() (nodes::NotesFolder & _notesFolder) override;
 
 private:
-	void serializeNodeKind(nodes::HierarchyNode & _node);
+	void serializeCommon(nodes::HierarchyNode & _node);
 };
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors
+} // namespace visitors::save_restore
 
 //-----------------------------------------------------------------------------
 

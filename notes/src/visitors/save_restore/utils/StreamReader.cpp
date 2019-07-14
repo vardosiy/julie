@@ -1,33 +1,34 @@
 #include "Pch.hpp"
 
-#include "StreamReadingHelper.hpp"
+#include "StreamReader.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace save_restore {
+namespace utils::save_restore {
 
 //-----------------------------------------------------------------------------
 
-StreamReadingHelper::StreamReadingHelper(std::istream & _stream)
+StreamReader::StreamReader(std::istream & _stream)
 	: m_stream{ _stream }
 {
 }
 
 //-----------------------------------------------------------------------------
 
-std::string StreamReadingHelper::readString()
+std::string StreamReader::readString()
 {
 	const int size{ readInt32() };
 
-	char buffer[256];
-	m_stream.read(buffer, size);
+	// TODO: check if char[] is better
+	std::vector<char> buffer(size);
+	m_stream.read(buffer.data(), size);
 
-	std::string result(buffer, size);
+	std::string result(buffer.data(), size);
 	return result;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace save_restore
+} // namespace utils::save_restore
 
 //-----------------------------------------------------------------------------

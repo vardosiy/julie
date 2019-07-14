@@ -7,7 +7,8 @@
 
 //-----------------------------------------------------------------------------
 
-#define LOG(_messageBase, ...) Logger::getInstance()->log(_messageBase, __VA_ARGS__);
+#define LOG(_messageBase, ...)												\
+	::utils::logger::Logger::getInstance().log(_messageBase, __VA_ARGS__)
 
 //-----------------------------------------------------------------------------
 

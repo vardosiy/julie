@@ -14,8 +14,8 @@ namespace nodes {
 class NodesFactory : boost::noncopyable
 {
 public:
-	NotePtr createNote(std::string_view _text);
-	NotesFolderPtr createNotesFolder(std::string_view _name);
+	static NotePtr createNote(std::string_view _text) noexcept;
+	static NotesFolderPtr createNotesFolder(std::string_view _name) noexcept;
 };
 
 //-----------------------------------------------------------------------------

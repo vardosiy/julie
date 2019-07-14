@@ -5,8 +5,6 @@
 
 #include "utils/EnumUtils.hpp"
 
-#include <string_view>
-
 //-----------------------------------------------------------------------------
 
 namespace enums {
@@ -24,8 +22,9 @@ public:
 		Count
 	};
 
-	constexpr static std::string_view toString(Enum _tag);
-	constexpr static Enum fromString(std::string_view _str);
+public:
+	static constexpr std::string_view toString(Enum _tag);
+	static constexpr Enum fromString(std::string_view _str);
 };
 
 //-----------------------------------------------------------------------------
@@ -33,11 +32,7 @@ public:
 constexpr inline std::string_view NodeKind::toString(Enum _tag)
 {
 	constexpr int lastVerNodeKindsCount{ 2 };
-
-	static_assert(
-		static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount,
-		"Update NodeKind::toString converter!"
-	);
+	static_assert(static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount);
 
 	switch (_tag)
 	{
@@ -53,7 +48,7 @@ constexpr inline std::string_view NodeKind::toString(Enum _tag)
 
 constexpr inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 {
-	return utils::fromString<NodeKind>(_str);
+	return utils::enums::fromString<NodeKind>(_str);
 }
 
 //-----------------------------------------------------------------------------

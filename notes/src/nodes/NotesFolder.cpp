@@ -47,6 +47,29 @@ void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
 
 //-----------------------------------------------------------------------------
 
+void NotesFolder::removeChildNode(const HierarchyNode & _node) noexcept
+{
+	auto it = std::find_if(
+		m_childNodes.cbegin(),
+		m_childNodes.cend(),
+		[&_node](const HierarchyNodePtr & _currentNode) -> bool
+		{
+			return _currentNode.get() == &_node;
+		}
+	);
+
+	if (it != m_childNodes.cend())
+	{
+		m_childNodes.erase(it);
+	}
+	else
+	{
+		LOG("Trying to remove node, which is not a child of the folder");
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 int NotesFolder::getChildNodesCount() const noexcept
 {
 	return static_cast<int>(m_childNodes.size());
@@ -54,7 +77,7 @@ int NotesFolder::getChildNodesCount() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void NotesFolder::forEachChildNode(std::function<void(HierarchyNode &)> _callback)
+void NotesFolder::forEachChildNode(NotesFolder::NodeCallback _callback)
 {
 	for (auto & item : m_childNodes)
 	{

@@ -11,14 +11,14 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-NotePtr NodesFactory::createNote(std::string_view _text)
+NotePtr NodesFactory::createNote(std::string_view _text) noexcept
 {
 	return std::make_unique<Note>(_text);
 }
 
 //-----------------------------------------------------------------------------
 
-NotesFolderPtr NodesFactory::createNotesFolder(std::string_view _name)
+NotesFolderPtr NodesFactory::createNotesFolder(std::string_view _name) noexcept
 {
 	return std::make_unique<NotesFolder>(_name);
 }

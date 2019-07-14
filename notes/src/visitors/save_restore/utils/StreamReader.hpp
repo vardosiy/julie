@@ -1,28 +1,27 @@
-#ifndef __STREAM_READING_HELPER_HPP__
-#define __STREAM_READING_HELPER_HPP__
+#ifndef __STREAM_READER_HPP__
+#define __STREAM_READER_HPP__
 
 //-----------------------------------------------------------------------------
 
-#include <istream>
 #include <type_traits>
 
 //-----------------------------------------------------------------------------
 
-namespace save_restore {
+namespace utils::save_restore {
 
 //-----------------------------------------------------------------------------
 
-class StreamReadingHelper
+class StreamReader
 {
 public:
-	StreamReadingHelper(std::istream & _stream);
+	StreamReader(std::istream & _stream);
 
 	bool readBool() { return readValue<bool>(); }
 	char readChar() { return readValue<char>(); }
+	double readDouble() { return readValue<double>(); }
 	int16_t readInt16() { return readValue<int16_t>(); }
 	int32_t readInt32() { return readValue<int32_t>(); }
 	int64_t readInt64() { return readValue<int64_t>(); }
-	double readDouble() { return readValue<double>(); }
 
 	std::string readString();
 
@@ -37,7 +36,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-T StreamReadingHelper::readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *>)
+inline T StreamReader::readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *>)
 {
 	char buffer[sizeof(T)];
 	m_stream.read(buffer, sizeof(T));
@@ -48,8 +47,8 @@ T StreamReadingHelper::readValue(typename std::enable_if_t<std::is_arithmetic_v<
 
 //-----------------------------------------------------------------------------
 
-} // namespace save_restore
+} // namespace utils::save_restore
 
 //-----------------------------------------------------------------------------
 
-#endif // __STREAM_READING_HELPER_HPP__
+#endif // __STREAM_READER_HPP__

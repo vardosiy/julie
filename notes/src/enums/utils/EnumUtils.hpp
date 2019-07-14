@@ -3,7 +3,11 @@
 
 //-----------------------------------------------------------------------------
 
-namespace enums::utils {
+#include <exception>
+
+//-----------------------------------------------------------------------------
+
+namespace utils::enums {
 
 //-----------------------------------------------------------------------------
 
@@ -22,13 +26,24 @@ constexpr typename T::Enum fromString(std::string_view _str)
 		}
 	}
 
-	// throw std::runtime_error("Invalid enumerator name");
+	//throw EnumParseException();
 	ASSERT_FALSE("Invalid enumerator name");
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace enums::utils
+} // namespace utils::enums
+
+//-----------------------------------------------------------------------------
+
+//class EnumParseException : public std::exception
+//{
+//public:
+//	EnumParseException()
+//		: std::exception("Error while parsing enum from string")
+//	{
+//	}
+//};
 
 //-----------------------------------------------------------------------------
 

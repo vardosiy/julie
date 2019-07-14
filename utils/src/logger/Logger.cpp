@@ -1,6 +1,11 @@
-#include "Pch.hpp"
+#include "utils/Logger.hpp"
 
-#include "Logger.hpp"
+#include <iostream>
+#include <fstream>
+
+//-----------------------------------------------------------------------------
+
+namespace utils::logger {
 
 //-----------------------------------------------------------------------------
 
@@ -12,10 +17,10 @@ Logger::~Logger() noexcept = default;
 
 //-----------------------------------------------------------------------------
 
-Logger * Logger::getInstance()
+Logger & Logger::getInstance()
 {
 	static Logger s_loger;
-	return &s_loger;
+	return s_loger;
 }
 
 //-----------------------------------------------------------------------------
@@ -37,5 +42,9 @@ void Logger::write(const boost::format & _message)
 		file << _message << std::endl;
 	}
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace utils::logger
 
 //-----------------------------------------------------------------------------

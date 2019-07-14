@@ -1,21 +1,21 @@
 #include "Pch.hpp"
 
-#include "StreamWritingHelper.hpp"
+#include "StreamWriter.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace save_restore {
+namespace utils::save_restore {
 
 //-----------------------------------------------------------------------------
 
-StreamWritingHelper::StreamWritingHelper(std::ostream & _stream)
+StreamWriter::StreamWriter(std::ostream & _stream)
 	: m_stream{ _stream }
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void StreamWritingHelper::write(std::string_view _val)
+void StreamWriter::write(std::string_view _val)
 {
 	const int size{ static_cast<int>(_val.size()) };
 
@@ -25,6 +25,6 @@ void StreamWritingHelper::write(std::string_view _val)
 
 //-----------------------------------------------------------------------------
 
-} // namespace save_restore
+} // namespace utils::save_restore
 
 //-----------------------------------------------------------------------------

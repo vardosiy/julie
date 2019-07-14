@@ -4,17 +4,17 @@
 //-----------------------------------------------------------------------------
 
 #include "visitors/Visitor.hpp"
-#include "save_restore_helpers/StreamReadingHelper.hpp"
+#include "utils/StreamReader.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace visitors {
+namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
 class StreamDeserializationVisitor
 	: public Visitor
-	, private save_restore::StreamReadingHelper
+	, private utils::save_restore::StreamReader
 {
 public:
 	StreamDeserializationVisitor(std::istream & _stream) noexcept;
@@ -30,7 +30,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors
+} // namespace visitors::save_restore
 
 //-----------------------------------------------------------------------------
 

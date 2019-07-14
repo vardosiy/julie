@@ -9,10 +9,14 @@
 
 //-----------------------------------------------------------------------------
 
+namespace utils::logger {
+
+//-----------------------------------------------------------------------------
+
 class Logger
 {
 public:
-	static Logger * getInstance();
+	static Logger & getInstance();
 
 	template<typename ... Args>
 	void log(std::string_view _message, Args && ... _args);
@@ -39,6 +43,10 @@ inline void Logger::log(std::string_view _message, Args && ... _args)
 
 	write(message);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace utils::logger
 
 //-----------------------------------------------------------------------------
 
