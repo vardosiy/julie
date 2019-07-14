@@ -71,14 +71,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="res\Notes.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Globals.hpp">
-      <Filter>Globals</Filter>
-    </ClInclude>
     <ClInclude Include="src\pch\Pch.hpp">
       <Filter>Pch</Filter>
     </ClInclude>
@@ -106,9 +98,6 @@
     <ClInclude Include="src\enums\NodeKind.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\enums\utils\EnumUtils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\visitors\save_restore\StreamDeserializationVisitor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -123,10 +112,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\ui\qtquickcontrols2.conf" />
     <None Include="res\ui\Main.qml" />
     <None Include="res\ui\Page1.ui.qml" />
     <None Include="res\ui\Page2.ui.qml" />
     <None Include="res\ui\Page3.ui.qml" />
+    <None Include="res\ui\qtquickcontrols2.conf" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="res\Notes.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
 </Project>

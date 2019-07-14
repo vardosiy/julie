@@ -152,9 +152,7 @@
     <ClInclude Include="src\nodes\Note.hpp" />
     <ClInclude Include="src\nodes\NotesFolder.hpp" />
     <ClInclude Include="src\enums\NodeTag.hpp" />
-    <ClInclude Include="src\Globals.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
-    <ClInclude Include="src\enums\utils\EnumUtils.hpp" />
     <ClInclude Include="src\visitors\save_restore\StreamDeserializationVisitor.hpp" />
     <ClInclude Include="src\visitors\save_restore\StreamSerializationVisitor.hpp" />
     <ClInclude Include="src\visitors\Visitor.hpp" />

@@ -89,12 +89,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\Assert.hpp" />
+    <ClInclude Include="include\utils\EnumUtils.hpp" />
     <ClInclude Include="include\utils\Logger.hpp" />
     <ClInclude Include="include\utils\LogDefs.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\assert\Assert.cpp" />
-    <ClCompile Include="src\logger\Logger.cpp" />
+    <ClCompile Include="src\Assert.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

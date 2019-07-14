@@ -24,12 +24,15 @@
     <ClInclude Include="include\utils\LogDefs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\EnumUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\assert\Assert.cpp">
+    <ClCompile Include="src\Assert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\logger\Logger.cpp">
+    <ClCompile Include="src\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
