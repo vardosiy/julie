@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "notes", "notes\notes.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxproj", "{BD56DFD4-B749-4B4D-ADEC-AC590C904BDE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "core\core.vcxproj", "{082B49C9-2B60-4433-B152-A43869F1D42A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,12 @@ Global
 		{BD56DFD4-B749-4B4D-ADEC-AC590C904BDE}.Release|x64.ActiveCfg = Release|x64
 		{BD56DFD4-B749-4B4D-ADEC-AC590C904BDE}.Release|x64.Build.0 = Release|x64
 		{BD56DFD4-B749-4B4D-ADEC-AC590C904BDE}.Release|x86.ActiveCfg = Release|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Debug|x64.ActiveCfg = Debug|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Debug|x64.Build.0 = Debug|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Debug|x86.ActiveCfg = Debug|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Release|x64.ActiveCfg = Release|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Release|x64.Build.0 = Release|x64
+		{082B49C9-2B60-4433-B152-A43869F1D42A}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
