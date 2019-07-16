@@ -1,10 +1,10 @@
-#ifndef __STREAM_SERIALIZATION_VISITOR_HPP__
-#define __STREAM_SERIALIZATION_VISITOR_HPP__
+#ifndef __STREAM_DESERIALIZATION_VISITOR_HPP__
+#define __STREAM_DESERIALIZATION_VISITOR_HPP__
 
 //-----------------------------------------------------------------------------
 
-#include "visitors/Visitor.hpp"
-#include "utils/StreamWriter.hpp"
+#include "core/visitors/Visitor.hpp"
+#include "utils/save_restore/StreamReader.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -12,18 +12,20 @@ namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
-class StreamSerializationVisitor
+class StreamDeserializationVisitor
 	: public Visitor
-	, private utils::save_restore::StreamWriter
+	, private utils::save_restore::StreamReader
 {
 public:
-	StreamSerializationVisitor(std::ostream & _stream) noexcept;
+	StreamDeserializationVisitor(std::istream & _stream) noexcept;
+
+	nodes::HierarchyNodePtr run();
 
 	void operator() (nodes::Note & _note) override;
 	void operator() (nodes::NotesFolder & _notesFolder) override;
 
 private:
-	void serializeCommon(nodes::HierarchyNode & _node);
+	nodes::HierarchyNodePtr deserializeNode();
 };
 
 //-----------------------------------------------------------------------------
@@ -32,4 +34,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // __STREAM_SERIALIZATION_VISITOR_HPP__
+#endif // __STREAM_DESERIALIZATION_VISITOR_HPP__

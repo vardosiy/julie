@@ -1,8 +1,8 @@
 #include "Pch.hpp"
 
-#include "NotesFolder.hpp"
+#include "core/nodes/NotesFolder.hpp"
 
-#include "visitors/Visitor.hpp"
+#include "core/visitors/Visitor.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -77,9 +77,20 @@ int NotesFolder::getChildNodesCount() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void NotesFolder::forEachChildNode(NotesFolder::NodeCallback _callback)
+void NotesFolder::forEachChildNode(std::function<void(HierarchyNode &)> _callback)
 {
 	for (auto & item : m_childNodes)
+	{
+		ASSERT(item, "NULL child");
+		_callback(*item);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void NotesFolder::forEachChildNode(std::function<void(const HierarchyNode &)> _callback) const
+{
+	for (const auto & item : m_childNodes)
 	{
 		ASSERT(item, "NULL child");
 		_callback(*item);

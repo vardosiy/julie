@@ -1,30 +1,27 @@
-#include "Pch.hpp"
-
-#include "StreamWriter.hpp"
-
-//-----------------------------------------------------------------------------
-
-namespace utils::save_restore {
+#ifndef __VISITOR_HPP__
+#define __VISITOR_HPP__
 
 //-----------------------------------------------------------------------------
 
-StreamWriter::StreamWriter(std::ostream & _stream)
-	: m_stream{ _stream }
+#include "core/nodes/NodesFwd.hpp"
+
+//-----------------------------------------------------------------------------
+
+namespace visitors {
+
+//-----------------------------------------------------------------------------
+
+class Visitor
 {
-}
+public:
+	virtual void operator() (nodes::Note & _note) = 0;
+	virtual void operator() (nodes::NotesFolder & _notesFolder) = 0;
+};
 
 //-----------------------------------------------------------------------------
 
-void StreamWriter::write(std::string_view _val)
-{
-	const int size{ static_cast<int>(_val.size()) };
-
-	write(size);
-	m_stream.write(_val.data(), size);
-}
+} // namespace visitors
 
 //-----------------------------------------------------------------------------
 
-} // namespace utils::save_restore
-
-//-----------------------------------------------------------------------------
+#endif // __VISITOR_HPP__

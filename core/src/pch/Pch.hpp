@@ -8,12 +8,7 @@
 
 //-----------------------------------------------------------------------------
 
-#include <array>
-#include <vector>
-#include <map>
-
 #include <memory>
-#include <chrono>
 #include <functional>
 
 #include <string>
@@ -23,8 +18,6 @@
 #include <iostream>
 
 #include <algorithm>
-
-#include <boost/noncopyable.hpp>
 
 //-----------------------------------------------------------------------------
 

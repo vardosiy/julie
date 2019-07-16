@@ -55,27 +55,28 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)utils\include;$(SolutionDir)core\include;C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)utils\include;$(SolutionDir)core\include;.\gen;.\gen\$(ConfigurationName);C:\libs\boost\boost_1_67_0;$(QTDIR)\include;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>Pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);$(OutDir)lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir)lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>core.lib;utils.lib;qtmaind.lib;Qt5Guid.lib;Qt5Qmld.lib;Qt5Quickd.lib;Qt5QuickControls2d.lib;Qt5QuickWidgetsd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(SolutionDir)utils\include;$(SolutionDir)core\include;C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(ProjectDir)src;$(SolutionDir)utils\include;$(SolutionDir)core\include;.\gen;.\gen\$(ConfigurationName);C:\libs\boost\boost_1_67_0;$(QTDIR)\include;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -92,13 +93,14 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)utils\include;$(SolutionDir)core\include;C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)utils\include;$(SolutionDir)core\include;.\gen;.\gen\$(ConfigurationName);C:\libs\boost\boost_1_67_0;$(QTDIR)\include;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>Pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
@@ -111,7 +113,7 @@
     <QtMoc>
       <OutputFile>.\gen\$(ConfigurationName)\Moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(SolutionDir)utils\include;$(SolutionDir)core\include;C:\libs\boost\boost_1_67_0;.\gen;$(ProjectDir)src\pch;$(ProjectDir)src;$(QTDIR)\include;.\gen\$(ConfigurationName);$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(ProjectDir)src;$(SolutionDir)utils\include;$(SolutionDir)core\include;.\gen;.\gen\$(ConfigurationName);C:\libs\boost\boost_1_67_0;$(QTDIR)\include;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtQml;$(QTDIR)\include\QtQuick;$(QTDIR)\include\QtQuickControls2;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_GUI_LIB;QT_QML_LIB;QT_QUICK_LIB;QT_QUICKCONTROLS2_LIB;QT_QUICKWIDGETS_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>Pch.hpp;../../src/%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -125,37 +127,10 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\visitors\save_restore\utils\StreamReader.cpp" />
-    <ClCompile Include="src\visitors\save_restore\utils\StreamWriter.cpp" />
-    <ClCompile Include="src\nodes\HierarchyNode.cpp" />
-    <ClCompile Include="src\nodes\NodesFactory.cpp" />
-    <ClCompile Include="src\nodes\Note.cpp" />
-    <ClCompile Include="src\nodes\NotesFolder.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\pch\Pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\visitors\save_restore\StreamDeserializationVisitor.cpp" />
-    <ClCompile Include="src\visitors\save_restore\StreamSerializationVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="res\Notes.qrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\enums\NodeKind.hpp" />
-    <ClInclude Include="src\visitors\save_restore\utils\StreamReader.hpp" />
-    <ClInclude Include="src\visitors\save_restore\utils\StreamWriter.hpp" />
-    <ClInclude Include="src\nodes\NodesFwd.hpp" />
-    <ClInclude Include="src\nodes\HierarchyNode.hpp" />
-    <ClInclude Include="src\nodes\NodesFactory.hpp" />
-    <ClInclude Include="src\nodes\Note.hpp" />
-    <ClInclude Include="src\nodes\NotesFolder.hpp" />
-    <ClInclude Include="src\enums\NodeTag.hpp" />
-    <ClInclude Include="src\pch\Pch.hpp" />
-    <ClInclude Include="src\visitors\save_restore\StreamDeserializationVisitor.hpp" />
-    <ClInclude Include="src\visitors\save_restore\StreamSerializationVisitor.hpp" />
-    <ClInclude Include="src\visitors\Visitor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\ui\Main.qml" />

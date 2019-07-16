@@ -1,9 +1,9 @@
 #include "Pch.hpp"
 
-#include "StreamSerializationVisitor.hpp"
+#include "core/visitors/save_restore/StreamSerializationVisitor.hpp"
 
-#include "nodes/Note.hpp"
-#include "nodes/NotesFolder.hpp"
+#include "core/nodes/Note.hpp"
+#include "core/nodes/NotesFolder.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -52,6 +52,6 @@ void StreamSerializationVisitor::serializeCommon(nodes::HierarchyNode & _node)
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors
+} // namespace visitors::save_restore
 
 //-----------------------------------------------------------------------------

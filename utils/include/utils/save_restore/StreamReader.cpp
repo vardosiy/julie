@@ -1,6 +1,6 @@
-#include "Pch.hpp"
-
 #include "StreamReader.hpp"
+
+#include <vector>
 
 //-----------------------------------------------------------------------------
 

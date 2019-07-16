@@ -3,15 +3,15 @@
 
 //-----------------------------------------------------------------------------
 
-#include "enums/NodeTag.hpp"
-#include "enums/NodeKind.hpp"
+#include "core/enums/NodeTag.hpp"
+#include "core/enums/NodeKind.hpp"
+
+#include <boost/noncopyable.hpp>
 
 //-----------------------------------------------------------------------------
 
 namespace visitors {
-
 class Visitor;
-
 }
 
 //-----------------------------------------------------------------------------

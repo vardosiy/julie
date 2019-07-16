@@ -1,27 +1,28 @@
-#ifndef __NODES_FACTORY_HPP__
-#define __NODES_FACTORY_HPP__
+#include "StreamWriter.hpp"
 
 //-----------------------------------------------------------------------------
 
-#include "NodesFwd.hpp"
+namespace utils::save_restore {
 
 //-----------------------------------------------------------------------------
 
-namespace nodes {
-
-//-----------------------------------------------------------------------------
-
-class NodesFactory : boost::noncopyable
+StreamWriter::StreamWriter(std::ostream & _stream)
+	: m_stream{ _stream }
 {
-public:
-	static NotePtr createNote(std::string_view _text) noexcept;
-	static NotesFolderPtr createNotesFolder(std::string_view _name) noexcept;
-};
+}
 
 //-----------------------------------------------------------------------------
 
-} // namespace nodes
+void StreamWriter::write(std::string_view _val)
+{
+	const int size{ static_cast<int>(_val.size()) };
+
+	write(size);
+	m_stream.write(_val.data(), size);
+}
 
 //-----------------------------------------------------------------------------
 
-#endif // __NODES_FACTORY_HPP__
+} // namespace utils::save_restore
+
+//-----------------------------------------------------------------------------

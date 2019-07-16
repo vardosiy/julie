@@ -16,9 +16,6 @@ namespace nodes {
 class NotesFolder : public HierarchyNode
 {
 public:
-	using NodeCallback = std::function<void(HierarchyNode &)>;
-
-public:
 	NotesFolder() noexcept;
 	explicit NotesFolder(std::string_view _name) noexcept;
 
@@ -29,7 +26,8 @@ public:
 	void removeChildNode(const HierarchyNode & _node) noexcept;
 	int getChildNodesCount() const noexcept;
 
-	void forEachChildNode(NodeCallback _callback);
+	void forEachChildNode(std::function<void(HierarchyNode &)> _callback);
+	void forEachChildNode(std::function<void(const HierarchyNode &)> _callback) const;
 
 	void accept(visitors::Visitor & _visitor) override;
 

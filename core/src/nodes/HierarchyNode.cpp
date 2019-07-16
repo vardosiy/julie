@@ -1,8 +1,6 @@
 #include "Pch.hpp"
 
-#include "Note.hpp"
-
-#include "visitors/Visitor.hpp"
+#include "core/nodes/HierarchyNode.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -10,38 +8,35 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-Note::Note() noexcept
-	: HierarchyNode{ enums::NodeKind::Note }
+HierarchyNode::~HierarchyNode() noexcept = default;
+
+//-----------------------------------------------------------------------------
+
+HierarchyNode::HierarchyNode(enums::NodeKind::Enum _kind) noexcept
+	: m_kind{ _kind }
+	, m_tag{ enums::NodeTag::NonTaged }
 {
 }
 
 //-----------------------------------------------------------------------------
 
-Note::Note(std::string_view _text) noexcept
-	: Note()
+enums::NodeKind::Enum HierarchyNode::getKind() const noexcept
 {
-	m_text = _text;
+	return m_kind;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string_view Note::getText() const noexcept
+enums::NodeTag::Enum HierarchyNode::getTag() const noexcept
 {
-	return m_text;
+	return m_tag;
 }
 
 //-----------------------------------------------------------------------------
 
-void Note::setText(std::string_view _text) noexcept
+void HierarchyNode::setTag(enums::NodeTag::Enum _tag) noexcept
 {
-	m_text = _text;
-}
-
-//-----------------------------------------------------------------------------
-
-void Note::accept(visitors::Visitor & _visitor)
-{
-	_visitor(*this);
+	m_tag = _tag;
 }
 
 //-----------------------------------------------------------------------------

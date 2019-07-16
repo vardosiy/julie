@@ -4,9 +4,9 @@
 //-----------------------------------------------------------------------------
 
 #if !defined(DLL_EXPORT)
-#	define DLL_EXPORT __declspec(dllimport)
+#	define EXPORT __declspec(dllimport)
 #else
-#	define DLL_EXPORT __declspec(dllexport)
+#	define EXPORT __declspec(dllexport)
 #endif
 
 //-----------------------------------------------------------------------------

@@ -1,8 +1,9 @@
-#ifndef __NODE_TAG_HPP__
-#define __NODE_TAG_HPP__
+#ifndef __NODE_KIND_HPP__
+#define __NODE_KIND_HPP__
 
 //-----------------------------------------------------------------------------
 
+#include "utils/Assert.hpp"
 #include "utils/EnumUtils.hpp"
 
 //-----------------------------------------------------------------------------
@@ -11,19 +12,13 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeTag
+class NodeKind
 {
 public:
 	enum Enum
 	{
-		NonTaged,
-		Red,
-		Orange,
-		Yellow,
-		Green,
-		Blue,
-		Purple,
-		Gray,
+		Note,
+		NotesFolder,
 
 		Count
 	};
@@ -35,20 +30,15 @@ public:
 
 //-----------------------------------------------------------------------------
 
-constexpr inline std::string_view NodeTag::toString(Enum _tag)
+constexpr inline std::string_view NodeKind::toString(Enum _tag)
 {
-	constexpr int lastVerNodeTagsCount{ 8 };
-	static_assert(static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount);
+	constexpr int lastVerNodeKindsCount{ 2 };
+	static_assert(static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount);
 
 	switch (_tag)
 	{
-		ENUM_TO_STRING_CASE(NonTaged);
-		ENUM_TO_STRING_CASE(Red);
-		ENUM_TO_STRING_CASE(Orange);
-		ENUM_TO_STRING_CASE(Yellow);
-		ENUM_TO_STRING_CASE(Blue);
-		ENUM_TO_STRING_CASE(Purple);
-		ENUM_TO_STRING_CASE(Gray);
+		ENUM_TO_STRING_CASE(Note);
+		ENUM_TO_STRING_CASE(NotesFolder);
 
 		default:
 		ASSERT_FALSE("Unhandled case");
@@ -57,9 +47,9 @@ constexpr inline std::string_view NodeTag::toString(Enum _tag)
 
 //-----------------------------------------------------------------------------
 
-constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
+constexpr inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 {
-	return utils::enums::fromString<NodeTag>(_str);
+	return utils::enums::fromString<NodeKind>(_str);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,4 +58,4 @@ constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
 
 //-----------------------------------------------------------------------------
 
-#endif // __NODE_TAG_HPP__
+#endif // __NODE_KIND_HPP__

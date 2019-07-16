@@ -1,27 +1,29 @@
-#ifndef __VISITOR_HPP__
-#define __VISITOR_HPP__
+#ifndef __NODES_FACTORY_HPP__
+#define __NODES_FACTORY_HPP__
 
 //-----------------------------------------------------------------------------
 
-#include "nodes/NodesFwd.hpp"
+#include "NodesFwd.hpp"
+
+#include <boost/noncopyable.hpp>
 
 //-----------------------------------------------------------------------------
 
-namespace visitors {
+namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-class Visitor
+class NodesFactory : boost::noncopyable
 {
 public:
-	virtual void operator() (nodes::Note & _note) = 0;
-	virtual void operator() (nodes::NotesFolder & _notesFolder) = 0;
+	static NotePtr createNote(std::string_view _text) noexcept;
+	static NotesFolderPtr createNotesFolder(std::string_view _name) noexcept;
 };
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors
+} // namespace nodes
 
 //-----------------------------------------------------------------------------
 
-#endif // __VISITOR_HPP__
+#endif // __NODES_FACTORY_HPP__

@@ -50,7 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\lib\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -90,10 +90,15 @@
   <ItemGroup>
     <ClInclude Include="include\utils\Assert.hpp" />
     <ClInclude Include="include\utils\EnumUtils.hpp" />
+    <ClInclude Include="include\utils\Export.hpp" />
     <ClInclude Include="include\utils\Logger.hpp" />
     <ClInclude Include="include\utils\LogDefs.hpp" />
+    <ClInclude Include="include\utils\save_restore\StreamReader.hpp" />
+    <ClInclude Include="include\utils\save_restore\StreamWriter.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\utils\save_restore\StreamReader.cpp" />
+    <ClCompile Include="include\utils\save_restore\StreamWriter.cpp" />
     <ClCompile Include="src\Assert.cpp" />
     <ClCompile Include="src\Logger.cpp" />
   </ItemGroup>

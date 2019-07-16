@@ -1,10 +1,10 @@
 #include "Pch.hpp"
 
-#include "StreamDeserializationVisitor.hpp"
+#include "core/visitors/save_restore/StreamDeserializationVisitor.hpp"
 
-#include "nodes/HierarchyNode.hpp"
-#include "nodes/Note.hpp"
-#include "nodes/NotesFolder.hpp"
+#include "core/nodes/HierarchyNode.hpp"
+#include "core/nodes/Note.hpp"
+#include "core/nodes/NotesFolder.hpp"
 
 //-----------------------------------------------------------------------------
 
