@@ -1,7 +1,4 @@
-#ifndef __NODE_TAG_HPP__
-#define __NODE_TAG_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include "utils/Assert.hpp"
 #include "utils/EnumUtils.hpp"
@@ -68,5 +65,3 @@ constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
 } // namespace enums
 
 //-----------------------------------------------------------------------------
-
-#endif // __NODE_TAG_HPP__

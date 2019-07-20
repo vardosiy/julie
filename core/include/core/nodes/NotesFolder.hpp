@@ -1,11 +1,7 @@
-#ifndef __NOTES_FOLDER_HPP__
-#define __NOTES_FOLDER_HPP__
+#pragma once
 
-//-----------------------------------------------------------------------------
-
-#include "NodesFwd.hpp"
-
-#include "HierarchyNode.hpp"
+#include "core/nodes/NodesFwd.hpp"
+#include "core/nodes/HierarchyNode.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -22,9 +18,9 @@ public:
 	std::string_view getName() const noexcept;
 	void setName(std::string_view _name) noexcept;
 
-	void addChildNode(HierarchyNodePtr _node) noexcept;
-	void removeChildNode(const HierarchyNode & _node) noexcept;
-	int getChildNodesCount() const noexcept;
+	void addChild(HierarchyNodePtr _node) noexcept;
+	void removeChild(const HierarchyNode & _node) noexcept;
+	int getChildrenCount() const noexcept;
 
 	void forEachChildNode(std::function<void(HierarchyNode &)> _callback);
 	void forEachChildNode(std::function<void(const HierarchyNode &)> _callback) const;
@@ -41,5 +37,3 @@ private:
 } // namespace nodes
 
 //-----------------------------------------------------------------------------
-
-#endif // __NOTES_FOLDER_HPP__

@@ -1,14 +1,9 @@
-#ifndef __LOG_DEFS_HPP__
-#define __LOG_DEFS_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include "Logger.hpp"
 
 //-----------------------------------------------------------------------------
 
-#define LOG(_messageBase, ...) logger().log(_messageBase, __VA_ARGS__)
+#define LOG(_messageBase, ...) utils::Logger::getInstance().log(_messageBase, __VA_ARGS__)
 
 //-----------------------------------------------------------------------------
-
-#endif // __LOG_DEFS_HPP__

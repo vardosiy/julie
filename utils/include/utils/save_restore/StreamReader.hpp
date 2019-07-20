@@ -1,7 +1,4 @@
-#ifndef __STREAM_READER_HPP__
-#define __STREAM_READER_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include <istream>
 #include <type_traits>
@@ -51,5 +48,3 @@ inline T StreamReader::readValue(typename std::enable_if_t<std::is_arithmetic_v<
 } // namespace utils::save_restore
 
 //-----------------------------------------------------------------------------
-
-#endif // __STREAM_READER_HPP__

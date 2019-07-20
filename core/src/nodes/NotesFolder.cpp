@@ -50,16 +50,18 @@ void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
 void NotesFolder::removeChildNode(const HierarchyNode & _node) noexcept
 {
 	auto it = std::find_if(
-		m_childNodes.cbegin(),
-		m_childNodes.cend(),
+		m_childNodes.begin(),
+		m_childNodes.end(),
 		[&_node](const HierarchyNodePtr & _currentNode) -> bool
 		{
 			return _currentNode.get() == &_node;
 		}
 	);
 
-	if (it != m_childNodes.cend())
+	if (it != m_childNodes.end())
 	{
+		//it->swap(m_childNodes.back());
+		//m_childNodes.pop_back();
 		m_childNodes.erase(it);
 	}
 	else

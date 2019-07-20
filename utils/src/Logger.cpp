@@ -17,7 +17,7 @@ Logger::~Logger() noexcept = default;
 
 //-----------------------------------------------------------------------------
 
-Logger & Logger::getInstance()
+Logger & Logger::getInstance() noexcept
 {
 	static Logger s_loger;
 	return s_loger;
@@ -25,7 +25,7 @@ Logger & Logger::getInstance()
 
 //-----------------------------------------------------------------------------
 
-void Logger::setFile(std::string_view _file)
+void Logger::setFile(std::string_view _file) noexcept
 {
 	m_fileName = _file;
 }

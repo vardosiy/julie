@@ -1,28 +1,33 @@
-#include "StreamWriter.hpp"
+#pragma once
 
 //-----------------------------------------------------------------------------
 
-namespace utils::save_restore {
+namespace utils {
 
 //-----------------------------------------------------------------------------
 
-StreamWriter::StreamWriter(std::ostream & _stream)
-	: m_stream{ _stream }
+template<typename T>
+class Singleton
 {
+public:
+	static T & getInstance() noexcept;
+
+protected:
+	Singleton() noexcept = default;
+	~Singleton() noexcept = default;
+};
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+T & Singleton<T>::getInstance() noexcept
+{
+	static T s_instance;
+	return s_instance;
 }
 
 //-----------------------------------------------------------------------------
 
-void StreamWriter::write(std::string_view _val)
-{
-	const int size{ static_cast<int>(_val.size()) };
-
-	write(size);
-	m_stream.write(_val.data(), size);
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace utils::save_restore
+} // namespace utils
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,4 @@
-#ifndef __ENUM_UTILS_HPP__
-#define __ENUM_UTILS_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include <string_view>
 
@@ -33,5 +30,3 @@ constexpr typename T::Enum fromString(std::string_view _str)
 } // namespace utils::enums
 
 //-----------------------------------------------------------------------------
-
-#endif // __ENUM_UTILS_HPP__

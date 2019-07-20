@@ -1,7 +1,4 @@
-#ifndef __VISITOR_HPP__
-#define __VISITOR_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include "core/nodes/NodesFwd.hpp"
 
@@ -14,6 +11,8 @@ namespace visitors {
 class Visitor
 {
 public:
+	virtual ~Visitor() noexcept = default;
+
 	virtual void operator() (nodes::Note & _note) = 0;
 	virtual void operator() (nodes::NotesFolder & _notesFolder) = 0;
 };
@@ -23,5 +22,3 @@ public:
 } // namespace visitors
 
 //-----------------------------------------------------------------------------
-
-#endif // __VISITOR_HPP__

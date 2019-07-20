@@ -1,7 +1,4 @@
-#ifndef __HIERARCHY_NODE_HPP__
-#define __HIERARCHY_NODE_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include "core/enums/NodeTag.hpp"
 #include "core/enums/NodeKind.hpp"
@@ -45,5 +42,3 @@ private:
 } // namespace nodes
 
 //-----------------------------------------------------------------------------
-
-#endif // __HIERARCHY_NODE_HPP__

@@ -98,13 +98,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\nodes\HierarchyNode.cpp" />
     <ClCompile Include="src\nodes\NodesFactory.cpp" />
     <ClCompile Include="src\nodes\Note.cpp" />
     <ClCompile Include="src\nodes\NotesFolder.cpp" />
     <ClCompile Include="src\pch\Pch.cpp" />
-    <ClCompile Include="src\visitors\save_restore\StreamDeserializationVisitor.cpp" />
-    <ClCompile Include="src\visitors\save_restore\StreamSerializationVisitor.cpp" />
+    <ClCompile Include="src\visitors\save_restore\StreamRestoreVisitor.cpp" />
+    <ClCompile Include="src\visitors\save_restore\StreamSaveVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\enums\NodeKind.hpp" />
@@ -114,9 +115,10 @@
     <ClInclude Include="include\core\nodes\NodesFwd.hpp" />
     <ClInclude Include="include\core\nodes\Note.hpp" />
     <ClInclude Include="include\core\nodes\NotesFolder.hpp" />
+    <ClInclude Include="include\core\Model.hpp" />
     <ClInclude Include="src\pch\Pch.hpp" />
-    <ClInclude Include="include\core\visitors\save_restore\StreamDeserializationVisitor.hpp" />
-    <ClInclude Include="include\core\visitors\save_restore\StreamSerializationVisitor.hpp" />
+    <ClInclude Include="include\core\visitors\save_restore\StreamRestoreVisitor.hpp" />
+    <ClInclude Include="include\core\visitors\save_restore\StreamSaveVisitor.hpp" />
     <ClInclude Include="include\core\visitors\Visitor.hpp" />
   </ItemGroup>
   <ItemGroup>

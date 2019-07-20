@@ -1,9 +1,6 @@
-#ifndef __NODES_FACTORY_HPP__
-#define __NODES_FACTORY_HPP__
+#pragma once
 
-//-----------------------------------------------------------------------------
-
-#include "NodesFwd.hpp"
+#include "core/nodes/NodesFwd.hpp"
 
 #include <boost/noncopyable.hpp>
 
@@ -25,5 +22,3 @@ public:
 } // namespace nodes
 
 //-----------------------------------------------------------------------------
-
-#endif // __NODES_FACTORY_HPP__

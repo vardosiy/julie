@@ -1,7 +1,4 @@
-#ifndef __NODE_KIND_HPP__
-#define __NODE_KIND_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include "utils/Assert.hpp"
 #include "utils/EnumUtils.hpp"
@@ -57,5 +54,3 @@ constexpr inline NodeKind::Enum NodeKind::fromString(std::string_view _str)
 } // namespace enums
 
 //-----------------------------------------------------------------------------
-
-#endif // __NODE_KIND_HPP__

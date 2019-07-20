@@ -1,7 +1,4 @@
-#ifndef __NODES_FWD_HPP__
-#define __NODES_FWD_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include <memory>
 
@@ -24,5 +21,3 @@ using HierarchyNodePtr	= std::unique_ptr<HierarchyNode>;
 } // namespace nodes
 
 //-----------------------------------------------------------------------------
-
-#endif // __NODES_FWD_HPP__

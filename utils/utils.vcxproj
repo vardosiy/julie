@@ -88,9 +88,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\utils\Singleton.hpp" />
     <ClInclude Include="include\utils\Assert.hpp" />
     <ClInclude Include="include\utils\EnumUtils.hpp" />
-    <ClInclude Include="include\utils\Export.hpp" />
     <ClInclude Include="include\utils\Logger.hpp" />
     <ClInclude Include="include\utils\LogDefs.hpp" />
     <ClInclude Include="include\utils\save_restore\StreamReader.hpp" />

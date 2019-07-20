@@ -1,7 +1,4 @@
-#ifndef __STREAM_WRITER_HPP__
-#define __STREAM_WRITER_HPP__
-
-//-----------------------------------------------------------------------------
+#pragma once
 
 #include <ostream>
 #include <type_traits>
@@ -47,5 +44,3 @@ inline typename std::enable_if_t<std::is_arithmetic_v<T>, void> StreamWriter::wr
 } // namespace utils::save_restore
 
 //-----------------------------------------------------------------------------
-
-#endif // __STREAM_WRITER_HPP__
