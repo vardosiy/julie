@@ -18,15 +18,10 @@ StreamRestoreVisitor::StreamRestoreVisitor(std::istream & _stream) noexcept
 
 //-----------------------------------------------------------------------------
 
-nodes::HierarchyNodePtr StreamRestoreVisitor::run()
-{
-	return deserializeNode();
-}
-
-//-----------------------------------------------------------------------------
-
 void StreamRestoreVisitor::operator() (nodes::Note & _note)
 {
+	restoreCommon(_note);
+
 	const std::string text{ readString() };
 
 	_note.setText(text);
@@ -36,6 +31,8 @@ void StreamRestoreVisitor::operator() (nodes::Note & _note)
 
 void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
+	restoreCommon(_notesFolder);
+
 	const std::string folderName{ readString() };
 	const int childNodesCount{ readInt32() };
 
@@ -50,12 +47,20 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 
 //-----------------------------------------------------------------------------
 
+void StreamRestoreVisitor::restoreCommon(nodes::HierarchyNode & _hierarchyNode)
+{
+	const int tag{ readInt32() };
+	ASSERT(enums::NodeTag::isValid(tag), "Invalid enumerator deserialized");
+
+	_hierarchyNode.setTag(static_cast<enums::NodeTag::Enum>(tag));
+}
+
+//-----------------------------------------------------------------------------
+
 nodes::HierarchyNodePtr StreamRestoreVisitor::deserializeNode()
 {
 	const int kind{ readInt32() };
 	ASSERT(enums::NodeKind::isValid(kind), "Invalid enumerator deserialized");
-	const int tag{ readInt32() };
-	ASSERT(enums::NodeTag::isValid(tag), "Invalid enumerator deserialized");
 
 	nodes::HierarchyNodePtr node;
 	switch (kind)
@@ -77,8 +82,6 @@ nodes::HierarchyNodePtr StreamRestoreVisitor::deserializeNode()
 		default:
 		ASSERT_FALSE("Unhandled case");
 	}
-
-	node->setTag(static_cast<enums::NodeTag::Enum>(tag));
 
 	return node;
 }

@@ -83,10 +83,13 @@ int main(int _argc, char * _argv[])
 	auto folder = createBaseStructure();
 
 	std::stringstream stream;
+
 	visitors::save_restore::StreamSaveVisitor serializationVisitor(stream);
 	folder->accept(serializationVisitor);
+
 	visitors::save_restore::StreamRestoreVisitor deserializationVisitor(stream);
-	auto result = deserializationVisitor.run();
+	nodes::NotesFolder restoredRoot;
+	restoredRoot.accept(deserializationVisitor);
 
 	ASSERT(folder->getChildrenCount() == 8, "");
 	test(folder);
