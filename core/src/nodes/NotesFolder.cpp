@@ -39,7 +39,7 @@ void NotesFolder::setName(std::string_view _name) noexcept
 
 //-----------------------------------------------------------------------------
 
-void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
+void NotesFolder::addChild(HierarchyNodePtr _node) noexcept
 {
 	ASSERT(_node, "Trying to add NULL node to childs");
 	m_childNodes.emplace_back(std::move(_node));
@@ -47,7 +47,7 @@ void NotesFolder::addChildNode(HierarchyNodePtr _node) noexcept
 
 //-----------------------------------------------------------------------------
 
-void NotesFolder::removeChildNode(const HierarchyNode & _node) noexcept
+void NotesFolder::removeChild(const HierarchyNode & _node) noexcept
 {
 	auto it = std::find_if(
 		m_childNodes.begin(),
@@ -72,7 +72,7 @@ void NotesFolder::removeChildNode(const HierarchyNode & _node) noexcept
 
 //-----------------------------------------------------------------------------
 
-int NotesFolder::getChildNodesCount() const noexcept
+int NotesFolder::getChildrenCount() const noexcept
 {
 	return static_cast<int>(m_childNodes.size());
 }

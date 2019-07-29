@@ -9,12 +9,12 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeTag
+class NodeTag : public utils::enums::CheckableEnum<NodeTag>
 {
 public:
 	enum Enum
 	{
-		NonTaged,
+		NonTagged,
 		Red,
 		Orange,
 		Yellow,
@@ -36,11 +36,11 @@ public:
 constexpr inline std::string_view NodeTag::toString(Enum _tag)
 {
 	constexpr int lastVerNodeTagsCount{ 8 };
-	static_assert(static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount);
+	static_assert(static_cast<int>(Count) == lastVerNodeTagsCount);
 
 	switch (_tag)
 	{
-		ENUM_TO_STRING_CASE(NonTaged);
+		ENUM_TO_STRING_CASE(NonTagged);
 		ENUM_TO_STRING_CASE(Red);
 		ENUM_TO_STRING_CASE(Orange);
 		ENUM_TO_STRING_CASE(Yellow);

@@ -19,8 +19,8 @@ Logger::~Logger() noexcept = default;
 
 Logger & Logger::getInstance() noexcept
 {
-	static Logger s_loger;
-	return s_loger;
+	static Logger s_logger;
+	return s_logger;
 }
 
 //-----------------------------------------------------------------------------

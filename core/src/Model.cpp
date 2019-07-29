@@ -26,7 +26,7 @@ Model::~Model() noexcept
 
 //-----------------------------------------------------------------------------
 
-void Model::save()
+void Model::save() const
 {
 	LOG("Saving Model to: %1%", k_saveFile.data());
 
@@ -48,7 +48,7 @@ void Model::load()
 
 //-----------------------------------------------------------------------------
 
-void Model::writeHeader(std::ofstream & _stream)
+void Model::writeHeader(std::ofstream & _stream) const
 {
 	utils::save_restore::StreamWriter writer(_stream);
 }
@@ -62,7 +62,7 @@ void Model::readHeader(std::ifstream & _stream)
 
 //-----------------------------------------------------------------------------
 
-void Model::saveData(std::ofstream & _stream)
+void Model::saveData(std::ofstream & _stream) const
 {
 	visitors::save_restore::StreamSaveVisitor visitor(_stream);
 	m_notesRoot->accept(visitor);

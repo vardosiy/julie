@@ -32,7 +32,7 @@ void StreamSaveVisitor::operator() (nodes::NotesFolder & _notesFolder)
 	saveCommon(_notesFolder);
 
 	write(_notesFolder.getName());
-	write(_notesFolder.getChildNodesCount());
+	write(_notesFolder.getChildrenCount());
 
 	_notesFolder.forEachChildNode(
 		[this](nodes::HierarchyNode & _node)

@@ -9,7 +9,7 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeKind
+class NodeKind : public utils::enums::CheckableEnum<NodeKind>
 {
 public:
 	enum Enum
@@ -30,7 +30,7 @@ public:
 constexpr inline std::string_view NodeKind::toString(Enum _tag)
 {
 	constexpr int lastVerNodeKindsCount{ 2 };
-	static_assert(static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount);
+	static_assert(static_cast<int>(Count) == lastVerNodeKindsCount);
 
 	switch (_tag)
 	{

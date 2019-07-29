@@ -44,7 +44,7 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 	for (int i{ 0 }; i < childNodesCount; ++i)
 	{
 		nodes::HierarchyNodePtr node = deserializeNode();
-		_notesFolder.addChildNode(std::move(node));
+		_notesFolder.addChild(std::move(node));
 	}
 }
 
@@ -53,9 +53,9 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 nodes::HierarchyNodePtr StreamRestoreVisitor::deserializeNode()
 {
 	const int kind{ readInt32() };
-	ASSERT(kind >= 0 && kind < enums::NodeKind::Count, "Invalid enumerator deserialized");
+	ASSERT(enums::NodeKind::isValid(kind), "Invalid enumerator deserialized");
 	const int tag{ readInt32() };
-	ASSERT(tag >= 0 && tag < enums::NodeTag::Count, "Invalid enumerator deserialized");
+	ASSERT(enums::NodeTag::isValid(tag), "Invalid enumerator deserialized");
 
 	nodes::HierarchyNodePtr node;
 	switch (kind)

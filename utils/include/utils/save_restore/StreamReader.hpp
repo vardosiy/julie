@@ -12,7 +12,7 @@ namespace utils::save_restore {
 class StreamReader
 {
 public:
-	StreamReader(std::istream & _stream);
+	explicit StreamReader(std::istream & _stream);
 
 	bool readBool() { return readValue<bool>(); }
 	char readChar() { return readValue<char>(); }
@@ -25,7 +25,7 @@ public:
 
 private:
 	template<typename T>
-	T readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *> = nullptr);
+	T readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *> = nullptr);
 
 private:
 	std::istream & m_stream;
@@ -34,9 +34,9 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-inline T StreamReader::readValue(typename std::enable_if_t<std::is_arithmetic_v<T>, void *>)
+inline T StreamReader::readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *>)
 {
-	char buffer[sizeof(T)];
+	std::array<char, sizeof(T)> buffer;
 	m_stream.read(buffer, sizeof(T));
 
 	T * result{ reinterpret_cast<T *>(buffer) };

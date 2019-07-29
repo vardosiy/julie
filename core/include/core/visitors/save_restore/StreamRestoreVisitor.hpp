@@ -9,12 +9,10 @@ namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
-class StreamRestoreVisitor
-	: public Visitor
-	, private utils::save_restore::StreamReader
+class StreamRestoreVisitor : public Visitor, utils::save_restore::StreamReader
 {
 public:
-	StreamRestoreVisitor(std::istream & _stream) noexcept;
+	explicit StreamRestoreVisitor(std::istream & _stream) noexcept;
 
 	nodes::HierarchyNodePtr run();
 

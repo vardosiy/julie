@@ -9,12 +9,10 @@ namespace visitors::save_restore {
 
 //-----------------------------------------------------------------------------
 
-class StreamSaveVisitor
-	: public Visitor
-	, private utils::save_restore::StreamWriter
+class StreamSaveVisitor : public Visitor, utils::save_restore::StreamWriter
 {
 public:
-	StreamSaveVisitor(std::ostream & _stream) noexcept;
+	explicit StreamSaveVisitor(std::ostream & _stream) noexcept;
 
 	void operator() (nodes::Note & _note) override;
 	void operator() (nodes::NotesFolder & _notesFolder) override;

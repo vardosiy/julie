@@ -12,16 +12,16 @@ class Model : public utils::Singleton<Model>
 	friend class utils::Singleton<Model>;
 
 public:
-	void save();
+	void save() const;
 	void load();
 
 private:
 	Model() noexcept;
 	~Model() noexcept;
 
-	void writeHeader(std::ofstream & _stream);
+	void writeHeader(std::ofstream & _stream) const;
 	void readHeader(std::ifstream & _stream);
-	void saveData(std::ofstream & _stream);
+	void saveData(std::ofstream & _stream) const;
 	void restoreData(std::ifstream & _stream);
 
 private:
