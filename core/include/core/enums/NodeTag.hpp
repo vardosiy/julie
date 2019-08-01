@@ -9,7 +9,7 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeTag : public utils::enums::CheckableEnum<NodeTag>
+class NodeTag
 {
 public:
 	enum Enum
@@ -33,7 +33,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-constexpr inline std::string_view NodeTag::toString(Enum _tag)
+constexpr std::string_view NodeTag::toString(Enum _tag)
 {
 	constexpr int lastVerNodeTagsCount{ 8 };
 	static_assert(static_cast<int>(Count) == lastVerNodeTagsCount);
@@ -49,13 +49,13 @@ constexpr inline std::string_view NodeTag::toString(Enum _tag)
 		ENUM_TO_STRING_CASE(Gray);
 
 		default:
-		ASSERT_FALSE("Unhandled case");
+			ASSERT_FALSE("Unhandled case");
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-constexpr inline NodeTag::Enum NodeTag::fromString(std::string_view _str)
+constexpr NodeTag::Enum NodeTag::fromString(std::string_view _str)
 {
 	return utils::enums::fromString<NodeTag>(_str);
 }

@@ -20,7 +20,6 @@ public:
 private:
 	void restoreCommon(nodes::HierarchyNode & _hierarchyNode);
 
-private:
 	nodes::HierarchyNodePtr deserializeNode();
 };
 

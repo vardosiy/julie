@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <istream>
 #include <type_traits>
 
@@ -37,9 +38,9 @@ template<typename T>
 inline T StreamReader::readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *>)
 {
 	std::array<char, sizeof(T)> buffer;
-	m_stream.read(buffer, sizeof(T));
+	m_stream.read(buffer.data(), sizeof(T));
 
-	T * result{ reinterpret_cast<T *>(buffer) };
+	T * result{ reinterpret_cast<T *>(buffer.data()) };
 	return *result;
 }
 

@@ -72,14 +72,10 @@ void Model::saveData(std::ofstream & _stream) const
 
 void Model::restoreData(std::ifstream & _stream)
 {
+	m_notesRoot = std::make_unique<nodes::NotesFolder>();
+
 	visitors::save_restore::StreamRestoreVisitor visitor(_stream);
-
-	nodes::HierarchyNodePtr rootNode = visitor.run();
-	ASSERT(rootNode->getKind() == enums::NodeKind::NotesFolder, "Root element have to be a folder");
-
-	nodes::NotesFolder * root = dynamic_cast<nodes::NotesFolder *>(rootNode.release());
-	ASSERT(root, "Something went wrong");
-	m_notesRoot.reset(root);
+	m_notesRoot->accept(visitor);
 }
 
 //-----------------------------------------------------------------------------
