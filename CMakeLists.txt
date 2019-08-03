@@ -18,8 +18,7 @@ set (CMAKE_CXX_STANDARD_REQIRED ON)
 
 #------------------------------------------------------------------------------
 
-add_executable (notes ${APPLICATION_SOURCES})
-
+add_subdirectory (src/application)
 add_subdirectory (src/core)
 add_subdirectory (src/utils)
 
