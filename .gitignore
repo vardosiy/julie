@@ -1,9 +1,9 @@
 # VS stuff
 .vs/
 
-# binaries
+# generated items
 bin/
 int/
-
-# generated items
-notes/gen/
+prj/
+scripts/__pycache__/
+src/application/gen/
