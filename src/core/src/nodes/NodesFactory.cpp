@@ -1,5 +1,3 @@
-#include "Pch.hpp"
-
 #include "core/nodes/NodesFactory.hpp"
 #include "core/nodes/Note.hpp"
 #include "core/nodes/NotesFolder.hpp"

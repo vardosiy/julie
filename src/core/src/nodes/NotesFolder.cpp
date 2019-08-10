@@ -1,8 +1,9 @@
-#include "Pch.hpp"
-
 #include "core/nodes/NotesFolder.hpp"
-
 #include "core/visitors/Visitor.hpp"
+
+#include "utils/LogDefs.hpp"
+
+#include <algorithm>
 
 //-----------------------------------------------------------------------------
 

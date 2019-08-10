@@ -1,7 +1,4 @@
-#include "Pch.hpp"
-
 #include "core/visitors/save_restore/StreamSaveVisitor.hpp"
-
 #include "core/nodes/Note.hpp"
 #include "core/nodes/NotesFolder.hpp"
 

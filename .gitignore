@@ -3,7 +3,6 @@
 
 # generated items
 bin/
-int/
 build/
-scripts/python/__pycache__/
+scripts/python/
 src/application/gen/

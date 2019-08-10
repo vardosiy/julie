@@ -3,6 +3,9 @@
 #include "core/nodes/NodesFwd.hpp"
 #include "core/nodes/HierarchyNode.hpp"
 
+#include <vector>
+#include <functional>
+
 //-----------------------------------------------------------------------------
 
 namespace nodes {

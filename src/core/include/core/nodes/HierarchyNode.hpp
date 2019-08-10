@@ -3,7 +3,7 @@
 #include "core/enums/NodeTag.hpp"
 #include "core/enums/NodeKind.hpp"
 
-#include <boost/noncopyable.hpp>
+//#include <boost/noncopyable.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-class HierarchyNode : boost::noncopyable
+class HierarchyNode// : boost::noncopyable
 {
 public:
 	virtual ~HierarchyNode() noexcept;

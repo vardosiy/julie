@@ -1,12 +1,12 @@
-#include "Pch.hpp"
-
-#include "core/Model.hpp"
+#include "Model.hpp"
 
 #include "core/nodes/Note.hpp"
 #include "core/nodes/NotesFolder.hpp"
 
 #include "core/visitors/save_restore/StreamSaveVisitor.hpp"
 #include "core/visitors/save_restore/StreamRestoreVisitor.hpp"
+
+#include "utils/LogDefs.hpp"
 
 #include <fstream>
 
@@ -28,7 +28,7 @@ Model::~Model() noexcept
 
 void Model::save() const
 {
-	LOG("Saving Model to: %1%", k_saveFile.data());
+	LOG("Saving Model to: {}", k_saveFile.data());
 
 	std::ofstream fileStream(k_saveFile.data());
 	writeHeader(fileStream);
@@ -39,7 +39,7 @@ void Model::save() const
 
 void Model::load()
 {
-	LOG("Saving Model from: %1%", k_saveFile.data());
+	LOG("Saving Model from: {}", k_saveFile.data());
 
 	std::ifstream fileStream(k_saveFile.data());
 	readHeader(fileStream);

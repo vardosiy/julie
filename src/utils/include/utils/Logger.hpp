@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string_view>
-#include <boost/format.hpp>
+
+#include <fmt/format.h>
 
 //-----------------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ private:
 	Logger() noexcept;
 	~Logger() noexcept;
 
-	void write(const boost::format & _message);
+	void write(const std::string & _message);
 
 private:
 	std::string m_fileName;
@@ -34,10 +35,7 @@ private:
 template<typename ... Args>
 inline void Logger::log(std::string_view _message, Args && ... _args)
 {
-	boost::format message(_message.data());
-	(message % ... % _args);
-
-	write(message);
+	write(fmt::format(_message.data(), std::forward<Args>(_args)...));
 }
 
 //-----------------------------------------------------------------------------

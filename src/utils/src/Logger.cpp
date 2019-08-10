@@ -32,7 +32,7 @@ void Logger::setFile(std::string_view _file) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Logger::write(const boost::format & _message)
+void Logger::write(const std::string & _message)
 {
 	std::cout << _message << std::endl;
 

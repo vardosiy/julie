@@ -1,5 +1,3 @@
-#include "Pch.hpp"
-
 #include "core/nodes/HierarchyNode.hpp"
 
 //-----------------------------------------------------------------------------

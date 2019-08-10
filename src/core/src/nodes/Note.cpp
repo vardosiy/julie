@@ -1,7 +1,4 @@
-#include "Pch.hpp"
-
 #include "core/nodes/Note.hpp"
-
 #include "core/visitors/Visitor.hpp"
 
 //-----------------------------------------------------------------------------

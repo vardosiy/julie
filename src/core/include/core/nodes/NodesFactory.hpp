@@ -2,7 +2,9 @@
 
 #include "core/nodes/NodesFwd.hpp"
 
-#include <boost/noncopyable.hpp>
+#include <string_view>
+
+//#include <boost/noncopyable.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -10,7 +12,7 @@ namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-class NodesFactory : boost::noncopyable
+class NodesFactory// : boost::noncopyable
 {
 public:
 	static NotePtr createNote(std::string_view _text) noexcept;

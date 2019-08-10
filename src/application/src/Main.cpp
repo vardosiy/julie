@@ -1,10 +1,9 @@
 #include <sstream>
-#include <iostream>
 
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
+//#include <QGuiApplication>
+//#include <QQmlApplicationEngine>
 
-#include "core/Model.hpp"
+#include "Model.hpp"
 
 #include "core/nodes/NodesFactory.hpp"
 #include "core/nodes/Note.hpp"
