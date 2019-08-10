@@ -18,15 +18,17 @@ set (CMAKE_CXX_STANDARD_REQIRED ON)
 
 #------------------------------------------------------------------------------
 
-add_subdirectory (src/application)
-add_subdirectory (src/core)
-add_subdirectory (src/utils)
+set (3RD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rd-party)
+
+add_subdirectory (${3RD_PARTY_DIR}/fmt)
 
 #------------------------------------------------------------------------------
 
-target_include_directories (notes PUBLIC src/core)
-target_include_directories (notes PUBLIC src/utils)
-target_link_libraries (notes src/core)
-target_link_libraries (notes src/utils)
+set (TARGETS_DIR ${CMAKE_SOURCE_DIR}/src)
+set (SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts)
+
+add_subdirectory (${TARGETS_DIR}/utils)
+add_subdirectory (${TARGETS_DIR}/core)
+add_subdirectory (${TARGETS_DIR}/application)
 
 #------------------------------------------------------------------------------

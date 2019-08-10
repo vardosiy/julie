@@ -4,6 +4,6 @@
 # generated items
 bin/
 int/
-prj/
-scripts/__pycache__/
+build/
+scripts/python/__pycache__/
 src/application/gen/

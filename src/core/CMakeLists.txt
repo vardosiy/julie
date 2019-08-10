@@ -1,14 +1,18 @@
-cmake_minimum_required (VERSION 3.11)
+set (SOURCES)
+include (InitSources.cmake)
 
-project (core CXX)
-
-#------------------------------------------------------------------------------
-
-add_library(core STATIC )
+add_library(core STATIC ${SOURCES})
 
 #------------------------------------------------------------------------------
 
-target_include_directories (notes PUBLIC lib/src)
-target_link_libraries (notes utilities)
+target_include_directories (core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories (core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/scr)
+
+target_include_directories (core PUBLIC ${TARGETS_DIR}/utils/include)
+target_link_libraries (core utils)
+
+#------------------------------------------------------------------------------
+
+include (${SCRIPTS_DIR}/cmake/SetupFilters.cmake)
 
 #------------------------------------------------------------------------------

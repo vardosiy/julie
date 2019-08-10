@@ -1,15 +1,18 @@
-cmake_minimum_required (VERSION 3.9)
+set (SOURCES)
+include (InitSources.cmake)
 
-project (notes VERSION 0.1 LANGUAGES CXX)
-
-#------------------------------------------------------------------------------
-
-add_executable (notes app/main.cpp)
-add_subdirectory (core)
+add_library(utils STATIC ${SOURCES})
 
 #------------------------------------------------------------------------------
 
-target_include_directories (notes PUBLIC lib/src)
-target_link_libraries (notes utilities)
+target_include_directories (utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories (utils PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/scr)
+
+target_include_directories (utils PUBLIC ${3RD_PARTY_DIR}/fmt/include)
+target_link_libraries (utils fmt)
+
+#------------------------------------------------------------------------------
+
+include (${SCRIPTS_DIR}/cmake/SetupFilters.cmake)
 
 #------------------------------------------------------------------------------
