@@ -1,15 +1,21 @@
 import os
 import sys
+import platform
 
 sys.path.insert(1, "scripts/python")
 
-from scripts import GenerateHelpers
+from scripts.python.FilesListsGenerator import FilesListsGenerator
 
-current_dir = os.path.abspath(os.path.curdir)
+#------------------------------------------------------------------------------
 
-project_names = []
-project_names.append("src/utils")
-project_names.append("src/core")
-project_names.append("src/application")
+targets_dirs = []
+targets_dirs.append(os.path.normpath("src/utils"))
+targets_dirs.append(os.path.normpath("src/core"))
+targets_dirs.append(os.path.normpath("src/application"))
 
-GenerateHelpers.generate_sources(current_dir, project_names)
+generator = FilesListsGenerator(targets_dirs)
+generator.generate_files_lists("sources", "InitSources.cmake", [".hpp",".cpp"])
+generator.generate_files_lists("resources", "InitResources.cmake", [".qrc"])
+generator.generate_files_lists("ui_sources", "InitUiSources.cmake", [".qml"])
+
+#------------------------------------------------------------------------------

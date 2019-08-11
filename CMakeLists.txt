@@ -1,34 +1,38 @@
-cmake_minimum_required (VERSION 3.11)
+cmake_minimum_required(VERSION 3.11)
 
-project (notes CXX)
-
-#------------------------------------------------------------------------------
-
-set (BIN_DIR bin)
-set (LIB_DIR lib)
-
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR})
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR}/${LIB_DIR})
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR}/${LIB_DIR})
+project(notes CXX)
 
 #------------------------------------------------------------------------------
 
-set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_STANDARD_REQIRED ON)
+set(bin_dir bin)
+set(lib_dir lib)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${bin_dir})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${bin_dir}/${lib_dir})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${bin_dir}/${lib_dir})
 
 #------------------------------------------------------------------------------
 
-set (3RD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rd-party)
-
-add_subdirectory (${3RD_PARTY_DIR}/fmt)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQIRED ON)
 
 #------------------------------------------------------------------------------
 
-set (TARGETS_DIR ${CMAKE_SOURCE_DIR}/src)
-set (SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts)
+set(3rd_party_dir ${CMAKE_SOURCE_DIR}/3rd-party)
+set(scripts_dir ${CMAKE_SOURCE_DIR}/scripts)
+set(targets_dir ${CMAKE_SOURCE_DIR}/src)
 
-add_subdirectory (${TARGETS_DIR}/utils)
-add_subdirectory (${TARGETS_DIR}/core)
-add_subdirectory (${TARGETS_DIR}/application)
+#------------------------------------------------------------------------------
+
+include(${scripts_dir}/cmake/SetupFilters.cmake)
+
+#------------------------------------------------------------------------------
+
+find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
+
+add_subdirectory(${3rd_party_dir}/fmt)
+add_subdirectory(${targets_dir}/utils)
+add_subdirectory(${targets_dir}/core)
+add_subdirectory(${targets_dir}/application)
 
 #------------------------------------------------------------------------------
