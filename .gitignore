@@ -4,3 +4,9 @@
 # generated items
 bin/
 build/
+scripts/python/__pycache__/
+
+# generated cmake scripts
+InitSources.cmake
+InitResources.cmake
+InitUiSources.cmake
