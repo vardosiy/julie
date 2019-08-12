@@ -22,11 +22,15 @@ set(3rd_party_dir ${CMAKE_SOURCE_DIR}/3rd-party)
 set(scripts_dir ${CMAKE_SOURCE_DIR}/scripts)
 set(targets_dir ${CMAKE_SOURCE_DIR}/src)
 
+set(boost_dir C:/libs/boost/boost_1_67_0)
+
 #------------------------------------------------------------------------------
 
 include(${scripts_dir}/cmake/SetupFilters.cmake)
 
 #------------------------------------------------------------------------------
+
+include_directories(${boost_dir})
 
 find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
 

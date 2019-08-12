@@ -4,15 +4,13 @@
 
 #include <string_view>
 
-//#include <boost/noncopyable.hpp>
-
 //-----------------------------------------------------------------------------
 
 namespace nodes {
 
 //-----------------------------------------------------------------------------
 
-class NodesFactory// : boost::noncopyable
+class NodesFactory
 {
 public:
 	static NotePtr createNote(std::string_view _text) noexcept;

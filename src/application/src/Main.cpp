@@ -83,10 +83,10 @@ int main(int _argc, char * _argv[])
 
 	std::stringstream stream;
 
-	visitors::save_restore::StreamSaveVisitor serializationVisitor(stream);
+	visitors::sr::StreamSaveVisitor serializationVisitor(stream);
 	folder->accept(serializationVisitor);
 
-	visitors::save_restore::StreamRestoreVisitor deserializationVisitor(stream);
+	visitors::sr::StreamRestoreVisitor deserializationVisitor(stream);
 	nodes::NotesFolder restoredRoot;
 	restoredRoot.accept(deserializationVisitor);
 

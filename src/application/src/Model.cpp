@@ -50,21 +50,21 @@ void Model::load()
 
 void Model::writeHeader(std::ofstream & _stream) const
 {
-	utils::save_restore::StreamWriter writer(_stream);
+	utils::sr::StreamWriter writer(_stream);
 }
 
 //-----------------------------------------------------------------------------
 
 void Model::readHeader(std::ifstream & _stream)
 {
-	utils::save_restore::StreamReader reader(_stream);
+	utils::sr::StreamReader reader(_stream);
 }
 
 //-----------------------------------------------------------------------------
 
 void Model::saveData(std::ofstream & _stream) const
 {
-	visitors::save_restore::StreamSaveVisitor visitor(_stream);
+	visitors::sr::StreamSaveVisitor visitor(_stream);
 	m_notesRoot->accept(visitor);
 }
 
@@ -74,7 +74,7 @@ void Model::restoreData(std::ifstream & _stream)
 {
 	m_notesRoot = std::make_unique<nodes::NotesFolder>();
 
-	visitors::save_restore::StreamRestoreVisitor visitor(_stream);
+	visitors::sr::StreamRestoreVisitor visitor(_stream);
 	m_notesRoot->accept(visitor);
 }
 

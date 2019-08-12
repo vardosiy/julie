@@ -5,11 +5,11 @@
 
 //-----------------------------------------------------------------------------
 
-namespace visitors::save_restore {
+namespace visitors::sr {
 
 //-----------------------------------------------------------------------------
 
-class StreamSaveVisitor : public Visitor, utils::save_restore::StreamWriter
+class StreamSaveVisitor : public Visitor, utils::sr::StreamWriter
 {
 public:
 	explicit StreamSaveVisitor(std::ostream & _stream) noexcept;
@@ -23,6 +23,6 @@ private:
 
 //-----------------------------------------------------------------------------
 
-} // namespace visitors::save_restore
+} // namespace visitors::sr
 
 //-----------------------------------------------------------------------------
