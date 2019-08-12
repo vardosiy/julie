@@ -9,55 +9,40 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeTag
+enum class NodeTag
 {
-public:
-	enum Enum
-	{
-		NonTagged,
-		Red,
-		Orange,
-		Yellow,
-		Green,
-		Blue,
-		Purple,
-		Gray,
+	NonTagged,
+	Red,
+	Orange,
+	Yellow,
+	Green,
+	Blue,
+	Purple,
+	Gray,
 
-		Count
-	};
-
-public:
-	static constexpr std::string_view toString(Enum _tag);
-	static constexpr Enum fromString(std::string_view _str);
+	Count
 };
 
 //-----------------------------------------------------------------------------
 
-constexpr std::string_view NodeTag::toString(Enum _tag)
+constexpr std::string_view toString(NodeTag _tag)
 {
 	constexpr int lastVerNodeTagsCount{ 8 };
-	static_assert(static_cast<int>(Count) == lastVerNodeTagsCount);
+	static_assert(static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount);
 
 	switch (_tag)
 	{
-		ENUM_TO_STRING_CASE(NonTagged);
-		ENUM_TO_STRING_CASE(Red);
-		ENUM_TO_STRING_CASE(Orange);
-		ENUM_TO_STRING_CASE(Yellow);
-		ENUM_TO_STRING_CASE(Blue);
-		ENUM_TO_STRING_CASE(Purple);
-		ENUM_TO_STRING_CASE(Gray);
+		ENUM_TO_STRING_CASE(NodeTag, NonTagged);
+		ENUM_TO_STRING_CASE(NodeTag, Red);
+		ENUM_TO_STRING_CASE(NodeTag, Orange);
+		ENUM_TO_STRING_CASE(NodeTag, Yellow);
+		ENUM_TO_STRING_CASE(NodeTag, Blue);
+		ENUM_TO_STRING_CASE(NodeTag, Purple);
+		ENUM_TO_STRING_CASE(NodeTag, Gray);
 
 		default:
 			ASSERT_FALSE("Unhandled case");
 	}
-}
-
-//-----------------------------------------------------------------------------
-
-constexpr NodeTag::Enum NodeTag::fromString(std::string_view _str)
-{
-	return utils::enums::fromString<NodeTag>(_str);
 }
 
 //-----------------------------------------------------------------------------

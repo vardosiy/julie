@@ -94,8 +94,6 @@ int main(int _argc, char * _argv[])
 	test(folder);
 	ASSERT(folder->getChildrenCount() == 4, "");
 
-	auto & test = Model::getInstance();
-
 	return 0;
 }
 

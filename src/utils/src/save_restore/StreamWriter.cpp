@@ -7,7 +7,7 @@ namespace utils::save_restore {
 //-----------------------------------------------------------------------------
 
 StreamWriter::StreamWriter(std::ostream & _stream)
-	: m_stream{ _stream }
+	: m_stream(_stream)
 {
 }
 

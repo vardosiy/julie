@@ -9,7 +9,7 @@ namespace utils::save_restore {
 //-----------------------------------------------------------------------------
 
 StreamReader::StreamReader(std::istream & _stream)
-	: m_stream{ _stream }
+	: m_stream(_stream)
 {
 }
 

@@ -35,7 +35,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-inline T StreamReader::readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *>)
+T StreamReader::readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *>)
 {
 	std::array<char, sizeof(T)> buffer;
 	m_stream.read(buffer.data(), sizeof(T));

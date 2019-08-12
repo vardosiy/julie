@@ -8,7 +8,7 @@ namespace nodes {
 //-----------------------------------------------------------------------------
 
 Note::Note() noexcept
-	: HierarchyNode{ enums::NodeKind::Note }
+	: HierarchyNode(enums::NodeKind::Note)
 {
 }
 

@@ -1,4 +1,5 @@
 #include "core/visitors/save_restore/StreamRestoreVisitor.hpp"
+
 #include "core/nodes/Note.hpp"
 #include "core/nodes/NotesFolder.hpp"
 
@@ -9,7 +10,7 @@ namespace visitors::save_restore {
 //-----------------------------------------------------------------------------
 
 StreamRestoreVisitor::StreamRestoreVisitor(std::istream & _stream) noexcept
-	: StreamReader{ _stream }
+	: StreamReader(_stream)
 {
 }
 
@@ -44,18 +45,18 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 
 void StreamRestoreVisitor::restoreCommon(nodes::HierarchyNode & _hierarchyNode)
 {
-	const int tag{ readInt32() };
-	//ASSERT(enums::NodeTag::isValid(tag), "Invalid enumerator deserialized");
+	const enums::NodeTag tag = static_cast<enums::NodeTag>(readInt32());
+	ASSERT(utils::enums::isValid(tag), "Invalid enumerator deserialized");
 
-	_hierarchyNode.setTag(static_cast<enums::NodeTag::Enum>(tag));
+	_hierarchyNode.setTag(tag);
 }
 
 //-----------------------------------------------------------------------------
 
 nodes::HierarchyNodePtr StreamRestoreVisitor::deserializeNode()
 {
-	const int kind{ readInt32() };
-	//ASSERT(enums::NodeKind::isValid(kind), "Invalid enumerator deserialized");
+	const enums::NodeKind kind = static_cast<enums::NodeKind>(readInt32());
+	ASSERT(utils::enums::isValid(kind), "Invalid enumerator deserialized");
 
 	nodes::HierarchyNodePtr node;
 	switch (kind)

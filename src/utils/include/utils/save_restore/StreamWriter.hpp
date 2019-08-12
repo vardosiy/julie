@@ -34,7 +34,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-inline std::enable_if_t<std::is_arithmetic_v<T>, void> StreamWriter::writeValue(T _val)
+std::enable_if_t<std::is_arithmetic_v<T>, void> StreamWriter::writeValue(T _val)
 {
 	m_stream.write(reinterpret_cast<const char *>(&_val), sizeof(T));
 }

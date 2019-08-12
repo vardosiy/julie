@@ -10,29 +10,29 @@ HierarchyNode::~HierarchyNode() noexcept = default;
 
 //-----------------------------------------------------------------------------
 
-HierarchyNode::HierarchyNode(enums::NodeKind::Enum _kind) noexcept
-	: m_kind{ _kind }
-	, m_tag{ enums::NodeTag::NonTagged }
+HierarchyNode::HierarchyNode(enums::NodeKind _kind) noexcept
+	: m_kind(_kind)
+	, m_tag(enums::NodeTag::NonTagged)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-enums::NodeKind::Enum HierarchyNode::getKind() const noexcept
+enums::NodeKind HierarchyNode::getKind() const noexcept
 {
 	return m_kind;
 }
 
 //-----------------------------------------------------------------------------
 
-enums::NodeTag::Enum HierarchyNode::getTag() const noexcept
+enums::NodeTag HierarchyNode::getTag() const noexcept
 {
 	return m_tag;
 }
 
 //-----------------------------------------------------------------------------
 
-void HierarchyNode::setTag(enums::NodeTag::Enum _tag) noexcept
+void HierarchyNode::setTag(enums::NodeTag _tag) noexcept
 {
 	m_tag = _tag;
 }

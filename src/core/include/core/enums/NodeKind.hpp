@@ -9,44 +9,29 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-class NodeKind
+enum class NodeKind
 {
-public:
-	enum Enum
-	{
-		Note,
-		NotesFolder,
+	Note,
+	NotesFolder,
 
-		Count
-	};
-
-public:
-	static constexpr std::string_view toString(Enum _tag);
-	static constexpr Enum fromString(std::string_view _str);
+	Count
 };
 
 //-----------------------------------------------------------------------------
 
-constexpr std::string_view NodeKind::toString(Enum _tag)
+constexpr std::string_view toString(NodeKind _kind)
 {
 	constexpr int lastVerNodeKindsCount{ 2 };
-	static_assert(static_cast<int>(Count) == lastVerNodeKindsCount);
+	static_assert(static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount);
 
-	switch (_tag)
+	switch (_kind)
 	{
-		ENUM_TO_STRING_CASE(Note);
-		ENUM_TO_STRING_CASE(NotesFolder);
+		ENUM_TO_STRING_CASE(NodeKind, Note);
+		ENUM_TO_STRING_CASE(NodeKind, NotesFolder);
 
 		default:
 			ASSERT_FALSE("Unhandled case");
 	}
-}
-
-//-----------------------------------------------------------------------------
-
-constexpr NodeKind::Enum NodeKind::fromString(std::string_view _str)
-{
-	return utils::enums::fromString<NodeKind>(_str);
 }
 
 //-----------------------------------------------------------------------------

@@ -12,7 +12,7 @@ namespace nodes {
 //-----------------------------------------------------------------------------
 
 NotesFolder::NotesFolder() noexcept
-	: HierarchyNode{ enums::NodeKind::NotesFolder }
+	: HierarchyNode(enums::NodeKind::NotesFolder)
 {
 }
 
@@ -61,8 +61,6 @@ void NotesFolder::removeChild(const HierarchyNode & _node) noexcept
 
 	if (it != m_childNodes.end())
 	{
-		//it->swap(m_childNodes.back());
-		//m_childNodes.pop_back();
 		m_childNodes.erase(it);
 	}
 	else

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string_view>
-
 #include <fmt/format.h>
 
 //-----------------------------------------------------------------------------
@@ -21,8 +19,8 @@ public:
 	void setFile(std::string_view _file) noexcept;
 
 private:
-	Logger() noexcept;
-	~Logger() noexcept;
+	Logger() noexcept = default;
+	~Logger() noexcept = default;
 
 	void write(const std::string & _message);
 
@@ -33,7 +31,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename ... Args>
-inline void Logger::log(std::string_view _message, Args && ... _args)
+void Logger::log(std::string_view _message, Args && ... _args)
 {
 	write(fmt::format(_message.data(), std::forward<Args>(_args)...));
 }
