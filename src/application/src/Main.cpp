@@ -1,7 +1,7 @@
 #include <sstream>
 
-//#include <QGuiApplication>
-//#include <QQmlApplicationEngine>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 #include "Model.hpp"
 

@@ -7,17 +7,17 @@ namespace utils {
 
 //-----------------------------------------------------------------------------
 
-void assertImpl(
-	bool _cond,
-	const char * _expr,
-	const char * _file,
-	int _line,
-	const char * _message
-)
+void assertImpl(bool _cond, AssertData _data)
 {
 	if (!_cond)
 	{
-		LOG("[ASSERT] {} [DETAILS] {} ({}, line {})", _message, _expr, _file, _line);
+		LOG(
+			"[ASSERT] {} [DETAILS] {} ({}, line {})",
+			_data.message,
+			_data.expr,
+			_data.file,
+			_data.line
+		);
 		std::terminate();
 	}
 }

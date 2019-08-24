@@ -27,7 +27,7 @@ enum class NodeTag
 
 constexpr std::string_view toString(NodeTag _tag)
 {
-	constexpr int lastVerNodeTagsCount{ 8 };
+	constexpr int lastVerNodeTagsCount = 8;
 	static_assert(static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount);
 
 	switch (_tag)

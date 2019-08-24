@@ -1,5 +1,8 @@
 #pragma once
 
+#include "utils/Assert.hpp"
+#include "utils/EnumUtils.hpp"
+
 #include <array>
 #include <istream>
 #include <type_traits>
@@ -24,9 +27,12 @@ public:
 
 	std::string readString();
 
+	template<typename T>
+	std::enable_if_t<std::is_enum_v<T>, T> readEnum();
+
 private:
 	template<typename T>
-	T readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *> = nullptr);
+	std::enable_if_t<std::is_arithmetic_v<T>, T> readValue();
 
 private:
 	std::istream & m_stream;
@@ -35,12 +41,23 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-T StreamReader::readValue(std::enable_if_t<std::is_arithmetic_v<T>, void *>)
+std::enable_if_t<std::is_enum_v<T>, T> StreamReader::readEnum()
+{
+	const T value = static_cast<T>(readInt32());
+	ASSERT(utils::enums::isValid(value), "Invalid enumerator restored");
+
+	return value;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+std::enable_if_t<std::is_arithmetic_v<T>, T> StreamReader::readValue()
 {
 	std::array<char, sizeof(T)> buffer;
 	m_stream.read(buffer.data(), sizeof(T));
 
-	T * result{ reinterpret_cast<T *>(buffer.data()) };
+	T * result = reinterpret_cast<T *>(buffer.data());
 	return *result;
 }
 

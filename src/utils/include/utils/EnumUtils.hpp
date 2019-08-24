@@ -8,11 +8,7 @@ namespace utils::enums {
 
 //-----------------------------------------------------------------------------
 
-#define ENUM_TO_STRING_CASE(_enum, _case) case _enum::_case: return #_case
-
-//-----------------------------------------------------------------------------
-
-constexpr int k_minEnumValue{ 0 };
+constexpr int k_minEnumValue = 0;
 
 //-----------------------------------------------------------------------------
 
@@ -27,7 +23,7 @@ constexpr bool isValid(T _value) noexcept
 template<typename T>
 constexpr T fromString(std::string_view _str)
 {
-	for (int i{ k_minEnumValue }; i < T::Count; ++i)
+	for (int i = k_minEnumValue; i < T::Count; ++i)
 	{
 		if (toString(static_cast<T>(i)) == _str)
 		{
@@ -36,12 +32,15 @@ constexpr T fromString(std::string_view _str)
 	}
 
 	ASSERT_FALSE("Invalid enumerator name");
-	return T::Count;
-	//throw EnumParseException();
+	throw ParseErrorException();
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace utils::enums
+
+//-----------------------------------------------------------------------------
+
+#define ENUM_TO_STRING_CASE(_enum, _case) case _enum::_case: return #_case
 
 //-----------------------------------------------------------------------------

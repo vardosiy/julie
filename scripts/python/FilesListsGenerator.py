@@ -1,33 +1,55 @@
 import os
 
 from FilesCollector import FilesCollector
+from FilterData import FilterData
 from PathUtils import *
 
 #------------------------------------------------------------------------------
 
 class FilesListsGenerator:
 
-	def __init__(self, dirs):
-		self._dirs = dirs
+	def __init__(self, dir):
+		self._dir = dir
+		self._filters = list()
 
 #------------------------------------------------------------------------------
 
-	def generate_files_lists(self, cmake_variable, output_file_name, extensions):
-		for dir in self._dirs:
-			files = self._collect_files(dir, extensions)
+	def add_filter(self, filter_data):
+		self._filters.append(filter_data)
+
+#------------------------------------------------------------------------------
+
+	def generate_files_list(self):
+		collector = FilesCollector(self._get_required_extensions())
+		collector.collect_files(self._dir)
+
+		for filter in self._filters:
+			files = self._get_files_for_filter(collector, filter)
+			files = get_relative_paths(self._dir, files)
 			files = change_delimiters_to_unix_style(files)
 
-			self._write_to_file(cmake_variable, output_file_name, dir, files)
+			self._write_to_file(filter.cmake_variable, filter.output_file, self._dir, files)
 
 #------------------------------------------------------------------------------
 
-	def _collect_files(self, dir, extensions):
-		collector = FilesCollector(extensions)
+	def _get_required_extensions(self):
+		result = list()
 
-		files = collector.collect_files(dir)
-		files = get_relative_paths(dir, files)
+		for filter in self._filters:
+			for extension in filter.extensions:
+				result.append(extension)
 
-		return files
+		return result
+
+#------------------------------------------------------------------------------
+
+	def _get_files_for_filter(self, collector, filter):
+		result = list()
+
+		for extension in filter.extensions:
+			result.extend(collector.get_files_by_extension(extension))
+
+		return result
 
 #------------------------------------------------------------------------------
 
@@ -39,11 +61,16 @@ class FilesListsGenerator:
 		output_file = open(output_file_path, "w")
 
 		output_file.write("set(\n")
-		output_file.write("\t" + cmake_variable + "\n")
+		self._write_line(output_file, cmake_variable)
 		for file in files:
-			output_file.write("\t" + file + "\n")
+			self._write_line(output_file, file)
 		output_file.write(")")
 
 		output_file.close()
+
+#------------------------------------------------------------------------------
+
+	def _write_line(self, file, string):
+		file.write("\t{}\n".format(string))
 
 #------------------------------------------------------------------------------

@@ -27,7 +27,7 @@ private:
 private:
 	nodes::NotesFolderPtr m_notesRoot;
 
-	static constexpr std::string_view k_saveFile{ "data.dat" };
+	static constexpr std::string_view k_saveFile = "data.dat";
 };
 
 //-----------------------------------------------------------------------------

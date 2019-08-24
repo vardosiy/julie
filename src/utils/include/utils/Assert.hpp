@@ -1,24 +1,20 @@
 #pragma once
 
+#include "utils/AssertData.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace utils {
 
-void assertImpl(
-	bool _cond,
-	const char * _expr,
-	const char * _file,
-	int _line,
-	const char * _message
-);
+void assertImpl(bool _cond, AssertData _data);
 
 } // namespace utils
 
 //-----------------------------------------------------------------------------
 
-#define ASSERT_IMPL(_expr, _message)										\
-do {																		\
-	::utils::assertImpl(!!(_expr), #_expr, __FILE__, __LINE__, _message);	\
+#define ASSERT_IMPL(_expr, _message)											\
+do {																			\
+	::utils::assertImpl(!!(_expr), { _message, #_expr, __FILE__, __LINE__ });	\
 } while(false)
 
 //-----------------------------------------------------------------------------

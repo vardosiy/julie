@@ -20,7 +20,7 @@ void StreamRestoreVisitor::operator() (nodes::Note & _note)
 {
 	restoreCommon(_note);
 
-	const std::string text{ readString() };
+	const std::string text = readString();
 	_note.setText(text);
 }
 
@@ -30,11 +30,11 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 {
 	restoreCommon(_notesFolder);
 
-	const std::string folderName{ readString() };
+	const std::string folderName = readString();
 	_notesFolder.setName(folderName);
 
-	const int childNodesCount{ readInt32() };
-	for (int i{ 0 }; i < childNodesCount; ++i)
+	const int childNodesCount = readInt32();
+	for (int i = 0; i < childNodesCount; ++i)
 	{
 		nodes::HierarchyNodePtr node = deserializeNode();
 		_notesFolder.addChild(std::move(node));
@@ -45,7 +45,7 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 
 void StreamRestoreVisitor::restoreCommon(nodes::HierarchyNode & _hierarchyNode)
 {
-	const enums::NodeTag tag = static_cast<enums::NodeTag>(readInt32());
+	const enums::NodeTag tag = readEnum<enums::NodeTag>();
 	ASSERT(utils::enums::isValid(tag), "Invalid enumerator deserialized");
 
 	_hierarchyNode.setTag(tag);
@@ -55,7 +55,7 @@ void StreamRestoreVisitor::restoreCommon(nodes::HierarchyNode & _hierarchyNode)
 
 nodes::HierarchyNodePtr StreamRestoreVisitor::deserializeNode()
 {
-	const enums::NodeKind kind = static_cast<enums::NodeKind>(readInt32());
+	const enums::NodeKind kind = readEnum<enums::NodeKind>();
 	ASSERT(utils::enums::isValid(kind), "Invalid enumerator deserialized");
 
 	nodes::HierarchyNodePtr node;

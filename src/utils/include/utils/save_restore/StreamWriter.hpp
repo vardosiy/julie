@@ -23,9 +23,12 @@ public:
 
 	void write(std::string_view _val);
 
+	template<typename T>
+	std::enable_if_t<std::is_enum_v<T>> write(T _val);
+
 private:
 	template<typename T>
-	std::enable_if_t<std::is_arithmetic_v<T>, void> writeValue(T _val);
+	std::enable_if_t<std::is_arithmetic_v<T>> writeValue(T _val);
 
 private:
 	std::ostream & m_stream;
@@ -34,7 +37,15 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-std::enable_if_t<std::is_arithmetic_v<T>, void> StreamWriter::writeValue(T _val)
+std::enable_if_t<std::is_enum_v<T>> StreamWriter::write(T _val)
+{
+	write(static_cast<int>(_val));
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+std::enable_if_t<std::is_arithmetic_v<T>> StreamWriter::writeValue(T _val)
 {
 	m_stream.write(reinterpret_cast<const char *>(&_val), sizeof(T));
 }

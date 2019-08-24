@@ -44,8 +44,8 @@ void StreamSaveVisitor::operator() (nodes::NotesFolder & _notesFolder)
 
 void StreamSaveVisitor::saveCommon(nodes::HierarchyNode & _node)
 {
-	write(static_cast<int>(_node.getKind()));
-	write(static_cast<int>(_node.getTag()));
+	write(_node.getKind());
+	write(_node.getTag());
 }
 
 //-----------------------------------------------------------------------------

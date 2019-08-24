@@ -1,5 +1,6 @@
 # VS stuff
 .vs/
+.vscode/
 
 # generated items
 bin/

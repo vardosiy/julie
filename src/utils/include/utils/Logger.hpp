@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/Singleton.hpp"
+
 #include <fmt/format.h>
 
 //-----------------------------------------------------------------------------
@@ -8,20 +10,17 @@ namespace utils {
 
 //-----------------------------------------------------------------------------
 
-class Logger
+class Logger : public Singleton<Logger>
 {
-public:
-	static Logger & getInstance() noexcept;
+	friend class Singleton<Logger>;
 
+public:
 	template<typename ... Args>
 	void log(std::string_view _message, Args && ... _args);
 
 	void setFile(std::string_view _file) noexcept;
 
 private:
-	Logger() noexcept = default;
-	~Logger() noexcept = default;
-
 	void write(const std::string & _message);
 
 private:

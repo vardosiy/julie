@@ -5,17 +5,26 @@ import platform
 sys.path.insert(1, "scripts/python")
 
 from scripts.python.FilesListsGenerator import FilesListsGenerator
+from scripts.python.FilterData import FilterData
 
 #------------------------------------------------------------------------------
 
-targets_dirs = []
-targets_dirs.append(os.path.normpath("src/utils"))
-targets_dirs.append(os.path.normpath("src/core"))
-targets_dirs.append(os.path.normpath("src/application"))
+def create_generator(dir):
+	return FilesListsGenerator(os.path.normpath(dir))
 
-generator = FilesListsGenerator(targets_dirs)
-generator.generate_files_lists("sources", "InitSources.cmake", [".hpp",".cpp"])
-generator.generate_files_lists("resources", "InitResources.cmake", [".qrc"])
-generator.generate_files_lists("ui_sources", "InitUiSources.cmake", [".qml"])
+generators = []
+generators.append(create_generator("src/utils"))
+generators.append(create_generator("src/core"))
+generators.append(create_generator("src/application"))
+
+source_filter = FilterData("sources", "InitSources.cmake", [".hpp",".cpp"])
+resource_filter = FilterData("resources", "InitResources.cmake", [".qrc"])
+ui_source_filter = FilterData("ui_sources", "InitUiSources.cmake", [".qml"])
+
+for generator in generators:
+	generator.add_filter(source_filter)
+	generator.add_filter(resource_filter)
+	generator.add_filter(ui_source_filter)
+	generator.generate_files_list()
 
 #------------------------------------------------------------------------------

@@ -21,7 +21,7 @@ enum class NodeKind
 
 constexpr std::string_view toString(NodeKind _kind)
 {
-	constexpr int lastVerNodeKindsCount{ 2 };
+	constexpr int lastVerNodeKindsCount = 2;
 	static_assert(static_cast<int>(NodeKind::Count) == lastVerNodeKindsCount);
 
 	switch (_kind)

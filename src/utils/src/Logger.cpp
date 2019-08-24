@@ -9,14 +9,6 @@ namespace utils {
 
 //-----------------------------------------------------------------------------
 
-Logger & Logger::getInstance() noexcept
-{
-	static Logger s_logger;
-	return s_logger;
-}
-
-//-----------------------------------------------------------------------------
-
 void Logger::setFile(std::string_view _file) noexcept
 {
 	m_fileName = _file;
