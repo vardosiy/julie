@@ -25,6 +25,10 @@ enum class NodeTag
 
 //-----------------------------------------------------------------------------
 
+ENUM_NAME_GETTER(NodeTag)
+
+//-----------------------------------------------------------------------------
+
 constexpr std::string_view toString(NodeTag _tag)
 {
 	constexpr int lastVerNodeTagsCount = 8;
@@ -41,8 +45,10 @@ constexpr std::string_view toString(NodeTag _tag)
 		ENUM_TO_STRING_CASE(NodeTag, Gray);
 
 		default:
-			ASSERT_FALSE("Unhandled case");
+			static_assert("Unhandled case");
 	}
+
+	return "";
 }
 
 //-----------------------------------------------------------------------------

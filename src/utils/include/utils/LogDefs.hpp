@@ -4,6 +4,6 @@
 
 //-----------------------------------------------------------------------------
 
-#define LOG(_messageBase, ...) utils::Logger::getInstance().log(_messageBase, __VA_ARGS__)
+#define LOG(_messageBase, ...) ::utils::Logger::getInstance().log(_messageBase, __VA_ARGS__)
 
 //-----------------------------------------------------------------------------

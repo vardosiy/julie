@@ -9,30 +9,42 @@ from scripts.python.FilterData import FilterData
 
 #------------------------------------------------------------------------------
 
-build_dir = "build"
+def generate_files_lists(filters, targets_dirs):
+	generator = FilesListsGenerator()
 
-targets_dirs = list()
-targets_dirs.append("src/utils")
-targets_dirs.append("src/core")
-targets_dirs.append("src/application")
+	for filter in filters:
+		generator.add_filter(filter)
+
+	for target_dir in targets_dirs:
+		generator.generate_files_list(os.path.normpath(target_dir))
+
+#------------------------------------------------------------------------------
+
+def generate_prj_files(build_dir):
+	if not os.path.exists(build_dir):
+		os.mkdir(build_dir)
+
+	os.chdir(build_dir)
+	os.system("cmake ..")
+
+#------------------------------------------------------------------------------
 
 filters = list()
 filters.append(FilterData("sources", "InitSources.cmake", [".hpp",".cpp"]))
 filters.append(FilterData("resources", "InitResources.cmake", [".qrc"]))
 filters.append(FilterData("ui_sources", "InitUiSources.cmake", [".qml"]))
 
+targets_dirs = list()
+targets_dirs.append("src/utils")
+targets_dirs.append("src/core")
+targets_dirs.append("src/application")
+targets_dirs.append("src/tests/utils_tests")
+
+build_dir = "build"
+
 #------------------------------------------------------------------------------
 
-for target_dir in targets_dirs:
-	generator = FilesListsGenerator(os.path.normpath(target_dir))
-	for filter in filters:
-		generator.add_filter(filter)
-	generator.generate_files_list()
-
-if not os.path.exists(build_dir):
-	os.mkdir(build_dir)
-
-os.chdir(build_dir)
-os.system("cmake ..")
+generate_files_lists(filters, targets_dirs)
+generate_prj_files(build_dir)
 
 #------------------------------------------------------------------------------

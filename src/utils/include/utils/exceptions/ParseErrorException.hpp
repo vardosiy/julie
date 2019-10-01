@@ -1,14 +1,14 @@
 #pragma once
 
-#include <exception>
+#include "utils/exceptions/LoggingException.hpp"
 
 //-----------------------------------------------------------------------------
 
-class ParseErrorException : public std::exception
+class ParseErrorException : public LoggingException
 {
 public:
-	ParseErrorException()
-		: std::exception("Can not parse element")
+	ParseErrorException(std::string_view _message)
+		: LoggingException{ _message }
 	{
 	}
 };

@@ -43,8 +43,8 @@ private:
 template<typename T>
 std::enable_if_t<std::is_enum_v<T>, T> StreamReader::readEnum()
 {
-	const T value = static_cast<T>(readInt32());
-	ASSERT(utils::enums::isValid(value), "Invalid enumerator restored");
+	const T value{ static_cast<T>(readInt32()) };
+	ASSERT(enums::isValid(value), "Invalid enumerator restored");
 
 	return value;
 }
@@ -54,11 +54,10 @@ std::enable_if_t<std::is_enum_v<T>, T> StreamReader::readEnum()
 template<typename T>
 std::enable_if_t<std::is_arithmetic_v<T>, T> StreamReader::readValue()
 {
-	std::array<char, sizeof(T)> buffer;
-	m_stream.read(buffer.data(), sizeof(T));
+	T value;
+	m_stream.read(reinterpret_cast<char*>(&value), sizeof(T));
 
-	T * result = reinterpret_cast<T *>(buffer.data());
-	return *result;
+	return value;
 }
 
 //-----------------------------------------------------------------------------

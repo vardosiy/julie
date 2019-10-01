@@ -46,27 +46,6 @@ nodes::NotesFolderPtr createBaseStructure()
 
 //-----------------------------------------------------------------------------
 
-void test(nodes::NotesFolderPtr & _folder)
-{
-	_folder->forEachChildNode(
-		[&_folder](const nodes::HierarchyNode & _node)
-		{
-			if (_node.getKind() == enums::NodeKind::Note)
-				_folder->removeChild(_node);
-		}
-	);
-
-	_folder->forEachChildNode(
-		[](const nodes::HierarchyNode & _node)
-		{
-			if (_node.getKind() == enums::NodeKind::Note)
-				ASSERT_FALSE("Wrong erase logic");
-		}
-	);
-}
-
-//-----------------------------------------------------------------------------
-
 int main(int _argc, char * _argv[])
 {
 	//QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -80,19 +59,26 @@ int main(int _argc, char * _argv[])
 	//return app.exec();
 
 	auto folder = createBaseStructure();
-
+	
 	std::stringstream stream;
-
+	
 	visitors::sr::StreamSaveVisitor serializationVisitor(stream);
 	folder->accept(serializationVisitor);
-
+	
 	visitors::sr::StreamRestoreVisitor deserializationVisitor(stream);
 	nodes::NotesFolder restoredRoot;
 	restoredRoot.accept(deserializationVisitor);
 
-	ASSERT(folder->getChildrenCount() == 8, "");
-	test(folder);
-	ASSERT(folder->getChildrenCount() == 4, "");
+	auto test = enums::fromString<enums::NodeKind>("Note");
+	try
+	{
+		auto test2 = enums::fromString<enums::NodeKind>("Haha");
+	}
+	catch (const std::exception & e)
+	{
+		auto message = e.what();
+		int dummy = 10;
+	}
 
 	return 0;
 }

@@ -1,10 +1,14 @@
 #pragma once
 
+#include "utils/exceptions/ParseErrorException.hpp"
+
+#include <fmt/format.h>
+
 #include <string_view>
 
 //-----------------------------------------------------------------------------
 
-namespace utils::enums {
+namespace enums {
 
 //-----------------------------------------------------------------------------
 
@@ -21,9 +25,17 @@ constexpr bool isValid(T _value) noexcept
 //-----------------------------------------------------------------------------
 
 template<typename T>
-constexpr T fromString(std::string_view _str)
+constexpr std::string_view getEnumName() noexcept
 {
-	for (int i = k_minEnumValue; i < T::Count; ++i)
+	return "";
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+T fromString(std::string_view _str)
+{
+	for (int i = k_minEnumValue; i < static_cast<int>(T::Count); ++i)
 	{
 		if (toString(static_cast<T>(i)) == _str)
 		{
@@ -31,16 +43,25 @@ constexpr T fromString(std::string_view _str)
 		}
 	}
 
-	ASSERT_FALSE("Invalid enumerator name");
-	throw ParseErrorException();
+	return T::Count;
+	//throw ParseErrorException(
+	//	fmt::format("Invalid enumerator: {}, while parsing enum {}", _str, getEnumName<T>)
+	//);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace utils::enums
+} // namespace enums
 
 //-----------------------------------------------------------------------------
 
 #define ENUM_TO_STRING_CASE(_enum, _case) case _enum::_case: return #_case
+
+#define ENUM_NAME_GETTER(_enum)													\
+template<>																		\
+constexpr std::string_view getEnumName<_enum>() noexcept						\
+{																				\
+	return #_enum;																\
+}
 
 //-----------------------------------------------------------------------------

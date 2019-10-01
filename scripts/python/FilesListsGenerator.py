@@ -8,8 +8,7 @@ from PathUtils import *
 
 class FilesListsGenerator:
 
-	def __init__(self, dir):
-		self._dir = dir
+	def __init__(self):
 		self._filters = list()
 
 #------------------------------------------------------------------------------
@@ -19,16 +18,16 @@ class FilesListsGenerator:
 
 #------------------------------------------------------------------------------
 
-	def generate_files_list(self):
+	def generate_files_list(self, dir):
 		collector = FilesCollector(self._get_required_extensions())
-		collector.collect_files(self._dir)
+		collector.collect_files(dir)
 
 		for filter in self._filters:
 			files = self._get_files_for_filter(collector, filter)
-			files = get_relative_paths(self._dir, files)
+			files = get_relative_paths(dir, files)
 			files = change_delimiters_to_unix_style(files)
 
-			self._write_to_file(filter.cmake_variable, filter.output_file, self._dir, files)
+			self._write_to_file(filter.cmake_variable, filter.output_file, dir, files)
 
 #------------------------------------------------------------------------------
 

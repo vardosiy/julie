@@ -9,7 +9,7 @@ namespace utils::sr {
 //-----------------------------------------------------------------------------
 
 StreamReader::StreamReader(std::istream & _stream)
-	: m_stream(_stream)
+	: m_stream{ _stream }
 {
 }
 
@@ -17,9 +17,8 @@ StreamReader::StreamReader(std::istream & _stream)
 
 std::string StreamReader::readString()
 {
-	const int size = readInt32();
+	const int size{ readInt32() };
 
-	// TODO: check if char[] is better
 	std::vector<char> buffer(size);
 	m_stream.read(buffer.data(), size);
 

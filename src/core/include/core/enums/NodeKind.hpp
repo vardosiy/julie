@@ -19,6 +19,10 @@ enum class NodeKind
 
 //-----------------------------------------------------------------------------
 
+ENUM_NAME_GETTER(NodeKind)
+
+//-----------------------------------------------------------------------------
+
 constexpr std::string_view toString(NodeKind _kind)
 {
 	constexpr int lastVerNodeKindsCount = 2;
@@ -30,8 +34,10 @@ constexpr std::string_view toString(NodeKind _kind)
 		ENUM_TO_STRING_CASE(NodeKind, NotesFolder);
 
 		default:
-			ASSERT_FALSE("Unhandled case");
+			static_assert("Unhandled case");
 	}
+
+	return "";
 }
 
 //-----------------------------------------------------------------------------
