@@ -3,7 +3,6 @@
 #include "utils/Assert.hpp"
 #include "utils/EnumUtils.hpp"
 
-#include <array>
 #include <istream>
 #include <type_traits>
 
