@@ -17,21 +17,14 @@ class StreamReader
 public:
 	explicit StreamReader(std::istream & _stream);
 
-	bool readBool() { return readValue<bool>(); }
-	char readChar() { return readValue<char>(); }
-	double readDouble() { return readValue<double>(); }
-	int16_t readInt16() { return readValue<int16_t>(); }
-	int32_t readInt32() { return readValue<int32_t>(); }
-	int64_t readInt64() { return readValue<int64_t>(); }
-
-	std::string readString();
+	template<typename T>
+	std::enable_if_t<std::is_arithmetic_v<T>, T> read();
 
 	template<typename T>
-	std::enable_if_t<std::is_enum_v<T>, T> readEnum();
+	std::enable_if_t<std::is_enum_v<T>, T> read();
 
-private:
 	template<typename T>
-	std::enable_if_t<std::is_arithmetic_v<T>, T> readValue();
+	std::enable_if_t<std::is_same_v<T, std::string>, T> read();
 
 private:
 	std::istream & m_stream;
@@ -40,9 +33,20 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-std::enable_if_t<std::is_enum_v<T>, T> StreamReader::readEnum()
+std::enable_if_t<std::is_arithmetic_v<T>, T> StreamReader::read()
 {
-	const T value{ static_cast<T>(readInt32()) };
+	T value;
+	m_stream.read(reinterpret_cast<char *>(&value), sizeof(T));
+
+	return value;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+std::enable_if_t<std::is_enum_v<T>, T> StreamReader::read()
+{
+	const T value{ static_cast<T>(read<int>()) };
 	ASSERT(enums::isValid(value), "Invalid enumerator restored");
 
 	return value;
@@ -51,12 +55,14 @@ std::enable_if_t<std::is_enum_v<T>, T> StreamReader::readEnum()
 //-----------------------------------------------------------------------------
 
 template<typename T>
-std::enable_if_t<std::is_arithmetic_v<T>, T> StreamReader::readValue()
+std::enable_if_t<std::is_same_v<T, std::string>, T> StreamReader::read()
 {
-	T value;
-	m_stream.read(reinterpret_cast<char*>(&value), sizeof(T));
+	const int size{ read<int>() };
 
-	return value;
+	std::vector<char> buffer(size);
+	m_stream.read(buffer.data(), size);
+
+	return std::string(buffer.data(), size);
 }
 
 //-----------------------------------------------------------------------------

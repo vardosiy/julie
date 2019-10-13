@@ -35,18 +35,19 @@ constexpr std::string_view getEnumName() noexcept
 template<typename T>
 T fromString(std::string_view _str)
 {
-	for (int i{ k_minEnumValue }; i < static_cast<int>(T::Count); ++i)
+	constexpr int count{ static_cast<int>(T::Count) };
+	for (int i{ k_minEnumValue }; i < count; ++i)
 	{
-		if (toString(static_cast<T>(i)) == _str)
+		const T current{ static_cast<T>(i) };
+		if (toString(current) == _str)
 		{
-			return static_cast<T>(i);
+			return current;
 		}
 	}
 
-	return T::Count;
-	//throw ParseErrorException(
-	//	fmt::format("Invalid enumerator: {}, while parsing enum {}", _str, getEnumName<T>)
-	//);
+	throw ParseErrorException(
+		fmt::format("Invalid enumerator: {}, while parsing enum {}", _str, getEnumName<T>)
+	);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,11 +58,11 @@ T fromString(std::string_view _str)
 
 #define ENUM_TO_STRING_CASE(_enum, _case) case _enum::_case: return #_case
 
-#define ENUM_NAME_GETTER(_enum)													\
-template<>																		\
-constexpr std::string_view getEnumName<_enum>() noexcept						\
-{																				\
-	return #_enum;																\
+#define ENUM_NAME_GETTER(_enum)								\
+template<>													\
+constexpr std::string_view getEnumName<_enum>() noexcept	\
+{															\
+	return #_enum;											\
 }
 
 //-----------------------------------------------------------------------------

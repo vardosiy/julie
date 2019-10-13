@@ -7,16 +7,13 @@
 //------------------------------------------------------------------------------
 
 template<typename T>
-using ReadMethod = T(utils::sr::StreamReader::*)();
-
-template<typename T>
-void testSingleRead(const T _value, ReadMethod<T> _readMethod)
+void testSingleRead(const T _value)
 {
 	std::stringstream stream;
 	stream.write(reinterpret_cast<const char *>(&_value), sizeof(_value));
 
 	utils::sr::StreamReader reader(stream);
-	const T readed{ (reader.*_readMethod)() };
+	const T readed{ reader.read<T>() };
 
 	EXPECT_EQ(stream.gcount(), sizeof(_value));
 	EXPECT_EQ(_value, readed);
@@ -26,70 +23,70 @@ void testSingleRead(const T _value, ReadMethod<T> _readMethod)
 
 TEST_F(StreamReaderFixture, ReadSingleBool)
 {
-	testSingleRead<bool>(true, &utils::sr::StreamReader::readBool);
+	testSingleRead<bool>(true);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleChar)
 {
-	testSingleRead<char>('c', &utils::sr::StreamReader::readChar);
+	testSingleRead<char>('c');
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleDouble)
 {
-	testSingleRead<double>(5.63, &utils::sr::StreamReader::readDouble);
+	testSingleRead<double>(5.63);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleNegativeDouble)
 {
-	testSingleRead<double>(-5.63, &utils::sr::StreamReader::readDouble);
+	testSingleRead<double>(-5.63);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleInt16)
 {
-	testSingleRead<short>(12681, &utils::sr::StreamReader::readInt16);
+	testSingleRead<short>(12681);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleNegativeInt16)
 {
-	testSingleRead<short>(-12681, &utils::sr::StreamReader::readInt16);
+	testSingleRead<short>(-12681);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleInt32)
 {
-	testSingleRead<int>(166230, &utils::sr::StreamReader::readInt32);
+	testSingleRead<int>(166230);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleNegativeInt32)
 {
-	testSingleRead<int>(-166230, &utils::sr::StreamReader::readInt32);
+	testSingleRead<int>(-166230);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleInt64)
 {
-	testSingleRead<long long>(34596785, &utils::sr::StreamReader::readInt64);
+	testSingleRead<long long>(34596785);
 }
 
 //------------------------------------------------------------------------------
 
 TEST_F(StreamReaderFixture, ReadSingleNegativeInt64)
 {
-	testSingleRead<long long>(-34596785, &utils::sr::StreamReader::readInt64);
+	testSingleRead<long long>(-34596785);
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +100,7 @@ TEST_F(StreamReaderFixture, ReadString)
 	m_stream.write(str.c_str(), str.size());
 
 	utils::sr::StreamReader reader(m_stream);
-	const std::string readed = reader.readString();
+	const std::string readed = reader.read<std::string>();
 
 	EXPECT_EQ(str, readed);
 }
