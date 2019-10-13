@@ -12,7 +12,7 @@ namespace enums {
 
 //-----------------------------------------------------------------------------
 
-constexpr int k_minEnumValue = 0;
+constexpr int k_minEnumValue{ 0 };
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ constexpr std::string_view getEnumName() noexcept
 template<typename T>
 T fromString(std::string_view _str)
 {
-	for (int i = k_minEnumValue; i < static_cast<int>(T::Count); ++i)
+	for (int i{ k_minEnumValue }; i < static_cast<int>(T::Count); ++i)
 	{
 		if (toString(static_cast<T>(i)) == _str)
 		{

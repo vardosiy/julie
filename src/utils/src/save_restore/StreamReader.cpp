@@ -22,8 +22,7 @@ std::string StreamReader::readString()
 	std::vector<char> buffer(size);
 	m_stream.read(buffer.data(), size);
 
-	std::string result(buffer.data(), size);
-	return result;
+	return std::string(buffer.data(), size);
 }
 
 //-----------------------------------------------------------------------------
