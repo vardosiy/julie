@@ -33,8 +33,8 @@ void StreamRestoreVisitor::operator() (nodes::NotesFolder & _notesFolder)
 	const std::string folderName = read<std::string>();
 	_notesFolder.setName(folderName);
 
-	const int childNodesCount = read<int>();
-	for (int i = 0; i < childNodesCount; ++i)
+	const int childNodesCount{ read<int>() };
+	for (int i{ 0 }; i < childNodesCount; ++i)
 	{
 		nodes::HierarchyNodePtr node = deserializeNode();
 		_notesFolder.addChild(std::move(node));

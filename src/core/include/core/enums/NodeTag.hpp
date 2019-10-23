@@ -31,7 +31,7 @@ ENUM_NAME_GETTER(NodeTag)
 
 constexpr std::string_view toString(NodeTag _tag)
 {
-	constexpr int lastVerNodeTagsCount = 8;
+	constexpr int lastVerNodeTagsCount{ 8 };
 	static_assert(static_cast<int>(NodeTag::Count) == lastVerNodeTagsCount);
 
 	switch (_tag)
@@ -45,7 +45,7 @@ constexpr std::string_view toString(NodeTag _tag)
 		ENUM_TO_STRING_CASE(NodeTag, Gray);
 
 		default:
-			static_assert("Unhandled case");
+			ASSERT(false, "Unhandled case");
 	}
 
 	return "";

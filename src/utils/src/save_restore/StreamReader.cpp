@@ -9,7 +9,7 @@ namespace utils::sr {
 //-----------------------------------------------------------------------------
 
 StreamReader::StreamReader(std::istream & _stream)
-	: m_stream{ _stream }
+	: m_stream(_stream)
 {
 }
 

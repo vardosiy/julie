@@ -8,7 +8,7 @@ class ParseErrorException : public LoggingException
 {
 public:
 	ParseErrorException(std::string_view _message)
-		: LoggingException{ _message }
+		: LoggingException(_message)
 	{
 	}
 };
