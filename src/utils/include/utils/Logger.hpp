@@ -2,6 +2,8 @@
 
 #include "utils/Singleton.hpp"
 
+#include <fstream>
+
 #include <fmt/format.h>
 
 //-----------------------------------------------------------------------------
@@ -18,13 +20,17 @@ public:
 	template<typename ... Args>
 	void log(std::string_view _message, Args && ... _args);
 
-	void setFile(std::string_view _file) noexcept;
-
 private:
+	Logger();
+
 	void write(const std::string & _message);
+	void writeConsole(const std::string & _message);
+	void writeFile(const std::string & _message);
 
 private:
-	std::string m_fileName;
+	std::ofstream m_fileStream;
+
+	static constexpr std::string_view k_logFile = "Log.log";
 };
 
 //-----------------------------------------------------------------------------

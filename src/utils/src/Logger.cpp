@@ -1,7 +1,6 @@
 #include "utils/Logger.hpp"
 
 #include <iostream>
-#include <fstream>
 
 //-----------------------------------------------------------------------------
 
@@ -9,21 +8,33 @@ namespace utils {
 
 //-----------------------------------------------------------------------------
 
-void Logger::setFile(std::string_view _file) noexcept
+Logger::Logger()
+	: m_fileStream(k_logFile.data(), std::ios::app)
 {
-	m_fileName = _file;
 }
 
 //-----------------------------------------------------------------------------
 
 void Logger::write(const std::string & _message)
 {
-	std::cout << _message << std::endl;
+	writeConsole(_message);
+	writeFile(_message);
+}
 
-	if (!m_fileName.empty())
+//-----------------------------------------------------------------------------
+
+void Logger::writeConsole(const std::string & _message)
+{
+	std::cout << _message << '\n';
+}
+
+//-----------------------------------------------------------------------------
+
+void Logger::writeFile(const std::string & _message)
+{
+	if (m_fileStream.is_open())
 	{
-		std::ofstream file(m_fileName, std::ios::app);
-		file << _message << std::endl;
+		m_fileStream << _message << '\n';
 	}
 }
 
