@@ -12,9 +12,12 @@ void assertImpl(bool _cond, AssertData _data);
 
 //-----------------------------------------------------------------------------
 
-#define ASSERT_IMPL(_expr, _message)																\
-do {																								\
-	::utils::assertImpl(!!(_expr), ::utils::AssertData{ _message, #_expr, __FILE__, __LINE__ });	\
+#define ASSERT_IMPL(_expr, _message)								\
+do {																\
+	::utils::assertImpl(											\
+		!!(_expr),													\
+		::utils::AssertData{ _message, #_expr, __FILE__, __LINE__ }	\
+	);																\
 } while(false)
 
 //-----------------------------------------------------------------------------
