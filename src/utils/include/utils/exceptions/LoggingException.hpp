@@ -11,9 +11,9 @@ class LoggingException : public std::exception
 {
 public:
 	LoggingException(std::string_view _message)
-		: std::exception{ _message.data() }
+		: std::exception(_message.data())
 	{
-		LOG(_message);
+		LOG("[EXCEPTION] {}", _message);
 	}
 };
 
