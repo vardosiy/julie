@@ -36,7 +36,7 @@ template<typename T>
 std::enable_if_t<std::is_arithmetic_v<T>, T> StreamReader::read()
 {
 	T value;
-	m_stream.read(reinterpret_cast<char *>(&value), sizeof(T));
+	m_stream.read(reinterpret_cast<char *>(&value), sizeof(value));
 
 	return value;
 }
