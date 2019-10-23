@@ -1,7 +1,6 @@
 import os
 
 from FilesCollector import FilesCollector
-from FilterData import FilterData
 from PathUtils import *
 
 #------------------------------------------------------------------------------
