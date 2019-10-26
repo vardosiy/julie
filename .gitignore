@@ -4,7 +4,9 @@
 
 # generated items
 bin/
+lib/
 build/
+__pycache__/
 scripts/python/__pycache__/
 
 # generated cmake scripts
