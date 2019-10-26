@@ -46,7 +46,7 @@ T fromString(std::string_view _str)
 	}
 
 	throw ParseErrorException(
-		fmt::format("Invalid enumerator: {}, while parsing enum {}", _str, getEnumName<T>)
+		fmt::format("Invalid enumerator: {}, while parsing enum {}", _str.data(), getEnumName<T>().data())
 	);
 }
 
