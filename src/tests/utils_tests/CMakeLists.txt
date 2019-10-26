@@ -18,5 +18,6 @@ add_test(utils_tests utils_tests)
 #------------------------------------------------------------------------------
 
 add_to_filters(sources)
+set_target_properties(utils_tests PROPERTIES FOLDER ${tests_targets_group})
 
 #------------------------------------------------------------------------------
