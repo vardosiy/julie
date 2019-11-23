@@ -12,21 +12,20 @@ class FilesListsGenerator:
 
 #------------------------------------------------------------------------------
 
-	def add_filter(self, filter_data):
-		self._filters.append(filter_data)
+	def add_filter(self, filter):
+		self._filters.append(filter)
 
 #------------------------------------------------------------------------------
 
-	def generate_files_list(self, dir):
-		collector = FilesCollector(self._get_required_extensions())
-		collector.collect_files(dir)
-
+	def generate_files_list(self, target_dir):
+		self._collector = FilesCollector(self._get_required_extensions(), target_dir)
 		for filter in self._filters:
-			files = self._get_files_for_filter(collector, filter)
-			files = get_relative_paths(dir, files)
+			files = self._get_files_for_filter(filter)
+			files = get_relative_paths(target_dir, files)
 			files = change_delimiters_to_unix_style(files)
 
-			self._write_to_file(filter.cmake_variable, filter.output_file, dir, files)
+			output_file_path = os.path.join(target_dir, filter.output_file)
+			self._write_to_file(filter.cmake_variable, output_file_path, files)
 
 #------------------------------------------------------------------------------
 
@@ -41,34 +40,29 @@ class FilesListsGenerator:
 
 #------------------------------------------------------------------------------
 
-	def _get_files_for_filter(self, collector, filter):
+	def _get_files_for_filter(self, filter):
 		result = list()
 
 		for extension in filter.extensions:
-			result.extend(collector.get_files_by_extension(extension))
+			result.extend(self._collector.get_files_by_extension(extension))
 
 		return result
 
 #------------------------------------------------------------------------------
 
-	def _write_to_file(self, cmake_variable, output_file_name, dir, files):
+	def _write_to_file(self, cmake_variable, output_file_path, files):
 		if len(files) == 0:
 			return
 
-		output_file_path = os.path.join(dir, output_file_name)
 		output_file = open(output_file_path, "w")
+		line_format = "\t{}\n"
 
 		output_file.write("set(\n")
-		self._write_line(output_file, cmake_variable)
+		output_file.write(line_format.format(cmake_variable))
 		for file in files:
-			self._write_line(output_file, file)
+			output_file.write(line_format.format(file))
 		output_file.write(")")
 
 		output_file.close()
-
-#------------------------------------------------------------------------------
-
-	def _write_line(self, file, string):
-		file.write("\t{}\n".format(string))
 
 #------------------------------------------------------------------------------

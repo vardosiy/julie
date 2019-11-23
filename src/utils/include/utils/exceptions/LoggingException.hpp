@@ -13,7 +13,7 @@ public:
 	LoggingException(std::string_view _message)
 		: std::exception(_message.data())
 	{
-		LOG("[EXCEPTION] {}", _message);
+		LOG_EXCEPTION("{}", _message);
 	}
 };
 

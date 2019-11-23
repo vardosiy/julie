@@ -1,6 +1,7 @@
 include(InitSources.cmake)
+include(InitHeaders.cmake)
 
-add_executable(utils_tests ${sources})
+add_executable(utils_tests ${sources} ${headers})
 
 #------------------------------------------------------------------------------
 
@@ -18,6 +19,7 @@ add_test(utils_tests utils_tests)
 #------------------------------------------------------------------------------
 
 add_to_filters(sources)
+add_to_filters(headers)
 set_target_properties(utils_tests PROPERTIES FOLDER ${tests_targets_group})
 
 #------------------------------------------------------------------------------

@@ -65,7 +65,7 @@ void NotesFolder::removeChild(const HierarchyNode & _node) noexcept
 	}
 	else
 	{
-		LOG("Trying to remove node, which is not a child of the folder");
+		LOG_INFO("Trying to remove node, which is not a child of the folder");
 	}
 }
 

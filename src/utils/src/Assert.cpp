@@ -11,7 +11,7 @@ void assertImpl(bool _cond, AssertData _data)
 {
 	if (!_cond)
 	{
-		LOG(
+		LOG_ERROR(
 			"[ASSERT] {} [DETAILS] {} ({}, line {})",
 			_data.message,
 			_data.expr,

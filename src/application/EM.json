@@ -1,0 +1,193 @@
+{
+    "fbCount": 3,
+    "effects": [
+        {
+            "ID": 0,
+            "passes": [
+                {
+                    "ID": 0,
+                    "name": "BW",
+                    "shader": 0,
+                    "textures": [ "1c", "0", "0" ],
+                    "target": 0,
+                    "parameters": []
+                }
+            ]
+        },
+        {
+            "ID": 1,
+            "passes": [
+                {
+                    "ID": 0,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "1c", "0", "0" ],
+                    "target": 2,
+                    "parameters": [ 2.0 ]
+                },
+                {
+                    "ID": 1,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "2c", "0", "0" ],
+                    "target": 3,
+                    "parameters": [ 4.0 ]
+                },
+                {
+                    "ID": 2,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "3c", "0", "0" ],
+                    "target": 2,
+                    "parameters": [ 6.0 ]
+                },
+                {
+                    "ID": 3,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "2c", "0", "0" ],
+                    "target": 3,
+                    "parameters": [ 8.0 ]
+                },
+                {
+                    "ID": 4,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "3c", "0", "0" ],
+                    "target": 0,
+                    "parameters": [ 10.0 ]
+                }
+            ]
+        },
+        {
+            "ID": 2,
+            "passes": [
+                {
+                    "ID": 0,
+                    "name": "Prebloom",
+                    "shader": 1,
+                    "textures": [ "1c", "0", "0" ],
+                    "target": 2,
+                    "parameters": [ 0.8 ]
+                },
+                {
+                    "ID": 1,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "2c", "0", "0" ],
+                    "target": 3,
+                    "parameters": [ 5.0 ]
+                },
+                {
+                    "ID": 2,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "3c", "0", "0" ],
+                    "target": 2,
+                    "parameters": [ 9.0 ]
+                },
+                {
+                    "ID": 3,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "2c", "0", "0" ],
+                    "target": 3,
+                    "parameters": [ 17.0 ]
+                },
+                {
+                    "ID": 4,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "3c", "0", "0" ],
+                    "target": 2,
+                    "parameters": [ 31.0 ]
+                },
+                {
+                    "ID": 5,
+                    "name": "Blur",
+                    "shader": 2,
+                    "textures": [ "2c", "0", "0" ],
+                    "target": 3,
+                    "parameters": [ 43.0 ]
+                },
+                {
+                    "ID": 6,
+                    "name": "PostBloom",
+                    "shader": 3,
+                    "textures": [ "1c", "3c", "0" ],
+                    "target": 0,
+                    "parameters": [ 1.5 ]
+                }
+            ]
+        },
+        {
+            "ID": 3,
+            "passes": [
+                {
+                    "ID": 0,
+                    "name": "Blur DoF",
+                    "shader": 4,
+                    "textures": [ "1c", "1c", "1d" ],
+                    "target": 2,
+                    "parameters": [ 3.0, 4.0, 3.0 ]
+                },
+                {
+                    "ID": 1,
+                    "name": "Blur DoF",
+                    "shader": 4,
+                    "textures": [ "1c", "2c", "1d" ],
+                    "target": 3,
+                    "parameters": [ 5.0, 4.0, 3.0 ]
+                },
+                {
+                    "ID": 2,
+                    "name": "Blur DoF",
+                    "shader": 4,
+                    "textures": [ "1c", "3c", "1d" ],
+                    "target": 2,
+                    "parameters": [ 9.0, 4.0, 2.0 ]
+                },
+                {
+                    "ID": 3,
+                    "name": "DoF",
+                    "shader": 5,
+                    "textures": [ "1c", "2c", "1d" ],
+                    "target": 0,
+                    "parameters": [ 16.0, 4.0, 2.0 ]
+                }
+            ]
+        }
+    ],
+    "shaders": [
+        {
+            "ID": 0,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSBW.fs"
+        },
+        {
+            "ID": 1,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSPreBloom.fs"
+        },
+        {
+            "ID": 2,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSBlur.fs"
+        },
+        {
+            "ID": 3,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSPostBloom.fs"
+        },
+        {
+            "ID": 4,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSDoFBlur.fs"
+        },
+        {
+            "ID": 5,
+            "VS": "../Resources/Shaders/Effects/VSEffect.vs",
+            "FS": "../Resources/Shaders/Effects/FSDoF.fs"
+        }
+    ]
+}

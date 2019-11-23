@@ -17,9 +17,8 @@ set(lib_dir			lib)
 # compiler options
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQIRED ON)
-add_compile_options(-std=c++17)
 
-#add_compile_options(-Wall)
+#add_compile_options(-Wall -Wshadow)
 
 #------------------------------------------------------------------------------
 # output directories
@@ -27,6 +26,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${bin_dir}/)
 set(CMAKE_PDB_OUTPUT_DIRECTORY		${CMAKE_SOURCE_DIR}/${bin_dir}/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/)
+
+# temp
+set(CMAKE_INSTALL_PREFIX			${CMAKE_SOURCE_DIR}/TEST)
+set(CMAKE_INSTALL_LIBDIR			lib)
 
 #------------------------------------------------------------------------------
 # setup filters
@@ -39,11 +42,15 @@ set(tests_targets_group tests)
 
 #------------------------------------------------------------------------------
 # Qt stuff
-find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Gui REQUIRED)
 
 set_property(GLOBAL PROPERTY AUTOGEN_BUILD_DIR gen)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER gen)
 set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP gen)
+
+#------------------------------------------------------------------------------
+
+#find_package(OpenGL REQUIRED)
 
 #------------------------------------------------------------------------------
 # 3rd-party libs
@@ -62,6 +69,10 @@ set_target_properties(glm_static PROPERTIES FOLDER ${3rd_party_targets_group})
 message("\njsoncpp")
 add_subdirectory(${3rd_party_dir}/jsoncpp)
 set_target_properties(jsoncpp_lib PROPERTIES FOLDER ${3rd_party_targets_group})
+
+message("\nglew")
+add_subdirectory(${3rd_party_dir}/glad)
+set_target_properties(glad PROPERTIES FOLDER ${3rd_party_targets_group})
 
 #------------------------------------------------------------------------------
 # subdirectories
@@ -82,14 +93,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/tests/)
 # tests
 message("\nLoading tests")
 
-message("\ngtest")
 add_subdirectory(${3rd_party_dir}/gtest)
 set_target_properties(gtest			PROPERTIES FOLDER ${tests_targets_group}/gtest)
 set_target_properties(gtest_main	PROPERTIES FOLDER ${tests_targets_group}/gtest)
 set_target_properties(gmock			PROPERTIES FOLDER ${tests_targets_group}/gtest)
 set_target_properties(gmock_main	PROPERTIES FOLDER ${tests_targets_group}/gtest)
 
-message("\n")
 enable_testing()
 add_subdirectory(${tests_dir}/utils_tests)
 

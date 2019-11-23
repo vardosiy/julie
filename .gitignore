@@ -11,5 +11,7 @@ scripts/python/__pycache__/
 
 # generated cmake scripts
 InitSources.cmake
+InitHeaders.cmake
 InitResources.cmake
 InitUiSources.cmake
+InitShaders.cmake

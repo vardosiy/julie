@@ -1,0 +1,6 @@
+1. Include order
+	1.1 My code, this project
+	1.2 My code, other projects
+	1.3 3rd-party
+	1.4 boost
+	1.5 STL
