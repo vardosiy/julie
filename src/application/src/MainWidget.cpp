@@ -1,15 +1,17 @@
 #include <glad/glad.h>
 
 #include "MainWidget.hpp"
+#include "InputManager.hpp"
 
-#include "rendering/managers/InputManager.hpp"
-#include "rendering/managers/SceneManager.hpp"
-#include "rendering/managers/ResourceManager.hpp"
+#include "renderer/common/Globals.hpp"
 
-#include "rendering/common/Globals.hpp"
+#include "renderer/scene/SceneManager.hpp"
+#include "renderer/scene/ResourceManager.hpp"
 
-#include "rendering/shaders/Shader.hpp"
-#include "rendering/textures/Texture.hpp"
+#include "renderer/shaders/Shader.hpp"
+#include "renderer/gl_primitives/textures/Texture.hpp"
+
+#include "utils/LogDefs.hpp"
 
 #include <QOpenGLTexture>
 #include <QKeyEvent>
@@ -31,7 +33,7 @@ void MainWidget::initializeGL()
 {
 	gladLoadGL();
 
-	std::cout << glGetString(GL_VERSION) << '\n';
+	LOG_INFO("OpenGL version: {}", glGetString(GL_VERSION));
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -73,8 +75,8 @@ void MainWidget::keyPressEvent(QKeyEvent * _event)
 	{
 		return;
 	}
-
-	InputManager::getInstance().processKey(_event->key(), true);
+	LOG_INFO("Pressed key, keycode: {}", _event->nativeVirtualKey());
+	InputManager::getInstance().processKey(static_cast<Qt::Key>(_event->nativeVirtualKey()), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,17 +87,7 @@ void MainWidget::keyReleaseEvent(QKeyEvent * _event)
 	{
 		return;
 	}
-
-	InputManager::getInstance().processKey(_event->key(), false);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWidget::wheelEvent(QWheelEvent * _event)
-{
-	//constexpr float CAMERA_SCROLL_SPEED = 0.003f;
-	//
-	//m_camera.translate(Qglm::vec3D{ 0.0f, 0.0f, CAMERA_SCROLL_SPEED * _event->delta() });
+	InputManager::getInstance().processKey(static_cast<Qt::Key>(_event->nativeVirtualKey()), false);
 }
 
 //-----------------------------------------------------------------------------
@@ -112,6 +104,7 @@ void MainWidget::update()
 
 	repaint();
 
+	Globals::s_timeTotal += deltaTime.count();
 	s_lastTime = currentTime;
 }
 

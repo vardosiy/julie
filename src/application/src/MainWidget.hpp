@@ -17,7 +17,6 @@ protected:
 
 	void keyPressEvent(QKeyEvent * _event) override;
 	void keyReleaseEvent(QKeyEvent * _event) override;
-	void wheelEvent(QWheelEvent * _event) override;
 
 private slots:
 	void update();

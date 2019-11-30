@@ -1,29 +1,47 @@
 #pragma once
 
-#include "utils/AssertData.hpp"
+#include "utils/LogDefs.hpp"
+
+#include <fmt/format.h>
+
+#include <string_view>
 
 //-----------------------------------------------------------------------------
 
 namespace utils {
 
-void assertImpl(bool _cond, AssertData _data);
+struct AssertData
+{
+	const char * expr;
+	const char * file;
+	int line;
+};
+
+template<typename ... Args>
+void assertImpl(AssertData _data, std::string_view _message, Args && ... _args)
+{
+	std::string message = fmt::format(_message.data(), std::forward<Args>(_args)...);
+	LOG_ASSERT(
+		"\"{}\" {} ({}, line {})",
+		_data.expr, message, _data.file, _data.line
+	);
+
+	__debugbreak();
+}
 
 } // namespace utils
 
 //-----------------------------------------------------------------------------
 
-#define ASSERT_IMPL(_expr, _message)								\
-do {																\
-	::utils::assertImpl(											\
-		!!(_expr),													\
-		::utils::AssertData{ _message, #_expr, __FILE__, __LINE__ }	\
-	);																\
-} while(false)
+#define CREATE_ASSERT_DATA(_expr) utils::AssertData{ _expr, __FILE__, __LINE__ }
+
+#define ASSERT_IMPL(_expr, _message, ...) \
+do { if (!(_expr)) utils::assertImpl(CREATE_ASSERT_DATA(#_expr), _message, __VA_ARGS__); } while(false)
 
 //-----------------------------------------------------------------------------
 
 #if defined(_DEBUG)
-#	define ASSERT(_expr, _message) ASSERT_IMPL(_expr, _message)
+#	define ASSERT(_expr, _message, ...) ASSERT_IMPL(_expr, _message, __VA_ARGS__)
 #else
 #	define ASSERT(_expr, _message) void(0)
 #endif
