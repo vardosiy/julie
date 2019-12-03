@@ -1,6 +1,8 @@
 #include "renderer/scene/Model.hpp"
 #include "renderer/common/Vertex.hpp"
 
+#include "utils/Assert.hpp"
+
 #include <glad/glad.h>
 
 #include <array>
@@ -21,7 +23,8 @@ std::unique_ptr<Model> Model::create(std::string_view _filePath)
 		return nullptr;
 	}
 
-	int verticesCount{ 0 };
+	s32 verticesCount{ 0 };
+	ASSERT(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 	fscanf_s(pFile, "%*s %d", &verticesCount);
 
 	std::vector<Vertex> vertices(verticesCount);
@@ -38,6 +41,7 @@ std::unique_ptr<Model> Model::create(std::string_view _filePath)
 	}
 
 	s32 indicesCount{ 0 };
+	ASSERT(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 	fscanf_s(pFile, "%*s %d", &indicesCount);
 
 	std::vector<u16> indices(indicesCount);

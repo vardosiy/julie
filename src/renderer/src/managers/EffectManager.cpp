@@ -57,7 +57,7 @@ void EffectManager::bindFbo() const
 {
 	if (m_pCurrentEffect)
 	{
-		GLint qt_buffer;
+		s32 qt_buffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &qt_buffer);
 		Fbo::screen.m_id = qt_buffer;
 
@@ -104,12 +104,12 @@ void EffectManager::loadShaders(const Json::Value & _data)
 {
 	m_shaders.clear();
 
-	const uint32_t shadersCount{ _data.size() };
-	for (uint32_t i{ 0 }; i < shadersCount; ++i)
+	const u32 shadersCount{ _data.size() };
+	for (u32 i{ 0 }; i < shadersCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
-		const int shaderId{ current["ID"].asInt() };
+		const s32 shaderId{ current["ID"].asInt() };
 		const std::string_view vsFile{ current["VS"].asCString() };
 		const std::string_view fsFile{ current["FS"].asCString() };
 
@@ -126,8 +126,8 @@ void EffectManager::loadShaders(const Json::Value & _data)
 
 void EffectManager::loadFbos(const Json::Value & _data)
 {
-	const uint32_t fboCount{ _data["fbCount"].asUInt() };
-	const uint32_t targetingFbosCount{ fboCount + 1 };
+	const u32 fboCount{ _data["fbCount"].asUInt() };
+	const u32 targetingFbosCount{ fboCount + 1 };
 
 	m_fbos.clear();
 	m_fbos.reserve(fboCount);
@@ -136,7 +136,7 @@ void EffectManager::loadFbos(const Json::Value & _data)
 	m_targetingFbos.reserve(fboCount);
 
 	m_targetingFbos.push_back(&Fbo::screen);
-	for (uint32_t i{ 0 }; i < fboCount; ++i)
+	for (u32 i{ 0 }; i < fboCount; ++i)
 	{
 		m_fbos.emplace_back(Fbo::create());
 		m_targetingFbos.push_back(m_fbos[i].get());
@@ -149,13 +149,15 @@ void EffectManager::loadEffects(const Json::Value & _data)
 {
 	m_effects.clear();
 
-	const uint32_t effectsCount{ _data.size() };
-	for (uint32_t i{ 0 }; i < effectsCount; ++i)
+	const u32 effectsCount{ _data.size() };
+	for (u32 i{ 0 }; i < effectsCount; ++i)
 	{
-		const int effectId{ _data[i]["ID"].asInt() };
+		const Json::Value & current = _data[i];
+
+		const s32 effectId{ current["ID"].asInt() };
 
 		Effect & effect = m_effects[effectId];
-		if (!loadEffectPasses(_data[i]["passes"], effect))
+		if (!loadEffectPasses(current["passes"], effect))
 		{
 			m_effects.erase(effectId);
 			LOG_ERROR("Can not initialize effect with id: {}", effectId);
@@ -174,7 +176,7 @@ bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect
 		Pass pass;
 
 		{
-			const int targetId{ current["target"].asInt() };
+			const u32 targetId{ current["target"].asUInt() };
 			ASSERT(targetId <= m_targetingFbos.size(), "Can not find FBO with id: {}", targetId);
 			if (targetId >= m_targetingFbos.size())
 			{
@@ -184,7 +186,7 @@ bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect
 		}
 
 		{
-			const int shaderId{ current["shader"].asInt() };
+			const u32 shaderId{ current["shader"].asUInt() };
 			auto itShader = m_shaders.find(shaderId);
 
 			ASSERT(itShader != m_shaders.end(), "Can not find shader with id: {}", shaderId);
@@ -208,10 +210,10 @@ bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect
 
 std::vector<float> EffectManager::loadPassParameters(const Json::Value & _data)
 {
-	const uint32_t paramsCount{ _data.size() };
+	const u32 paramsCount{ _data.size() };
 	std::vector<float> params(paramsCount);
 
-	for (uint32_t i{ 0 }; i < paramsCount; ++i)
+	for (u32 i{ 0 }; i < paramsCount; ++i)
 	{
 		params[i] = _data[i].asFloat();
 	}
@@ -223,8 +225,8 @@ std::vector<float> EffectManager::loadPassParameters(const Json::Value & _data)
 
 std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value & _data)
 {
-	uint32_t texturesCount{ _data.size() };
-	for (uint32_t i{ texturesCount }; i > 0; --i)
+	u32 texturesCount{ _data.size() };
+	for (u32 i{ texturesCount }; i > 0; --i)
 	{
 		const char * str = _data[i - 1].asCString();
 		if (str[0] == '0')
@@ -235,10 +237,10 @@ std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value &
 
 	std::vector<const Texture *> textures(texturesCount);
 
-	for (uint32_t i{ 0 }; i < texturesCount; ++i)
+	for (u32 i{ 0 }; i < texturesCount; ++i)
 	{
 		const char * str = _data[i].asCString();
-		const uint32_t fboIndex{ static_cast<uint32_t>(str[0] - k_numberCharsOffset) };
+		const u32 fboIndex{ static_cast<u32>(str[0] - k_numberCharsOffset) };
 
 		textures[i] =
 			str[1] == 'c' ?

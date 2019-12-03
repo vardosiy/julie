@@ -23,14 +23,14 @@ class CubeTexture;
 class Object
 {
 public:
-	static std::unique_ptr<Object> create(Model & _model);
+	static std::unique_ptr<Object> create(const Model & _model);
 
 public:
 	void draw();
 
 	void update(float _deltaTime);
 
-	void setShader(Shader & _shader) noexcept;
+	void setShader(const Shader & _shader) noexcept;
 	void setTextures2D(std::vector<Texture *> && _textures) noexcept;
 	void setCubeTextures(std::vector<CubeTexture *> && _textures) noexcept;
 
@@ -52,8 +52,8 @@ private:
 	void recalculateWorldMatrix();
 
 private:
-	Model * m_model;
-	Shader * m_shader;
+	const Model * m_model;
+	const Shader * m_shader;
 	std::vector<Texture *> m_textures2D;
 	std::vector<CubeTexture *> m_cubeTextures;
 

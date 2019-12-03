@@ -22,7 +22,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Object> Object::create(Model & _model)
+std::unique_ptr<Object> Object::create(const Model & _model)
 {
 	auto object = std::make_unique<Object>();
 	object->m_model = &_model;
@@ -57,7 +57,7 @@ void Object::update(float _deltaTime)
 
 //-----------------------------------------------------------------------------
 
-void Object::setShader(Shader & _shader) noexcept
+void Object::setShader(const Shader & _shader) noexcept
 {
 	m_shader = &_shader;
 
@@ -211,11 +211,7 @@ void Object::setTextures()
 			texture->bind(counter++);
 		}
 
-		m_shader->setUniformValue(
-			uniforms.u_texture2D,
-			m_textures2D.size(),
-			m_texture2DUniformValues.data()
-		);
+		m_shader->setUniformValue(uniforms.u_texture2D, m_texture2DUniformValues);
 	}
 
 	if (!m_cubeTextures.empty())
@@ -225,11 +221,7 @@ void Object::setTextures()
 			texture->bind(counter++);
 		}
 
-		m_shader->setUniformValue(
-			uniforms.u_cubeTexture,
-			m_cubeTextures.size(),
-			m_cubeTextureUniformValues.data()
-		);
+		m_shader->setUniformValue(uniforms.u_cubeTexture, m_cubeTextureUniformValues);
 	}
 }
 

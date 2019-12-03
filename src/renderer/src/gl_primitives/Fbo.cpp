@@ -77,8 +77,8 @@ std::unique_ptr<Fbo> Fbo::create()
 	glGenFramebuffers(1, &fbo->m_id);
 	fbo->bind();
 
-	const GLuint colorTexHandle{ fbo->m_colorTexture->getHandle() };
-	const GLuint depthTexHandle{ fbo->m_depthTexture->getHandle() };
+	const u32 colorTexHandle{ fbo->m_colorTexture->getHandle() };
+	const u32 depthTexHandle{ fbo->m_depthTexture->getHandle() };
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexHandle, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexHandle, 0);
 

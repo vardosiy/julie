@@ -12,7 +12,7 @@
 #include <boost/noncopyable.hpp>
 
 #include <string_view>
-#include <cstdint>
+#include <vector>
 #include <memory>
 
 //-----------------------------------------------------------------------------
@@ -46,6 +46,7 @@ public:
 	void setUniformValue(s32 _location, const glm::vec4 & _val) const;
 	void setUniformValue(s32 _location, const glm::mat4 & _val) const;
 
+	void setUniformValue(s32 _location, const std::vector<s32> & _val) const;
 	void setUniformValue(s32 _location, u32 _count, const s32 * _val) const;
 	void setUniformValue(s32 _location, u32 _count, const glm::vec3 * _val) const;
 	void setUniformValue(s32 _location, u32 _count, const glm::vec4 * _val) const;

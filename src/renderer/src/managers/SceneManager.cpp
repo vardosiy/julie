@@ -166,17 +166,17 @@ void SceneManager::loadObjects(const Json::Value & _data)
 {
 	ResourceManager & resManager = ResourceManager::getInstance();
 
-	auto tex2dGetter = [&resManager](int _id) { return resManager.get2dTexture(_id); };
-	auto cubeTexGetter = [&resManager](int _id) { return resManager.getCubeTexture(_id); };
+	auto tex2dGetter = [&resManager](s32 _id) { return resManager.get2dTexture(_id); };
+	auto cubeTexGetter = [&resManager](s32 _id) { return resManager.getCubeTexture(_id); };
 
-	const uint32_t objectsCount{ _data.size() };
+	const u32 objectsCount{ _data.size() };
 	m_objects.reserve(objectsCount);
 
-	for (uint32_t i{ 0 }; i < objectsCount; ++i)
+	for (u32 i{ 0 }; i < objectsCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
-		const int modelId{ current["model"].asInt() };
+		const s32 modelId{ current["model"].asInt() };
 		Model * model = resManager.getModel(modelId);
 		if (!model)
 		{
@@ -185,7 +185,7 @@ void SceneManager::loadObjects(const Json::Value & _data)
 
 		std::unique_ptr<Object> & object = m_objects.emplace_back(Object::create(*model));
 
-		const int shaderId{ current["shader"].asInt() };
+		const s32 shaderId{ current["shader"].asInt() };
 		Shader * shader = resManager.getShader(shaderId);
 		if (shader)
 		{
@@ -210,10 +210,10 @@ void SceneManager::loadObjects(const Json::Value & _data)
 
 void SceneManager::loadLights(const Json::Value & _data)
 {
-	const uint32_t lightsCount{ _data.size() };
+	const u32 lightsCount{ _data.size() };
 	m_lights.reserve(lightsCount);
 
-	for (uint32_t i{ 0 }; i < lightsCount; ++i)
+	for (u32 i{ 0 }; i < lightsCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
@@ -293,15 +293,15 @@ ObjectParameters SceneManager::loadObjectParameters(const Json::Value & _data)
 
 template<typename T>
 std::vector<T *> SceneManager::loadObjectTextures(
-	const std::function<T * (int)> & _textureGetter,
+	const std::function<T * (s32)> & _textureGetter,
 	const Json::Value & _data
 )
 {
-	const uint32_t texturesCount{ _data.size() };
+	const u32 texturesCount{ _data.size() };
 
 	std::vector<T *> textures;
 	textures.reserve(texturesCount);
-	for (uint32_t i{ 0 }; i < texturesCount; ++i)
+	for (u32 i{ 0 }; i < texturesCount; ++i)
 	{
 		T * texture = _textureGetter(_data[i].asInt());
 		if (texture)

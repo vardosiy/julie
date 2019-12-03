@@ -17,12 +17,12 @@ namespace details {
 
 bool checkShaderCompilationSucceded(jl::u32 _shaderId) noexcept
 {
-	int status;
+	jl::s32 status;
 	glGetShaderiv(_shaderId, GL_COMPILE_STATUS, &status);
 
 	if (!status)
 	{
-		int messageLength;
+		jl::s32 messageLength;
 		glGetShaderiv(_shaderId, GL_INFO_LOG_LENGTH, &messageLength);
 
 		if (messageLength > 1)
@@ -306,6 +306,13 @@ void Shader::setUniformValue(s32 _location, const glm::vec4 & _val) const
 void Shader::setUniformValue(s32 _location, const glm::mat4 & _val) const
 {
 	glUniformMatrix4fv(_location, 1, false, reinterpret_cast<const float *>(&_val));
+}
+
+//-----------------------------------------------------------------------------
+
+void Shader::setUniformValue(s32 _location, const std::vector<s32> & _val) const
+{
+	glUniform1iv(_location, static_cast<s32>(_val.size()), _val.data());
 }
 
 //-----------------------------------------------------------------------------
