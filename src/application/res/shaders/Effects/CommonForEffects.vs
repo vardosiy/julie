@@ -1,7 +1,7 @@
-attribute vec3 a_posL;
-attribute vec2 a_uv;
+in vec3 a_posL;
+in vec2 a_uv;
 
-varying vec2 v_uv;
+out vec2 v_uv;
 
 void main()
 {

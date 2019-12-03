@@ -1,6 +1,6 @@
 precision mediump float;
 
-varying vec2 v_uv;
+in vec2 v_uv;
 
 // original
 // blurred

@@ -18,7 +18,7 @@ filters.append(FilterData("shaders",	"InitShaders.cmake",	[".vs", ".fs"]))
 targets_dirs = list()
 targets_dirs.append("3rd-party/glad")
 targets_dirs.append("src/application")
-targets_dirs.append("src/core")
+targets_dirs.append("src/renderer")
 targets_dirs.append("src/utils")
 targets_dirs.append("src/tests/utils_tests")
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(notes CXX)
+project(julie CXX)
 
 #------------------------------------------------------------------------------
 # directories
@@ -58,28 +58,22 @@ message("\nLoading 3rd-party libs")
 
 include_directories(${boost_dir})
 
-message("\nfmt lib")
 add_subdirectory(${3rd_party_dir}/fmt)
 set_target_properties(fmt PROPERTIES FOLDER ${3rd_party_targets_group})
 
-message("\nglm")
 add_subdirectory(${3rd_party_dir}/glm)
 set_target_properties(glm_static PROPERTIES FOLDER ${3rd_party_targets_group})
 
-message("\njsoncpp")
 add_subdirectory(${3rd_party_dir}/jsoncpp)
 set_target_properties(jsoncpp_lib PROPERTIES FOLDER ${3rd_party_targets_group})
 
-message("\nglew")
 add_subdirectory(${3rd_party_dir}/glad)
 set_target_properties(glad PROPERTIES FOLDER ${3rd_party_targets_group})
 
 #------------------------------------------------------------------------------
 # subdirectories
-message("\nLoading targets")
-
 add_subdirectory(${targets_dir}/utils)
-add_subdirectory(${targets_dir}/core)
+add_subdirectory(${targets_dir}/renderer)
 add_subdirectory(${targets_dir}/application)
 
 #------------------------------------------------------------------------------
@@ -91,8 +85,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/tests/)
 
 #------------------------------------------------------------------------------
 # tests
-message("\nLoading tests")
-
 add_subdirectory(${3rd_party_dir}/gtest)
 set_target_properties(gtest			PROPERTIES FOLDER ${tests_targets_group}/gtest)
 set_target_properties(gtest_main	PROPERTIES FOLDER ${tests_targets_group}/gtest)
