@@ -1,5 +1,7 @@
 #include "renderer/managers/ResourceManager.hpp"
 
+#include "renderer/gl_primitives/TextureTiling.hpp"
+
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"
 
@@ -7,30 +9,6 @@
 #include <glad/glad.h>
 
 #include <fstream>
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-//-----------------------------------------------------------------------------
-
-static jl::s32 getTilingFromStr(std::string_view _str)
-{
-	if (_str == "CLAMP_TO_EDGE")
-	{
-		return GL_CLAMP_TO_EDGE;
-	}
-	else if (_str == "REPEAT")
-	{
-		return GL_REPEAT;
-	}
-
-	return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace details
 
 //-----------------------------------------------------------------------------
 
@@ -119,10 +97,10 @@ void ResourceManager::loadTextures2D(const Json::Value & _data)
 		const Json::Value & current = _data[i];
 
 		const s32 textureId{ current["ID"].asInt() };
-		const s32 tiling{ details::getTilingFromStr(current["tiling"].asString()) };
+		const std::string_view tiling{ current["tiling"].asCString() };
 		const std::string_view fileName{ current["file"].asCString() };
 
-		auto texture = Texture::create(fileName, tiling);
+		auto texture = Texture::create(fileName, fromString<TextureTiling>(tiling));
 		ASSERT(texture, "Can't load 2D texture with ID {}", textureId);
 		if (texture)
 		{
@@ -141,10 +119,10 @@ void ResourceManager::loadCubeTextures(const Json::Value & _data)
 		const Json::Value & current = _data[i];
 
 		const s32 textureId{ current["ID"].asInt() };
-		const s32 tiling{ details::getTilingFromStr(current["tiling"].asString()) };
+		const std::string_view tiling{ current["tiling"].asCString() };
 		const std::string_view fileName{ current["file"].asCString() };
 
-		auto texture = CubeTexture::create(fileName, tiling);
+		auto texture = CubeTexture::create(fileName, fromString<TextureTiling>(tiling));
 		ASSERT(texture, "Can't load 2D texture with ID {}", textureId);
 		if (texture)
 		{

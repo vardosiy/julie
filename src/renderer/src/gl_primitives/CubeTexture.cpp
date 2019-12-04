@@ -1,4 +1,5 @@
 #include "renderer/gl_primitives/CubeTexture.hpp"
+#include "renderer/gl_primitives/TextureTiling.hpp"
 
 #include "loaders/loadTga.hpp"
 
@@ -13,7 +14,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-constexpr jl::u32 k_facesCount{ 6 };
+constexpr jl::u32 k_facesCount = 6;
 using OffsetsArray = std::array<std::pair<jl::u32, jl::u32>, k_facesCount>;
 
 //-----------------------------------------------------------------------------
@@ -32,36 +33,6 @@ OffsetsArray calculateOffsets(jl::u32 _faceWidth)
 
 //-----------------------------------------------------------------------------
 
-void extractFace(
-	const char * _pSrc,
-	char * _pDst,
-	int _srcRowLength, // pixels
-	int _dstRowLength, // pixels
-	int _offsetX, // pixels
-	int _offsetY, // pixels
-	int _bitsPerPixel
-)
-{
-	const int bytesPerPixel{ _bitsPerPixel / 8 };
-
-	const int dstRowSize{ _dstRowLength * bytesPerPixel };
-	const int srcOffsetXBytes{ _offsetX * bytesPerPixel };
-
-	const int dstColumnSize{ _dstRowLength }; // because cube face is square
-
-	for (int i{ 0 }; i < dstColumnSize; ++i)
-	{
-		const int srcOffsetYBytes = _srcRowLength * bytesPerPixel * (_offsetY + i);
-
-		const char * pSrc = _pSrc + srcOffsetXBytes + srcOffsetYBytes;
-		char * pDst = _pDst + dstRowSize * i;
-
-		memcpy_s(pDst, dstRowSize, pSrc, dstRowSize);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace details
 
 //-----------------------------------------------------------------------------
@@ -70,62 +41,41 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<CubeTexture> CubeTexture::create(std::string_view _filePath, u32 _tiling)
+std::unique_ptr<CubeTexture> CubeTexture::create(std::string_view _filePath, TextureTiling _tiling)
 {
 	s32 width, height, bpp;
-	std::unique_ptr<char[]> bufferTGA = loadTga(_filePath, &width, &height, &bpp);
-	if (!bufferTGA)
+	char * tgaBuffer = loadTga(_filePath.data(), &width, &height, &bpp);
+	if (!tgaBuffer)
 	{
 		return nullptr;
 	}
 
+	ASSERT(width / 4  == height / 3, "Cube texture has invalid width or/and height");
+
 	std::unique_ptr<CubeTexture> cubeTexture(new CubeTexture);
+	cubeTexture->genTexture(GL_TEXTURE_CUBE_MAP);
+	cubeTexture->bind(0);
 
-	glGenTextures(1, &cubeTexture->m_id);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture->m_id);
+	loadDataToGpu(tgaBuffer, width, height, bpp);
+	delete[] tgaBuffer;
 
-	const u32 faceWidth{ static_cast<u32>(width) / 4 };
-	details::OffsetsArray offsets = details::calculateOffsets(faceWidth);
-
-	std::unique_ptr<char[]> bufferFace(new char[faceWidth * faceWidth * bpp / 8]);
-	for (s32 i{ 0 }; i < details::k_facesCount; ++i)
-	{
-		details::extractFace(bufferTGA.get(), bufferFace.get(), width, faceWidth, offsets[i].first, offsets[i].second, bpp);
-		GLenum target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
-		glTexImage2D(target, 0, GL_RGB, faceWidth, faceWidth, 0, GL_RGB, GL_UNSIGNED_BYTE, bufferFace.get());
-	}
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, _tiling);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, _tiling);
-
-	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	cubeTexture->performBasicSetup(GL_TEXTURE_CUBE_MAP, _tiling);
 
 	return cubeTexture;
 }
 
 //-----------------------------------------------------------------------------
 
-CubeTexture::~CubeTexture()
-{
-	glDeleteTextures(1, &m_id);
-}
-
-//-----------------------------------------------------------------------------
-
 CubeTexture::CubeTexture(CubeTexture && _rhs) noexcept
-	: m_id(_rhs.m_id)
+	: TextureBase(std::forward<CubeTexture>(_rhs))
 {
-	_rhs.m_id = 0;
 }
 
 //-----------------------------------------------------------------------------
 
 CubeTexture & CubeTexture::operator =(CubeTexture && _rhs) noexcept
 {
-	std::swap(m_id, _rhs.m_id);
-
+	TextureBase::operator=(std::forward<CubeTexture>(_rhs));
 	return *this;
 }
 
@@ -133,8 +83,54 @@ CubeTexture & CubeTexture::operator =(CubeTexture && _rhs) noexcept
 
 void CubeTexture::bind(u16 _slot) const noexcept
 {
-	glActiveTexture(GL_TEXTURE0 + _slot);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+	bindInternal(GL_TEXTURE_CUBE_MAP, _slot);
+}
+
+//-----------------------------------------------------------------------------
+
+void CubeTexture::loadDataToGpu(const char * _data, s32 _width, s32 _height, s32 _bpp)
+{
+	const u32 faceWidth = static_cast<u32>(_width) / 4;
+	details::OffsetsArray offsets = details::calculateOffsets(faceWidth);
+
+	char * faceBuffer = new char[faceWidth * faceWidth * _bpp / 8];
+	for (s32 i = 0; i < details::k_facesCount; ++i)
+	{
+		extractFace(_data, faceBuffer, _width, faceWidth, offsets[i].first, offsets[i].second, _bpp);
+		s32 target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+		glTexImage2D(target, 0, GL_RGB, faceWidth, faceWidth, 0, GL_RGB, GL_UNSIGNED_BYTE, faceBuffer);
+	}
+	delete[] faceBuffer;
+}
+
+//-----------------------------------------------------------------------------
+
+void CubeTexture::extractFace(
+	const char * _pSrc,
+	char * _pDst,
+	s32 _srcRowLength,	// pixels
+	s32 _dstRowLength,	// pixels
+	s32 _offsetX,		// pixels
+	s32 _offsetY,		// pixels
+	s32 _bitsPerPixel
+)
+{
+	const s32 bytesPerPixel = _bitsPerPixel / 8;
+
+	const s32 dstRowSize = _dstRowLength * bytesPerPixel;
+	const s32 srcOffsetXBytes = _offsetX * bytesPerPixel;
+
+	const s32 dstColumnSize = _dstRowLength; // because cube face is square
+
+	for (s32 i = 0; i < dstColumnSize; ++i)
+	{
+		const s32 srcOffsetYBytes = _srcRowLength * bytesPerPixel * (_offsetY + i);
+
+		const char * pSrc = _pSrc + srcOffsetXBytes + srcOffsetYBytes;
+		char * pDst = _pDst + dstRowSize * i;
+
+		memcpy_s(pDst, dstRowSize, pSrc, dstRowSize);
+	}
 }
 
 //-----------------------------------------------------------------------------

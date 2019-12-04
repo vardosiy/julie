@@ -169,8 +169,8 @@ void EffectManager::loadEffects(const Json::Value & _data)
 
 bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect)
 {
-	const uint32_t passesCount{ _data.size() };
-	for (uint32_t i{ 0 }; i < passesCount; ++i)
+	const u32 passesCount{ _data.size() };
+	for (u32 i{ 0 }; i < passesCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 		Pass pass;

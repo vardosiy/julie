@@ -9,20 +9,20 @@
         { "ID": 6, "file": "res/models/water.nfg" }
     ],
     "2DTextures" : [
-        { "ID": 0, "file": "res/textures/Terrain_blend_map.tga",    "tiling": "REPEAT" },
-        { "ID": 1, "file": "res/textures/Grass.tga",                "tiling": "REPEAT" },
-        { "ID": 2, "file": "res/textures/Dirt.tga",                 "tiling": "REPEAT" },
-        { "ID": 3, "file": "res/textures/Rock.tga",                 "tiling": "REPEAT" },
-        { "ID": 4, "file": "res/textures/Croco.tga",                "tiling": "CLAMP_TO_EDGE" },
-        { "ID": 5, "file": "res/textures/Witch.tga",                "tiling": "CLAMP_TO_EDGE" },
-        { "ID": 6, "file": "res/textures/DisplacementMap.tga",      "tiling": "REPEAT" },
-        { "ID": 7, "file": "res/textures/fire3.tga",                "tiling": "CLAMP_TO_EDGE" },
-        { "ID": 8, "file": "res/textures/fire_mask.tga",            "tiling": "CLAMP_TO_EDGE" },
-        { "ID": 9, "file": "res/textures/NormalMap.tga",            "tiling": "REPEAT" },
-        { "ID": 10, "file": "res/textures/WaterNormal.tga",         "tiling": "REPEAT" }
+        { "ID": 0, "file": "res/textures/Terrain_blend_map.tga",    "tiling": "Repeat" },
+        { "ID": 1, "file": "res/textures/Grass.tga",                "tiling": "Repeat" },
+        { "ID": 2, "file": "res/textures/Dirt.tga",                 "tiling": "Repeat" },
+        { "ID": 3, "file": "res/textures/Rock.tga",                 "tiling": "Repeat" },
+        { "ID": 4, "file": "res/textures/Croco.tga",                "tiling": "ClampToEdge" },
+        { "ID": 5, "file": "res/textures/Witch.tga",                "tiling": "ClampToEdge" },
+        { "ID": 6, "file": "res/textures/DisplacementMap.tga",      "tiling": "Repeat" },
+        { "ID": 7, "file": "res/textures/fire3.tga",                "tiling": "ClampToEdge" },
+        { "ID": 8, "file": "res/textures/fire_mask.tga",            "tiling": "ClampToEdge" },
+        { "ID": 9, "file": "res/textures/NormalMap.tga",            "tiling": "Repeat" },
+        { "ID": 10, "file": "res/textures/WaterNormal.tga",         "tiling": "Repeat" }
     ],
     "cubeTextures" : [
-        { "ID": 0, "file": "res/textures/envMap.tga", "tiling": "CLAMP_TO_EDGE" }
+        { "ID": 0, "file": "res/textures/envMap.tga", "tiling": "ClampToEdge" }
     ],
     "shaders" : [
         { "ID": 0, "VS": "res/shaders/TriangleShader.vs",       "FS": "res/shaders/TriangleShader.fs", "States": [] },

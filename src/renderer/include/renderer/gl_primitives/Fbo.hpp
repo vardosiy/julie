@@ -25,7 +25,7 @@ public:
 	Fbo(Fbo && _rhs) noexcept;
 	Fbo & operator =(Fbo && _rhs) noexcept;
 
-	void bind() const;
+	void bind() const noexcept;
 
 	const Texture & getColorTexture() const noexcept { return *m_colorTexture; }
 	const Texture & getDepthTexture() const noexcept { return *m_depthTexture; }

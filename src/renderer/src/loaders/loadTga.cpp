@@ -1,5 +1,7 @@
 #include "loaders/loadTga.hpp"
 
+#include <stdio.h>
+
 //-----------------------------------------------------------------------------
 
 #pragma pack(push,x1)					// Byte alignment (8-bit)
@@ -34,10 +36,6 @@ typedef struct
 
 const int IT_COMPRESSED = 10;
 const int IT_UNCOMPRESSED = 2;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -127,13 +125,9 @@ void loadUncompressedImage(char * pDest, char * pSrc, TGA_HEADER * pHeader)
 
 //-----------------------------------------------------------------------------
 
-} // namespace details
-
-//-----------------------------------------------------------------------------
-
-std::unique_ptr<char[]> loadTga(std::string_view fileName, int * width, int * height, int * bpp)
+char * loadTga(const char * fileName, int * width, int * height, int * bpp)
 {
-	FILE * f = fopen(fileName.data(), "rb");
+	FILE * f = fopen(fileName, "rb");
 
 	if (f == NULL)
 		return NULL;
@@ -166,15 +160,15 @@ std::unique_ptr<char[]> loadTga(std::string_view fileName, int * width, int * he
 	*height = header.height;
 	*bpp = header.bits;
 
-	std::unique_ptr<char[]> pOutBuffer(new char[header.width * header.height * header.bits / 8]);
+	char * pOutBuffer = new char[header.width * header.height * header.bits / 8];
 
 	switch (header.imagetype)
 	{
 		case IT_UNCOMPRESSED:
-			details::loadUncompressedImage(pOutBuffer.get(), pBuffer, &header);
+			loadUncompressedImage(pOutBuffer, pBuffer, &header);
 			break;
 		case IT_COMPRESSED:
-			details::loadCompressedImage(pOutBuffer.get(), pBuffer, &header);
+			loadCompressedImage(pOutBuffer, pBuffer, &header);
 			break;
 	}
 

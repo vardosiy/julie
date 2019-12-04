@@ -24,8 +24,8 @@ std::unique_ptr<Model> Model::create(std::string_view _filePath)
 	}
 
 	s32 verticesCount{ 0 };
-	ASSERT(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 	fscanf_s(pFile, "%*s %d", &verticesCount);
+	ASSERT(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
 	std::vector<Vertex> vertices(verticesCount);
 	for (auto & vertex : vertices)
@@ -41,8 +41,8 @@ std::unique_ptr<Model> Model::create(std::string_view _filePath)
 	}
 
 	s32 indicesCount{ 0 };
-	ASSERT(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 	fscanf_s(pFile, "%*s %d", &indicesCount);
+	ASSERT(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
 	std::vector<u16> indices(indicesCount);
 	for (s32 i{ 0 }; i < indicesCount; i += 3)

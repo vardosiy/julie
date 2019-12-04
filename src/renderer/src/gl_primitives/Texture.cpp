@@ -1,4 +1,5 @@
 #include "renderer/gl_primitives/Texture.hpp"
+#include "renderer/gl_primitives/TextureTiling.hpp"
 
 #include "loaders/loadTga.hpp"
 
@@ -10,29 +11,24 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Texture> Texture::create(std::string_view _filePath, u32 _tiling)
+std::unique_ptr<Texture> Texture::create(std::string_view _filePath, TextureTiling _tiling)
 {
 	s32 width, height, bpp;
-	std::unique_ptr<char[]> bufferTGA = loadTga(_filePath, &width, &height, &bpp);
-	if (!bufferTGA)
+	char *tgaBuffer = loadTga(_filePath.data(), &width, &height, &bpp);
+	if (!tgaBuffer)
 	{
 		return nullptr;
 	}
 
 	std::unique_ptr<Texture> texture(new Texture);
+	texture->genTexture(GL_TEXTURE_2D);
+	texture->bind(0);
 
-	glGenTextures(1, &texture->m_id);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	const s32 format = bpp == 24 ? GL_RGB : GL_RGBA;
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, tgaBuffer);
+	delete[] tgaBuffer;
 
-	const GLint format{ bpp == 24 ? GL_RGB : GL_RGBA };
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, bufferTGA.get());
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _tiling);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _tiling);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
+	texture->performBasicSetup(GL_TEXTURE_2D, _tiling);
 
 	return texture;
 }
@@ -42,9 +38,8 @@ std::unique_ptr<Texture> Texture::create(std::string_view _filePath, u32 _tiling
 std::unique_ptr<Texture> Texture::createFrameTexture(u32 _format, u32 _type, int _width, int _height)
 {
 	std::unique_ptr<Texture> texture(new Texture);
-
-	glGenTextures(1, &texture->m_id);
-	glBindTexture(GL_TEXTURE_2D, texture->m_id);
+	texture->genTexture(GL_TEXTURE_2D);
+	texture->bind(0);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -58,25 +53,16 @@ std::unique_ptr<Texture> Texture::createFrameTexture(u32 _format, u32 _type, int
 
 //-----------------------------------------------------------------------------
 
-Texture::~Texture()
-{
-	glDeleteTextures(1, &m_id);
-}
-
-//-----------------------------------------------------------------------------
-
 Texture::Texture(Texture && _rhs) noexcept
-	: m_id(_rhs.m_id)
+	: TextureBase(std::forward<Texture>(_rhs))
 {
-	_rhs.m_id = 0;
 }
 
 //-----------------------------------------------------------------------------
 
 Texture & Texture::operator =(Texture && _rhs) noexcept
 {
-	std::swap(m_id, _rhs.m_id);
-
+	TextureBase::operator=(std::forward<Texture>(_rhs));
 	return *this;
 }
 
@@ -84,8 +70,7 @@ Texture & Texture::operator =(Texture && _rhs) noexcept
 
 void Texture::bind(u16 _slot) const noexcept
 {
-	glActiveTexture(GL_TEXTURE0 + _slot);
-	glBindTexture(GL_TEXTURE_2D, m_id);
+	bindInternal(GL_TEXTURE_2D, _slot);
 }
 
 //-----------------------------------------------------------------------------

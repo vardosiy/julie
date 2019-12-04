@@ -13,29 +13,29 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-void checkStatus()
+void checkFramebufferStatus()
 {
 	jl::u32 status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
 	switch (status)
 	{
 		case GL_FRAMEBUFFER_COMPLETE:
-		break;
+			break;
 
 		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-		LOG_ERROR("FrameBuffer error: incomplete attachment");
-		break;
+			LOG_ERROR("FrameBuffer error: incomplete attachment");
+			break;
 
 		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-		LOG_ERROR("FrameBuffer error: missing attachment");
-		break;
+			LOG_ERROR("FrameBuffer error: missing attachment");
+			break;
 
 		case GL_FRAMEBUFFER_UNSUPPORTED:
-		LOG_ERROR("FrameBuffer error: unsupported");
-		break;
+			LOG_ERROR("FrameBuffer error: unsupported");
+			break;
 
 		default:
-		LOG_ERROR("FrameBuffer error");
+			LOG_ERROR("FrameBuffer error");
 	}
 }
 
@@ -77,12 +77,12 @@ std::unique_ptr<Fbo> Fbo::create()
 	glGenFramebuffers(1, &fbo->m_id);
 	fbo->bind();
 
-	const u32 colorTexHandle{ fbo->m_colorTexture->getHandle() };
-	const u32 depthTexHandle{ fbo->m_depthTexture->getHandle() };
+	const u32 colorTexHandle = fbo->m_colorTexture->getHandle();
+	const u32 depthTexHandle = fbo->m_depthTexture->getHandle();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexHandle, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexHandle, 0);
 
-	details::checkStatus();
+	details::checkFramebufferStatus();
 
 	return fbo;
 }
@@ -119,7 +119,7 @@ Fbo & Fbo::operator =(Fbo && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Fbo::bind() const
+void Fbo::bind() const noexcept
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 }
