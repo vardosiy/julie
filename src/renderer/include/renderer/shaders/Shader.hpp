@@ -30,12 +30,11 @@ public:
 	~Shader();
 
 	Shader(Shader && _rhs) noexcept;
-	Shader & operator =(Shader && _rhs) noexcept;
+	Shader & operator=(Shader && _rhs) noexcept;
 
 	void draw(u32 _indeciesCount) const;
 
-	void bind() const;
-	void bindAttributes() const;
+	void bind() const noexcept;
 
 	const ShaderUniforms & getUniforms() const noexcept;
 

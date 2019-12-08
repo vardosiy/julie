@@ -2,6 +2,7 @@
 
 #include "renderer/common/Globals.hpp"
 
+#include <iostream>
 #include <QApplication>
 
 //-----------------------------------------------------------------------------

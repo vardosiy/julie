@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/common/Axis.hpp"
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
@@ -61,7 +63,7 @@ private:
 
 	bool m_bIsModified;
 
-	static constexpr glm::vec3 k_camDirection{ 0.0f, 0.0f, -1.0f };
+	static constexpr glm::vec3 k_camDirection{ -constants::axis::z };
 	static constexpr float k_maxCamRotationX{ 0.99999999f };
 };
 

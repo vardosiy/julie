@@ -18,11 +18,11 @@ public:
 	u32 getHandle() const noexcept { return m_id; }
 
 protected:
-	TextureBase() = default;
+	TextureBase() noexcept = default;
 	~TextureBase();
 
 	TextureBase(TextureBase && _rhs) noexcept;
-	TextureBase & operator =(TextureBase && _rhs) noexcept;
+	TextureBase & operator=(TextureBase && _rhs) noexcept;
 
 	void bindInternal(u32 _textureType, u16 _slot) const noexcept;
 

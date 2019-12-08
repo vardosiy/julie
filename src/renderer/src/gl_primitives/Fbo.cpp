@@ -49,7 +49,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Fbo Fbo::screen;
+Fbo Fbo::s_screen;
 
 //-----------------------------------------------------------------------------
 
@@ -89,6 +89,13 @@ std::unique_ptr<Fbo> Fbo::create()
 
 //-----------------------------------------------------------------------------
 
+void Fbo::setScreenBufferId(u32 _id)
+{
+	s_screen.m_id = _id;
+}
+
+//-----------------------------------------------------------------------------
+
 Fbo::~Fbo()
 {
 	glDeleteFramebuffers(1, &m_id);
@@ -108,7 +115,7 @@ Fbo::Fbo(Fbo && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-Fbo & Fbo::operator =(Fbo && _rhs) noexcept
+Fbo & Fbo::operator=(Fbo && _rhs) noexcept
 {
 	std::swap(m_id, _rhs.m_id);
 	std::swap(m_colorTexture, _rhs.m_colorTexture);

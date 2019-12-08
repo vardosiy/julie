@@ -63,8 +63,8 @@ private:
 	ObjectParameters loadObjectParameters(const Json::Value & _data);
 
 	template<typename T>
-	std::vector<T *> loadObjectTextures(
-		const std::function<T * (s32)>& _textureGetter,
+	std::vector<const T *> loadObjectTextures(
+		const std::function<const T * (s32)>& _textureGetter,
 		const Json::Value & _data
 	);
 

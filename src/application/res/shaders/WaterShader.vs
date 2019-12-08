@@ -1,8 +1,10 @@
-in vec3 a_posL;
-in vec2 a_uv;
-in vec3 a_normL;
-in vec3 a_bitangentL;
-in vec3 a_tangentL;
+#version 330 core
+
+layout (location = 0) in vec3 a_posL;
+layout (location = 1) in vec2 a_uv;
+layout (location = 2) in vec3 a_normL;
+layout (location = 3) in vec3 a_bitangentL;
+layout (location = 4) in vec3 a_tangentL;
 
 out vec3 v_posW;
 out vec2 v_uv;

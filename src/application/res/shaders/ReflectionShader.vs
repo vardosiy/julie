@@ -1,5 +1,7 @@
-in vec3 a_posL;
-in vec3 a_normL;
+#version 330 core
+
+layout (location = 0) in vec3 a_posL;
+layout (location = 2) in vec3 a_normL;
 
 out vec3 v_toEye;
 out vec3 v_normW;

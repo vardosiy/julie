@@ -14,7 +14,7 @@ namespace jl {
 std::unique_ptr<Texture> Texture::create(std::string_view _filePath, TextureTiling _tiling)
 {
 	s32 width, height, bpp;
-	char *tgaBuffer = loadTga(_filePath.data(), &width, &height, &bpp);
+	char * tgaBuffer = loadTga(_filePath.data(), &width, &height, &bpp);
 	if (!tgaBuffer)
 	{
 		return nullptr;
@@ -60,7 +60,7 @@ Texture::Texture(Texture && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-Texture & Texture::operator =(Texture && _rhs) noexcept
+Texture & Texture::operator=(Texture && _rhs) noexcept
 {
 	TextureBase::operator=(std::forward<Texture>(_rhs));
 	return *this;

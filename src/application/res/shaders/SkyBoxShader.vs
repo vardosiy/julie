@@ -1,4 +1,6 @@
-in vec3 a_posL;
+#version 330 core
+
+layout (location = 0) in vec3 a_posL;
 out vec3 v_posL;
 
 uniform mat4 u_WVP;

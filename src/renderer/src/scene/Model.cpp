@@ -73,7 +73,7 @@ std::unique_ptr<Model> Model::createRect(const glm::vec3 & _pos, const glm::vec2
 	vertices[2].uv = glm::vec2{ 1.0f, 0.0f };
 	vertices[3].uv = glm::vec2{ 1.0f, 1.0f };
 
-	std::vector<uint16_t> indices{ 0, 1, 2, 1, 2, 3 };
+	std::vector<u16> indices{ 0, 1, 2, 1, 2, 3 };
 	return std::unique_ptr<Model>(new Model(vertices, indices));
 }
 
@@ -81,15 +81,13 @@ std::unique_ptr<Model> Model::createRect(const glm::vec3 & _pos, const glm::vec2
 
 void Model::bind() const
 {
-	m_vertexBuffer.bind();
-	m_indexBuffer.bind();
+	m_vertexArray.bind();
 }
 
 //-----------------------------------------------------------------------------
 
-Model::Model(const std::vector<Vertex> & _vertices, const std::vector<uint16_t> & _indices)
-	: m_vertexBuffer(Buffer::Type::VertexBuffer, _vertices)
-	, m_indexBuffer(Buffer::Type::IndexBuffer, _indices)
+Model::Model(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices)
+	: m_vertexArray(_vertices, _indices)
 {
 }
 

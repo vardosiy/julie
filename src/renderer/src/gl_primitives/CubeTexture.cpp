@@ -73,7 +73,7 @@ CubeTexture::CubeTexture(CubeTexture && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-CubeTexture & CubeTexture::operator =(CubeTexture && _rhs) noexcept
+CubeTexture & CubeTexture::operator=(CubeTexture && _rhs) noexcept
 {
 	TextureBase::operator=(std::forward<CubeTexture>(_rhs));
 	return *this;

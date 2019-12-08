@@ -1,3 +1,4 @@
+#version 330 core
 precision mediump float;
 
 #define DIRECTIONAL_LIGHTS_COUNT 1

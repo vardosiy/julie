@@ -31,15 +31,12 @@ std::unique_ptr<Object> Object::create(const Model & _model)
 
 //-----------------------------------------------------------------------------
 
-void Object::draw()
+void Object::draw() const
 {
 	m_shader->bind();
 	m_model->bind();
 
-	m_shader->bindAttributes();
-
 	setUniforms();
-	setTextures();
 
 	m_shader->draw(m_model->getIndeciesCount());
 }
@@ -48,10 +45,16 @@ void Object::draw()
 
 void Object::update(float _deltaTime)
 {
-	if (m_bIsModified)
+	if (m_bIsTransformChanged)
 	{
 		recalculateWorldMatrix();
-		m_bIsModified = false;
+		m_bIsTransformChanged = false;
+	}
+
+	if (m_bIsTexturesUpdated)
+	{
+		prepareTextureSlots();
+		m_bIsTexturesUpdated = false;
 	}
 }
 
@@ -79,7 +82,7 @@ void Object::setShader(const Shader & _shader) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setTextures2D(std::vector<Texture *> && _textures) noexcept
+void Object::setTextures2D(std::vector<const Texture *> && _textures) noexcept
 {
 	m_textures2D = std::move(_textures);
 	m_bIsTexturesUpdated = true;
@@ -87,7 +90,7 @@ void Object::setTextures2D(std::vector<Texture *> && _textures) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setCubeTextures(std::vector<CubeTexture *> && _textures) noexcept
+void Object::setCubeTextures(std::vector<const CubeTexture *> && _textures) noexcept
 {
 	m_cubeTextures = std::move(_textures);
 	m_bIsTexturesUpdated = true;
@@ -98,7 +101,7 @@ void Object::setCubeTextures(std::vector<CubeTexture *> && _textures) noexcept
 void Object::setPosition(const glm::vec3 & _vec) noexcept
 {
 	m_pos = _vec;
-	m_bIsModified = true;
+	m_bIsTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +109,7 @@ void Object::setPosition(const glm::vec3 & _vec) noexcept
 void Object::setRotation(const glm::vec3 & _vec) noexcept
 {
 	m_rotation = _vec;
-	m_bIsModified = true;
+	m_bIsTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +117,23 @@ void Object::setRotation(const glm::vec3 & _vec) noexcept
 void Object::setScale(const glm::vec3 & _vec) noexcept
 {
 	m_scale = _vec;
-	m_bIsModified = true;
+	m_bIsTransformChanged = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::translate(const glm::vec3 & _vec) noexcept
+{
+	m_pos += _vec;
+	m_bIsTransformChanged = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::rotate(const glm::vec3 & _vec) noexcept
+{
+	m_rotation += _vec;
+	m_bIsTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +145,7 @@ void Object::setParameters(const ObjectParameters & _params) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setUniforms()
+void Object::setUniforms() const
 {
 	const SceneManager & sceneMgr = SceneManager::getInstance();
 	const Camera & cam = sceneMgr.getCamera();
@@ -189,18 +208,15 @@ void Object::setUniforms()
 		m_shader->setUniformValue(uniforms.u_fogRange, fog.range);
 		m_shader->setUniformValue(uniforms.u_fogColor, fog.color);
 	}
+
+	setTextures();
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setTextures()
+void Object::setTextures() const
 {
 	const ShaderUniforms & uniforms = m_shader->getUniforms();
-
-	if (m_bIsTexturesUpdated)
-	{
-		prepareTextureSlots();
-	}
 
 	u16 counter{ 0 };
 
@@ -245,8 +261,6 @@ void Object::prepareTextureSlots()
 	{
 		m_texture2DUniformValues.push_back(i + textures2DCount);
 	}
-
-	m_bIsTexturesUpdated = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +274,7 @@ void Object::recalculateWorldMatrix()
 		glm::rotate(m_rotation.y, constants::axis::y) *
 		glm::rotate(m_rotation.z, constants::axis::z);
 
-	m_worldMatrix = translate * rotation * scale;
+	m_worldMatrix = translate * (rotation * scale);
 }
 
 //-----------------------------------------------------------------------------

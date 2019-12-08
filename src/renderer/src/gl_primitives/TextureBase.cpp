@@ -50,7 +50,7 @@ TextureBase::TextureBase(TextureBase && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-TextureBase & TextureBase::operator =(TextureBase && _rhs) noexcept
+TextureBase & TextureBase::operator=(TextureBase && _rhs) noexcept
 {
 	std::swap(m_id, _rhs.m_id);
 

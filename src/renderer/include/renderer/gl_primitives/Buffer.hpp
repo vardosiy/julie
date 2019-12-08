@@ -16,14 +16,19 @@ public:
 	enum class Type{ VertexBuffer, IndexBuffer };
 
 public:
-	template<typename T>
-	Buffer(Type _type, const std::vector<T> & _data);
+	Buffer(Type _type) noexcept;
 	~Buffer();
+
+	Buffer(Buffer && _rhs) noexcept;
+	Buffer & operator=(Buffer && _rhs) noexcept;
+
+	template<typename T>
+	void bufferData(const std::vector<T> & _data);
 
 	void bind() const noexcept;
 
-	Type	getType() const noexcept				{ return m_type; }
-	u32		getBufferedItemsCount() const noexcept	{ return m_itemsCount; }
+	Type getType() const noexcept { return m_type; }
+	u32 getItemsCount() const noexcept { return m_itemsCount; }
 
 private:
 	void bufferData(const void * _data, u32 _size);
@@ -38,11 +43,9 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-Buffer::Buffer(Type _type, const std::vector<T> & _data)
-	: m_id(0)
-	, m_type(_type)
-	, m_itemsCount(static_cast<u32>(_data.size()))
+void Buffer::bufferData(const std::vector<T> & _data)
 {
+	m_itemsCount = static_cast<u32>(_data.size());
 	bufferData(_data.data(), m_itemsCount * sizeof(T));
 }
 

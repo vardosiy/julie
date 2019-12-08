@@ -23,7 +23,7 @@ public:
 	~Texture() = default;
 
 	Texture(Texture && _rhs) noexcept;
-	Texture & operator =(Texture && _rhs) noexcept;
+	Texture & operator=(Texture && _rhs) noexcept;
 
 	void bind(u16 _slot) const noexcept;
 

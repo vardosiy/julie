@@ -57,9 +57,9 @@ void EffectManager::bindFbo() const
 {
 	if (m_pCurrentEffect)
 	{
-		s32 qt_buffer;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &qt_buffer);
-		Fbo::screen.m_id = qt_buffer;
+		s32 screenBuffer;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &screenBuffer);
+		Fbo::setScreenBufferId(screenBuffer);
 
 		m_targetingFbos[1]->bind();
 	}
@@ -135,7 +135,7 @@ void EffectManager::loadFbos(const Json::Value & _data)
 	m_targetingFbos.clear();
 	m_targetingFbos.reserve(fboCount);
 
-	m_targetingFbos.push_back(&Fbo::screen);
+	m_targetingFbos.push_back(&Fbo::s_screen);
 	for (u32 i{ 0 }; i < fboCount; ++i)
 	{
 		m_fbos.emplace_back(Fbo::create());
@@ -225,27 +225,27 @@ std::vector<float> EffectManager::loadPassParameters(const Json::Value & _data)
 
 std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value & _data)
 {
-	u32 texturesCount{ _data.size() };
-	for (u32 i{ texturesCount }; i > 0; --i)
-	{
-		const char * str = _data[i - 1].asCString();
-		if (str[0] == '0')
-		{
-			--texturesCount;
-		}
-	}
+	std::vector<const Texture *> textures;
 
-	std::vector<const Texture *> textures(texturesCount);
-
+	const u32 texturesCount{ _data.size() };
 	for (u32 i{ 0 }; i < texturesCount; ++i)
 	{
 		const char * str = _data[i].asCString();
+		if (str[0] == '0')
+		{
+			break;
+		}
+
 		const u32 fboIndex{ static_cast<u32>(str[0] - k_numberCharsOffset) };
 
-		textures[i] =
+		const Texture * texture =
 			str[1] == 'c' ?
-			&m_targetingFbos[fboIndex]->getColorTexture() :
-			&m_targetingFbos[fboIndex]->getDepthTexture();
+			m_targetingFbos[fboIndex]->getColorTexture() :
+			m_targetingFbos[fboIndex]->getDepthTexture();
+
+		textures.push_back(texture);
+
+		ASSERT(textures[i], "Texture used in PostFX is invalid");
 	}
 
 	return textures;

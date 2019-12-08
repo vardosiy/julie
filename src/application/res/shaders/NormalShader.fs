@@ -1,3 +1,5 @@
+#version 330 core
+
 precision mediump float;
 
 #define TEXTURES_COUNT 2

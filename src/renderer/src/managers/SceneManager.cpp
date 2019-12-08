@@ -292,18 +292,18 @@ ObjectParameters SceneManager::loadObjectParameters(const Json::Value & _data)
 //-----------------------------------------------------------------------------
 
 template<typename T>
-std::vector<T *> SceneManager::loadObjectTextures(
-	const std::function<T * (s32)> & _textureGetter,
+std::vector<const T *> SceneManager::loadObjectTextures(
+	const std::function<const T * (s32)> & _textureGetter,
 	const Json::Value & _data
 )
 {
 	const u32 texturesCount{ _data.size() };
 
-	std::vector<T *> textures;
+	std::vector<const T *> textures;
 	textures.reserve(texturesCount);
 	for (u32 i{ 0 }; i < texturesCount; ++i)
 	{
-		T * texture = _textureGetter(_data[i].asInt());
+		const T * texture = _textureGetter(_data[i].asInt());
 		if (texture)
 		{
 			textures.emplace_back(texture);

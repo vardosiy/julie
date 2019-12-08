@@ -22,7 +22,7 @@ public:
 	~CubeTexture() = default;
 
 	CubeTexture(CubeTexture && _rhs) noexcept;
-	CubeTexture & operator =(CubeTexture && _rhs) noexcept;
+	CubeTexture & operator=(CubeTexture && _rhs) noexcept;
 
 	void bind(u16 _slot) const noexcept;
 

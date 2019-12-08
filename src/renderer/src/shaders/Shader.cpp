@@ -198,7 +198,7 @@ Shader::Shader(Shader && _rhs) noexcept
 
 //-----------------------------------------------------------------------------
 
-Shader & Shader::operator =(Shader && _rhs) noexcept
+Shader & Shader::operator=(Shader && _rhs) noexcept
 {
 	std::swap(m_program, _rhs.m_program);
 
@@ -214,49 +214,9 @@ void Shader::draw(u32 _indeciesCount) const
 
 //-----------------------------------------------------------------------------
 
-void Shader::bind() const
+void Shader::bind() const noexcept
 {
 	glUseProgram(m_program);
-}
-
-//-----------------------------------------------------------------------------
-
-void Shader::bindAttributes() const
-{
-	float * offset = nullptr;
-	if (m_attribs.a_posL != -1)
-	{
-		glEnableVertexAttribArray(m_attribs.a_posL);
-		glVertexAttribPointer(m_attribs.a_posL, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset);
-	}
-
-	offset += 3;
-	if (m_attribs.a_uv != -1)
-	{
-		glEnableVertexAttribArray(m_attribs.a_uv);
-		glVertexAttribPointer(m_attribs.a_uv, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset);
-	}
-
-	offset += 2;
-	if (m_attribs.a_normL != -1)
-	{
-		glEnableVertexAttribArray(m_attribs.a_normL);
-		glVertexAttribPointer(m_attribs.a_normL, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset);
-	}
-
-	offset += 3;
-	if (m_attribs.a_bitangentL != -1)
-	{
-		glEnableVertexAttribArray(m_attribs.a_bitangentL);
-		glVertexAttribPointer(m_attribs.a_bitangentL, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset);
-	}
-
-	offset += 3;
-	if (m_attribs.a_tangentL != -1)
-	{
-		glEnableVertexAttribArray(m_attribs.a_tangentL);
-		glVertexAttribPointer(m_attribs.a_tangentL, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset);
-	}
 }
 
 //-----------------------------------------------------------------------------

@@ -6,20 +6,16 @@
 
 //-----------------------------------------------------------------------------
 
-namespace jl {
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 //-----------------------------------------------------------------------------
 
-u32 convertToGlType(Buffer::Type _type)
+jl::u32 convertToGlType(jl::Buffer::Type _type)
 {
 	switch (_type)
 	{
-		case Buffer::Type::VertexBuffer:	return GL_ARRAY_BUFFER;
-		case Buffer::Type::IndexBuffer:		return GL_ELEMENT_ARRAY_BUFFER;
+		case jl::Buffer::Type::VertexBuffer:	return GL_ARRAY_BUFFER;
+		case jl::Buffer::Type::IndexBuffer:		return GL_ELEMENT_ARRAY_BUFFER;
 	}
 
 	ASSERT(false, "Unhandlad buffer type");
@@ -32,9 +28,45 @@ u32 convertToGlType(Buffer::Type _type)
 
 //-----------------------------------------------------------------------------
 
+namespace jl {
+
+//-----------------------------------------------------------------------------
+
+Buffer::Buffer(Type _type) noexcept
+	: m_type(_type)
+	, m_itemsCount(0)
+{
+	glGenBuffers(1, &m_id);
+}
+
+//-----------------------------------------------------------------------------
+
 Buffer::~Buffer()
 {
 	glDeleteBuffers(1, &m_id);
+}
+
+//-----------------------------------------------------------------------------
+
+Buffer::Buffer(Buffer && _rhs) noexcept
+	: m_id(_rhs.m_id)
+	, m_type(_rhs.m_type)
+	, m_itemsCount(_rhs.m_itemsCount)
+{
+	_rhs.m_id = 0;
+	_rhs.m_type = Type::VertexBuffer;
+	_rhs.m_itemsCount = 0;
+}
+
+//-----------------------------------------------------------------------------
+
+Buffer & Buffer::operator=(Buffer && _rhs) noexcept
+{
+	std::swap(m_id, _rhs.m_id);
+	std::swap(m_type, _rhs.m_type);
+	std::swap(m_itemsCount, _rhs.m_itemsCount);
+
+	return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -49,9 +81,7 @@ void Buffer::bind() const noexcept
 void Buffer::bufferData(const void * _data, u32 _size)
 {
 	const uint32_t glBufferType = details::convertToGlType(m_type);
-
-	glGenBuffers(1, &m_id);
-	glBindBuffer(glBufferType, m_id);
+	bind();
 	glBufferData(glBufferType, _size, _data, GL_STATIC_DRAW);
 }
 

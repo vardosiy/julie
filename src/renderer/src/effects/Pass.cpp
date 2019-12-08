@@ -64,10 +64,10 @@ void Pass::setTextures(const std::vector<const Texture *> & _textures) noexcept
 	m_textures = _textures;
 	m_texureUniformValue.reserve(m_textures.size());
 
-	const std::size_t texturesCount{ m_textures.size() };
-	for (std::size_t i{ 0 }; i < texturesCount; ++i)
+	const s32 texturesCount{ static_cast<s32>(m_textures.size()) };
+	for (s32 i{ 0 }; i < texturesCount; ++i)
 	{
-		m_texureUniformValue.push_back(static_cast<int>(i));
+		m_texureUniformValue.push_back(i);
 	}
 }
 
@@ -87,8 +87,6 @@ void Pass::run() const
 
 	m_shader->bind();
 	ms_model->bind();
-
-	m_shader->bindAttributes();
 
 	const std::size_t texturesCount{ m_textures.size() };
 	for (std::size_t i{ 0 }; i < texturesCount; ++i)

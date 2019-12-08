@@ -1,3 +1,4 @@
+#version 330 core
 precision mediump float;
 
 in vec3 v_toEye;

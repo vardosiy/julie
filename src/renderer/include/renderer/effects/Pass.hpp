@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/common/Types.hpp"
+
 #include <glm/vec2.hpp>
 
 #include <vector>
@@ -39,7 +41,7 @@ private:
 	const Shader * m_shader;
 
 	std::vector<float> m_parameters;
-	std::vector<int> m_texureUniformValue;
+	std::vector<s32> m_texureUniformValue;
 	std::vector<const Texture *> m_textures;
 
 	glm::vec2 m_blurOffsets;
