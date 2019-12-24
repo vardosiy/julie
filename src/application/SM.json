@@ -59,7 +59,7 @@
             "model": 4,
             "2Dtex": [ 3 ],
             "cubeTex": [],
-            "shader": 7,
+            "shader": 0,
             "moving": "no_move",
             "position": [ -0.8, 0.5, 0.0 ],
             "rotation": [ 0.0, 0.0, 0.0 ],

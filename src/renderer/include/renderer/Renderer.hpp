@@ -1,4 +1,8 @@
-#include "renderer/scene/Model.hpp"
+#pragma once
+
+#include "renderer/common/Types.hpp"
+
+#include "utils/Singleton.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -6,17 +10,21 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Model::Model(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices)
-	: m_vertexArray(_vertices, _indices)
+enum class PolygonMode
 {
-}
+	Fill,
+	Line
+};
 
-//-----------------------------------------------------------------------------
-
-void Model::bind() const
+class Renderer
 {
-	m_vertexArray.bind();
-}
+public:
+	static void setFrontPolygonsMode(PolygonMode _mode);
+	static void setBackPolygonsMode(PolygonMode _mode);
+
+private:
+	static s32 polygonModeToGlValue(PolygonMode _mode);
+};
 
 //-----------------------------------------------------------------------------
 

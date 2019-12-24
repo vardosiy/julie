@@ -1,0 +1,28 @@
+set(
+	shaders
+	res/shaders/effects/CommonForEffects.vs
+	res/shaders/NormalShader.vs
+	res/shaders/ReflectionShader.vs
+	res/shaders/SimpleColor.vs
+	res/shaders/SimpleTexture.vs
+	res/shaders/SkyBoxShader.vs
+	res/shaders/TerrainShader.vs
+	res/shaders/TriangleShader.vs
+	res/shaders/UVdisplacementShader.vs
+	res/shaders/WaterShader.vs
+	res/shaders/effects/Blur.fs
+	res/shaders/effects/BW.fs
+	res/shaders/effects/DoF.fs
+	res/shaders/effects/DoFBlur.fs
+	res/shaders/effects/PostBloom.fs
+	res/shaders/effects/PreBloom.fs
+	res/shaders/NormalShader.fs
+	res/shaders/ReflectionShader.fs
+	res/shaders/SimpleColor.fs
+	res/shaders/SimpleTexture.fs
+	res/shaders/SkyBoxShader.fs
+	res/shaders/TerrainShader.fs
+	res/shaders/TriangleShader.fs
+	res/shaders/UVdisplacementShader.fs
+	res/shaders/WaterShader.fs
+)

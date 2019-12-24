@@ -13,6 +13,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Texture;
+
 class Fbo : boost::noncopyable
 {
 public:

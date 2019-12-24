@@ -3,6 +3,8 @@
 #include "renderer/common/Types.hpp"
 #include "renderer/common/Globals.hpp"
 
+#include "renderer/loaders/TexturesFactory.hpp"
+
 #include "utils/LogDefs.hpp"
 
 #include <glad/glad.h>
@@ -55,14 +57,14 @@ Fbo Fbo::s_screen;
 
 std::unique_ptr<Fbo> Fbo::create()
 {
-	auto colorTexture = Texture::createFrameTexture(GL_RGBA, GL_UNSIGNED_BYTE, Globals::s_screenWidth, Globals::s_screenHeight);
+	auto colorTexture = TexturesFactory::createFrameColorTexture(Globals::s_screenWidth, Globals::s_screenHeight);
 	if (!colorTexture)
 	{
 		LOG_ERROR("Can not create frame texture for storage of color");
 		return nullptr;
 	}
 
-	auto depthTexture = Texture::createFrameTexture(GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, Globals::s_screenWidth, Globals::s_screenHeight);
+	auto depthTexture = TexturesFactory::createFrameDepthTexture(Globals::s_screenWidth, Globals::s_screenHeight);
 	if (!depthTexture)
 	{
 		LOG_ERROR("Can not create frame texture for storage of depth");

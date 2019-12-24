@@ -1,4 +1,4 @@
-#include "loaders/loadTga.hpp"
+#include "loaders/formats/LoadTga.hpp"
 
 #include <stdio.h>
 

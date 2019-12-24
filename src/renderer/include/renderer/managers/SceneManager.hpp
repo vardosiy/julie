@@ -34,9 +34,10 @@ public:
 
 	void update(float _deltaTime);
 
-public:
-	const Camera & getCamera() const { return *m_camera; }
+	void setPrerenderCommand(const std::function<void()> & _callback)		{ m_prerenderCallback = _callback; }
+	void setPostrenderCommand(const std::function<void()> & _callback)		{ m_postrenderCallback = _callback; }
 
+	const Camera & getCamera() const										{ return *m_camera; }
 	const FogData & getFog() const noexcept									{ return m_fogData; }
 	const AmbientLightData & getAmbientLightData() const noexcept			{ return m_ambientLightData; }
 
@@ -81,6 +82,9 @@ private:
 	std::vector<glm::vec4> m_pointLightsColors;
 	std::vector<glm::vec3> m_lightsDirections;
 	std::vector<glm::vec3> m_lightsPositions;
+
+	std::function<void()> m_prerenderCallback;
+	std::function<void()> m_postrenderCallback;
 
 	static constexpr std::string_view k_filePath{ "SM.json" };
 };

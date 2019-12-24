@@ -1,5 +1,5 @@
-include(InitSources.cmake)
-include(InitHeaders.cmake)
+include(Sources.cmake)
+include(Headers.cmake)
 
 add_executable(utils_tests ${sources} ${headers})
 

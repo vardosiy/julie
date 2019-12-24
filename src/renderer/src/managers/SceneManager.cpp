@@ -86,9 +86,19 @@ void SceneManager::init()
 
 void SceneManager::draw()
 {
+	if (m_prerenderCallback)
+	{
+		m_prerenderCallback();
+	}
+
 	for (auto & object : m_objects)
 	{
 		object->draw();
+	}
+
+	if (m_postrenderCallback)
+	{
+		m_postrenderCallback();
 	}
 }
 

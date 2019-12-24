@@ -16,19 +16,19 @@ enum class TextureTiling;
 class CubeTexture : public TextureBase
 {
 public:
-	static std::unique_ptr<CubeTexture> create(std::string_view _filePath, TextureTiling _tiling);
+	struct InitData
+	{
+		std::unique_ptr<char[]> data;
+		u32 width;
+		u32 height;
+	};
 
 public:
-	~CubeTexture() = default;
+	CubeTexture(const InitData & _initData) noexcept;
 
-	CubeTexture(CubeTexture && _rhs) noexcept;
-	CubeTexture & operator=(CubeTexture && _rhs) noexcept;
-
-	void bind(u16 _slot) const noexcept;
+	u32 getFaceWidth() const noexcept { return m_faceWidth; }
 
 private:
-	CubeTexture() noexcept = default;
-
 	static void loadDataToGpu(const char * _data, s32 _width, s32 _height, s32 _bpp);
 	static void extractFace(
 		const char * _pSrc,
@@ -39,6 +39,9 @@ private:
 		s32 _offsetY,		// pixels
 		s32 _bitsPerPixel
 	);
+
+private:
+	u32 m_faceWidth;
 };
 
 //-----------------------------------------------------------------------------

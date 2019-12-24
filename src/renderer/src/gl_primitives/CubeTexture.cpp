@@ -66,24 +66,12 @@ std::unique_ptr<CubeTexture> CubeTexture::create(std::string_view _filePath, Tex
 
 //-----------------------------------------------------------------------------
 
-CubeTexture::CubeTexture(CubeTexture && _rhs) noexcept
-	: TextureBase(std::forward<CubeTexture>(_rhs))
+CubeTexture::CubeTexture(const InitData & _initData) noexcept
+	: TextureBase(GL_TEXTURE_CUBE_MAP)
+	, m_faceWidth(_initData.width / 4)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-CubeTexture & CubeTexture::operator=(CubeTexture && _rhs) noexcept
-{
-	TextureBase::operator=(std::forward<CubeTexture>(_rhs));
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
-
-void CubeTexture::bind(u16 _slot) const noexcept
-{
-	bindInternal(GL_TEXTURE_CUBE_MAP, _slot);
+	bind(0);
+	loadDataToGpu(_initData.data.get(), _initData.width, _initData.height, bpp);
 }
 
 //-----------------------------------------------------------------------------

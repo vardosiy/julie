@@ -11,24 +11,45 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-enum class TextureTiling;
-
 class Texture : public TextureBase
 {
 public:
-	static std::unique_ptr<Texture> create(std::string_view _filePath, TextureTiling _tiling);
-	static std::unique_ptr<Texture> createFrameTexture(u32 _format, u32 _type, int _width, int _height);
+	enum class Format
+	{
+		Rgb,
+		Rgba,
+		DepthComponent,
+	};
+
+	enum class FragmentType
+	{
+		UnsignedByte,
+		UnsignedInt,
+	};
+
+	struct InitData
+	{
+		Format format;
+		FragmentType fragmentType;
+
+		std::unique_ptr<char[]> data;
+		u32 width;
+		u32 height;
+	};
 
 public:
-	~Texture() = default;
+	Texture(const InitData & _initData) noexcept;
 
-	Texture(Texture && _rhs) noexcept;
-	Texture & operator=(Texture && _rhs) noexcept;
-
-	void bind(u16 _slot) const noexcept;
+	u32 getWidth() const noexcept	{ return m_width; }
+	u32 getHeight() const noexcept	{ return m_height; }
 
 private:
-	Texture() noexcept = default;
+	static s32 formatToGlValue(Format _format);
+	static s32 fragmentTypeToGlValue(FragmentType _type);
+
+private:
+	u32 m_width;
+	u32 m_height;
 };
 
 //-----------------------------------------------------------------------------

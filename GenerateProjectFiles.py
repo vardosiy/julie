@@ -10,10 +10,11 @@ from GenerationHelpers import *
 #------------------------------------------------------------------------------
 
 filters = list()
-filters.append(FilterData("sources",	"InitSources.cmake",	[".c", ".cpp"]))
-filters.append(FilterData("headers",	"InitHeaders.cmake",	[".h", ".hpp"]))
-filters.append(FilterData("resources",	"InitResources.cmake",	[".qrc"]))
-filters.append(FilterData("shaders",	"InitShaders.cmake",	[".vs", ".fs"]))
+filters.append(FilterData("sources",	"Sources.cmake",	[".c", ".cpp"]))
+filters.append(FilterData("headers",	"Headers.cmake",	[".h", ".hpp"]))
+filters.append(FilterData("resources",	"Resources.cmake",	[".qrc"]))
+filters.append(FilterData("ui_sources",	"UiSources.cmake",	[".ui"]))
+filters.append(FilterData("shaders",	"Shaders.cmake",	[".vs", ".fs"]))
 
 targets_dirs = list()
 targets_dirs.append("3rd-party/glad")

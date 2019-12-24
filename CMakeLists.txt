@@ -8,7 +8,7 @@ set(3rd_party_dir	${CMAKE_SOURCE_DIR}/3rd-party)
 set(scripts_dir		${CMAKE_SOURCE_DIR}/scripts)
 set(targets_dir		${CMAKE_SOURCE_DIR}/src)
 set(tests_dir		${CMAKE_SOURCE_DIR}/src/tests)
-set(boost_dir		C:/libs/boost/boost_1_67_0)
+set(boost_dir		E:/CommonLibs/boost/boost_1_72_0)
 
 set(bin_dir			bin)
 set(lib_dir			lib)
@@ -54,7 +54,7 @@ set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP gen)
 
 #------------------------------------------------------------------------------
 # 3rd-party libs
-message("\nLoading 3rd-party libs")
+message("--------------------Loading 3rd-party libs--------------------")
 
 include_directories(${boost_dir})
 

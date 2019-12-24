@@ -1,26 +1,24 @@
 #pragma once
 
-#include <QOpenGLWidget>
-#include <QTimer>
+#include <QWidget>
 
-class MainWidget : public QOpenGLWidget
+#include <memory>
+
+namespace Ui {
+class MainWidget;
+}
+
+class MainWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MainWidget(QWidget * _parent = nullptr);
-
-protected:
-	void initializeGL() override;
-	void resizeGL(int _w, int _h) override;
-	void paintGL() override;
-
-	void keyPressEvent(QKeyEvent * _event) override;
-	void keyReleaseEvent(QKeyEvent * _event) override;
+	explicit MainWidget(QWidget * parent = nullptr);
+	~MainWidget();
 
 private slots:
-	void update();
+	void cbFillPolygonsValueChanged(int _state);
 
 private:
-	QTimer m_updateTimer;
+	std::unique_ptr<Ui::MainWidget> m_ui;
 };

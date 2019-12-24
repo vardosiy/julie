@@ -17,8 +17,11 @@ VertexArray::VertexArray(const std::vector<Vertex> & _vertices, const std::vecto
 	glGenVertexArrays(1, &m_id);
 	bind();
 
+	m_vertexBuffer.bind();
 	m_vertexBuffer.bufferData(_vertices);
+	m_indexBuffer.bind();
 	m_indexBuffer.bufferData(_indices);
+
 	setLayout();
 }
 

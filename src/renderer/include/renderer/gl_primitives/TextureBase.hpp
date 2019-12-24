@@ -1,6 +1,8 @@
 #pragma once
 
 #include "renderer/common/Types.hpp"
+#include "renderer/gl_primitives/TextureTiling.hpp"
+#include "renderer/gl_primitives/TextureFilteringMode.hpp"
 
 #include <boost/noncopyable.hpp>
 
@@ -17,20 +19,22 @@ class TextureBase : boost::noncopyable
 public:
 	u32 getHandle() const noexcept { return m_id; }
 
+	void bind(u16 _slot) const noexcept;
+
+	void setTiling(TextureTiling _tiling) noexcept;
+	void setMagnificationFilteringMode(TextureFilteringMode _mode) noexcept;
+	void setMinificationFilteringMode(TextureFilteringMode _mode) noexcept;
+
 protected:
-	TextureBase() noexcept = default;
+	TextureBase(s32 _type) noexcept;
 	~TextureBase();
 
-	TextureBase(TextureBase && _rhs) noexcept;
-	TextureBase & operator=(TextureBase && _rhs) noexcept;
-
-	void bindInternal(u32 _textureType, u16 _slot) const noexcept;
-
-	void genTexture(u32 _textureType) noexcept;
-	void performBasicSetup(u32 _textureType, TextureTiling _tiling) noexcept;
+	static s32 tilingToGlValue(TextureTiling _tiling);
+	static s32 filteringModeToGlValue(TextureFilteringMode _mode);
 
 private:
 	u32 m_id;
+	s32 m_type;
 };
 
 //-----------------------------------------------------------------------------

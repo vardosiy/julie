@@ -1,6 +1,7 @@
-include(InitSources.cmake)
-include(InitHeaders.cmake)
-include(InitShaders.cmake)
+include(Sources.cmake)
+include(Headers.cmake)
+include(UiSources.cmake)
+include(Shaders.cmake)
 
 #------------------------------------------------------------------------------
 
@@ -9,12 +10,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} $
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 
 #------------------------------------------------------------------------------
 
-add_executable(julie ${sources} ${headers} ${shaders})
+add_executable(julie ${sources} ${headers} ${ui_sources} ${shaders})
 
+set_target_properties(julie PROPERTIES AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/res/ui)
 set_target_properties(julie PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 #------------------------------------------------------------------------------
@@ -39,6 +42,7 @@ target_link_libraries(julie Qt5::Widgets Qt5::Gui)
 
 add_to_filters(sources)
 add_to_filters(headers)
+add_to_filters(ui_sources)
 add_to_filters(shaders)
 
 #------------------------------------------------------------------------------
