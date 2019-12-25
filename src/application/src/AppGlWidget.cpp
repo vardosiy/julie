@@ -83,8 +83,7 @@ void AppGlWidget::paintGL()
 	{
 		m_sandbox.draw();
 	}
-
-	if (!g_sandboxEnabled)
+	else
 	{
 		jl::SceneManager::getInstance().draw();
 		jl::EffectManager::getInstance().apply();

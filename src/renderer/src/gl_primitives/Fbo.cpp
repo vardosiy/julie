@@ -105,32 +105,16 @@ Fbo::~Fbo()
 
 //-----------------------------------------------------------------------------
 
-Fbo::Fbo(Fbo && _rhs) noexcept
-	: m_id(_rhs.m_id)
-	, m_colorTexture(std::move(_rhs.m_colorTexture))
-	, m_depthTexture(std::move(_rhs.m_depthTexture))
-{
-	_rhs.m_id = 0;
-	_rhs.m_colorTexture = nullptr;
-	_rhs.m_depthTexture = nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-Fbo & Fbo::operator=(Fbo && _rhs) noexcept
-{
-	std::swap(m_id, _rhs.m_id);
-	std::swap(m_colorTexture, _rhs.m_colorTexture);
-	std::swap(m_depthTexture, _rhs.m_depthTexture);
-
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
-
 void Fbo::bind() const noexcept
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+}
+
+//-----------------------------------------------------------------------------
+
+Fbo::Fbo() noexcept
+	: m_id(0)
+{
 }
 
 //-----------------------------------------------------------------------------

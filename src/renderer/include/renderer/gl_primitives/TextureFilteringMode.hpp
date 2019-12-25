@@ -22,7 +22,7 @@ enum class TextureFilteringMode
 
 constexpr std::string_view toString(TextureFilteringMode _tiling)
 {
-	constexpr int lastVerNodeKindsCount{ 3 };
+	constexpr int lastVerNodeKindsCount = 3;
 	static_assert(static_cast<int>(TextureFilteringMode::Count) == lastVerNodeKindsCount);
 
 	switch (_tiling)
@@ -32,7 +32,7 @@ constexpr std::string_view toString(TextureFilteringMode _tiling)
 		ENUM_TO_STRING_CASE(TextureFilteringMode, LinearMipmapLinear);
 
 		default:
-			ASSERT(false, "Unhandled case");
+			ASSERT(0);
 	}
 
 	return "";

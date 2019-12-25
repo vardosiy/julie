@@ -47,7 +47,7 @@ template<typename T>
 std::enable_if_t<std::is_enum_v<T>, T> StreamReader::read()
 {
 	const T value{ static_cast<T>(read<int>()) };
-	ASSERT(enums::isValid(value), "Invalid enumerator restored");
+	ASSERTM(enums::isValid(value), "Invalid enumerator restored");
 
 	return value;
 }

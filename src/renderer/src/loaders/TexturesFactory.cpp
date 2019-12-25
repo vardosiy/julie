@@ -6,6 +6,8 @@
 
 #include "loaders/formats/LoadTga.hpp"
 
+#include "utils/Assert.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace jl {
@@ -17,9 +19,9 @@ std::unique_ptr<Texture> TexturesFactory::load2dTextureFromFile(std::string_view
 	s32 width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
 
-	ASSERT(tgaBuffer, "Can not load texture from file: {}", _filePath);
-	ASSERT(width > 0 && height > 0, "Invalid texture size");
-	ASSERT(bpp == 24 || bpp == 32, "Unsupported bpp");
+	ASSERTM(tgaBuffer, "Can not load texture from file: {}", _filePath);
+	ASSERTM(width > 0 && height > 0, "Invalid texture size");
+	ASSERTM(bpp == 24 || bpp == 32, "Unsupported bpp");
 	if (!tgaBuffer || width <= 0 || height <= 0 || !(bpp == 24 || bpp == 32))
 	{
 		return nullptr;
@@ -46,15 +48,15 @@ std::unique_ptr<CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::strin
 	s32 width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
 
-	ASSERT(tgaBuffer, "Can not load texture from file: {}", _filePath);
-	ASSERT(width > 0 && height > 0, "Invalid texture size");
-	ASSERT(bpp == 24 || bpp == 32, "Unsupported bpp");
+	ASSERTM(tgaBuffer, "Can not load texture from file: {}", _filePath);
+	ASSERTM(width > 0 && height > 0, "Invalid texture size");
+	ASSERTM(bpp == 24 || bpp == 32, "Unsupported bpp");
 	if (!tgaBuffer || width <= 0 || height <= 0 || !(bpp == 24 || bpp == 32))
 	{
 		return nullptr;
 	}
 
-	ASSERT(width / 4 == height / 3, "Cube texture has invalid width or/and height");
+	ASSERTM(width / 4 == height / 3, "Cube texture has invalid width or/and height");
 
 	CubeTexture::InitData texInitData;
 	texInitData.data	= std::move(tgaBuffer);

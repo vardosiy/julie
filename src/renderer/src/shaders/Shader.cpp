@@ -2,6 +2,7 @@
 
 #include "renderer/shaders/Shader.hpp"
 #include "renderer/common/Vertex.hpp"
+#include "renderer/scene/Model.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"
@@ -48,7 +49,7 @@ std::string readShaderFile(std::string_view _filePath)
 	std::string fileContent;
 
 	std::ifstream file(_filePath.data(), std::ios::in);
-	ASSERT(file.is_open(), "Can't open shader file {}", _filePath.data());
+	ASSERTM(file.is_open(), "Can't open shader file {}", _filePath.data());
 	if (file.is_open())
 	{
 		std::stringstream buffer;
@@ -63,7 +64,7 @@ std::string readShaderFile(std::string_view _filePath)
 
 int loadShader(jl::u32 _type, std::string_view _filePath)
 {
-	jl::s32 shader{ 0 };
+	jl::s32 shader = 0;
 
 	std::string fileContent = readShaderFile(_filePath);
 	if (!fileContent.empty())
@@ -185,31 +186,10 @@ Shader::~Shader()
 
 //-----------------------------------------------------------------------------
 
-Shader::Shader(Shader && _rhs) noexcept
-	: m_program(_rhs.m_program)
-	, m_attribs(_rhs.m_attribs)
-	, m_uniforms(_rhs.m_uniforms)
+void Shader::draw(const Model& _model) const
 {
-	_rhs.m_program = 0;
-
-	memset(&_rhs.m_attribs, -1, sizeof(_rhs.m_attribs));
-	memset(&_rhs.m_uniforms, -1, sizeof(_rhs.m_uniforms));
-}
-
-//-----------------------------------------------------------------------------
-
-Shader & Shader::operator=(Shader && _rhs) noexcept
-{
-	std::swap(m_program, _rhs.m_program);
-
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
-
-void Shader::draw(u32 _indeciesCount) const
-{
-	glDrawElements(GL_TRIANGLES, _indeciesCount, GL_UNSIGNED_SHORT, nullptr);
+	_model.bind();
+	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
 }
 
 //-----------------------------------------------------------------------------

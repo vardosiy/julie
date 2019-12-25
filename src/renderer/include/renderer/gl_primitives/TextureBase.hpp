@@ -12,8 +12,6 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-enum class TextureTiling;
-
 class TextureBase : boost::noncopyable
 {
 public:
@@ -29,7 +27,7 @@ protected:
 	TextureBase(s32 _type) noexcept;
 	~TextureBase();
 
-	static s32 tilingToGlValue(TextureTiling _tiling);
+	static float tilingToGlValue(TextureTiling _tiling);
 	static s32 filteringModeToGlValue(TextureFilteringMode _mode);
 
 private:

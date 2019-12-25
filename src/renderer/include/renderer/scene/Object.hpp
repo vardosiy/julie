@@ -23,11 +23,9 @@ class CubeTexture;
 class Object
 {
 public:
-	static std::unique_ptr<Object> create(const Model & _model);
+	Object(const Model & _model) noexcept;
 
-public:
 	void draw() const;
-
 	void update(float _deltaTime);
 
 	void setShader(const Shader & _shader) noexcept;
@@ -67,11 +65,11 @@ private:
 
 	ObjectParameters m_params;
 
-	bool m_bIsFogged = false;
-	bool m_bIsLighted = false;
+	bool m_bIsFogged;
+	bool m_bIsLighted;
 
-	bool m_bIsTransformChanged = false;
-	bool m_bIsTexturesUpdated = false;
+	bool m_bIsTransformChanged;
+	bool m_bIsTexturesUpdated;
 };
 
 //-----------------------------------------------------------------------------

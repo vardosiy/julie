@@ -10,8 +10,6 @@ namespace jl {
 
 struct ObjectParameters
 {
-	ObjectParameters() noexcept = default;
-
 	float		specularPower;
 	float		tilingFactor;
 	float		dMax;

@@ -1,6 +1,8 @@
 #include "renderer/gl_primitives/Texture.hpp"
 #include "renderer/gl_primitives/TextureTiling.hpp"
 
+#include "utils/Assert.hpp"
+
 #include <glad/glad.h>
 
 //-----------------------------------------------------------------------------
@@ -33,10 +35,10 @@ s32 Texture::formatToGlValue(Format _format)
 		case jl::Texture::Format::DepthComponent:	return GL_DEPTH_COMPONENT;
 
 		default:
-			ASSERT(false, "Unhandled case");
+			ASSERT(0);
 	}
 
-	return GL_RGB;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -49,10 +51,10 @@ s32 Texture::fragmentTypeToGlValue(FragmentType _type)
 		case jl::Texture::FragmentType::UnsignedInt:	return GL_UNSIGNED_INT;
 
 		default:
-			ASSERT(false, "Unhandled case");
+			ASSERT(0);
 	}
 
-	return GL_UNSIGNED_BYTE;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

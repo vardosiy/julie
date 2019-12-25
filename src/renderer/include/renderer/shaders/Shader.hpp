@@ -21,6 +21,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Model;
+
 class Shader : boost::noncopyable
 {
 public:
@@ -29,10 +31,7 @@ public:
 public:
 	~Shader();
 
-	Shader(Shader && _rhs) noexcept;
-	Shader & operator=(Shader && _rhs) noexcept;
-
-	void draw(u32 _indeciesCount) const;
+	void draw(const Model & _model) const;
 
 	void bind() const noexcept;
 

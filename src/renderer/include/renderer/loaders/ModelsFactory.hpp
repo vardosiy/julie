@@ -1,7 +1,5 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
-
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 

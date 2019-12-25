@@ -26,7 +26,7 @@ namespace jl {
 void EffectManager::init()
 {
 	std::ifstream file(k_filePath.data(), std::ifstream::in);
-	ASSERT(file.is_open(), "File not found {}", k_filePath.data());
+	ASSERTM(file.is_open(), "File not found {}", k_filePath.data());
 	if (!file.is_open())
 	{
 		return;
@@ -104,17 +104,17 @@ void EffectManager::loadShaders(const Json::Value & _data)
 {
 	m_shaders.clear();
 
-	const u32 shadersCount{ _data.size() };
-	for (u32 i{ 0 }; i < shadersCount; ++i)
+	const u32 shadersCount = _data.size();
+	for (u32 i = 0; i < shadersCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
-		const s32 shaderId{ current["ID"].asInt() };
-		const std::string_view vsFile{ current["VS"].asCString() };
-		const std::string_view fsFile{ current["FS"].asCString() };
+		const s32 shaderId = current["ID"].asInt();
+		const std::string_view vsFile = current["VS"].asCString();
+		const std::string_view fsFile = current["FS"].asCString();
 
 		auto shader = Shader::create(vsFile, fsFile);
-		ASSERT(shader, "Can't initialize shader with ID {}", shaderId);
+		ASSERTM(shader, "Can't initialize shader with ID {}", shaderId);
 		if (shader)
 		{
 			m_shaders[shaderId] = std::move(shader);
@@ -126,8 +126,8 @@ void EffectManager::loadShaders(const Json::Value & _data)
 
 void EffectManager::loadFbos(const Json::Value & _data)
 {
-	const u32 fboCount{ _data["fbCount"].asUInt() };
-	const u32 targetingFbosCount{ fboCount + 1 };
+	const u32 fboCount = _data["fbCount"].asUInt();
+	const u32 targetingFbosCount = fboCount + 1;
 
 	m_fbos.clear();
 	m_fbos.reserve(fboCount);
@@ -136,7 +136,7 @@ void EffectManager::loadFbos(const Json::Value & _data)
 	m_targetingFbos.reserve(fboCount);
 
 	m_targetingFbos.push_back(&Fbo::s_screen);
-	for (u32 i{ 0 }; i < fboCount; ++i)
+	for (u32 i = 0; i < fboCount; ++i)
 	{
 		m_fbos.emplace_back(Fbo::create());
 		m_targetingFbos.push_back(m_fbos[i].get());
@@ -149,12 +149,12 @@ void EffectManager::loadEffects(const Json::Value & _data)
 {
 	m_effects.clear();
 
-	const u32 effectsCount{ _data.size() };
-	for (u32 i{ 0 }; i < effectsCount; ++i)
+	const u32 effectsCount = _data.size();
+	for (u32 i = 0; i < effectsCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
-		const s32 effectId{ current["ID"].asInt() };
+		const s32 effectId = current["ID"].asInt();
 
 		Effect & effect = m_effects[effectId];
 		if (!loadEffectPasses(current["passes"], effect))
@@ -169,15 +169,15 @@ void EffectManager::loadEffects(const Json::Value & _data)
 
 bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect)
 {
-	const u32 passesCount{ _data.size() };
-	for (u32 i{ 0 }; i < passesCount; ++i)
+	const u32 passesCount = _data.size();
+	for (u32 i = 0; i < passesCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 		Pass pass;
 
 		{
-			const u32 targetId{ current["target"].asUInt() };
-			ASSERT(targetId <= m_targetingFbos.size(), "Can not find FBO with id: {}", targetId);
+			const u32 targetId = current["target"].asUInt();
+			ASSERTM(targetId <= m_targetingFbos.size(), "Can not find FBO with id: {}", targetId);
 			if (targetId >= m_targetingFbos.size())
 			{
 				return false;
@@ -186,10 +186,10 @@ bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect
 		}
 
 		{
-			const u32 shaderId{ current["shader"].asUInt() };
+			const u32 shaderId = current["shader"].asUInt();
 			auto itShader = m_shaders.find(shaderId);
 
-			ASSERT(itShader != m_shaders.end(), "Can not find shader with id: {}", shaderId);
+			ASSERTM(itShader != m_shaders.end(), "Can not find shader with id: {}", shaderId);
 			if (itShader == m_shaders.end())
 			{
 				return false;
@@ -210,10 +210,10 @@ bool EffectManager::loadEffectPasses(const Json::Value & _data, Effect & _effect
 
 std::vector<float> EffectManager::loadPassParameters(const Json::Value & _data)
 {
-	const u32 paramsCount{ _data.size() };
+	const u32 paramsCount = _data.size();
 	std::vector<float> params(paramsCount);
 
-	for (u32 i{ 0 }; i < paramsCount; ++i)
+	for (u32 i = 0; i < paramsCount; ++i)
 	{
 		params[i] = _data[i].asFloat();
 	}
@@ -227,8 +227,8 @@ std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value &
 {
 	std::vector<const Texture *> textures;
 
-	const u32 texturesCount{ _data.size() };
-	for (u32 i{ 0 }; i < texturesCount; ++i)
+	const u32 texturesCount = _data.size();
+	for (u32 i = 0; i < texturesCount; ++i)
 	{
 		const char * str = _data[i].asCString();
 		if (str[0] == '0')
@@ -236,7 +236,7 @@ std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value &
 			break;
 		}
 
-		const u32 fboIndex{ static_cast<u32>(str[0] - k_numberCharsOffset) };
+		const u32 fboIndex = static_cast<u32>(str[0] - k_numberCharsOffset);
 
 		const Texture * texture =
 			str[1] == 'c' ?
@@ -244,8 +244,7 @@ std::vector<const Texture *> EffectManager::loadPassTextures(const Json::Value &
 			m_targetingFbos[fboIndex]->getDepthTexture();
 
 		textures.push_back(texture);
-
-		ASSERT(textures[i], "Texture used in PostFX is invalid");
+		ASSERTM(textures[i], "Texture used in PostFX is invalid");
 	}
 
 	return textures;

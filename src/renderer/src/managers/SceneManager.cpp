@@ -38,7 +38,7 @@ static jl::Light::Type lightTypeFromString(std::string_view _str)
 		return jl::Light::Type::Point;
 	}
 
-	ASSERT(false, "Unknown light type");
+	ASSERT(0);
 	return jl::Light::Type::Directional;
 }
 
@@ -156,9 +156,9 @@ void SceneManager::loadCamera(const Json::Value & _data)
 		LOG_WARNING("Camera is not described in SM.json, setting default values");
 	}
 
-	const float camNear{ _data["near"].asFloat() };
-	const float camFar{ _data["far"].asFloat() };
-	const float camFov{ _data["fov"].asFloat() };
+	const float camNear = _data["near"].asFloat();
+	const float camFar = _data["far"].asFloat();
+	const float camFov = _data["fov"].asFloat();
 
 	m_camera = std::make_unique<Camera>(camNear, camFar, camFov);
 
@@ -176,27 +176,27 @@ void SceneManager::loadObjects(const Json::Value & _data)
 {
 	ResourceManager & resManager = ResourceManager::getInstance();
 
-	auto tex2dGetter = [&resManager](s32 _id) { return resManager.get2dTexture(_id); };
-	auto cubeTexGetter = [&resManager](s32 _id) { return resManager.getCubeTexture(_id); };
+	auto tex2dGetter	= [&resManager](s32 _id) { return resManager.get2dTexture(_id); };
+	auto cubeTexGetter	= [&resManager](s32 _id) { return resManager.getCubeTexture(_id); };
 
-	const u32 objectsCount{ _data.size() };
+	const u32 objectsCount = _data.size();
 	m_objects.reserve(objectsCount);
 
-	for (u32 i{ 0 }; i < objectsCount; ++i)
+	for (u32 i = 0; i < objectsCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
-		const s32 modelId{ current["model"].asInt() };
-		Model * model = resManager.getModel(modelId);
+		const s32 modelId = current["model"].asInt();
+		const Model * model = resManager.getModel(modelId);
 		if (!model)
 		{
 			continue;
 		}
 
-		std::unique_ptr<Object> & object = m_objects.emplace_back(Object::create(*model));
+		std::unique_ptr<Object> & object = m_objects.emplace_back(std::make_unique<Object>(*model));
 
-		const s32 shaderId{ current["shader"].asInt() };
-		Shader * shader = resManager.getShader(shaderId);
+		const s32 shaderId = current["shader"].asInt();
+		const Shader * shader = resManager.getShader(shaderId);
 		if (shader)
 		{
 			object->setShader(*shader);
@@ -220,10 +220,10 @@ void SceneManager::loadObjects(const Json::Value & _data)
 
 void SceneManager::loadLights(const Json::Value & _data)
 {
-	const u32 lightsCount{ _data.size() };
+	const u32 lightsCount = _data.size();
 	m_lights.reserve(lightsCount);
 
-	for (u32 i{ 0 }; i < lightsCount; ++i)
+	for (u32 i = 0; i < lightsCount; ++i)
 	{
 		const Json::Value & current = _data[i];
 
@@ -233,10 +233,10 @@ void SceneManager::loadLights(const Json::Value & _data)
 			LOG_WARNING("Unknown light type on light {}, setting default value", i);
 		}
 
-		const glm::vec3 posDir{ details::jsonArrayToVec3(current["pos_dir"]) };
-		const glm::vec4 color{ details::jsonArrayToVec3(current["color"]), 1.0f };
-		const float moveSpeed{ current["speed"].asFloat() };
-		const float radius{ current["radius"].asFloat() };
+		const glm::vec3 posDir	= details::jsonArrayToVec3(current["pos_dir"]);
+		const glm::vec4 color	= glm::vec4(details::jsonArrayToVec3(current["color"]), 1.0f);
+		const float moveSpeed	= current["speed"].asFloat();
+		const float radius		= current["radius"].asFloat();
 
 		Light & light = m_lights.emplace_back(lightType, posDir);
 		light.setColor(color);
@@ -264,7 +264,7 @@ void SceneManager::prepareLights()
 				break;
 
 			default:
-				assert(0);
+				ASSERT(0);
 		}
 	}
 }
@@ -273,7 +273,7 @@ void SceneManager::prepareLights()
 
 void SceneManager::updateLightPositions()
 {
-	std::size_t counter{ 0 };
+	std::size_t counter = 0;
 	for (auto & light : m_lights)
 	{
 		if (light.getType() == Light::Type::Point)
@@ -294,7 +294,7 @@ ObjectParameters SceneManager::loadObjectParameters(const Json::Value & _data)
 	params.dMax				= _data["dMax"].asFloat();
 	params.specularPower	= _data["specular_power"].asFloat();
 	params.tilingFactor		= _data["tiling_factor"].asFloat();
-	params.color			= glm::vec4{ details::jsonArrayToVec3(_data["color"]), 1.0f };
+	params.color			= glm::vec4( details::jsonArrayToVec3(_data["color"]), 1.0f);
 
 	return params;
 }
@@ -307,11 +307,11 @@ std::vector<const T *> SceneManager::loadObjectTextures(
 	const Json::Value & _data
 )
 {
-	const u32 texturesCount{ _data.size() };
+	const u32 texturesCount = _data.size();
 
 	std::vector<const T *> textures;
 	textures.reserve(texturesCount);
-	for (u32 i{ 0 }; i < texturesCount; ++i)
+	for (u32 i = 0; i < texturesCount; ++i)
 	{
 		const T * texture = _textureGetter(_data[i].asInt());
 		if (texture)

@@ -23,8 +23,6 @@ void Sandbox::init()
 {
 	m_shaders.emplace_back(jl::Shader::create("res/shaders/SimpleColor.vs", "res/shaders/SimpleColor.fs"));
 	//m_models.emplace_back(jl::Model::createRect(glm::vec3{ -0.5f, -0.5f, 0.0f }, glm::vec2{ 1.0f, 1.0f }));
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +45,7 @@ void Sandbox::draw()
 	shader.setUniformValue(uniform.u_color, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	shader.setUniformValue(uniform.u_color, glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	shader.draw(model.getIndeciesCount());
+	//shader.draw(model.getIndeciesCount());
 }
 
 //-----------------------------------------------------------------------------

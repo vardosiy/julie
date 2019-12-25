@@ -49,7 +49,7 @@ private:
 
 	std::unique_ptr<Model> m_generatedTerrainModel;
 
-	static constexpr std::string_view k_filePath{ "RM.json" };
+	static constexpr std::string_view k_filePath = "RM.json";
 };
 
 //-----------------------------------------------------------------------------

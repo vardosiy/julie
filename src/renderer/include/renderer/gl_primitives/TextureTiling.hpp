@@ -21,7 +21,7 @@ enum class TextureTiling
 
 constexpr std::string_view toString(TextureTiling _tiling)
 {
-	constexpr int lastVerNodeKindsCount{ 2 };
+	constexpr int lastVerNodeKindsCount = 2;
 	static_assert(static_cast<int>(TextureTiling::Count) == lastVerNodeKindsCount);
 
 	switch (_tiling)
@@ -30,7 +30,7 @@ constexpr std::string_view toString(TextureTiling _tiling)
 		ENUM_TO_STRING_CASE(TextureTiling, Repeat);
 
 		default:
-			ASSERT(false, "Unhandled case");
+			ASSERT(0);
 	}
 
 	return "";

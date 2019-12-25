@@ -7,6 +7,7 @@
 #include "renderer/scene/Model.hpp"
 #include "renderer/scene/Camera.hpp"
 #include "renderer/gl_primitives/Fbo.hpp"
+#include "renderer/gl_primitives/Texture.hpp"
 #include "renderer/shaders/Shader.hpp"
 
 #include "utils/Assert.hpp"
@@ -65,8 +66,8 @@ void Pass::setTextures(const std::vector<const Texture *> & _textures) noexcept
 	m_textures = _textures;
 	m_texureUniformValue.reserve(m_textures.size());
 
-	const s32 texturesCount{ static_cast<s32>(m_textures.size()) };
-	for (s32 i{ 0 }; i < texturesCount; ++i)
+	const s32 texturesCount = static_cast<s32>(m_textures.size());
+	for (s32 i = 0; i < texturesCount; ++i)
 	{
 		m_texureUniformValue.push_back(i);
 	}
@@ -76,7 +77,7 @@ void Pass::setTextures(const std::vector<const Texture *> & _textures) noexcept
 
 void Pass::run() const
 {
-	ASSERT(m_target && m_shader, "PostFX pass is not complitely initialized before it being used");
+	ASSERTM(m_target && m_shader, "PostFX pass is not complitely initialized before it being used");
 	if (!m_target || !m_shader)
 	{
 		return;
@@ -87,12 +88,11 @@ void Pass::run() const
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_shader->bind();
-	ms_model->bind();
 
-	const std::size_t texturesCount{ m_textures.size() };
-	for (std::size_t i{ 0 }; i < texturesCount; ++i)
+	const std::size_t texturesCount = m_textures.size();
+	for (std::size_t i = 0; i < texturesCount; ++i)
 	{
-		m_textures[i]->bind(static_cast<u32>(i));
+		m_textures[i]->bind(static_cast<u16>(i));
 	}
 
 	const ShaderUniforms & uniforms = m_shader->getUniforms();
@@ -122,7 +122,7 @@ void Pass::run() const
 		m_shader->setUniformValue(uniforms.u_limit, m_parameters[0]);
 	}
 
-	m_shader->draw(ms_model->getIndeciesCount());
+	m_shader->draw(*ms_model);
 }
 
 //-----------------------------------------------------------------------------

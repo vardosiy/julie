@@ -1,7 +1,6 @@
 #pragma once
 
 #include "renderer/common/Types.hpp"
-#include "renderer/gl_primitives/Texture.hpp"
 
 #include <boost/noncopyable.hpp>
 
@@ -26,19 +25,16 @@ public:
 public:
 	~Fbo();
 
-	Fbo(Fbo && _rhs) noexcept;
-	Fbo & operator=(Fbo && _rhs) noexcept;
-
 	void bind() const noexcept;
 
 	const Texture * getColorTexture() const noexcept { return m_colorTexture.get(); }
 	const Texture * getDepthTexture() const noexcept { return m_depthTexture.get(); }
 
 private:
-	Fbo() noexcept = default;
+	Fbo() noexcept;
 
 private:
-	u32 m_id{ 0 };
+	u32 m_id;
 
 	std::unique_ptr<Texture> m_colorTexture;
 	std::unique_ptr<Texture> m_depthTexture;

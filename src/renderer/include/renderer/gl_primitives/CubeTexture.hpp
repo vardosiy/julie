@@ -11,8 +11,6 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-enum class TextureTiling;
-
 class CubeTexture : public TextureBase
 {
 public:

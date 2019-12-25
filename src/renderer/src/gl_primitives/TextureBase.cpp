@@ -56,7 +56,7 @@ void TextureBase::setMinificationFilteringMode(TextureFilteringMode _mode) noexc
 
 //-----------------------------------------------------------------------------
 
-s32 TextureBase::tilingToGlValue(TextureTiling _tiling)
+float TextureBase::tilingToGlValue(TextureTiling _tiling)
 {
 	switch (_tiling)
 	{
@@ -64,7 +64,7 @@ s32 TextureBase::tilingToGlValue(TextureTiling _tiling)
 		case TextureTiling::Repeat:			return GL_REPEAT;
 
 		default:
-			ASSERT(false, "Invalid or unhandled case in obtained while converting texture tiling");
+			ASSERT(0);
 	}
 
 	return 0;
@@ -81,7 +81,7 @@ s32 TextureBase::filteringModeToGlValue(TextureFilteringMode _mode)
 		case TextureFilteringMode::LinearMipmapLinear:	return GL_LINEAR_MIPMAP_LINEAR;
 
 		default:
-			ASSERT(false, "Invalid or unhandled case in obtained while converting texture tiling");
+			ASSERT(0);
 	}
 
 	return 0;

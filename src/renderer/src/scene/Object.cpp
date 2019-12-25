@@ -22,23 +22,31 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Object> Object::create(const Model & _model)
+Object::Object(const Model & _model) noexcept
+	: m_model(&_model)
+	, m_shader(nullptr)
+	, m_pos(0.0f, 0.0f, 0.0f)
+	, m_scale(0.0f, 0.0f, 0.0f)
+	, m_rotation(0.0f, 0.0f, 0.0f)
+	, m_worldMatrix(1.0f)
+	, m_bIsFogged(false)
+	, m_bIsLighted(false)
+	, m_bIsTransformChanged(false)
+	, m_bIsTexturesUpdated(false)
 {
-	auto object = std::make_unique<Object>();
-	object->m_model = &_model;
-	return object;
+	memset(&m_params, 0, sizeof(m_params));
 }
 
 //-----------------------------------------------------------------------------
 
 void Object::draw() const
 {
-	m_shader->bind();
-	m_model->bind();
-
-	setUniforms();
-
-	m_shader->draw(m_model->getIndeciesCount());
+	if (m_shader)
+	{
+		m_shader->bind();
+		setUniforms();
+		m_shader->draw(*m_model);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -218,7 +226,7 @@ void Object::setTextures() const
 {
 	const ShaderUniforms & uniforms = m_shader->getUniforms();
 
-	u16 counter{ 0 };
+	u16 counter = 0;
 
 	if (!m_textures2D.empty())
 	{
@@ -226,7 +234,6 @@ void Object::setTextures() const
 		{
 			texture->bind(counter++);
 		}
-
 		m_shader->setUniformValue(uniforms.u_texture2D, m_texture2DUniformValues);
 	}
 
@@ -236,7 +243,6 @@ void Object::setTextures() const
 		{
 			texture->bind(counter++);
 		}
-
 		m_shader->setUniformValue(uniforms.u_cubeTexture, m_cubeTextureUniformValues);
 	}
 }
@@ -245,19 +251,19 @@ void Object::setTextures() const
 
 void Object::prepareTextureSlots()
 {
-	const s32 textures2DCount{ static_cast<s32>(m_textures2D.size()) };
-	const s32 cubeTexturesCount{ static_cast<s32>(m_cubeTextures.size()) };
+	const s32 textures2DCount = static_cast<s32>(m_textures2D.size());
+	const s32 cubeTexturesCount = static_cast<s32>(m_cubeTextures.size());
 
 	m_texture2DUniformValues.clear();
 	m_texture2DUniformValues.reserve(m_textures2D.size());
-	for (s32 i{ 0 }; i < textures2DCount; ++i)
+	for (s32 i = 0; i < textures2DCount; ++i)
 	{
 		m_texture2DUniformValues.push_back(i);
 	}
 
 	m_cubeTextureUniformValues.clear();
 	m_cubeTextureUniformValues.reserve(m_cubeTextures.size());
-	for (s32 i{ 0 }; i < cubeTexturesCount; ++i)
+	for (s32 i = 0; i < cubeTexturesCount; ++i)
 	{
 		m_texture2DUniformValues.push_back(i + textures2DCount);
 	}

@@ -86,7 +86,7 @@ private:
 	std::function<void()> m_prerenderCallback;
 	std::function<void()> m_postrenderCallback;
 
-	static constexpr std::string_view k_filePath{ "SM.json" };
+	static constexpr std::string_view k_filePath = "SM.json";
 };
 
 //-----------------------------------------------------------------------------

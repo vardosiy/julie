@@ -5,7 +5,7 @@
 
 #include <glad/glad.h>
 
-#include <cassert>
+#include "utils/Assert.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ s32 Renderer::polygonModeToGlValue(PolygonMode _mode)
 		case jl::PolygonMode::Line: return GL_LINE;
 
 		default:
-			assert(0);
+			ASSERT(0);
 	}
 
 	return GL_FILL;

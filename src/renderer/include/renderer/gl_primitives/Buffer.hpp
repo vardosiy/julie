@@ -19,19 +19,18 @@ public:
 	Buffer(Type _type) noexcept;
 	~Buffer();
 
-	Buffer(Buffer && _rhs) noexcept;
-	Buffer & operator=(Buffer && _rhs) noexcept;
-
 	template<typename T>
 	void bufferData(const std::vector<T> & _data);
 
 	void bind() const noexcept;
 
-	Type getType() const noexcept { return m_type; }
-	u32 getItemsCount() const noexcept { return m_itemsCount; }
+	Type	getType() const noexcept		{ return m_type; }
+	u32		getItemsCount() const noexcept	{ return m_itemsCount; }
 
 private:
 	void bufferData(const void * _data, u32 _size);
+
+	static s32 bufferTypeToGlValue(Type _type);
 
 private:
 	u32 m_id;

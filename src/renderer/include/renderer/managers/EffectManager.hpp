@@ -46,12 +46,12 @@ private:
 	std::vector<Fbo *> m_targetingFbos;
 	std::vector<std::unique_ptr<Fbo>> m_fbos;
 	
-	std::unordered_map<int, Effect> m_effects;
-	std::unordered_map<int, std::unique_ptr<Shader>> m_shaders;
+	std::unordered_map<s32, Effect> m_effects;
+	std::unordered_map<s32, std::unique_ptr<Shader>> m_shaders;
 
-	const Effect * m_pCurrentEffect;
+	const Effect * m_pCurrentEffect = nullptr;
 
-	static constexpr std::string_view k_filePath{ "EM.json" };
+	static constexpr std::string_view k_filePath = "EM.json";
 };
 
 //-----------------------------------------------------------------------------

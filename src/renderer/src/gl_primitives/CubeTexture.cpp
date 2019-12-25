@@ -76,12 +76,11 @@ void CubeTexture::extractFace(
 	s32 _bitsPerPixel
 )
 {
-	const s32 bytesPerPixel = _bitsPerPixel / 8;
+	const s32 bytesPerPixel		= _bitsPerPixel / 8;
 
-	const s32 dstRowSize = _dstRowLength * bytesPerPixel;
-	const s32 srcOffsetXBytes = _offsetX * bytesPerPixel;
-
-	const s32 dstColumnSize = _dstRowLength; // because cube face is square
+	const s32 srcOffsetXBytes	= _offsetX * bytesPerPixel;
+	const s32 dstRowSize		= _dstRowLength * bytesPerPixel;
+	const s32 dstColumnSize		= _dstRowLength; // because cube face is square
 
 	for (s32 i = 0; i < dstColumnSize; ++i)
 	{

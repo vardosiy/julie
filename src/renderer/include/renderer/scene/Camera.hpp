@@ -63,8 +63,8 @@ private:
 
 	bool m_bIsModified;
 
-	static constexpr glm::vec3 k_camDirection{ -constants::axis::z };
-	static constexpr float k_maxCamRotationX{ 0.99999999f };
+	static constexpr glm::vec3 k_camDirection = -constants::axis::z;
+	static constexpr float k_maxCamRotationX = 0.99999999f;
 };
 
 //-----------------------------------------------------------------------------
