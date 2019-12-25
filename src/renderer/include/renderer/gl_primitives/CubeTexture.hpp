@@ -21,6 +21,7 @@ public:
 		std::unique_ptr<char[]> data;
 		u32 width;
 		u32 height;
+		u32 bpp;
 	};
 
 public:

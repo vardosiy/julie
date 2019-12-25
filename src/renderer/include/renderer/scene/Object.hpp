@@ -67,11 +67,11 @@ private:
 
 	ObjectParameters m_params;
 
-	bool m_bIsFogged;
-	bool m_bIsLighted;
+	bool m_bIsFogged = false;
+	bool m_bIsLighted = false;
 
-	bool m_bIsTransformChanged;
-	bool m_bIsTexturesUpdated;
+	bool m_bIsTransformChanged = false;
+	bool m_bIsTexturesUpdated = false;
 };
 
 //-----------------------------------------------------------------------------

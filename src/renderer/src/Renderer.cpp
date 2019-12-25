@@ -37,6 +37,8 @@ s32 Renderer::polygonModeToGlValue(PolygonMode _mode)
 		default:
 			assert(0);
 	}
+
+	return GL_FILL;
 }
 
 //-----------------------------------------------------------------------------

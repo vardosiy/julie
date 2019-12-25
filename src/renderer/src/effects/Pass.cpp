@@ -3,6 +3,7 @@
 #include "renderer/common/Globals.hpp"
 #include "renderer/managers/SceneManager.hpp"
 
+#include "renderer/loaders/ModelsFactory.hpp"
 #include "renderer/scene/Model.hpp"
 #include "renderer/scene/Camera.hpp"
 #include "renderer/gl_primitives/Fbo.hpp"
@@ -128,7 +129,7 @@ void Pass::run() const
 
 void Pass::initModel()
 {
-	ms_model = Model::createRect(glm::vec3{ -1.0f, -1.0f, 0.0f }, glm::vec2{ 2.0f, 2.0f });
+	ms_model = ModelsFactory::createRect(glm::vec3{ -1.0f, -1.0f, 0.0f }, glm::vec2{ 2.0f, 2.0f });
 }
 
 //-----------------------------------------------------------------------------

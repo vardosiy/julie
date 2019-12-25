@@ -53,7 +53,7 @@ std::unique_ptr<Model> ModelsFactory::loadFromFile(std::string_view _filePath)
 
 	fclose(pFile);
 
-	return std::unique_ptr<Model>(new Model(vertices, indices));
+	return std::make_unique<Model>(vertices, indices);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ std::unique_ptr<Model> ModelsFactory::createRect(const glm::vec3 & _pos, const g
 	vertices[3].uv = glm::vec2{ 1.0f, 1.0f };
 
 	std::vector<u16> indices = { 0, 1, 2, 1, 2, 3 };
-	return std::unique_ptr<Model>(new Model(vertices, indices));
+	return std::make_unique<Model>(vertices, indices);
 }
 
 //-----------------------------------------------------------------------------

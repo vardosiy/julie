@@ -1,5 +1,8 @@
 #include "renderer/managers/ResourceManager.hpp"
 
+#include "renderer/loaders/ModelsFactory.hpp"
+#include "renderer/loaders/TexturesFactory.hpp"
+
 #include "renderer/gl_primitives/TextureTiling.hpp"
 
 #include "utils/LogDefs.hpp"
@@ -56,7 +59,7 @@ void ResourceManager::loadModels(const Json::Value & _data)
 		const s32 modelId{ current["ID"].asInt() };
 		const std::string_view fileName{ current["file"].asCString() };
 
-		auto model = Model::create(fileName);
+		auto model = ModelsFactory::loadFromFile(fileName);
 		ASSERT(model, "Can't initialize model with ID {}", modelId);
 		if (model)
 		{
@@ -100,7 +103,7 @@ void ResourceManager::loadTextures2D(const Json::Value & _data)
 		const std::string_view tiling{ current["tiling"].asCString() };
 		const std::string_view fileName{ current["file"].asCString() };
 
-		auto texture = Texture::create(fileName, fromString<TextureTiling>(tiling));
+		auto texture = TexturesFactory::load2dTextureFromFile(fileName, fromString<TextureTiling>(tiling));
 		ASSERT(texture, "Can't load 2D texture with ID {}", textureId);
 		if (texture)
 		{
@@ -122,7 +125,7 @@ void ResourceManager::loadCubeTextures(const Json::Value & _data)
 		const std::string_view tiling{ current["tiling"].asCString() };
 		const std::string_view fileName{ current["file"].asCString() };
 
-		auto texture = CubeTexture::create(fileName, fromString<TextureTiling>(tiling));
+		auto texture = TexturesFactory::loadCubeTextureFromFile(fileName, fromString<TextureTiling>(tiling));
 		ASSERT(texture, "Can't load 2D texture with ID {}", textureId);
 		if (texture)
 		{

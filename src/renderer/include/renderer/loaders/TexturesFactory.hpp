@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer/common/Types.hpp"
+#include "renderer/gl_primitives/Texture.hpp"
 
 #include <string_view>
 #include <memory>
@@ -11,7 +12,6 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Texture;
 class CubeTexture;
 enum class TextureTiling;
 
@@ -23,6 +23,9 @@ public:
 
 	static std::unique_ptr<Texture> createFrameColorTexture(u32 _width, u32 _height);
 	static std::unique_ptr<Texture> createFrameDepthTexture(u32 _width, u32 _height);
+
+private:
+	static std::unique_ptr<Texture> createFrameTexture(const Texture::InitData & _textureInitData);
 };
 
 //-----------------------------------------------------------------------------

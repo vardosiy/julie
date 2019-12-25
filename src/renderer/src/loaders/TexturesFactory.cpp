@@ -57,9 +57,10 @@ std::unique_ptr<CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::strin
 	ASSERT(width / 4 == height / 3, "Cube texture has invalid width or/and height");
 
 	CubeTexture::InitData texInitData;
-	texInitData.data			= std::move(tgaBuffer);
-	texInitData.width			= static_cast<u32>(width);
-	texInitData.height			= static_cast<u32>(height);
+	texInitData.data	= std::move(tgaBuffer);
+	texInitData.width	= static_cast<u32>(width);
+	texInitData.height	= static_cast<u32>(height);
+	texInitData.bpp		= static_cast<u32>(bpp);
 
 	auto texture = std::make_unique<CubeTexture>(texInitData);
 	texture->setTiling(_tiling);
@@ -79,11 +80,7 @@ std::unique_ptr<Texture> TexturesFactory::createFrameColorTexture(u32 _width, u3
 	texInitData.format			= Texture::Format::Rgba;
 	texInitData.fragmentType	= Texture::FragmentType::UnsignedByte;
 
-	auto texture = std::make_unique<Texture>(Texture::Format::Rgba, texInitData);
-	texture->setTiling(TextureTiling::ClampToEdge);
-	texture->setMagnificationFilteringMode(TextureFilteringMode::Nearest);
-	texture->setMinificationFilteringMode(TextureFilteringMode::Nearest);
-	return texture;
+	return createFrameTexture(texInitData);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +94,14 @@ std::unique_ptr<Texture> TexturesFactory::createFrameDepthTexture(u32 _width, u3
 	texInitData.format			= Texture::Format::DepthComponent;
 	texInitData.fragmentType	= Texture::FragmentType::UnsignedInt;
 
-	auto texture = std::make_unique<Texture>(Texture::Format::Rgba, texInitData);
+	return createFrameTexture(texInitData);
+}
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<Texture> TexturesFactory::createFrameTexture(const Texture::InitData& _textureInitData)
+{
+	auto texture = std::make_unique<Texture>(_textureInitData);
 	texture->setTiling(TextureTiling::ClampToEdge);
 	texture->setMagnificationFilteringMode(TextureFilteringMode::Nearest);
 	texture->setMinificationFilteringMode(TextureFilteringMode::Nearest);

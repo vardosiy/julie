@@ -1,8 +1,6 @@
 #include "renderer/gl_primitives/CubeTexture.hpp"
 #include "renderer/gl_primitives/TextureTiling.hpp"
 
-#include "loaders/loadTga.hpp"
-
 #include <glad/glad.h>
 
 #include <utility>
@@ -41,37 +39,12 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<CubeTexture> CubeTexture::create(std::string_view _filePath, TextureTiling _tiling)
-{
-	s32 width, height, bpp;
-	char * tgaBuffer = loadTga(_filePath.data(), &width, &height, &bpp);
-	if (!tgaBuffer)
-	{
-		return nullptr;
-	}
-
-	ASSERT(width / 4  == height / 3, "Cube texture has invalid width or/and height");
-
-	std::unique_ptr<CubeTexture> cubeTexture(new CubeTexture);
-	cubeTexture->genTexture(GL_TEXTURE_CUBE_MAP);
-	cubeTexture->bind(0);
-
-	loadDataToGpu(tgaBuffer, width, height, bpp);
-	delete[] tgaBuffer;
-
-	cubeTexture->performBasicSetup(GL_TEXTURE_CUBE_MAP, _tiling);
-
-	return cubeTexture;
-}
-
-//-----------------------------------------------------------------------------
-
 CubeTexture::CubeTexture(const InitData & _initData) noexcept
 	: TextureBase(GL_TEXTURE_CUBE_MAP)
 	, m_faceWidth(_initData.width / 4)
 {
 	bind(0);
-	loadDataToGpu(_initData.data.get(), _initData.width, _initData.height, bpp);
+	loadDataToGpu(_initData.data.get(), _initData.width, _initData.height, _initData.bpp);
 }
 
 //-----------------------------------------------------------------------------
