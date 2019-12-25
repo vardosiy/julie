@@ -6,6 +6,7 @@ precision mediump float;
 in vec2 v_uv;
 in vec2 v_uvTiling;
 in vec3 v_posW;
+out vec4 o_color;
 
 // 0 - mask
 // 1 - grass
@@ -32,8 +33,6 @@ void main()
 	float distance = distance(u_camPosition, v_posW);
 	float factor = clamp((distance - u_fogStart) / u_fogRange, 0.0, 1.0);
 
-	vec4 result = mix(terrain, u_fogColor, factor);
-	result.a = 1.0;
-
-	gl_FragColor = result;
+	o_color = mix(terrain, u_fogColor, factor);
+	o_color.a = 1.0;
 }

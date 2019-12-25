@@ -1,4 +1,5 @@
 #version 330 core
+#extension GL_NV_shadow_samplers_cube : enable
 precision mediump float;
 
 #define TEXTURES_2D_COUNT 3
@@ -12,6 +13,7 @@ in vec2 v_uvTiling;
 in vec3 v_normalW;
 in vec3 v_bitangentW;
 in vec3 v_tangentW;
+out vec4 o_color;
 
 // TEXTURES
 
@@ -97,5 +99,5 @@ void main()
 	// FINAL
 
 	float fresnel = pow( (1.0 - abs( dot( waterNormalW, toEye ) ) ), 4.0);
-	gl_FragColor = vec4( mix(refractionColor, reflectionColor, fresnel).xyz, 1.0);
+	o_color = vec4( mix(refractionColor, reflectionColor, fresnel).xyz, 1.0);
 }

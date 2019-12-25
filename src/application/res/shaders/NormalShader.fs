@@ -12,6 +12,7 @@ in vec2 v_uv;
 in vec3 v_normalW;
 in vec3 v_bitangentW;
 in vec3 v_tangentW;
+out vec4 o_color;
 
 // 0 - texture
 // 1 - normalMap
@@ -64,6 +65,6 @@ void main()
 
 	vec4 texture = texture2D(u_texture2D[0], v_uv);
 
-	gl_FragColor = mix(diffuseLight, u_ambientColor, u_ambientWeight) * texture + specularLight;
-	gl_FragColor.a = texture.a;
+	o_color = mix(diffuseLight, u_ambientColor, u_ambientWeight) * texture + specularLight;
+	o_color.a = texture.a;
 }

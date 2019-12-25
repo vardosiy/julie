@@ -7,6 +7,7 @@ precision mediump float;
 in vec2 v_uv;
 in vec3 v_normW;
 in vec3 v_posW;
+out vec4 o_color;
 
 uniform sampler2D u_texture2D;
 
@@ -54,6 +55,6 @@ void main()
 
 	vec4 texture = texture2D(u_texture2D, v_uv);
 
-	gl_FragColor = mix(diffuseLight, u_ambientColor, u_ambientWeight) * texture + specularLight;
-	gl_FragColor.a = texture.a;
+	o_color = mix(diffuseLight, u_ambientColor, u_ambientWeight) * texture + specularLight;
+	o_color.a = texture.a;
 }

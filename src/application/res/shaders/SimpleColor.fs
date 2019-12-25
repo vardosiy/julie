@@ -1,9 +1,11 @@
 #version 330 core
 precision mediump float;
 
+out vec4 o_color;
+
 uniform vec4 u_color;
 
 void main()
 {
-	gl_FragColor = u_color;
+	o_color = u_color;
 }

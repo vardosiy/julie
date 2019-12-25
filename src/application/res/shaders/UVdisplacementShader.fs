@@ -4,6 +4,7 @@ precision mediump float;
 #define TEXTURES_COUNT 3
 
 in vec2 v_uv;
+out vec4 o_color;
 
 uniform float u_time;
 uniform float u_dMax;
@@ -27,6 +28,5 @@ void main()
 	vec2 newUv = v_uv + vec2(offsetU, offsetV);
 
 	vec4 color = texture2D(u_texture2D[1], newUv);
-
-	gl_FragColor = color * (1.0, 1.0, 1.0, alphaValue.r);
+	o_color = color * (1.0, 1.0, 1.0, alphaValue.r);
 }
