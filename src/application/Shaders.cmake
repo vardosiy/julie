@@ -1,6 +1,6 @@
 set(
 	shaders
-	res/shaders/Effects/CommonForEffects.vs
+	res/shaders/effects/CommonForEffects.vs
 	res/shaders/NormalShader.vs
 	res/shaders/ReflectionShader.vs
 	res/shaders/SimpleColor.vs
@@ -10,12 +10,12 @@ set(
 	res/shaders/TriangleShader.vs
 	res/shaders/UVdisplacementShader.vs
 	res/shaders/WaterShader.vs
-	res/shaders/Effects/Blur.fs
-	res/shaders/Effects/BW.fs
-	res/shaders/Effects/DoF.fs
-	res/shaders/Effects/DoFBlur.fs
-	res/shaders/Effects/PostBloom.fs
-	res/shaders/Effects/PreBloom.fs
+	res/shaders/effects/Blur.fs
+	res/shaders/effects/BW.fs
+	res/shaders/effects/DoF.fs
+	res/shaders/effects/DoFBlur.fs
+	res/shaders/effects/PostBloom.fs
+	res/shaders/effects/PreBloom.fs
 	res/shaders/NormalShader.fs
 	res/shaders/ReflectionShader.fs
 	res/shaders/SimpleColor.fs

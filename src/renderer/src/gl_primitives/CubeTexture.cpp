@@ -45,6 +45,7 @@ CubeTexture::CubeTexture(const InitData & _initData) noexcept
 {
 	bind(0);
 	loadDataToGpu(_initData.data.get(), _initData.width, _initData.height, _initData.bpp);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 }
 
 //-----------------------------------------------------------------------------

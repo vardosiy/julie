@@ -26,15 +26,15 @@ public:
 	void setRadius(float _val) noexcept				{ m_radius = _val; }
 
 	Type getType() const noexcept					{ return m_type; }
-	const glm::vec4 & getColor() const noexcept		{ return m_color; }
 	const glm::vec3 & getPosDir() const noexcept	{ return m_posDir; }
+	const glm::vec4 & getColor() const noexcept		{ return m_color; }
 
 private:
 	Type m_type;
 
 	glm::vec3 m_originalPosDir;
-	glm::vec4 m_color;
 	glm::vec3 m_posDir;
+	glm::vec4 m_color;
 
 	float m_moveSpeed;
 	float m_radius;

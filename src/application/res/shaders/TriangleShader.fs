@@ -5,8 +5,8 @@ precision mediump float;
 #define POINT_LIGHTS_COUNT 2
 
 in vec2 v_uv;
-in vec3 v_normW;
 in vec3 v_posW;
+in vec3 v_normW;
 out vec4 o_color;
 
 uniform sampler2D u_texture2D;
@@ -35,7 +35,7 @@ void main()
 	{
 		float diffuseIntensity = max( dot(normalW, -u_lightDirection[i]), 0.0 );
 		diffuseLight += u_directionalLightColor[i] * diffuseIntensity;
-
+	
 		vec3 reflectionDir = normalize( reflect(u_lightDirection[i], normalW) );
 		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_specularPower );
 		specularLight += u_directionalLightColor[i] * specularIntensity;
@@ -55,6 +55,6 @@ void main()
 
 	vec4 texture = texture2D(u_texture2D, v_uv);
 
-	o_color = mix(diffuseLight, u_ambientColor, u_ambientWeight) * texture + specularLight;
+	o_color = mix(u_ambientColor, diffuseLight, u_ambientWeight) * texture + specularLight;
 	o_color.a = texture.a;
 }
