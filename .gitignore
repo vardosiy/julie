@@ -16,3 +16,6 @@ InitHeaders.cmake
 InitResources.cmake
 InitUiSources.cmake
 InitShaders.cmake
+
+# file extenstions
+*.pyc
