@@ -11,11 +11,11 @@ scripts/python/__pycache__/
 src/application/Log.log
 
 # generated cmake scripts
-InitSources.cmake
-InitHeaders.cmake
-InitResources.cmake
-InitUiSources.cmake
-InitShaders.cmake
+Sources.cmake
+Headers.cmake
+Resources.cmake
+UiSources.cmake
+Shaders.cmake
 
 # file extenstions
 *.pyc
