@@ -2,8 +2,6 @@
 
 #include "renderer/common/Types.hpp"
 
-#include "utils/Singleton.hpp"
-
 //-----------------------------------------------------------------------------
 
 namespace jl {

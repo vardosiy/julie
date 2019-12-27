@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/common/Types.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace jl {
