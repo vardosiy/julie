@@ -17,7 +17,6 @@ Light::Light(Type _type, const glm::vec3 & _posDir)
 	, m_moveSpeed(0.0f)
 	, m_radius(0.0f)
 {
-	//update(0.0f);
 }
 
 //-----------------------------------------------------------------------------
@@ -28,7 +27,7 @@ void Light::update(float _deltaTime)
 	{
 		m_angle += m_moveSpeed * _deltaTime;
 
-		glm::vec3 diff(m_radius * cos(m_angle), 0.0f, m_radius * sin(m_angle));
+		const glm::vec3 diff(m_radius * cos(m_angle), 0.0f, m_radius * sin(m_angle));
 		m_posDir = m_originalPosDir + diff;
 	}
 }

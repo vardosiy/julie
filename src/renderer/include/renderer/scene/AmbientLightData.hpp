@@ -10,8 +10,6 @@ namespace jl {
 
 struct AmbientLightData
 {
-	AmbientLightData() noexcept = default;
-
 	float		weight;
 	glm::vec4	color;
 };

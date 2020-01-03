@@ -1,10 +1,10 @@
 #include <glad/glad.h>
 
-#include "AppGlWidget.hpp"
+#include "ui/AppGlWidget.hpp"
+#include "logic/ResourceManager.hpp"
 
 #include "renderer/common/Globals.hpp"
-#include "renderer/managers/SceneManager.hpp"
-#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/scene/Scene.hpp"
 #include "renderer/managers/EffectManager.hpp"
 #include "renderer/managers/InputManager.hpp"
 
@@ -16,8 +16,6 @@
 #include <QKeyEvent>
 
 #include <chrono>
-
-const bool g_sandboxEnabled{ false };
 
 //-----------------------------------------------------------------------------
 
@@ -44,17 +42,7 @@ void AppGlWidget::initializeGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (g_sandboxEnabled)
-	{
-		m_sandbox.init();
-	}
-	else
-	{
-		jl::ResourceManager::getInstance().init();
-		jl::SceneManager::getInstance().init();
-		jl::EffectManager::getInstance().init();
-		jl::Fbo::setScreenBufferId(defaultFramebufferObject());
-	}
+	m_sandbox.init();
 
 	connect(&m_updateTimer, SIGNAL(timeout()), this, SLOT(update()));
 	m_updateTimer.start(1);
@@ -73,21 +61,8 @@ void AppGlWidget::resizeGL(int _w, int _h)
 
 void AppGlWidget::paintGL()
 {
-	if (!g_sandboxEnabled)
-	{
-		jl::EffectManager::getInstance().bindFbo();
-	}
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (g_sandboxEnabled)
-	{
-		m_sandbox.draw();
-	}
-	else
-	{
-		jl::SceneManager::getInstance().draw();
-		jl::EffectManager::getInstance().apply();
-	}
+	m_sandbox.draw();
 }
 
 //-----------------------------------------------------------------------------
@@ -117,20 +92,11 @@ void AppGlWidget::keyReleaseEvent(QKeyEvent * _event)
 
 void AppGlWidget::update()
 {
-	const float dt{ getDeltaTime() };
-	if (g_sandboxEnabled)
-	{
-		m_sandbox.update(dt);
-	}
-	else
-	{
-		jl::SceneManager::getInstance().update(dt);
-		jl::EffectManager::getInstance().update(dt);
-	}
-
-	repaint();
-
+	const float dt = getDeltaTime();
 	jl::Globals::s_timeTotal += dt;
+
+	m_sandbox.update(dt);
+	repaint();
 }
 
 //-----------------------------------------------------------------------------

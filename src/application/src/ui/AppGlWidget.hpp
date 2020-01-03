@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sandbox.hpp"
+#include "logic/Sandbox.hpp"
 
 #include <QOpenGLWidget>
 #include <QTimer>

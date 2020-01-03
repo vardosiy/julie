@@ -109,7 +109,7 @@ void Pass::run() const
 
 	if (m_bIsDof)
 	{
-		const Camera & camera = SceneManager::getInstance().getCamera();
+		const Camera & camera = Scene::getInstance().getCamera();
 
 		m_shader->setUniformValue(uniforms.u_near, camera.getNear());
 		m_shader->setUniformValue(uniforms.u_far, camera.getFar());

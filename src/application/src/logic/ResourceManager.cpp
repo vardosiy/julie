@@ -1,4 +1,4 @@
-#include "renderer/managers/ResourceManager.hpp"
+#include "logic/ResourceManager.hpp"
 
 #include "renderer/loaders/ModelsFactory.hpp"
 #include "renderer/loaders/TexturesFactory.hpp"

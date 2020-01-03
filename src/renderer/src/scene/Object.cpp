@@ -1,5 +1,6 @@
 #include "renderer/scene/Object.hpp"
 
+#include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Camera.hpp"
 #include "renderer/scene/Light.hpp"
 #include "renderer/scene/AmbientLightData.hpp"
@@ -8,7 +9,6 @@
 
 #include "renderer/common/Globals.hpp"
 #include "renderer/common/Axis.hpp"
-#include "renderer/managers/SceneManager.hpp"
 #include "renderer/shaders/Shader.hpp"
 
 #include "renderer/gl_primitives/Texture.hpp"
@@ -155,7 +155,7 @@ void Object::setParameters(const ObjectParameters & _params) noexcept
 
 void Object::setUniforms() const
 {
-	const SceneManager & sceneMgr = SceneManager::getInstance();
+	const Scene & sceneMgr = Scene::getInstance();
 	const Camera & cam = sceneMgr.getCamera();
 
 	const ShaderUniforms & uniforms = m_shader->getUniforms();

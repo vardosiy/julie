@@ -1,8 +1,8 @@
-#include "MainWidget.hpp"
+#include "ui/MainWidget.hpp"
 #include "ui_MainWidget.h"
 
 #include "renderer/Renderer.hpp"
-#include "renderer/managers/SceneManager.hpp"
+#include "renderer/scene/Scene.hpp"
 
 #include <QKeyEvent>
 
@@ -64,14 +64,14 @@ void MainWidget::cbFillPolygonsValueChanged(int _state)
 		jl::Renderer::setFrontPolygonsMode(frontPolygonsMode);
 		jl::Renderer::setBackPolygonsMode(backPolygonsMode);
 	};
-	jl::SceneManager::getInstance().setPrerenderCommand(prerenderCommand);
+	jl::Scene::getInstance().setPrerenderCommand(prerenderCommand);
 
 	auto postrenderCommand = []()
 	{
 		jl::Renderer::setFrontPolygonsMode(jl::PolygonMode::Fill);
 		jl::Renderer::setBackPolygonsMode(jl::PolygonMode::Fill);
 	};
-	jl::SceneManager::getInstance().setPostrenderCommand(postrenderCommand);
+	jl::Scene::getInstance().setPostrenderCommand(postrenderCommand);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#include "MainWidget.hpp"
+#include "ui/MainWidget.hpp"
 
 #include "renderer/common/Globals.hpp"
 
