@@ -1,7 +1,7 @@
 #include "renderer/effects/Pass.hpp"
 
 #include "renderer/common/Globals.hpp"
-#include "renderer/managers/SceneManager.hpp"
+#include "renderer/scene/Scene.hpp"
 
 #include "renderer/loaders/ModelsFactory.hpp"
 #include "renderer/scene/Model.hpp"
@@ -107,15 +107,15 @@ void Pass::run() const
 		m_shader->setUniformValue(uniforms.u_step, m_blurOffsets);
 	}
 
-	if (m_bIsDof)
-	{
-		const Camera & camera = Scene::getInstance().getCamera();
-
-		m_shader->setUniformValue(uniforms.u_near, camera.getNear());
-		m_shader->setUniformValue(uniforms.u_far, camera.getFar());
-		m_shader->setUniformValue(uniforms.u_clarity, m_parameters[1]);
-		m_shader->setUniformValue(uniforms.u_fade, m_parameters[2]);
-	}
+	//if (m_bIsDof)
+	//{
+	//	const Camera & camera = Scene::getInstance().getCamera();
+	//
+	//	m_shader->setUniformValue(uniforms.u_near, camera.getNear());
+	//	m_shader->setUniformValue(uniforms.u_far, camera.getFar());
+	//	m_shader->setUniformValue(uniforms.u_clarity, m_parameters[1]);
+	//	m_shader->setUniformValue(uniforms.u_fade, m_parameters[2]);
+	//}
 
 	if (uniforms.u_limit != -1)
 	{

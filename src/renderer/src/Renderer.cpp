@@ -1,11 +1,8 @@
 #include "renderer/Renderer.hpp"
 
-#include "renderer/managers/SceneManager.hpp"
-#include "renderer/scene/Object.hpp"
+#include "utils/Assert.hpp"
 
 #include <glad/glad.h>
-
-#include "utils/Assert.hpp"
 
 //-----------------------------------------------------------------------------
 

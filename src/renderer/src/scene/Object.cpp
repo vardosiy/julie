@@ -39,12 +39,12 @@ Object::Object(const Model & _model) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::draw() const
+void Object::draw(const Camera & _camera) const
 {
 	if (m_shader)
 	{
 		m_shader->bind();
-		setUniforms();
+		setUniforms(_camera);
 		m_shader->draw(*m_model);
 	}
 }
@@ -153,18 +153,15 @@ void Object::setParameters(const ObjectParameters & _params) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setUniforms() const
+void Object::setUniforms(const Camera & _camera) const
 {
-	const Scene & sceneMgr = Scene::getInstance();
-	const Camera & cam = sceneMgr.getCamera();
-
 	const ShaderUniforms & uniforms = m_shader->getUniforms();
 
 	if (uniforms.u_WVP != -1)
-		m_shader->setUniformValue(uniforms.u_WVP, cam.getViewProjectionMatrix() * m_worldMatrix);
+		m_shader->setUniformValue(uniforms.u_WVP, _camera.getViewProjectionMatrix() * m_worldMatrix);
 
 	if (uniforms.u_camPosition != -1)
-		m_shader->setUniformValue(uniforms.u_camPosition, cam.getPosition());
+		m_shader->setUniformValue(uniforms.u_camPosition, _camera.getPosition());
 
 	if (uniforms.u_W != -1)
 		m_shader->setUniformValue(uniforms.u_W, m_worldMatrix);
@@ -190,32 +187,32 @@ void Object::setUniforms() const
 	if (uniforms.u_time != -1)
 		m_shader->setUniformValue(uniforms.u_time, Globals::s_timeTotal);
 
-	if (m_bIsLighted)
-	{
-		const AmbientLightData & ambientLightData = sceneMgr.getAmbientLightData();
+	//if (m_bIsLighted)
+	//{
+	//	const AmbientLightData & ambientLightData = sceneMgr.getAmbientLightData();
+	//
+	//	m_shader->setUniformValue(uniforms.u_ambientColor, ambientLightData.color);
+	//	m_shader->setUniformValue(uniforms.u_ambientWeight, ambientLightData.weight);
+	//	
+	//	const std::vector<glm::vec4> & dirLightColors	= sceneMgr.getDirLightsColors();
+	//	const std::vector<glm::vec4> & pointLightColors	= sceneMgr.getPointLightsColors();
+	//	const std::vector<glm::vec3> & directions		= sceneMgr.getLightsDirections();
+	//	const std::vector<glm::vec3> & positions		= sceneMgr.getLightsPositions();
+	//
+	//	m_shader->setUniformValue(uniforms.u_dirLightColor,		dirLightColors.size(),		dirLightColors.data());
+	//	m_shader->setUniformValue(uniforms.u_pointLightColor,	pointLightColors.size(),	pointLightColors.data());
+	//	m_shader->setUniformValue(uniforms.u_lightDirection,	directions.size(),			directions.data());
+	//	m_shader->setUniformValue(uniforms.u_lightPosition,		positions.size(),			positions.data());
+	//}
 
-		m_shader->setUniformValue(uniforms.u_ambientColor, ambientLightData.color);
-		m_shader->setUniformValue(uniforms.u_ambientWeight, ambientLightData.weight);
-		
-		const std::vector<glm::vec4> & dirLightColors	= sceneMgr.getDirLightsColors();
-		const std::vector<glm::vec4> & pointLightColors	= sceneMgr.getPointLightsColors();
-		const std::vector<glm::vec3> & directions		= sceneMgr.getLightsDirections();
-		const std::vector<glm::vec3> & positions		= sceneMgr.getLightsPositions();
-
-		m_shader->setUniformValue(uniforms.u_dirLightColor,		dirLightColors.size(),		dirLightColors.data());
-		m_shader->setUniformValue(uniforms.u_pointLightColor,	pointLightColors.size(),	pointLightColors.data());
-		m_shader->setUniformValue(uniforms.u_lightDirection,	directions.size(),			directions.data());
-		m_shader->setUniformValue(uniforms.u_lightPosition,		positions.size(),			positions.data());
-	}
-
-	if (m_bIsFogged)
-	{
-		const FogData & fog = sceneMgr.getFog();
-
-		m_shader->setUniformValue(uniforms.u_fogStart, fog.start);
-		m_shader->setUniformValue(uniforms.u_fogRange, fog.range);
-		m_shader->setUniformValue(uniforms.u_fogColor, fog.color);
-	}
+	//if (m_bIsFogged)
+	//{
+	//	const FogData & fog = sceneMgr.getFog();
+	//
+	//	m_shader->setUniformValue(uniforms.u_fogStart, fog.start);
+	//	m_shader->setUniformValue(uniforms.u_fogRange, fog.range);
+	//	m_shader->setUniformValue(uniforms.u_fogColor, fog.color);
+	//}
 
 	setTextures();
 }

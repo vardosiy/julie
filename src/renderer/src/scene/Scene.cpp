@@ -34,7 +34,7 @@ void Scene::draw(const Camera & _camera)
 
 	for (auto & it : m_objects)
 	{
-		it.second->draw();
+		it.second->draw(_camera);
 	}
 
 	if (m_postrenderCallback)
@@ -112,14 +112,14 @@ void Scene::setAmbientLightData(const AmbientLightData & _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::setPrerenderCommand(const std::function<void()> & _callback)
+void Scene::setPrerenderCommand(const std::function<void()> & _callback) noexcept
 {
 	m_prerenderCallback = _callback;
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::setPostrenderCommand(const std::function<void()> & _callback)
+void Scene::setPostrenderCommand(const std::function<void()> & _callback) noexcept
 {
 	m_postrenderCallback = _callback;
 }

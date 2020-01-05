@@ -15,6 +15,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Camera;
 class Model;
 class Shader;
 class Texture;
@@ -25,7 +26,7 @@ class Object
 public:
 	Object(const Model & _model) noexcept;
 
-	void draw() const;
+	void draw(const Camera & _camera) const;
 	void update(float _deltaTime);
 
 	void setShader(const Shader & _shader) noexcept;
@@ -42,7 +43,7 @@ public:
 	void setParameters(const ObjectParameters & _params) noexcept;
 
 private:
-	void setUniforms() const;
+	void setUniforms(const Camera & _camera) const;
 	void setTextures() const;
 
 	void prepareTextureSlots();

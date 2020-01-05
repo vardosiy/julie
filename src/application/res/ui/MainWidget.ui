@@ -96,7 +96,7 @@
   <customwidget>
    <class>AppGlWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>AppGlWidget.hpp</header>
+   <header>ui/AppGlWidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

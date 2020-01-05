@@ -39,7 +39,7 @@ void Camera::update(float _deltaTime)
 	InputManager & inputMgr = InputManager::getInstance();
 
 	glm::vec3 camTraslation(0.0f, 0.0f, 0.0f);
-	const float movePoints{ m_moveSpeed * _deltaTime };
+	const float movePoints = m_moveSpeed * _deltaTime;
 	camTraslation.x += inputMgr.isPressed('D') * movePoints;
 	camTraslation.x -= inputMgr.isPressed('A') * movePoints;
 	camTraslation.y += inputMgr.isPressed('R') * movePoints;
@@ -53,7 +53,7 @@ void Camera::update(float _deltaTime)
 	}
 
 	glm::vec2 camRotation(0.0f, 0.0f);
-	const float rotatePoints{ m_rotationSpeed * _deltaTime };
+	const float rotatePoints = m_rotationSpeed * _deltaTime;
 	camRotation.y += inputMgr.isPressed(Arrows::Left) * rotatePoints;
 	camRotation.y -= inputMgr.isPressed(Arrows::Right) * rotatePoints;
 	camRotation.x += inputMgr.isPressed(Arrows::Up) * rotatePoints;
@@ -85,7 +85,7 @@ void Camera::setPosition(const glm::vec3 & _vec) noexcept
 void Camera::setRotation(const glm::vec3 & _vec) noexcept
 {
 	m_rotation = _vec;
-	rotate(glm::vec2{ 0.0f, 0.0f });
+	rotate(glm::vec2(0.0f, 0.0f));
 }
 
 //-----------------------------------------------------------------------------
@@ -122,8 +122,8 @@ const glm::mat4 & Camera::getViewProjectionMatrix() const noexcept
 void Camera::move(const glm::vec3 & _vec) noexcept
 {
 	const glm::mat4 & m = m_viewMatrix;
-	const glm::vec3 xAxis{ m[0][0], m[1][0], m[2][0] };
-	const glm::vec3 zAxis{ m[0][2], m[1][2], m[2][2] };
+	const glm::vec3 xAxis(m[0][0], m[1][0], m[2][0]);
+	const glm::vec3 zAxis(m[0][2], m[1][2], m[2][2]);
 
 	m_pos += xAxis * _vec.x + zAxis * _vec.z;
 	m_target += xAxis * _vec.x + zAxis * _vec.z;
