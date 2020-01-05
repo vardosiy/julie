@@ -1,7 +1,7 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
 #include "renderer/scene/ObjectParameters.hpp"
+#include "renderer/Types.hpp"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>

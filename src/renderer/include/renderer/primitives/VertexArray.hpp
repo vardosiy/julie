@@ -1,8 +1,8 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
-#include "renderer/common/Vertex.hpp"
-#include "renderer/gl_primitives/Buffer.hpp"
+#include "renderer/Types.hpp"
+#include "renderer/Vertex.hpp"
+#include "renderer/primitives/Buffer.hpp"
 
 #include <boost/noncopyable.hpp>
 

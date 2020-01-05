@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
+#include "renderer/Types.hpp"
 #include "renderer/scene/AmbientLightData.hpp"
 #include "renderer/scene/FogData.hpp"
 

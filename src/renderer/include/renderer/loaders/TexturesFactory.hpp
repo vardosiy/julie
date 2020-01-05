@@ -1,7 +1,7 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
-#include "renderer/gl_primitives/Texture.hpp"
+#include "renderer/Types.hpp"
+#include "renderer/Texture.hpp"
 
 #include <string_view>
 #include <memory>

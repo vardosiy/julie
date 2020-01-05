@@ -1,6 +1,6 @@
 #include "ui/MainWidget.hpp"
 
-#include "renderer/common/Globals.hpp"
+#include "renderer/Globals.hpp"
 
 #include <iostream>
 #include <QApplication>

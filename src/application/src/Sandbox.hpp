@@ -1,9 +1,9 @@
 #pragma once
 
 #include "renderer/scene/Camera.hpp"
-#include "renderer/scene/Model.hpp"
-#include "renderer/shaders/Shader.hpp"
-#include "renderer/gl_primitives/Texture.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/Texture.hpp"
 
 #include <vector>
 #include <memory>

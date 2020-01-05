@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/common/Axis.hpp"
+#include "renderer/Axis.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>

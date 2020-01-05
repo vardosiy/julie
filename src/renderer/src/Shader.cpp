@@ -1,11 +1,12 @@
-#include <glad/glad.h>
+#include "renderer/Shader.hpp"
 
-#include "renderer/shaders/Shader.hpp"
-#include "renderer/common/Vertex.hpp"
-#include "renderer/scene/Model.hpp"
+#include "renderer/Vertex.hpp"
+#include "renderer/Model.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"
+
+#include <glad/glad.h>
 
 #include <fstream>
 #include <sstream>

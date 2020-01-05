@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/gl_primitives/TextureBase.hpp"
+#include "renderer/TextureBase.hpp"
 
 #include <string_view>
 #include <memory>

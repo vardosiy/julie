@@ -1,8 +1,8 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
-#include "renderer/gl_primitives/TextureTiling.hpp"
-#include "renderer/gl_primitives/TextureFilteringMode.hpp"
+#include "renderer/Types.hpp"
+#include "renderer/TextureTiling.hpp"
+#include "renderer/TextureFilteringMode.hpp"
 
 #include <boost/noncopyable.hpp>
 

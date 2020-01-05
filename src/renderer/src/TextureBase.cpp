@@ -1,5 +1,5 @@
-#include "renderer/gl_primitives/TextureBase.hpp"
-#include "renderer/gl_primitives/TextureTiling.hpp"
+#include "renderer/TextureBase.hpp"
+#include "renderer/TextureTiling.hpp"
 
 #include "utils/Assert.hpp"
 

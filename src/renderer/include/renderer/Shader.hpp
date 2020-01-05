@@ -1,8 +1,8 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
-#include "renderer/shaders/ShaderAttributes.hpp"
-#include "renderer/shaders/ShaderUniforms.hpp"
+#include "renderer/Types.hpp"
+#include "renderer/ShaderAttributes.hpp"
+#include "renderer/ShaderUniforms.hpp"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>

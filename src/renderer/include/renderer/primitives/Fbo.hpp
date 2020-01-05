@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/common/Types.hpp"
+#include "renderer/Types.hpp"
 
 #include <boost/noncopyable.hpp>
 

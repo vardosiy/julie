@@ -1,15 +1,15 @@
 #include <glad/glad.h>
 
 #include "ui/AppGlWidget.hpp"
-#include "logic/ResourceManager.hpp"
+#include "managers/ResourceManager.hpp"
 
-#include "renderer/common/Globals.hpp"
+#include "renderer/Globals.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/managers/EffectManager.hpp"
 #include "renderer/managers/InputManager.hpp"
 
-#include "renderer/shaders/Shader.hpp"
-#include "renderer/gl_primitives/Fbo.hpp"
+#include "renderer/primitives/Fbo.hpp"
+#include "renderer/Shader.hpp"
 
 #include "utils/LogDefs.hpp"
 

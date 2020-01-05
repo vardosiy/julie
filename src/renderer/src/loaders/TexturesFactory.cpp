@@ -1,8 +1,8 @@
 #include "renderer/loaders/TexturesFactory.hpp"
 
-#include "renderer/gl_primitives/Texture.hpp"
-#include "renderer/gl_primitives/CubeTexture.hpp"
-#include "renderer/gl_primitives/TextureTiling.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/CubeTexture.hpp"
+#include "renderer/TextureTiling.hpp"
 
 #include "loaders/formats/LoadTga.hpp"
 

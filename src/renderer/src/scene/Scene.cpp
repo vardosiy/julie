@@ -1,12 +1,12 @@
 #include "renderer/scene/Scene.hpp"
 
 #include "renderer/scene/Camera.hpp"
-#include "renderer/scene/Model.hpp"
 #include "renderer/scene/Object.hpp"
 #include "renderer/scene/AmbientLightData.hpp"
 #include "renderer/scene/Light.hpp"
 
-#include "renderer/common/Axis.hpp"
+#include "renderer/Axis.hpp"
+#include "renderer/Model.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"

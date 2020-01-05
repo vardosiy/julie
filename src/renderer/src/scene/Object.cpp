@@ -3,16 +3,15 @@
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Camera.hpp"
 #include "renderer/scene/Light.hpp"
-#include "renderer/scene/AmbientLightData.hpp"
-#include "renderer/scene/Model.hpp"
 #include "renderer/scene/FogData.hpp"
+#include "renderer/scene/AmbientLightData.hpp"
 
-#include "renderer/common/Globals.hpp"
-#include "renderer/common/Axis.hpp"
-#include "renderer/shaders/Shader.hpp"
-
-#include "renderer/gl_primitives/Texture.hpp"
-#include "renderer/gl_primitives/CubeTexture.hpp"
+#include "renderer/Axis.hpp"
+#include "renderer/Globals.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/CubeTexture.hpp"
 
 #include <glm/gtx/transform.hpp>
 
@@ -181,11 +180,11 @@ void Object::setUniforms(const Camera & _camera) const
 	if (uniforms.u_specularPower != -1)
 		m_shader->setUniformValue(uniforms.u_specularPower, m_params.specularPower);
 
-	if (uniforms.u_color != -1)
-		m_shader->setUniformValue(uniforms.u_color, m_params.color);
-
 	if (uniforms.u_time != -1)
 		m_shader->setUniformValue(uniforms.u_time, Globals::s_timeTotal);
+
+	if (uniforms.u_color != -1)
+		m_shader->setUniformValue(uniforms.u_color, m_params.color);
 
 	//if (m_bIsLighted)
 	//{

@@ -1,7 +1,7 @@
 #include "renderer/loaders/ModelsFactory.hpp"
 
-#include "renderer/common/Vertex.hpp"
-#include "renderer/scene/Model.hpp"
+#include "renderer/Vertex.hpp"
+#include "renderer/Model.hpp"
 
 #include "utils/Assert.hpp"
 

@@ -1,4 +1,6 @@
-#include "renderer/scene/Model.hpp"
+#pragma once
+
+#include "renderer/Types.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -6,17 +8,14 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Model::Model(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices)
-	: m_vertexArray(_vertices, _indices)
+class Globals
 {
-}
+public:
+	static s32 s_screenWidth;
+	static s32 s_screenHeight;
 
-//-----------------------------------------------------------------------------
-
-void Model::bind() const
-{
-	m_vertexArray.bind();
-}
+	static float s_timeTotal;
+};
 
 //-----------------------------------------------------------------------------
 

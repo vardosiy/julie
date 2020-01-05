@@ -1,8 +1,8 @@
-#include "logic/ResourceManager.hpp"
+#include "managers/ResourceManager.hpp"
 
 #include "renderer/loaders/ModelsFactory.hpp"
 #include "renderer/loaders/TexturesFactory.hpp"
-#include "renderer/gl_primitives/TextureTiling.hpp"
+#include "renderer/TextureTiling.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"

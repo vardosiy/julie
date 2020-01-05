@@ -1,8 +1,8 @@
 #include "renderer/scene/Camera.hpp"
 
-#include "renderer/common/Axis.hpp"
-#include "renderer/common/Globals.hpp"
 #include "renderer/managers/InputManager.hpp"
+#include "renderer/Axis.hpp"
+#include "renderer/Globals.hpp"
 
 #include <glm/gtx/transform.hpp>
 

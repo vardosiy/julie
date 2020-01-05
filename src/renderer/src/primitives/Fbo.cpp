@@ -1,9 +1,8 @@
-#include "renderer/gl_primitives/Fbo.hpp"
-
-#include "renderer/common/Types.hpp"
-#include "renderer/common/Globals.hpp"
+#include "renderer/primitives/Fbo.hpp"
 
 #include "renderer/loaders/TexturesFactory.hpp"
+#include "renderer/Types.hpp"
+#include "renderer/Globals.hpp"
 
 #include "utils/LogDefs.hpp"
 

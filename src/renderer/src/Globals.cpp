@@ -1,4 +1,4 @@
-#include "renderer/common/Globals.hpp"
+#include "renderer/Globals.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -6,10 +6,10 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-s32 Globals::s_screenHeight{ 720 };
-s32 Globals::s_screenWidth{ 1280 };
+s32 Globals::s_screenHeight = 720;
+s32 Globals::s_screenWidth = 1280;
 
-float Globals::s_timeTotal{ 0.0f };
+float Globals::s_timeTotal = 0.0f;
 
 //-----------------------------------------------------------------------------
 

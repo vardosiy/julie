@@ -1,7 +1,7 @@
 #pragma once
 
 #include "renderer/effects/Effect.hpp"
-#include "renderer/gl_primitives/Fbo.hpp"
+#include "renderer/primitives/Fbo.hpp"
 
 #include "utils/Singleton.hpp"
 

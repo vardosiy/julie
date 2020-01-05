@@ -1,4 +1,4 @@
-#include "renderer/gl_primitives/Buffer.hpp"
+#include "renderer/primitives/Buffer.hpp"
 
 #include "utils/Assert.hpp"
 

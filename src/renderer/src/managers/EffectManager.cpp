@@ -1,8 +1,8 @@
 #include "renderer/managers/EffectManager.hpp"
 #include "renderer/managers/InputManager.hpp"
 
-#include "renderer/shaders/Shader.hpp"
-#include "renderer/gl_primitives/Texture.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/Texture.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"

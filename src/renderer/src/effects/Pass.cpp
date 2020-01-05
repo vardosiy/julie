@@ -1,14 +1,14 @@
 #include "renderer/effects/Pass.hpp"
 
-#include "renderer/common/Globals.hpp"
+#include "renderer/Globals.hpp"
 #include "renderer/scene/Scene.hpp"
 
 #include "renderer/loaders/ModelsFactory.hpp"
-#include "renderer/scene/Model.hpp"
 #include "renderer/scene/Camera.hpp"
-#include "renderer/gl_primitives/Fbo.hpp"
-#include "renderer/gl_primitives/Texture.hpp"
-#include "renderer/shaders/Shader.hpp"
+#include "renderer/primitives/Fbo.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/Shader.hpp"
 
 #include "utils/Assert.hpp"
 #include "utils/LogDefs.hpp"
