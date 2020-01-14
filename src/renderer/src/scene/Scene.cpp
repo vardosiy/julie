@@ -2,14 +2,19 @@
 
 #include "renderer/scene/Camera.hpp"
 #include "renderer/scene/Object.hpp"
-#include "renderer/scene/AmbientLightData.hpp"
 #include "renderer/scene/Light.hpp"
 
-#include "renderer/Axis.hpp"
+#include "renderer/Globals.hpp"
 #include "renderer/Model.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/Material.hpp"
+
+#include "scene/CommonUniformsBinder.hpp"
 
 #include "utils/LogDefs.hpp"
 #include "utils/Assert.hpp"
+
+#include <string>
 
 //-----------------------------------------------------------------------------
 
@@ -18,9 +23,6 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 Scene::Scene() = default;
-
-//-----------------------------------------------------------------------------
-
 Scene::~Scene() = default;
 
 //-----------------------------------------------------------------------------
@@ -34,7 +36,7 @@ void Scene::draw(const Camera & _camera)
 
 	for (auto & it : m_objects)
 	{
-		it.second->draw(_camera);
+		drawObject(_camera, *it.second);
 	}
 
 	if (m_postrenderCallback)
@@ -51,6 +53,48 @@ void Scene::update(float _deltaTime)
 	{
 		it.second->update(_deltaTime);
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+const FogData & Scene::getFogData() const noexcept
+{
+	return m_fogData;
+}
+
+//-----------------------------------------------------------------------------
+
+const AmbientLightData & Scene::getAmbientLightData() const noexcept
+{
+	return m_ambientLightData;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setFogData(const FogData & _data) noexcept
+{
+	m_fogData = _data;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setAmbientLightData(const AmbientLightData & _data) noexcept
+{
+	m_ambientLightData = _data;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setPrerenderCommand(const std::function<void()> & _callback) noexcept
+{
+	m_prerenderCallback = _callback;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setPostrenderCommand(const std::function<void()> & _callback) noexcept
+{
+	m_postrenderCallback = _callback;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,30 +142,21 @@ void Scene::forEachObject(const std::function<void(s32, const Object &)> & _call
 
 //-----------------------------------------------------------------------------
 
-void Scene::setFogData(const FogData & _data) noexcept
+void Scene::drawObject(const Camera & _camera, const Object & _object) const noexcept
 {
-	m_fogData = _data;
-}
+	const Material * material = _object.getMaterial();
+	if (material)
+	{
+		material->bind();
 
-//-----------------------------------------------------------------------------
+		const Shader * shader = material->getShader();
+		if (shader)
+		{
+			CommonUniformsBinder::run(*shader, _camera, _object);
+		}
 
-void Scene::setAmbientLightData(const AmbientLightData & _data) noexcept
-{
-	m_ambientLightData = _data;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setPrerenderCommand(const std::function<void()> & _callback) noexcept
-{
-	m_prerenderCallback = _callback;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setPostrenderCommand(const std::function<void()> & _callback) noexcept
-{
-	m_postrenderCallback = _callback;
+		Shader::draw(_object.getModel());
+	}
 }
 
 //-----------------------------------------------------------------------------

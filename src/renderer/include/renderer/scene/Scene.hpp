@@ -1,8 +1,8 @@
 #pragma once
 
 #include "renderer/Types.hpp"
-#include "renderer/scene/AmbientLightData.hpp"
 #include "renderer/scene/FogData.hpp"
+#include "renderer/scene/AmbientLightData.hpp"
 
 #include "utils/Singleton.hpp"
 
@@ -18,6 +18,7 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Camera;
+class Shader;
 class Object;
 
 class Scene : public utils::Singleton<Scene>
@@ -28,8 +29,8 @@ public:
 	void draw(const Camera & _camera);
 	void update(float _deltaTime);
 
-	const FogData &				getFogData() const noexcept				{ return m_fogData; }
-	const AmbientLightData &	getAmbientLightData() const noexcept	{ return m_ambientLightData; }
+	const FogData & getFogData() const noexcept;
+	const AmbientLightData & getAmbientLightData() const noexcept;
 
 	void setFogData(const FogData & _data) noexcept;
 	void setAmbientLightData(const AmbientLightData & _data) noexcept;
@@ -39,15 +40,17 @@ public:
 
 	void addObject(s32 _id, std::unique_ptr<Object> && _object);
 
-	Object *		findObject(s32 _id) noexcept;
-	const Object *	findObject(s32 _id) const noexcept;
+	Object * findObject(s32 _id) noexcept;
+	const Object * findObject(s32 _id) const noexcept;
 
 	void forEachObject(const std::function<void(s32, Object &)> & _callback);
 	void forEachObject(const std::function<void(s32, const Object &)> & _callback) const;
 
-protected:
+private:
 	Scene();
 	~Scene();
+
+	void drawObject(const Camera & _camera, const Object & _object) const noexcept;
 
 private:
 	std::unordered_map<s32, std::unique_ptr<Object>> m_objects;

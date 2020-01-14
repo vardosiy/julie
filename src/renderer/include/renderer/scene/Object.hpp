@@ -1,9 +1,7 @@
 #pragma once
 
-#include "renderer/scene/ObjectParameters.hpp"
 #include "renderer/Types.hpp"
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 #include <vector>
@@ -17,60 +15,40 @@ namespace jl {
 
 class Camera;
 class Model;
-class Shader;
-class Texture;
-class CubeTexture;
+class Material;
 
 class Object
 {
 public:
 	Object(const Model & _model) noexcept;
 
-	void draw(const Camera & _camera) const;
-	void update(float _deltaTime);
+	void update(float _dt);
 
-	void setShader(const Shader & _shader) noexcept;
-	void setTextures2D(std::vector<const Texture *> && _textures) noexcept;
-	void setCubeTextures(std::vector<const CubeTexture *> && _textures) noexcept;
+	const Model &		getModel()			const noexcept { return *m_model; }
+	const Material *	getMaterial()		const noexcept { return m_material; }
+	const glm::vec3 &	getPosition()		const noexcept { return m_pos; }
+	const glm::vec3 &	getRotation()		const noexcept { return m_rotation; }
+	const glm::vec3 &	getScale()			const noexcept { return m_scale; }
+	const glm::mat4 &	getWorldMatrix()	const noexcept { return m_worldMatrix; }
 
-	void setPosition(const glm::vec3 & _vec) noexcept;
-	void setRotation(const glm::vec3 & _vec) noexcept;
-	void setScale(const glm::vec3 & _vec) noexcept;
-
-	void translate(const glm::vec3 & _vec) noexcept;
-	void rotate(const glm::vec3 & _vec) noexcept;
-
-	void setParameters(const ObjectParameters & _params) noexcept;
+	void setMaterial(const Material & _material) noexcept;
+	void setPosition(const glm::vec3 & _val) noexcept;
+	void setRotation(const glm::vec3 & _val) noexcept;
+	void setScale(const glm::vec3 & _val) noexcept;
 
 private:
-	void setUniforms(const Camera & _camera) const;
-	void setTextures() const;
-
-	void prepareTextureSlots();
-
 	void recalculateWorldMatrix();
 
 private:
 	const Model * m_model;
-	const Shader * m_shader;
-	std::vector<const Texture *> m_textures2D;
-	std::vector<const CubeTexture *> m_cubeTextures;
-
-	std::vector<s32> m_texture2DUniformValues;
-	std::vector<s32> m_cubeTextureUniformValues;
+	const Material * m_material;
 
 	glm::vec3 m_pos;
 	glm::vec3 m_scale;
 	glm::vec3 m_rotation;
 	glm::mat4 m_worldMatrix;
 
-	ObjectParameters m_params;
-
-	bool m_bIsFogged;
-	bool m_bIsLighted;
-
 	bool m_bIsTransformChanged;
-	bool m_bIsTexturesUpdated;
 };
 
 //-----------------------------------------------------------------------------

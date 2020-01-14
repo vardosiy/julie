@@ -38,6 +38,8 @@ void Sandbox::init()
 	m_models.emplace_back(jl::ModelsFactory::createRect(glm::vec3(0.0f, 0.0f, -0.5f), glm::vec2(1.0f, 1.0f)));
 	m_textures.emplace_back(jl::TexturesFactory::load2dTextureFromFile("res/textures/Rock.tga", jl::TextureTiling::ClampToEdge));
 
+
+
 	std::unique_ptr<jl::Object> obj1 = std::make_unique<jl::Object>(*m_models[0]);
 	jl::ObjectParameters params;
 	params.color = glm::vec4(1.0f, 0.4, 0.0f, 1.0f);
