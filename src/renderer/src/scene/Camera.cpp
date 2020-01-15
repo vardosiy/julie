@@ -28,7 +28,7 @@ Camera::Camera(float _near, float _far, float _fov)
 	, m_projectionMatrix(1.0f)
 	, m_viewProjectionMatrix(1.0f)
 {
-	const float aspect{ static_cast<float>(Globals::s_screenWidth) / static_cast<float>(Globals::s_screenHeight) };
+	const float aspect = static_cast<float>(Globals::s_screenWidth) / static_cast<float>(Globals::s_screenHeight);
 	m_projectionMatrix = glm::perspective(glm::radians(_fov), aspect, _near, _far);
 }
 
