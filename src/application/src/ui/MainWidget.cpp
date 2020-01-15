@@ -16,7 +16,7 @@ MainWidget::MainWidget(QWidget * parent)
 {
 	m_ui->setupUi(this);
 
-	connect(m_ui->cd_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::cbFillPolygonsValueChanged);
+	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::cbFillPolygonsValueChanged);
 }
 
 //-----------------------------------------------------------------------------
