@@ -34,25 +34,28 @@ void Sandbox::init()
 
 	m_shaders.emplace_back(jl::Shader::create("res/shaders/SimpleColor.vs",		"res/shaders/SimpleColor.fs"));
 	m_shaders.emplace_back(jl::Shader::create("res/shaders/SimpleTexture.vs",	"res/shaders/SimpleTexture.fs"));
+
 	m_models.emplace_back(jl::ModelsFactory::createRect(glm::vec3(-1.0f, -1.0f, -0.5f), glm::vec2(1.0f, 1.0f)));
 	m_models.emplace_back(jl::ModelsFactory::createRect(glm::vec3(0.0f, 0.0f, -0.5f), glm::vec2(1.0f, 1.0f)));
+
 	m_textures.emplace_back(jl::TexturesFactory::load2dTextureFromFile("res/textures/Rock.tga", jl::TextureTiling::ClampToEdge));
 
+	m_materials.emplace_back(new jl::Material);
+	m_materials.back()->setShader(*m_shaders[0]);
+	m_materials.back()->setProperty("u_color", glm::vec4(0.3f, 0.7f, 0.8f, 1.0f));
 
+	m_materials.emplace_back(new jl::Material);
+	m_materials.back()->setShader(*m_shaders[1]);
+	m_materials.back()->setProperty("u_texture2D", *m_textures[0]);
 
 	std::unique_ptr<jl::Object> obj1 = std::make_unique<jl::Object>(*m_models[0]);
-	jl::ObjectParameters params;
-	params.color = glm::vec4(1.0f, 0.4, 0.0f, 1.0f);
-	obj1->setParameters(params);
-	obj1->setShader(*m_shaders[0]);
+	obj1->setMaterial(*m_materials[0]);
 	obj1->setPosition(glm::vec3(0.0f));
 	obj1->setRotation(glm::vec3(0.0f));
 	obj1->setScale(glm::vec3(1.0f));
 
 	std::unique_ptr<jl::Object> obj2 = std::make_unique<jl::Object>(*m_models[1]);
-	obj2->setParameters(params);
-	obj2->setShader(*m_shaders[1]);
-	obj2->setTextures2D({ m_textures[0].get() });
+	obj2->setMaterial(*m_materials[1]);
 	obj2->setPosition(glm::vec3(0.0f));
 	obj2->setRotation(glm::vec3(0.0f));
 	obj2->setScale(glm::vec3(1.0f));

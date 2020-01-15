@@ -22,5 +22,5 @@ private:
 	std::vector<std::unique_ptr<jl::Shader>> m_shaders;
 	std::vector<std::unique_ptr<jl::Model>> m_models;
 	std::vector<std::unique_ptr<jl::Texture>> m_textures;
-	std::vector<std::unique_ptr<jl::Texture>> m_textures;
+	std::vector<std::unique_ptr<jl::Material>> m_materials;
 };
