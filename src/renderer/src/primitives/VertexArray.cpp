@@ -10,7 +10,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-VertexArray::VertexArray(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices)
+VertexArray::VertexArray(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices)
 	: m_id(0)
 	, m_vertexBuffer(Buffer::Type::VertexBuffer)
 	, m_indexBuffer(Buffer::Type::IndexBuffer)

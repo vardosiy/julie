@@ -11,8 +11,8 @@ namespace jl {
 class Globals
 {
 public:
-	static s32 s_screenWidth;
-	static s32 s_screenHeight;
+	static u32 s_screenWidth;
+	static u32 s_screenHeight;
 
 	static float s_timeTotal;
 };

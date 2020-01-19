@@ -18,44 +18,47 @@ public:
 
 	void update(float _deltaTime);
 
-	void setMoveSpeed(float _val) noexcept		{ m_moveSpeed = _val; }
-	void setRotationSpeed(float _val) noexcept	{ m_rotationSpeed = _val; }
+	float getNear() const noexcept;
+	float getFar() const noexcept;
+	const glm::vec3& getPosition() const noexcept;
 
-	void setPosition(const glm::vec3 & _vec) noexcept;
-	void setRotation(const glm::vec3 & _vec) noexcept;
-	void setUpVector(const glm::vec3 & _vec) noexcept;
+	const glm::mat4& getViewMatrix() const noexcept;
+	const glm::mat4& getProjectionMatrix() const noexcept;
+	const glm::mat4& getViewProjectionMatrix() const noexcept;
 
-	float getNear() const noexcept					{ return m_near; }
-	float getFar() const noexcept					{ return m_far; }
-	const glm::vec3 & getPosition() const noexcept	{ return m_pos; }
+	void setAspect(float _val) noexcept;
+	void setMoveSpeed(float _val) noexcept;
+	void setRotationSpeed(float _val) noexcept;
 
-	const glm::mat4 & getViewMatrix() const noexcept;
-	const glm::mat4 & getProjectionMatrix() const noexcept;
-	const glm::mat4 & getViewProjectionMatrix() const noexcept;
+	void setPosition(const glm::vec3& _vec) noexcept;
+	void setRotation(const glm::vec3& _vec) noexcept;
+	void setUpVector(const glm::vec3& _vec) noexcept;
 
 private:
-	void move(const glm::vec3 & _vec) noexcept;
-	void rotate(const glm::vec2 & _vec) noexcept;
+	void move(const glm::vec3& _vec) noexcept;
+	void rotate(const glm::vec2& _vec) noexcept;
 
 	void recalculateMatrices();
 
 	static glm::mat4 lookAt(
-		const glm::vec3 & _pos,
-		const glm::vec3 & _target,
-		const glm::vec3 & _upVector
+		const glm::vec3& _pos,
+		const glm::vec3& _target,
+		const glm::vec3& _upVector
 	);
 
 private:
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
-	glm::vec3 m_upVector;
 	glm::vec2 m_rotation;
+	glm::vec3 m_upVector;
 
 	float m_moveSpeed;
 	float m_rotationSpeed;
 
+	float m_aspect;
 	float m_near;
 	float m_far;
+	float m_fov;
 
 	glm::mat4 m_viewMatrix;
 	glm::mat4 m_projectionMatrix;

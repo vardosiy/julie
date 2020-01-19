@@ -10,7 +10,7 @@
 
 //-----------------------------------------------------------------------------
 
-MainWidget::MainWidget(QWidget * parent)
+MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_ui(std::make_unique<Ui::MainWidget>())
 {

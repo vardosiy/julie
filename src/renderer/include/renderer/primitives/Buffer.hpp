@@ -20,15 +20,15 @@ public:
 	~Buffer();
 
 	template<typename T>
-	void bufferData(const std::vector<T> & _data);
+	void bufferData(const std::vector<T>& _data);
 
 	void bind() const noexcept;
 
-	Type	getType() const noexcept		{ return m_type; }
-	u32		getItemsCount() const noexcept	{ return m_itemsCount; }
+	Type getType() const noexcept		{ return m_type; }
+	u32 getItemsCount() const noexcept	{ return m_itemsCount; }
 
 private:
-	void bufferData(const void * _data, u32 _size);
+	void bufferData(const void* _data, u32 _size);
 
 	static s32 bufferTypeToGlValue(Type _type);
 
@@ -42,7 +42,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void Buffer::bufferData(const std::vector<T> & _data)
+void Buffer::bufferData(const std::vector<T>& _data)
 {
 	m_itemsCount = static_cast<u32>(_data.size());
 	bufferData(_data.data(), m_itemsCount * sizeof(T));

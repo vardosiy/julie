@@ -15,7 +15,7 @@ namespace jl {
 
 std::unique_ptr<Model> ModelsFactory::loadFromFile(std::string_view _filePath)
 {
-	FILE * pFile = fopen(_filePath.data(), "r");
+	FILE* pFile = fopen(_filePath.data(), "r");
 	if (!pFile)
 	{
 		return nullptr;
@@ -26,7 +26,7 @@ std::unique_ptr<Model> ModelsFactory::loadFromFile(std::string_view _filePath)
 	ASSERTM(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
 	std::vector<Vertex> vertices(verticesCount);
-	for (auto & vertex : vertices)
+	for (Vertex & vertex : vertices)
 	{
 		fscanf_s(
 			pFile, " %*d. pos:[%f, %f, %f]; norm:[%f, %f, %f]; binorm:[%f, %f, %f]; tgt:[%f, %f, %f]; uv:[%f, %f];",
@@ -58,18 +58,18 @@ std::unique_ptr<Model> ModelsFactory::loadFromFile(std::string_view _filePath)
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Model> ModelsFactory::createRect(const glm::vec3 & _pos, const glm::vec2 & _size)
+std::unique_ptr<Model> ModelsFactory::createRect()
 {
 	std::vector<Vertex> vertices(4);
-	vertices[0].pos = _pos;
-	vertices[1].pos = _pos + glm::vec3{ 0.0f, _size.y, 0.0f };
-	vertices[2].pos = _pos + glm::vec3{ _size.x, 0.0f, 0.0f };
-	vertices[3].pos = _pos + glm::vec3{ _size.x, _size.y, 0.0f };
+	vertices[0].pos = glm::vec3(0.0f, 0.0f, 0.0f);
+	vertices[1].pos = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertices[2].pos = glm::vec3(1.0f, 0.0f, 0.0f);
+	vertices[3].pos = glm::vec3(1.0f, 1.0f, 0.0f);
 
-	vertices[0].uv = glm::vec2{ 0.0f, 0.0f };
-	vertices[1].uv = glm::vec2{ 0.0f, 1.0f };
-	vertices[2].uv = glm::vec2{ 1.0f, 0.0f };
-	vertices[3].uv = glm::vec2{ 1.0f, 1.0f };
+	vertices[0].uv = glm::vec2(0.0f, 0.0f);
+	vertices[1].uv = glm::vec2(0.0f, 1.0f);
+	vertices[2].uv = glm::vec2(1.0f, 0.0f);
+	vertices[3].uv = glm::vec2(1.0f, 1.0f);
 
 	std::vector<u16> indices = { 0, 1, 2, 1, 2, 3 };
 	return std::make_unique<Model>(vertices, indices);

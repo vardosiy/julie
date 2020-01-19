@@ -18,7 +18,7 @@ class ModelsFactory
 {
 public:
 	static std::unique_ptr<Model> loadFromFile(std::string_view _filePath);
-	static std::unique_ptr<Model> createRect(const glm::vec3 & _pos, const glm::vec2 & _size); // _pos => bottom-left coord
+	static std::unique_ptr<Model> createRect();
 };
 
 //-----------------------------------------------------------------------------

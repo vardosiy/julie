@@ -38,7 +38,7 @@ public:
 	};
 
 public:
-	Texture(const InitData & _initData) noexcept;
+	Texture(const InitData& _initData) noexcept;
 
 	u32 getWidth() const noexcept	{ return m_width; }
 	u32 getHeight() const noexcept	{ return m_height; }

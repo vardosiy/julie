@@ -39,7 +39,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-CubeTexture::CubeTexture(const InitData & _initData) noexcept
+CubeTexture::CubeTexture(const InitData& _initData) noexcept
 	: TextureBase(GL_TEXTURE_CUBE_MAP)
 	, m_faceWidth(_initData.width / 4)
 {
@@ -50,12 +50,12 @@ CubeTexture::CubeTexture(const InitData & _initData) noexcept
 
 //-----------------------------------------------------------------------------
 
-void CubeTexture::loadDataToGpu(const char * _data, s32 _width, s32 _height, s32 _bpp)
+void CubeTexture::loadDataToGpu(const char* _data, s32 _width, s32 _height, s32 _bpp)
 {
 	const u32 faceWidth = static_cast<u32>(_width) / 4;
 	details::OffsetsArray offsets = details::calculateOffsets(faceWidth);
 
-	char * faceBuffer = new char[faceWidth * faceWidth * _bpp / 8];
+	char* faceBuffer = new char[faceWidth * faceWidth * _bpp / 8];
 	for (s32 i = 0; i < details::k_facesCount; ++i)
 	{
 		extractFace(_data, faceBuffer, _width, faceWidth, offsets[i].first, offsets[i].second, _bpp);
@@ -68,8 +68,8 @@ void CubeTexture::loadDataToGpu(const char * _data, s32 _width, s32 _height, s32
 //-----------------------------------------------------------------------------
 
 void CubeTexture::extractFace(
-	const char * _pSrc,
-	char * _pDst,
+	const char* _pSrc,
+	char* _pDst,
 	s32 _srcRowLength,	// pixels
 	s32 _dstRowLength,	// pixels
 	s32 _offsetX,		// pixels

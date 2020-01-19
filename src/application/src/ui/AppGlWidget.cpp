@@ -15,11 +15,9 @@
 
 #include <QKeyEvent>
 
-#include <chrono>
-
 //-----------------------------------------------------------------------------
 
-AppGlWidget::AppGlWidget(QWidget * parent)
+AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_updateTimer(this)
 {
@@ -52,8 +50,11 @@ void AppGlWidget::initializeGL()
 
 void AppGlWidget::resizeGL(int _w, int _h)
 {
-	jl::Globals::s_screenWidth = _w;
-	jl::Globals::s_screenHeight = _h;
+	jl::Globals::s_screenWidth = static_cast<jl::u32>(_w);
+	jl::Globals::s_screenHeight = static_cast<jl::u32>(_h);
+
+	m_sandbox.onWindowResized(jl::Globals::s_screenWidth, jl::Globals::s_screenHeight);
+
 	glViewport(0, 0, _w, _h);
 }
 
@@ -67,7 +68,7 @@ void AppGlWidget::paintGL()
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::keyPressEvent(QKeyEvent * _event)
+void AppGlWidget::keyPressEvent(QKeyEvent* _event)
 {
 	if (_event->isAutoRepeat())
 	{
@@ -79,7 +80,7 @@ void AppGlWidget::keyPressEvent(QKeyEvent * _event)
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::keyReleaseEvent(QKeyEvent * _event)
+void AppGlWidget::keyReleaseEvent(QKeyEvent* _event)
 {
 	if (_event->isAutoRepeat())
 	{

@@ -29,7 +29,7 @@ bool checkShaderCompilationSucceded(jl::u32 _shaderId) noexcept
 
 		if (messageLength > 1)
 		{
-			char * message = new char[messageLength];
+			char* message = new char[messageLength];
 
 			glGetShaderInfoLog(_shaderId, messageLength, nullptr, message);
 			LOG_INFO("Shader compile error message: {}", message);
@@ -72,7 +72,7 @@ int loadShader(jl::u32 _type, std::string_view _filePath)
 	{
 		shader = glCreateShader(_type);
 
-		const char * c_str = fileContent.c_str();
+		const char* c_str = fileContent.c_str();
 		glShaderSource(shader, 1, &c_str, nullptr);
 		glCompileShader(shader);
 
@@ -100,7 +100,7 @@ bool checkProgramLinkageSucceded(jl::u32 _programId) noexcept
 
 		if (messageLength > 1)
 		{
-			char * message = new char[messageLength];
+			char* message = new char[messageLength];
 
 			glGetProgramInfoLog(_programId, messageLength, nullptr, message);
 			LOG_INFO("Shading program link error message: {}", message);
@@ -176,7 +176,7 @@ std::unique_ptr<Shader> Shader::create(std::string_view _vsPath, std::string_vie
 
 //-----------------------------------------------------------------------------
 
-void Shader::draw(const Model & _model)
+void Shader::draw(const Model& _model)
 {
 	_model.bind();
 	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
@@ -198,77 +198,77 @@ void Shader::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-bool Shader::hasUniform(const std::string & _name) const noexcept
+bool Shader::hasUniform(const std::string& _name) const noexcept
 {
 	return getUniformLocation(_name) != -1;
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, s32 _val) const
+void Shader::setUniformValue(const std::string& _name, s32 _val) const
 {
 	glUniform1i(getUniformLocation(_name), _val);
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, float _val) const
+void Shader::setUniformValue(const std::string& _name, float _val) const
 {
 	glUniform1f(getUniformLocation(_name), _val);
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, const glm::vec2 & _val) const
+void Shader::setUniformValue(const std::string& _name, const glm::vec2& _val) const
 {
-	glUniform2fv(getUniformLocation(_name), 1, reinterpret_cast<const float *>(&_val));
+	glUniform2fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, const glm::vec3 & _val) const
+void Shader::setUniformValue(const std::string& _name, const glm::vec3& _val) const
 {
-	glUniform3fv(getUniformLocation(_name), 1, reinterpret_cast<const float *>(&_val));
+	glUniform3fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, const glm::vec4 & _val) const
+void Shader::setUniformValue(const std::string& _name, const glm::vec4& _val) const
 {
-	glUniform4fv(getUniformLocation(_name), 1, reinterpret_cast<const float *>(&_val));
+	glUniform4fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, const glm::mat4 & _val) const
+void Shader::setUniformValue(const std::string& _name, const glm::mat4& _val) const
 {
-	glUniformMatrix4fv(getUniformLocation(_name), 1, false, reinterpret_cast<const float *>(&_val));
+	glUniformMatrix4fv(getUniformLocation(_name), 1, false, reinterpret_cast<const float*>(&_val));
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, u32 _count, const s32 * _val) const
+void Shader::setUniformValue(const std::string& _name, u32 _count, const s32* _val) const
 {
 	glUniform1iv(getUniformLocation(_name), _count, _val);
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, u32 _count, const glm::vec3 * _val) const
+void Shader::setUniformValue(const std::string& _name, u32 _count, const glm::vec3* _val) const
 {
-	glUniform3fv(getUniformLocation(_name), _count, reinterpret_cast<const float *>(_val));
+	glUniform3fv(getUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniformValue(const std::string & _name, u32 _count, const glm::vec4 * _val) const
+void Shader::setUniformValue(const std::string& _name, u32 _count, const glm::vec4* _val) const
 {
-	glUniform4fv(getUniformLocation(_name), _count, reinterpret_cast<const float *>(_val));
+	glUniform4fv(getUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
 }
 
 //-----------------------------------------------------------------------------
 
-s32 Shader::getUniformLocation(const std::string & _name) const
+s32 Shader::getUniformLocation(const std::string& _name) const
 {
 	s32 location = -1;
 

@@ -17,7 +17,7 @@ namespace jl {
 class Model : boost::noncopyable
 {
 public:
-	Model(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices);
+	Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
 
 	void bind() const;
 

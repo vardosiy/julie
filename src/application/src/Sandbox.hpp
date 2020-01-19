@@ -16,6 +16,8 @@ public:
 	void update(float _dt);
 	void draw();
 
+	void onWindowResized(jl::u32 _w, jl::u32 _h);
+
 private:
 	std::unique_ptr<jl::Camera> m_camera;
 

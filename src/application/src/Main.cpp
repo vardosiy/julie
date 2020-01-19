@@ -1,13 +1,10 @@
 #include "ui/MainWidget.hpp"
 
-#include "renderer/Globals.hpp"
-
-#include <iostream>
 #include <QApplication>
 
 //-----------------------------------------------------------------------------
 
-int main(int _argc, char * _argv[])
+int main(int _argc, char* _argv[])
 {
 	QApplication app(_argc, _argv);
 

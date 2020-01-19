@@ -17,17 +17,17 @@ public:
 	enum class Type { Directional, Point };
 
 public:
-	Light(Type _type, const glm::vec3 & _posDir);
+	Light(Type _type, const glm::vec3& _posDir);
 
 	void update(float _deltaTime);
 
-	void setColor(const glm::vec4 & _val) noexcept	{ m_color = _val; }
+	void setColor(const glm::vec4& _val) noexcept	{ m_color = _val; }
 	void setMoveSpeed(float _val) noexcept			{ m_moveSpeed = _val; }
 	void setRadius(float _val) noexcept				{ m_radius = _val; }
 
 	Type getType() const noexcept					{ return m_type; }
-	const glm::vec3 & getPosDir() const noexcept	{ return m_posDir; }
-	const glm::vec4 & getColor() const noexcept		{ return m_color; }
+	const glm::vec3& getPosDir() const noexcept		{ return m_posDir; }
+	const glm::vec4& getColor() const noexcept		{ return m_color; }
 
 private:
 	Type m_type;

@@ -6,8 +6,8 @@
 
 #include "utils/Singleton.hpp"
 
-#include <glm/glm.hpp>
 #include <boost/optional.hpp>
+#include <glm/glm.hpp>
 
 #include <functional>
 #include <memory>
@@ -27,31 +27,31 @@ class Scene : public utils::Singleton<Scene>
 	friend class utils::Singleton<Scene>;
 
 public:
-	void draw(const Camera & _camera);
-	void update(float _deltaTime);
+	void draw(const Camera& _camera);
+	void update(float _dt);
 
-	const FogData * getFogData() const noexcept;
-	const AmbientLightData * getAmbientLightData() const noexcept;
+	const FogData* getFogData() const noexcept;
+	const AmbientLightData* getAmbientLightData() const noexcept;
 
-	void setFogData(const FogData & _data) noexcept;
-	void setAmbientLightData(const AmbientLightData & _data) noexcept;
+	void setFogData(const FogData& _data) noexcept;
+	void setAmbientLightData(const AmbientLightData& _data) noexcept;
 
-	void setPrerenderCommand(const std::function<void()> & _callback) noexcept;
-	void setPostrenderCommand(const std::function<void()> & _callback) noexcept;
+	void setPrerenderCommand(const std::function<void()>& _callback) noexcept;
+	void setPostrenderCommand(const std::function<void()>& _callback) noexcept;
 
-	void addObject(s32 _id, std::unique_ptr<Object> && _object);
+	void addObject(s32 _id, std::unique_ptr<Object>&& _object);
 
-	Object * findObject(s32 _id) noexcept;
-	const Object * findObject(s32 _id) const noexcept;
+	Object* findObject(s32 _id) noexcept;
+	const Object* findObject(s32 _id) const noexcept;
 
-	void forEachObject(const std::function<void(s32, Object &)> & _callback);
-	void forEachObject(const std::function<void(s32, const Object &)> & _callback) const;
+	void forEachObject(const std::function<void(s32, Object&)>& _callback);
+	void forEachObject(const std::function<void(s32, const Object&)>& _callback) const;
 
 private:
 	Scene();
 	~Scene();
 
-	void drawObject(const Camera & _camera, const Object & _object) const noexcept;
+	void drawObject(const Camera& _camera, const Object& _object) const noexcept;
 
 private:
 	std::unordered_map<s32, std::unique_ptr<Object>> m_objects;

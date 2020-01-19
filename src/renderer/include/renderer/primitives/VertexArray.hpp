@@ -17,7 +17,7 @@ namespace jl {
 class VertexArray
 {
 public:
-	VertexArray(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices);
+	VertexArray(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
 	~VertexArray();
 
 	void bind() const noexcept;

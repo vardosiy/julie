@@ -23,9 +23,9 @@ const std::string CommonUniformsBinder::u_fogColor		= "u_fogColor";
 //-----------------------------------------------------------------------------
 
 CommonUniformsBinder::CommonUniformsBinder(
-	const Shader & _shader,
-	const Camera & _camera,
-	const Object & _object
+	const Shader& _shader,
+	const Camera& _camera,
+	const Object& _object
 ) noexcept
 	: m_shader(_shader)
 	, m_camera(_camera)
@@ -37,7 +37,7 @@ CommonUniformsBinder::CommonUniformsBinder(
 
 void CommonUniformsBinder::run()
 {
-	auto bindUniformFun = [this](const std::string & _name, const auto & _val)
+	auto bindUniformFun = [this](const std::string& _name, const auto& _val)
 	{
 		if (m_shader.hasUniform(_name))
 		{

@@ -24,44 +24,30 @@
 void Sandbox::init()
 {
 	jl::ResourceManager::getInstance().init();
-	//jl::EffectManager::getInstance().init();
-	//jl::Fbo::setScreenBufferId(defaultFramebufferObject());
 
 	m_camera = std::make_unique<jl::Camera>(0.000001f, 100.0f, 45.0f);
 	m_camera->setMoveSpeed(3.0f);
 	m_camera->setRotationSpeed(2.0f);
-	m_camera->setPosition(glm::vec3(0.0f, 0.0f, 1.0f));
+	m_camera->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 
 	m_shaders.emplace_back(jl::Shader::create("res/shaders/SimpleColor.vs",		"res/shaders/SimpleColor.fs"));
 	m_shaders.emplace_back(jl::Shader::create("res/shaders/SimpleTexture.vs",	"res/shaders/SimpleTexture.fs"));
-
-	m_models.emplace_back(jl::ModelsFactory::createRect(glm::vec3(-1.0f, -1.0f, -0.5f), glm::vec2(1.0f, 1.0f)));
-	m_models.emplace_back(jl::ModelsFactory::createRect(glm::vec3(0.0f, 0.0f, -0.5f), glm::vec2(1.0f, 1.0f)));
-
+	m_models.emplace_back(jl::ModelsFactory::loadFromFile("res/models/bus.nfg"));
 	m_textures.emplace_back(jl::TexturesFactory::load2dTextureFromFile("res/textures/Rock.tga", jl::TextureTiling::ClampToEdge));
 
-	m_materials.emplace_back(new jl::Material);
-	m_materials.back()->setShader(*m_shaders[0]);
-	m_materials.back()->setProperty("u_color", glm::vec4(0.3f, 0.7f, 0.8f, 1.0f));
+	auto& material1 = m_materials.emplace_back(new jl::Material);
+	material1->setShader(*m_shaders[0]);
+	material1->setProperty("u_color", glm::vec4(0.3f, 0.7f, 0.8f, 1.0f));
 
-	m_materials.emplace_back(new jl::Material);
-	m_materials.back()->setShader(*m_shaders[1]);
-	m_materials.back()->setProperty("u_texture2D", *m_textures[0]);
+	auto& material2 = m_materials.emplace_back(new jl::Material);
+	material2->setShader(*m_shaders[1]);
+	material2->setProperty("u_texture2D", *m_textures[0]);
 
 	std::unique_ptr<jl::Object> obj1 = std::make_unique<jl::Object>(*m_models[0]);
-	obj1->setMaterial(*m_materials[0]);
-	obj1->setPosition(glm::vec3(0.0f));
-	obj1->setRotation(glm::vec3(0.0f));
-	obj1->setScale(glm::vec3(1.0f));
+	obj1->setMaterial(*m_materials[1]);
+	obj1->setScale(glm::vec3(0.01f));
 
-	std::unique_ptr<jl::Object> obj2 = std::make_unique<jl::Object>(*m_models[1]);
-	obj2->setMaterial(*m_materials[1]);
-	obj2->setPosition(glm::vec3(0.0f));
-	obj2->setRotation(glm::vec3(0.0f));
-	obj2->setScale(glm::vec3(1.0f));
-
-	jl::Scene::getInstance().addObject(0, std::move(obj1));
-	jl::Scene::getInstance().addObject(1, std::move(obj2));
+	jl::Scene::getInstance().addObject(1, std::move(obj1));
 }
 
 //-----------------------------------------------------------------------------
@@ -70,16 +56,20 @@ void Sandbox::update(float _dt)
 {
 	m_camera->update(_dt);
 	jl::Scene::getInstance().update(_dt);
-	//jl::EffectManager::getInstance().update(_dt);
 }
 
 //-----------------------------------------------------------------------------
 
 void Sandbox::draw()
 {
-	//jl::EffectManager::getInstance().bindFbo();
 	jl::Scene::getInstance().draw(*m_camera);
-	//jl::EffectManager::getInstance().apply();
+}
+
+//-----------------------------------------------------------------------------
+
+void Sandbox::onWindowResized(jl::u32 _w, jl::u32 _h)
+{
+	m_camera->setAspect(static_cast<float>(_w) / static_cast<float>(_h));
 }
 
 //-----------------------------------------------------------------------------

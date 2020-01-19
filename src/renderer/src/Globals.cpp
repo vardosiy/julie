@@ -6,8 +6,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-s32 Globals::s_screenHeight = 720;
-s32 Globals::s_screenWidth = 1280;
+u32 Globals::s_screenHeight = 0;
+u32 Globals::s_screenWidth = 0;
 
 float Globals::s_timeTotal = 0.0f;
 

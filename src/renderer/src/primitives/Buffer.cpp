@@ -33,7 +33,7 @@ void Buffer::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Buffer::bufferData(const void * _data, u32 _size)
+void Buffer::bufferData(const void* _data, u32 _size)
 {
 	glBufferData(bufferTypeToGlValue(m_type), _size, _data, GL_STATIC_DRAW);
 }

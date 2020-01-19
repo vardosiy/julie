@@ -25,7 +25,7 @@ public:
 	static std::unique_ptr<Texture> createFrameDepthTexture(u32 _width, u32 _height);
 
 private:
-	static std::unique_ptr<Texture> createFrameTexture(const Texture::InitData & _textureInitData);
+	static std::unique_ptr<Texture> createFrameTexture(const Texture::InitData& _textureInitData);
 };
 
 //-----------------------------------------------------------------------------
