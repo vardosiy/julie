@@ -13,12 +13,12 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Object::Object(const Model & _model) noexcept
+Object::Object(const Model& _model) noexcept
 	: m_model(&_model)
 	, m_material(nullptr)
-	, m_pos(0.0f, 0.0f, 0.0f)
-	, m_scale(1.0f, 1.0f, 1.0f)
-	, m_rotation(0.0f, 0.0f, 0.0f)
+	, m_pos(0.0f)
+	, m_scale(1.0f)
+	, m_rotation(0.0f)
 	, m_worldMatrix(1.0f)
 	, m_bIsTransformChanged(false)
 {
@@ -37,14 +37,14 @@ void Object::update(float _dt)
 
 //-----------------------------------------------------------------------------
 
-void Object::setMaterial(const Material & _material) noexcept
+void Object::setMaterial(const Material& _material) noexcept
 {
 	m_material = &_material;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setPosition(const glm::vec3 & _val) noexcept
+void Object::setPosition(const glm::vec3& _val) noexcept
 {
 	m_pos = _val;
 	m_bIsTransformChanged = true;
@@ -52,7 +52,7 @@ void Object::setPosition(const glm::vec3 & _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setRotation(const glm::vec3 & _val) noexcept
+void Object::setRotation(const glm::vec3& _val) noexcept
 {
 	m_rotation = _val;
 	m_bIsTransformChanged = true;
@@ -60,7 +60,7 @@ void Object::setRotation(const glm::vec3 & _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setScale(const glm::vec3 & _val) noexcept
+void Object::setScale(const glm::vec3& _val) noexcept
 {
 	m_scale = _val;
 	m_bIsTransformChanged = true;
