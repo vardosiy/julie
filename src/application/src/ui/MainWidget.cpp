@@ -3,7 +3,9 @@
 
 #include "renderer/Renderer.hpp"
 #include "renderer/scene/Scene.hpp"
+#include "renderer/scene/Object.hpp"
 
+#include <QStringListModel>
 #include <QKeyEvent>
 
 #include <cassert>
@@ -13,8 +15,10 @@
 MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_ui(std::make_unique<Ui::MainWidget>())
+	, m_listModel(std::make_unique<QStringListModel>(this))
 {
 	m_ui->setupUi(this);
+	m_ui->listv_sceneObjects->setModel(m_listModel.get());
 
 	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::cbFillPolygonsValueChanged);
 }
@@ -22,6 +26,14 @@ MainWidget::MainWidget(QWidget* parent)
 //-----------------------------------------------------------------------------
 
 MainWidget::~MainWidget() = default;
+
+//-----------------------------------------------------------------------------
+
+void MainWidget::refreshObjectsList(const std::vector<std::unique_ptr<jl::Object>>& _objects)
+{
+	list << "test";
+	m_listModel->setStringList(list);
+}
 
 //-----------------------------------------------------------------------------
 
