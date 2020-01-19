@@ -22,25 +22,41 @@ const std::string CommonUniformsBinder::u_fogColor		= "u_fogColor";
 
 //-----------------------------------------------------------------------------
 
-void CommonUniformsBinder::run(const Shader & _shader, const Camera & _camera, const Object & _object)
+CommonUniformsBinder::CommonUniformsBinder(
+	const Shader & _shader,
+	const Camera & _camera,
+	const Object & _object
+) noexcept
+	: m_shader(_shader)
+	, m_camera(_camera)
+	, m_object(_object)
 {
-	auto bindUniformFun = [&_shader](const std::string & _name, const auto & _val)
+}
+
+//-----------------------------------------------------------------------------
+
+void CommonUniformsBinder::run()
+{
+	auto bindUniformFun = [this](const std::string & _name, const auto & _val)
 	{
-		if (_shader.hasUniform(_name))
+		if (m_shader.hasUniform(_name))
 		{
-			_shader.setUniformValue(_name, _val);
+			m_shader.setUniformValue(_name, _val);
 		}
 	};
 
-	bindUniformFun(u_W, _object.getWorldMatrix());
-	bindUniformFun(u_WVP, _camera.getViewProjectionMatrix() * _object.getWorldMatrix());
+	bindUniformFun(u_W, m_object.getWorldMatrix());
+	bindUniformFun(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
 	bindUniformFun(u_time, Globals::s_timeTotal);
-	bindUniformFun(u_camPosition, _camera.getPosition());
+	bindUniformFun(u_camPosition, m_camera.getPosition());
 
-	const FogData & fogData = Scene::getInstance().getFogData();
-	bindUniformFun(u_fogStart, fogData.start);
-	bindUniformFun(u_fogRange, fogData.range);
-	bindUniformFun(u_fogColor, fogData.color);
+	const FogData * fogData = Scene::getInstance().getFogData();
+	if (fogData)
+	{
+		bindUniformFun(u_fogStart, fogData->start);
+		bindUniformFun(u_fogRange, fogData->range);
+		bindUniformFun(u_fogColor, fogData->color);
+	}
 }
 
 //if (m_bIsLighted)

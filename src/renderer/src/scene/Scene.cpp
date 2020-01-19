@@ -57,16 +57,16 @@ void Scene::update(float _deltaTime)
 
 //-----------------------------------------------------------------------------
 
-const FogData & Scene::getFogData() const noexcept
+const FogData * Scene::getFogData() const noexcept
 {
-	return m_fogData;
+	return m_fogData.get_ptr();
 }
 
 //-----------------------------------------------------------------------------
 
-const AmbientLightData & Scene::getAmbientLightData() const noexcept
+const AmbientLightData * Scene::getAmbientLightData() const noexcept
 {
-	return m_ambientLightData;
+	return m_ambientLightData.get_ptr();
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +152,8 @@ void Scene::drawObject(const Camera & _camera, const Object & _object) const noe
 		const Shader * shader = material->getShader();
 		if (shader)
 		{
-			CommonUniformsBinder::run(*shader, _camera, _object);
+			CommonUniformsBinder uniformBinder(*shader, _camera, _object);
+			uniformBinder.run();
 		}
 
 		Shader::draw(_object.getModel());

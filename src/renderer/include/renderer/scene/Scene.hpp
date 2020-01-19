@@ -7,6 +7,7 @@
 #include "utils/Singleton.hpp"
 
 #include <glm/glm.hpp>
+#include <boost/optional.hpp>
 
 #include <functional>
 #include <memory>
@@ -29,8 +30,8 @@ public:
 	void draw(const Camera & _camera);
 	void update(float _deltaTime);
 
-	const FogData & getFogData() const noexcept;
-	const AmbientLightData & getAmbientLightData() const noexcept;
+	const FogData * getFogData() const noexcept;
+	const AmbientLightData * getAmbientLightData() const noexcept;
 
 	void setFogData(const FogData & _data) noexcept;
 	void setAmbientLightData(const AmbientLightData & _data) noexcept;
@@ -55,8 +56,8 @@ private:
 private:
 	std::unordered_map<s32, std::unique_ptr<Object>> m_objects;
 
-	FogData m_fogData;
-	AmbientLightData m_ambientLightData;
+	boost::optional<FogData> m_fogData;
+	boost::optional<AmbientLightData> m_ambientLightData;
 
 	std::function<void()> m_prerenderCallback;
 	std::function<void()> m_postrenderCallback;
