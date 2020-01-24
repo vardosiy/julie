@@ -14,7 +14,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Texture> TexturesFactory::load2dTextureFromFile(std::string_view _filePath, TextureTiling _tiling)
+std::unique_ptr<Texture> TexturesFactory::load2dTextureFromFile(std::string_view _filePath)
 {
 	s32 width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
@@ -35,7 +35,6 @@ std::unique_ptr<Texture> TexturesFactory::load2dTextureFromFile(std::string_view
 	texInitData.fragmentType	= Texture::FragmentType::UnsignedByte;
 
 	auto texture = std::make_unique<Texture>(texInitData);
-	texture->setTiling(_tiling);
 	texture->setMagnificationFilteringMode(TextureFilteringMode::Linear);
 	texture->setMinificationFilteringMode(TextureFilteringMode::LinearMipmapLinear);
 	return texture;
@@ -43,7 +42,7 @@ std::unique_ptr<Texture> TexturesFactory::load2dTextureFromFile(std::string_view
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::string_view _filePath, TextureTiling _tiling)
+std::unique_ptr<CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::string_view _filePath)
 {
 	s32 width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
@@ -65,7 +64,6 @@ std::unique_ptr<CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::strin
 	texInitData.bpp		= static_cast<u32>(bpp);
 
 	auto texture = std::make_unique<CubeTexture>(texInitData);
-	texture->setTiling(_tiling);
 	texture->setMagnificationFilteringMode(TextureFilteringMode::Linear);
 	texture->setMinificationFilteringMode(TextureFilteringMode::LinearMipmapLinear);
 	return texture;

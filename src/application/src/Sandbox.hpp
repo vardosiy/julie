@@ -19,6 +19,8 @@ public:
 	void onWindowResized(jl::u32 _w, jl::u32 _h);
 
 private:
+	void initResources();
+
 	std::unique_ptr<jl::FreeflyCamera> m_camera;
 
 	std::vector<std::unique_ptr<jl::Shader>> m_shaders;
