@@ -7,6 +7,7 @@
 
 #include <QStringListModel>
 #include <QKeyEvent>
+#include <fmt/format.h>
 
 #include <cassert>
 
@@ -20,7 +21,7 @@ MainWidget::MainWidget(QWidget* parent)
 	m_ui->setupUi(this);
 	m_ui->listv_sceneObjects->setModel(m_listModel.get());
 
-	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::cbFillPolygonsValueChanged);
+	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::chbFillPolygonsValueChanged);
 }
 
 //-----------------------------------------------------------------------------
@@ -29,15 +30,23 @@ MainWidget::~MainWidget() = default;
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::refreshObjectsList(const std::vector<std::unique_ptr<jl::Object>>& _objects)
+void MainWidget::refreshObjectsList(const std::vector<jl::s32>& _objects)
 {
-	list << "test";
+	QStringList list;
+
+	fmt::memory_buffer buf;
+	for (const jl::s32 id : _objects)
+	{
+		format_to(buf, "{}", id);
+		list << buf.data();
+	}
+
 	m_listModel->setStringList(list);
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::cbFillPolygonsValueChanged(int _state)
+void MainWidget::chbFillPolygonsValueChanged(int _state)
 {
 	jl::PolygonMode frontPolygonsMode;
 	jl::PolygonMode backPolygonsMode;

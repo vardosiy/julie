@@ -1,7 +1,6 @@
 #include "renderer/scene/Object.hpp"
 
 #include "renderer/Axis.hpp"
-#include "renderer/Globals.hpp"
 #include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 

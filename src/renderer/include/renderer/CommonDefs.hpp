@@ -14,6 +14,8 @@ using TimePoint		= std::chrono::time_point<Clock>;
 using Seconds		= std::chrono::seconds;
 using Milliseconds	= std::chrono::milliseconds;
 
+//-----------------------------------------------------------------------------
+
 template<typename Function>
 using Signal = typename boost::signals2::signal<Function>;
 

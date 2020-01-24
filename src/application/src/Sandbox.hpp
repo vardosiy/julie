@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/scene/Camera.hpp"
+#include "renderer/scene/FreeflyCamera.hpp"
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
@@ -19,7 +19,7 @@ public:
 	void onWindowResized(jl::u32 _w, jl::u32 _h);
 
 private:
-	std::unique_ptr<jl::Camera> m_camera;
+	std::unique_ptr<jl::FreeflyCamera> m_camera;
 
 	std::vector<std::unique_ptr<jl::Shader>> m_shaders;
 	std::vector<std::unique_ptr<jl::Model>> m_models;

@@ -49,10 +49,6 @@ set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER gen)
 set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP gen)
 
 #------------------------------------------------------------------------------
-
-#find_package(OpenGL REQUIRED)
-
-#------------------------------------------------------------------------------
 # 3rd-party libs
 message("--------------------Loading 3rd-party libs--------------------")
 

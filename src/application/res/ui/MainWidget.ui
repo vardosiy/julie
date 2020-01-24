@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1173</width>
+    <width>1252</width>
     <height>617</height>
    </rect>
   </property>
@@ -32,8 +32,24 @@
    <property name="spacing">
     <number>5</number>
    </property>
-   <item row="2" column="1">
-    <widget class="QSlider" name="sld_camMoveSpeed">
+   <item row="4" column="1">
+    <widget class="QListView" name="listv_sceneObjects">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSlider" name="sld_camRotationSpeed">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -67,89 +83,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QSlider" name="sld_camRotationSpeed">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="invertedControls">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="lbl_camSpeed">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Camera Speed</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QCheckBox" name="chb_fillPolygons">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Fill Polygons</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QListView" name="listv_sceneObjects">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="QGroupBox" name="group_transformations">
      <property name="title">
       <string>Object Transforms</string>
@@ -226,6 +160,88 @@
         </property>
         <property name="maximum">
          <double>100.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QCheckBox" name="chb_fillPolygons">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Fill Polygons</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSlider" name="sld_camMoveSpeed">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="invertedControls">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="lbl_camSpeed">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Camera Speed</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QGroupBox" name="group_preperties">
+     <property name="title">
+      <string>Properties</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>

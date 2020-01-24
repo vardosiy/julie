@@ -18,7 +18,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Camera;
+class ICamera;
 class Shader;
 class Object;
 
@@ -27,7 +27,7 @@ class Scene : public utils::Singleton<Scene>
 	friend class utils::Singleton<Scene>;
 
 public:
-	void draw(const Camera& _camera);
+	void draw(const ICamera& _camera);
 	void update(float _dt);
 
 	const FogData* getFogData() const noexcept;
@@ -51,7 +51,7 @@ private:
 	Scene();
 	~Scene();
 
-	void drawObject(const Camera& _camera, const Object& _object) const noexcept;
+	void drawObject(const ICamera& _camera, const Object& _object) const noexcept;
 
 private:
 	std::unordered_map<s32, std::unique_ptr<Object>> m_objects;

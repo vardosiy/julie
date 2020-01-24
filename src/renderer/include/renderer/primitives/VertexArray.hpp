@@ -22,10 +22,11 @@ public:
 
 	void bind() const noexcept;
 
-	void setLayout() noexcept;
-
 	u32 getVerticesCount() const noexcept { return m_vertexBuffer.getItemsCount(); }
 	u32 getIndicesCount() const noexcept { return m_indexBuffer.getItemsCount(); }
+
+private:
+	void setLayout() noexcept;
 
 private:
 	u32 m_id;

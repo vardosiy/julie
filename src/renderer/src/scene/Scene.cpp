@@ -1,6 +1,6 @@
 #include "renderer/scene/Scene.hpp"
 
-#include "renderer/scene/Camera.hpp"
+#include "renderer/scene/ICamera.hpp"
 #include "renderer/scene/Object.hpp"
 #include "renderer/scene/Light.hpp"
 
@@ -27,7 +27,7 @@ Scene::~Scene() = default;
 
 //-----------------------------------------------------------------------------
 
-void Scene::draw(const Camera& _camera)
+void Scene::draw(const ICamera& _camera)
 {
 	if (m_prerenderCallback)
 	{
@@ -142,7 +142,7 @@ void Scene::forEachObject(const std::function<void(s32, const Object&)>& _callba
 
 //-----------------------------------------------------------------------------
 
-void Scene::drawObject(const Camera& _camera, const Object& _object) const noexcept
+void Scene::drawObject(const ICamera& _camera, const Object& _object) const noexcept
 {
 	const Material* material = _object.getMaterial();
 	if (material)

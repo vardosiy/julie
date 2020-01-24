@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer/Axis.hpp"
+#include "renderer/scene/ICamera.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -11,24 +12,25 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Camera
+class FreeflyCamera : public ICamera
 {
 public:
-	Camera(float _near, float _far, float _fov);
+	FreeflyCamera(float _near, float _far, float _fov);
 
-	void update(float _deltaTime);
+	void update(float _dt) override;
 
-	float getNear() const noexcept;
-	float getFar() const noexcept;
-	const glm::vec3& getPosition() const noexcept;
+	const glm::vec3& getPosition()				const noexcept override;
+	const glm::mat4& getViewMatrix()			const noexcept override;
+	const glm::mat4& getProjectionMatrix()		const noexcept override;
+	const glm::mat4& getViewProjectionMatrix()	const noexcept override;
 
-	const glm::mat4& getViewMatrix() const noexcept;
-	const glm::mat4& getProjectionMatrix() const noexcept;
-	const glm::mat4& getViewProjectionMatrix() const noexcept;
+	float getNear()	const noexcept;
+	float getFar()	const noexcept;
+	float getFov()	const noexcept;
 
-	void setAspect(float _val) noexcept;
-	void setMoveSpeed(float _val) noexcept;
-	void setRotationSpeed(float _val) noexcept;
+	void setAspect(float _val)			noexcept;
+	void setMoveSpeed(float _val)		noexcept;
+	void setRotationSpeed(float _val)	noexcept;
 
 	void setPosition(const glm::vec3& _vec) noexcept;
 	void setRotation(const glm::vec3& _vec) noexcept;

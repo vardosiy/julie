@@ -3,7 +3,7 @@
 #include "renderer/Globals.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/scene/Scene.hpp"
-#include "renderer/scene/Camera.hpp"
+#include "renderer/scene/ICamera.hpp"
 #include "renderer/scene/Object.hpp"
 
 //-----------------------------------------------------------------------------
@@ -24,7 +24,7 @@ const std::string CommonUniformsBinder::u_fogColor		= "u_fogColor";
 
 CommonUniformsBinder::CommonUniformsBinder(
 	const Shader& _shader,
-	const Camera& _camera,
+	const ICamera& _camera,
 	const Object& _object
 ) noexcept
 	: m_shader(_shader)
@@ -50,7 +50,7 @@ void CommonUniformsBinder::run()
 	bindUniformFun(u_time, Globals::s_timeTotal);
 	bindUniformFun(u_camPosition, m_camera.getPosition());
 
-	const FogData * fogData = Scene::getInstance().getFogData();
+	const FogData* fogData = Scene::getInstance().getFogData();
 	if (fogData)
 	{
 		bindUniformFun(u_fogStart, fogData->start);

@@ -8,9 +8,6 @@
 
 #include <glad/glad.h>
 
-#include <fstream>
-#include <sstream>
-
 //-----------------------------------------------------------------------------
 
 namespace details {
@@ -45,42 +42,24 @@ bool checkShaderCompilationSucceded(jl::u32 _shaderId) noexcept
 
 //-----------------------------------------------------------------------------
 
-std::string readShaderFile(std::string_view _filePath)
+jl::u32 loadShader(jl::u32 _type, std::string_view _source)
 {
-	std::string fileContent;
-
-	std::ifstream file(_filePath.data(), std::ios::in);
-	ASSERTM(file.is_open(), "Can't open shader file {}", _filePath.data());
-	if (file.is_open())
+	ASSERT(!_source.empty());
+	if (_source.empty())
 	{
-		std::stringstream buffer;
-		buffer << file.rdbuf();
-		fileContent = buffer.str();
+		return 0;
 	}
 
-	return fileContent;
-}
+	jl::s32 shader = glCreateShader(_type);
 
-//-----------------------------------------------------------------------------
+	const char* c_str = _source.data();
+	glShaderSource(shader, 1, &c_str, nullptr);
+	glCompileShader(shader);
 
-int loadShader(jl::u32 _type, std::string_view _filePath)
-{
-	jl::s32 shader = 0;
-
-	std::string fileContent = readShaderFile(_filePath);
-	if (!fileContent.empty())
+	if (!checkShaderCompilationSucceded(shader))
 	{
-		shader = glCreateShader(_type);
-
-		const char* c_str = fileContent.c_str();
-		glShaderSource(shader, 1, &c_str, nullptr);
-		glCompileShader(shader);
-
-		if (!checkShaderCompilationSucceded(shader))
-		{
-			glDeleteShader(shader);
-			shader = 0;
-		}
+		glDeleteShader(shader);
+		shader = 0;
 	}
 
 	return shader;
@@ -151,13 +130,13 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Shader> Shader::create(std::string_view _vsPath, std::string_view _fsPath)
+std::unique_ptr<Shader> Shader::create(std::string_view _vsSource, std::string_view _fsSource)
 {
 	std::unique_ptr<Shader> shader;
 
-	if (const u32 vs = details::loadShader(GL_VERTEX_SHADER, _vsPath))
+	if (const u32 vs = details::loadShader(GL_VERTEX_SHADER, _vsSource))
 	{
-		if (const u32 fs = details::loadShader(GL_FRAGMENT_SHADER, _fsPath))
+		if (const u32 fs = details::loadShader(GL_FRAGMENT_SHADER, _fsSource))
 		{
 			if (const u32 program = details::loadProgram(vs, fs))
 			{

@@ -14,20 +14,20 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Camera;
+class ICamera;
 class Shader;
 class Object;
 
 class CommonUniformsBinder
 {
 public:
-	CommonUniformsBinder(const Shader& _shader, const Camera& _camera, const Object& _object) noexcept;
+	CommonUniformsBinder(const Shader& _shader, const ICamera& _camera, const Object& _object) noexcept;
 
 	void run();
 
 private:
 	const Shader& m_shader;
-	const Camera& m_camera;
+	const ICamera& m_camera;
 	const Object& m_object;
 
 	static const std::string u_W;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/Types.hpp"
+
 #include <QWidget>
 
 #include <memory>
@@ -22,10 +24,10 @@ public:
 	explicit MainWidget(QWidget* parent = nullptr);
 	~MainWidget();
 
-	void refreshObjectsList(const std::vector<std::unique_ptr<jl::Object>>& _objects);
+	void refreshObjectsList(const std::vector<jl::s32>& _objects);
 
 private slots:
-	void cbFillPolygonsValueChanged(int _state);
+	void chbFillPolygonsValueChanged(int _state);
 
 private:
 	std::unique_ptr<Ui::MainWidget> m_ui;

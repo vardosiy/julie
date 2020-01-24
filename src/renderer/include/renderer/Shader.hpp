@@ -25,7 +25,7 @@ class Model;
 class Shader : boost::noncopyable
 {
 public:
-	static std::unique_ptr<Shader> create(std::string_view _vsPath, std::string_view _fsPath);
+	static std::unique_ptr<Shader> create(std::string_view _vsSource, std::string_view _fsSource);
 
 	static void draw(const Model& _model);
 
