@@ -29,19 +29,9 @@ Scene::~Scene() = default;
 
 void Scene::draw(const ICamera& _camera)
 {
-	if (m_prerenderCallback)
-	{
-		m_prerenderCallback();
-	}
-
 	for (auto& it : m_objects)
 	{
 		drawObject(_camera, *it.second);
-	}
-
-	if (m_postrenderCallback)
-	{
-		m_postrenderCallback();
 	}
 }
 
@@ -81,20 +71,6 @@ void Scene::setFogData(const FogData& _data) noexcept
 void Scene::setAmbientLightData(const AmbientLightData& _data) noexcept
 {
 	m_ambientLightData = _data;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setPrerenderCommand(const std::function<void()>& _callback) noexcept
-{
-	m_prerenderCallback = _callback;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setPostrenderCommand(const std::function<void()>& _callback) noexcept
-{
-	m_postrenderCallback = _callback;
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +129,12 @@ void Scene::drawObject(const ICamera& _camera, const Object& _object) const noex
 		if (shader)
 		{
 			CommonUniformsBinder uniformBinder(*shader, _camera, _object);
-			uniformBinder.run();
+			uniformBinder.setupCommon();
+
+			if (m_fogData)
+			{
+				uniformBinder.setupFog(*m_fogData);
+			}
 		}
 
 		Shader::draw(_object.getModel());

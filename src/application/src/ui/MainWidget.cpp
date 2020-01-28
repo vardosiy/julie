@@ -1,7 +1,6 @@
 #include "ui/MainWidget.hpp"
 #include "ui_MainWidget.h"
 
-#include "renderer/Renderer.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Object.hpp"
 
@@ -48,29 +47,24 @@ void MainWidget::refreshObjectsList(const std::vector<jl::s32>& _objects)
 
 void MainWidget::chbFillPolygonsValueChanged(int _state)
 {
-	jl::PolygonMode frontPolygonsMode;
-	jl::PolygonMode backPolygonsMode;
+	DrawMode drawMode = DrawMode::Fill;
 
 	switch (_state)
 	{
 		case Qt::CheckState::Checked:
 		{
-			frontPolygonsMode = jl::PolygonMode::Fill;
-			backPolygonsMode = jl::PolygonMode::Fill;
+			drawMode = DrawMode::Fill;
 		}
 		break;
 
 		case Qt::CheckState::PartiallyChecked:
 		{
-			frontPolygonsMode = jl::PolygonMode::Fill;
-			backPolygonsMode = jl::PolygonMode::Line;
 		}
 		break;
 
 		case Qt::CheckState::Unchecked:
 		{
-			frontPolygonsMode = jl::PolygonMode::Line;
-			backPolygonsMode = jl::PolygonMode::Line;
+			drawMode = DrawMode::Edges;
 		}
 		break;
 
@@ -80,19 +74,7 @@ void MainWidget::chbFillPolygonsValueChanged(int _state)
 		}
 	}
 
-	auto prerenderCommand = [frontPolygonsMode, backPolygonsMode]()
-	{
-		jl::Renderer::setFrontPolygonsMode(frontPolygonsMode);
-		jl::Renderer::setBackPolygonsMode(backPolygonsMode);
-	};
-	jl::Scene::getInstance().setPrerenderCommand(prerenderCommand);
-
-	auto postrenderCommand = []()
-	{
-		jl::Renderer::setFrontPolygonsMode(jl::PolygonMode::Fill);
-		jl::Renderer::setBackPolygonsMode(jl::PolygonMode::Fill);
-	};
-	jl::Scene::getInstance().setPostrenderCommand(postrenderCommand);
+	m_ui->oglw_screen->setDrawMode(drawMode);
 }
 
 //-----------------------------------------------------------------------------

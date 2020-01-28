@@ -3,6 +3,7 @@
 #include "ui/AppGlWidget.hpp"
 #include "managers/ResourceManager.hpp"
 
+#include "renderer/Renderer.hpp"
 #include "renderer/Globals.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/managers/EffectManager.hpp"
@@ -21,6 +22,47 @@ AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_updateTimer(this)
 {
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::setDrawMode(DrawMode _drawMode)
+{
+	jl::PolygonMode frontPolygonsMode;
+	jl::PolygonMode backPolygonsMode;
+
+	switch (_drawMode)
+	{
+		case DrawMode::Fill:
+		{
+			frontPolygonsMode = jl::PolygonMode::Fill;
+			backPolygonsMode = jl::PolygonMode::Fill;
+		}
+		break;
+
+		case DrawMode::Edges:
+		{
+			frontPolygonsMode = jl::PolygonMode::Line;
+			backPolygonsMode = jl::PolygonMode::Line;
+		}
+		break;
+
+		default:
+		{
+			assert(0);
+		}
+	}
+
+	m_prerenderCommand = [frontPolygonsMode, backPolygonsMode]()
+	{
+		jl::Renderer::setFrontPolygonsMode(frontPolygonsMode);
+		jl::Renderer::setBackPolygonsMode(backPolygonsMode);
+	};
+	m_postrenderCommand = []()
+	{
+		jl::Renderer::setFrontPolygonsMode(jl::PolygonMode::Fill);
+		jl::Renderer::setBackPolygonsMode(jl::PolygonMode::Fill);
+	};
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +105,18 @@ void AppGlWidget::resizeGL(int _w, int _h)
 void AppGlWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (m_prerenderCommand)
+	{
+		m_prerenderCommand();
+	}
+
 	m_sandbox.draw();
+
+	if (m_postrenderCommand)
+	{
+		m_postrenderCommand();
+	}
 }
 
 //-----------------------------------------------------------------------------

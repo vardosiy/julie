@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer/scene/FreeflyCamera.hpp"
+#include "renderer/scene/Scene.hpp"
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
@@ -20,6 +21,8 @@ public:
 
 private:
 	void initResources();
+
+	jl::Scene m_scene;
 
 	std::unique_ptr<jl::FreeflyCamera> m_camera;
 

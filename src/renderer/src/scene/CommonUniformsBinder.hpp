@@ -23,7 +23,12 @@ class CommonUniformsBinder
 public:
 	CommonUniformsBinder(const Shader& _shader, const ICamera& _camera, const Object& _object) noexcept;
 
-	void run();
+	void setupCommon() const;
+	void setupFog(const FogData& _fogData) const;
+
+private:
+	template<typename T>
+	void bindUniformFun(const std::string& _name, const T& _val) const;
 
 private:
 	const Shader& m_shader;

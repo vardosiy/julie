@@ -22,6 +22,8 @@
 
 void Sandbox::init()
 {
+	initResources();
+
 	m_camera = std::make_unique<jl::FreeflyCamera>(0.000001f, 100.0f, 45.0f);
 	m_camera->setMoveSpeed(3.0f);
 	m_camera->setRotationSpeed(2.0f);
@@ -31,15 +33,15 @@ void Sandbox::init()
 	obj1->setMaterial(*m_materials[1]);
 	obj1->setScale(glm::vec3(0.01f));
 
-	jl::Scene::getInstance().addObject(1, std::move(obj1));
+	m_scene.addObject(1, std::move(obj1));
 
-	std::vector<jl::s32> objectIds;
-	jl::Scene::getInstance().forEachObject(
-		[&objectIds](jl::s32 _id, jl::Object& _obj)
-		{
-			objectIds.emplace_back(_id);
-		}
-	);
+	//std::vector<jl::s32> objectIds;
+	//m_scene.forEachObject(
+	//	[&objectIds](jl::s32 _id, jl::Object& _obj)
+	//	{
+	//		objectIds.emplace_back(_id);
+	//	}
+	//);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,14 +73,14 @@ void Sandbox::initResources()
 void Sandbox::update(float _dt)
 {
 	m_camera->update(_dt);
-	jl::Scene::getInstance().update(_dt);
+	m_scene.update(_dt);
 }
 
 //-----------------------------------------------------------------------------
 
 void Sandbox::draw()
 {
-	jl::Scene::getInstance().draw(*m_camera);
+	m_scene.draw(*m_camera);
 }
 
 //-----------------------------------------------------------------------------

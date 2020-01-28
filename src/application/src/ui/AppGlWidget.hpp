@@ -5,12 +5,23 @@
 #include <QOpenGLWidget>
 #include <QTimer>
 
+#include <functional>
+
+enum class DrawMode
+{
+	Fill,
+	Edges,
+	//BlackWhite TODO
+};
+
 class AppGlWidget : public QOpenGLWidget
 {
 	Q_OBJECT
 
 public:
 	AppGlWidget(QWidget* _parent = nullptr);
+
+	void setDrawMode(DrawMode _drawMode);
 
 protected:
 	void initializeGL() override;
@@ -27,6 +38,9 @@ private:
 	float getDeltaTime();
 
 private:
+	std::function<void()> m_prerenderCommand;
+	std::function<void()> m_postrenderCommand;
+
 	Sandbox m_sandbox;
 	QTimer m_updateTimer;
 };
