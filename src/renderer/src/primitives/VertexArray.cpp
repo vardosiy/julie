@@ -45,7 +45,7 @@ void VertexArray::bind() const noexcept
 void VertexArray::setLayout() noexcept
 {
 	constexpr u32 k_vertexAttribsCount = 5;
-	std::array<u32, k_vertexAttribsCount> sizes = { 3, 2, 3, 3, 3 };
+	constexpr std::array<u32, k_vertexAttribsCount> sizes = { 3, 2, 3, 3, 3 };
 
 	const float * offset = nullptr;
 	for (u32 i = 0; i < k_vertexAttribsCount; ++i)

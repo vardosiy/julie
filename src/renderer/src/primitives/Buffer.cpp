@@ -33,6 +33,20 @@ void Buffer::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
+Buffer::Type Buffer::getType() const noexcept
+{
+	return m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+u32 Buffer::getItemsCount() const noexcept
+{
+	return m_itemsCount;
+}
+
+//-----------------------------------------------------------------------------
+
 void Buffer::bufferData(const void* _data, u32 _size)
 {
 	glBufferData(bufferTypeToGlValue(m_type), _size, _data, GL_STATIC_DRAW);

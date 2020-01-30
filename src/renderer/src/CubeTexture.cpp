@@ -50,9 +50,9 @@ CubeTexture::CubeTexture(const InitData& _initData) noexcept
 
 //-----------------------------------------------------------------------------
 
-void CubeTexture::loadDataToGpu(const char* _data, s32 _width, s32 _height, s32 _bpp)
+void CubeTexture::loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp)
 {
-	const u32 faceWidth = static_cast<u32>(_width) / 4;
+	const u32 faceWidth = _width / 4;
 	details::OffsetsArray offsets = details::calculateOffsets(faceWidth);
 
 	char* faceBuffer = new char[faceWidth * faceWidth * _bpp / 8];
@@ -70,22 +70,22 @@ void CubeTexture::loadDataToGpu(const char* _data, s32 _width, s32 _height, s32 
 void CubeTexture::extractFace(
 	const char* _pSrc,
 	char* _pDst,
-	s32 _srcRowLength,	// pixels
-	s32 _dstRowLength,	// pixels
-	s32 _offsetX,		// pixels
-	s32 _offsetY,		// pixels
-	s32 _bitsPerPixel
+	u32 _srcRowLength,	// pixels
+	u32 _dstRowLength,	// pixels
+	u32 _offsetX,		// pixels
+	u32 _offsetY,		// pixels
+	u32 _bitsPerPixel
 )
 {
-	const s32 bytesPerPixel		= _bitsPerPixel / 8;
+	const u32 bytesPerPixel		= _bitsPerPixel / 8;
 
-	const s32 srcOffsetXBytes	= _offsetX * bytesPerPixel;
-	const s32 dstRowSize		= _dstRowLength * bytesPerPixel;
-	const s32 dstColumnSize		= _dstRowLength; // because cube face is square
+	const u32 srcOffsetXBytes	= _offsetX * bytesPerPixel;
+	const u32 dstRowSize		= _dstRowLength * bytesPerPixel;
+	const u32 dstColumnSize		= _dstRowLength; // because cube face is square
 
-	for (s32 i = 0; i < dstColumnSize; ++i)
+	for (u32 i = 0; i < dstColumnSize; ++i)
 	{
-		const s32 srcOffsetYBytes = _srcRowLength * bytesPerPixel * (_offsetY + i);
+		const u32 srcOffsetYBytes = _srcRowLength * bytesPerPixel * (_offsetY + i);
 
 		const char * pSrc = _pSrc + srcOffsetXBytes + srcOffsetYBytes;
 		char * pDst = _pDst + dstRowSize * i;

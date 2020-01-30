@@ -37,7 +37,7 @@ void FreeflyCamera::update(float _dt)
 {
 	InputManager& inputMgr = InputManager::getInstance();
 
-	glm::vec3 camTraslation(0.0f, 0.0f, 0.0f);
+	glm::vec3 camTraslation(0.0f);
 	const float movePoints = m_moveSpeed * _dt;
 	camTraslation.x += inputMgr.isPressed('D') * movePoints;
 	camTraslation.x -= inputMgr.isPressed('A') * movePoints;
@@ -46,19 +46,19 @@ void FreeflyCamera::update(float _dt)
 	camTraslation.z += inputMgr.isPressed('S') * movePoints;
 	camTraslation.z -= inputMgr.isPressed('W') * movePoints;
 
-	if (camTraslation != glm::vec3(0.0f, 0.0f, 0.0f))
+	if (camTraslation != glm::vec3(0.0f))
 	{
 		move(camTraslation);
 	}
 
-	glm::vec2 camRotation(0.0f, 0.0f);
+	glm::vec2 camRotation(0.0f);
 	const float rotatePoints = m_rotationSpeed * _dt;
-	camRotation.y += inputMgr.isPressed(Arrows::Left) * rotatePoints;
+	camRotation.y += inputMgr.isPressed(Arrows::Left)  * rotatePoints;
 	camRotation.y -= inputMgr.isPressed(Arrows::Right) * rotatePoints;
-	camRotation.x += inputMgr.isPressed(Arrows::Up) * rotatePoints;
-	camRotation.x -= inputMgr.isPressed(Arrows::Down) * rotatePoints;
+	camRotation.x += inputMgr.isPressed(Arrows::Up)    * rotatePoints;
+	camRotation.x -= inputMgr.isPressed(Arrows::Down)  * rotatePoints;
 
-	if (camRotation != glm::vec2(0.0f, 0.0f))
+	if (camRotation != glm::vec2(0.0f))
 	{
 		rotate(camRotation);
 	}
@@ -72,28 +72,28 @@ void FreeflyCamera::update(float _dt)
 
 //-----------------------------------------------------------------------------
 
-const glm::vec3 & FreeflyCamera::getPosition() const noexcept
+const glm::vec3& FreeflyCamera::getPosition() const noexcept
 {
 	return m_pos;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4 & FreeflyCamera::getViewMatrix() const noexcept
+const glm::mat4& FreeflyCamera::getViewMatrix() const noexcept
 {
 	return m_viewMatrix;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4 & FreeflyCamera::getProjectionMatrix() const noexcept
+const glm::mat4& FreeflyCamera::getProjectionMatrix() const noexcept
 {
 	return m_projectionMatrix;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4 & FreeflyCamera::getViewProjectionMatrix() const noexcept
+const glm::mat4& FreeflyCamera::getViewProjectionMatrix() const noexcept
 {
 	return m_viewProjectionMatrix;
 }

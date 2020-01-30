@@ -24,8 +24,8 @@ public:
 
 	void bind() const noexcept;
 
-	Type getType() const noexcept		{ return m_type; }
-	u32 getItemsCount() const noexcept	{ return m_itemsCount; }
+	Type getType() const noexcept;
+	u32 getItemsCount() const noexcept;
 
 private:
 	void bufferData(const void* _data, u32 _size);

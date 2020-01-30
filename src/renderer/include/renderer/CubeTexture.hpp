@@ -28,15 +28,15 @@ public:
 	u32 getFaceWidth() const noexcept { return m_faceWidth; }
 
 private:
-	static void loadDataToGpu(const char* _data, s32 _width, s32 _height, s32 _bpp);
+	static void loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp);
 	static void extractFace(
 		const char* _pSrc,
 		char* _pDst,
-		s32 _srcRowLength,	// pixels
-		s32 _dstRowLength,	// pixels
-		s32 _offsetX,		// pixels
-		s32 _offsetY,		// pixels
-		s32 _bitsPerPixel
+		u32 _srcRowLength,	// pixels
+		u32 _dstRowLength,	// pixels
+		u32 _offsetX,		// pixels
+		u32 _offsetY,		// pixels
+		u32 _bitsPerPixel
 	);
 
 private:

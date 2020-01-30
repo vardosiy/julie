@@ -28,7 +28,7 @@ public:
 
 private:
 	template<typename T>
-	void bindUniformFun(const std::string& _name, const T& _val) const;
+	void bindUniform(const std::string& _name, const T& _val) const;
 
 private:
 	const Shader& m_shader;

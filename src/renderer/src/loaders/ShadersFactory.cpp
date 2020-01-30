@@ -34,7 +34,7 @@ std::string ShadersFactory::readShaderFile(std::string_view _filePath)
 {
 	std::string fileContent;
 
-	std::ifstream file(_filePath.data(), std::ios::in);
+	std::ifstream file(_filePath.data());
 	ASSERTM(file.is_open(), "Can't open shader file {}", _filePath.data());
 	if (file.is_open())
 	{

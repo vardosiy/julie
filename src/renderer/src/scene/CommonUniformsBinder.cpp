@@ -37,25 +37,25 @@ CommonUniformsBinder::CommonUniformsBinder(
 
 void CommonUniformsBinder::setupCommon() const
 {
-	bindUniformFun(u_W, m_object.getWorldMatrix());
-	bindUniformFun(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
-	bindUniformFun(u_time, Globals::s_timeTotal);
-	bindUniformFun(u_camPosition, m_camera.getPosition());
+	bindUniform(u_W, m_object.getWorldMatrix());
+	bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
+	bindUniform(u_time, Globals::s_timeTotal);
+	bindUniform(u_camPosition, m_camera.getPosition());
 }
 
 //-----------------------------------------------------------------------------
 
 void CommonUniformsBinder::setupFog(const FogData& _fogData) const
 {
-	bindUniformFun(u_fogStart, _fogData.start);
-	bindUniformFun(u_fogRange, _fogData.range);
-	bindUniformFun(u_fogColor, _fogData.color);
+	bindUniform(u_fogStart, _fogData.start);
+	bindUniform(u_fogRange, _fogData.range);
+	bindUniform(u_fogColor, _fogData.color);
 }
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void CommonUniformsBinder::bindUniformFun(const std::string& _name, const T& _val) const
+void CommonUniformsBinder::bindUniform(const std::string& _name, const T& _val) const
 {
 	if (m_shader.hasUniform(_name))
 	{
