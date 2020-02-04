@@ -1,23 +1,12 @@
-//#include "managers/ResourceManager.hpp"
-//
-//#include "renderer/loaders/ModelsFactory.hpp"
-//#include "renderer/loaders/TexturesFactory.hpp"
-//#include "renderer/TextureTiling.hpp"
-//
-//#include "utils/LogDefs.hpp"
-//#include "utils/Assert.hpp"
-//
-//#include <json/json.h>
-//#include <glad/glad.h>
-//
-//#include <fstream>
-//
-////-----------------------------------------------------------------------------
-//
-//namespace jl {
-//
-////-----------------------------------------------------------------------------
-//
+#include "managers/ResourceManager.hpp"
+
+#include "utils/LogDefs.hpp"
+#include "utils/Assert.hpp"
+
+#include <fstream>
+
+//-----------------------------------------------------------------------------
+
 //void ResourceManager::init()
 //{
 //	std::ifstream file(k_filePath.data(), std::ifstream::in);
@@ -36,19 +25,108 @@
 //	loadTextures2D(doc["2DTextures"]);
 //	loadCubeTextures(doc["cubeTextures"]);
 //}
-//
-////-----------------------------------------------------------------------------
-//
-//void ResourceManager::clear()
-//{
-//	m_models.clear();
-//	m_shaders.clear();
-//	m_textures2D.clear();
-//	m_cubeTextures.clear();
-//}
-//
-////-----------------------------------------------------------------------------
-//
+
+//-----------------------------------------------------------------------------
+
+void ResourceManager::clear()
+{
+	m_models.clear();
+	m_shaders.clear();
+	m_textures.clear();
+}
+
+//-----------------------------------------------------------------------------
+
+void ResourceManager::add(int _id, std::unique_ptr<jl::Model>&& _model) noexcept
+{
+	ASSERTM(m_models.find(_id) == m_models.end(), "Model with ID: {} already exists, it will be overriden");
+	m_models.emplace(_id, std::move(_model));
+}
+
+//-----------------------------------------------------------------------------
+
+void ResourceManager::add(int _id, std::unique_ptr<jl::Shader>&& _shader) noexcept
+{
+	ASSERTM(m_shaders.find(_id) == m_shaders.end(), "Shader with ID: {} already exists, it will be overriden");
+	m_shaders.emplace(_id, std::move(_shader));
+}
+
+//-----------------------------------------------------------------------------
+
+void ResourceManager::add(int _id, std::unique_ptr<jl::Texture>&& _texture) noexcept
+{
+	ASSERTM(m_textures.find(_id) == m_textures.end(), "Texture with ID: {} already exists, it will be overriden");
+	m_textures.emplace(_id, std::move(_texture));
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Model* ResourceManager::findModel(int _id) const noexcept
+{
+	return findById<jl::Model>(_id, m_models);
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Shader* ResourceManager::findShader(int _id) const noexcept
+{
+	return findById<jl::Shader>(_id, m_shaders);
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Texture* ResourceManager::find2dTexture(int _id) const noexcept
+{
+	return findById<jl::Texture>(_id, m_textures);
+}
+
+//-----------------------------------------------------------------------------
+
+boost::optional<int> ResourceManager::findId(const jl::Model& _model) const noexcept
+{
+	return findResourceId(m_models, _model);
+}
+
+//-----------------------------------------------------------------------------
+
+boost::optional<int> ResourceManager::findId(const jl::Shader& _shader) const noexcept
+{
+	return findResourceId(m_shaders, _shader);
+}
+
+//-----------------------------------------------------------------------------
+
+boost::optional<int> ResourceManager::findId(const jl::Texture& _texture) const noexcept
+{
+	return findResourceId(m_textures, _texture);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+T* ResourceManager::findById(int _id, const Container<T>& _container)
+{
+	auto it = _container.find(_id);
+	return it != _container.end() ? it->second.get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+boost::optional<int> ResourceManager::findResourceId(const Container<T>& _container, const T& _resource)
+{
+	for (const auto& kv : _container)
+	{
+		if (kv.second.get() == &_resource)
+		{
+			return kv.first;
+		}
+	}
+	return boost::none;
+}
+
+//-----------------------------------------------------------------------------
+
 //void ResourceManager::loadModels(const Json::Value & _data)
 //{
 //	const u32 modelsCount = _data.size();
@@ -133,9 +211,5 @@
 //		}
 //	}
 //}
-//
-////-----------------------------------------------------------------------------
-//
-//} // namespace jl
-//
-////-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
