@@ -50,6 +50,7 @@ private:
 		UniformValue value;
 	};
 
+private:
 	const Shader* m_shader = nullptr;
 	std::vector<PropertyData> m_propertiesData;
 };

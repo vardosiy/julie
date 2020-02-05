@@ -36,6 +36,7 @@ public:
 	void setAmbientLightData(const AmbientLightData& _data) noexcept;
 
 	void addObject(s32 _id, std::unique_ptr<Object>&& _object);
+	void removeObject(s32 _id);
 
 	Object* findObject(s32 _id) noexcept;
 	const Object* findObject(s32 _id) const noexcept;

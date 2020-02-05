@@ -20,10 +20,6 @@ public:
 	jl::Shader* findShader(int _id) const noexcept;
 	jl::Texture* find2dTexture(int _id) const noexcept;
 
-	boost::optional<int> findId(const jl::Model& _model) const noexcept;
-	boost::optional<int> findId(const jl::Shader& _shader) const noexcept;
-	boost::optional<int> findId(const jl::Texture& _texture) const noexcept;
-
 private:
 	template<typename T>
 	using Container = std::unordered_map<int, std::unique_ptr<T>>;

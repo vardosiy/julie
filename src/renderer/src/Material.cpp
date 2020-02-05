@@ -14,9 +14,9 @@ namespace visitors {
 
 //-----------------------------------------------------------------------------
 
-struct UniformBinder
+struct PropertyBinder
 {
-	UniformBinder(const Shader& _shader, const std::string& _uniformName, s16 _textureSlot) noexcept
+	PropertyBinder(const Shader& _shader, const std::string& _uniformName, s16 _textureSlot) noexcept
 		: m_shader(_shader)
 		, m_uniformName(_uniformName)
 		, m_textureSlot(_textureSlot)
@@ -61,7 +61,7 @@ void Material::bind() const
 		s16 textureSlotsCounter = 0;
 		for (const auto& data : m_propertiesData)
 		{
-			visitors::UniformBinder binder(*m_shader, data.name, textureSlotsCounter++);
+			visitors::PropertyBinder binder(*m_shader, data.name, textureSlotsCounter++);
 			std::visit(binder, data.value);
 		}
 	}

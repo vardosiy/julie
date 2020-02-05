@@ -6,31 +6,72 @@
 
 //-----------------------------------------------------------------------------
 
-SceneSaver::SceneSaver(std::ostream& _outputStream)
+JsonSceneSaver::JsonSceneSaver(std::ostream& _outputStream)
 	: m_outputStream(_outputStream)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SceneSaver::save(const jl::Scene& _scene)
+void JsonSceneSaver::save(const jl::Scene& _scene)
 {
 	Json::Value root(Json::objectValue);
 
-	Json::Value& objects = root["objects"];
-	objects = Json::arrayValue;
+	//root["objects"] = saveObjects(_scene);
+
+	if (const jl::FogData* data = _scene.getFogData())
+	{
+		root["fogData"] = saveFogData(*data);
+	}
+	if (const jl::AmbientLightData* data = _scene.getAmbientLightData())
+	{
+		root["ambientLightData"] = saveAmbientLightData(*data);
+	}
+
+	m_outputStream << root;
+}
+
+//-----------------------------------------------------------------------------
+
+Json::Value JsonSceneSaver::saveObjects(const jl::Scene& _scene)
+{
+	Json::Value result(Json::arrayValue);
 
 	_scene.forEachObject(
-		[&objects](jl::s32 _id, const jl::Object& _object)
+		[&result](jl::s32 _id, const jl::Object& _object)
 		{
 			Json::Value object(Json::objectValue);
 			object["id"] = _id;
-
-			// TODO
-
-			objects.append(object);
+			object["objectData"] = saveObjectData(_object);
+			result.append(object);
 		}
 	);
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------
+
+Json::Value JsonSceneSaver::saveObjectData(const jl::Object& _object)
+{
+	Json::Value result(Json::objectValue);
+
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------
+
+Json::Value JsonSceneSaver::saveFogData(const jl::FogData& _fogData)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
+Json::Value JsonSceneSaver::saveAmbientLightData(const jl::AmbientLightData& _fogData)
+{
+
 }
 
 //-----------------------------------------------------------------------------

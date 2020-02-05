@@ -82,6 +82,13 @@ void Scene::addObject(s32 _id, std::unique_ptr<Object>&& _object)
 
 //-----------------------------------------------------------------------------
 
+void Scene::removeObject(s32 _id)
+{
+	m_objects.erase(_id);
+}
+
+//-----------------------------------------------------------------------------
+
 Object* Scene::findObject(s32 _id) noexcept
 {
 	auto it = m_objects.find(_id);
