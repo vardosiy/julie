@@ -30,8 +30,8 @@ public:
 private:
 	static void loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp);
 	static void extractFace(
-		const char* _pSrc,
-		char* _pDst,
+		const char* _pSrc,	// source
+		char* _pDst,		// destination
 		u32 _srcRowLength,	// pixels
 		u32 _dstRowLength,	// pixels
 		u32 _offsetX,		// pixels

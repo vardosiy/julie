@@ -26,19 +26,19 @@ struct PropertyBinder
 	void operator() (const Texture* _texture) const noexcept
 	{
 		_texture->bind(m_textureSlot);
-		m_shader.setUniformValue(m_uniformName, m_textureSlot);
+		m_shader.setUniform(m_uniformName, m_textureSlot);
 	}
 
 	void operator() (const CubeTexture* _texture) const noexcept
 	{
 		_texture->bind(m_textureSlot);
-		m_shader.setUniformValue(m_uniformName, m_textureSlot);
+		m_shader.setUniform(m_uniformName, m_textureSlot);
 	}
 
 	template<typename T>
 	void operator() (const T& _value) const noexcept
 	{
-		m_shader.setUniformValue(m_uniformName, _value);
+		m_shader.setUniform(m_uniformName, _value);
 	}
 
 private:

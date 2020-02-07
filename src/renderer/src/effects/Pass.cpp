@@ -93,7 +93,7 @@
 //		m_textures[i]->bind(static_cast<u16>(i));
 //	}
 //
-//	m_shader->setUniformValue(
+//	m_shader->setUniform(
 //		uniforms.u_texture2D,
 //		texturesCount,
 //		m_texureUniformValue.data()
@@ -101,22 +101,22 @@
 //
 //	if (m_bIsBlur)
 //	{
-//		m_shader->setUniformValue(uniforms.u_step, m_blurOffsets);
+//		m_shader->setUniform(uniforms.u_step, m_blurOffsets);
 //	}
 //
 //	//if (m_bIsDof)
 //	//{
 //	//	const Camera & camera = Scene::getInstance().getCamera();
 //	//
-//	//	m_shader->setUniformValue(uniforms.u_near, camera.getNear());
-//	//	m_shader->setUniformValue(uniforms.u_far, camera.getFar());
-//	//	m_shader->setUniformValue(uniforms.u_clarity, m_parameters[1]);
-//	//	m_shader->setUniformValue(uniforms.u_fade, m_parameters[2]);
+//	//	m_shader->setUniform(uniforms.u_near, camera.getNear());
+//	//	m_shader->setUniform(uniforms.u_far, camera.getFar());
+//	//	m_shader->setUniform(uniforms.u_clarity, m_parameters[1]);
+//	//	m_shader->setUniform(uniforms.u_fade, m_parameters[2]);
 //	//}
 //
 //	if (uniforms.u_limit != -1)
 //	{
-//		m_shader->setUniformValue(uniforms.u_limit, m_parameters[0]);
+//		m_shader->setUniform(uniforms.u_limit, m_parameters[0]);
 //	}
 //
 //	m_shader->draw(*ms_model);

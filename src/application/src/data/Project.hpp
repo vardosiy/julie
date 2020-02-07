@@ -1,10 +1,10 @@
 #pragma once
 
-#include "data/DataEntity.hpp"
+#include "core/Id.hpp"
 
-namespace jl {
-class Shader;
-}
+#include <boost/noncopyable.hpp>
+#include <vector>
+#include <memory>
 
 //-----------------------------------------------------------------------------
 
@@ -12,20 +12,21 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
-class ShaderEntity : DataEntity
+class DataEntity;
+
+class Project : boost::noncopyable
 {
 public:
-	ShaderEntity(Id _id);
-	~ShaderEntity();
+	Project(std::string_view _fileName);
+	~Project();
 
-	std::string_view getVsFile() const noexcept;
-	std::string_view getFsFile() const noexcept;
+	DataEntity* findEntity(Id _id) noexcept;
+	const DataEntity* findEntity(Id _id) const noexcept;
 
-	const jl::Shader* getShader() const noexcept;
+	void removeEntity(Id _id) noexcept;
 
 private:
-	std::string m_fsFile;
-	std::string m_vsFile;
+	std::vector<std::unique_ptr<DataEntity>> m_entities;
 };
 
 //-----------------------------------------------------------------------------
