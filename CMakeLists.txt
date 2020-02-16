@@ -4,11 +4,13 @@ project(julie CXX)
 
 #------------------------------------------------------------------------------
 # directories
+include(LocalConfig.cmake)
+
 set(3rd_party_dir	${CMAKE_SOURCE_DIR}/3rd-party)
 set(scripts_dir		${CMAKE_SOURCE_DIR}/scripts)
 set(targets_dir		${CMAKE_SOURCE_DIR}/src)
 set(tests_dir		${CMAKE_SOURCE_DIR}/src/tests)
-set(boost_dir		E:/CommonLibs/boost/boost_1_72_0)
+set(boost_dir		${local_boost_dir}})
 
 set(bin_dir			bin)
 set(lib_dir			lib)
