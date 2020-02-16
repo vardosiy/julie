@@ -1,4 +1,4 @@
-#include "renderer/Material.hpp"
+#include "data/Material.hpp"
 
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
@@ -6,7 +6,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace jl {
+namespace data {
 
 //-----------------------------------------------------------------------------
 
@@ -16,20 +16,20 @@ namespace visitors {
 
 struct PropertyBinder
 {
-	PropertyBinder(const Shader& _shader, const std::string& _uniformName, s16 _textureSlot) noexcept
+	PropertyBinder(const jl::Shader& _shader, const std::string& _uniformName, jl::s16 _textureSlot) noexcept
 		: m_shader(_shader)
 		, m_uniformName(_uniformName)
 		, m_textureSlot(_textureSlot)
 	{
 	}
 
-	void operator() (const Texture* _texture) const noexcept
+	void operator() (const jl::Texture* _texture) const noexcept
 	{
 		_texture->bind(m_textureSlot);
 		m_shader.setUniform(m_uniformName, m_textureSlot);
 	}
 
-	void operator() (const CubeTexture* _texture) const noexcept
+	void operator() (const jl::CubeTexture* _texture) const noexcept
 	{
 		_texture->bind(m_textureSlot);
 		m_shader.setUniform(m_uniformName, m_textureSlot);
@@ -42,9 +42,9 @@ struct PropertyBinder
 	}
 
 private:
-	const Shader& m_shader;
+	const jl::Shader& m_shader;
 	const std::string& m_uniformName;
-	s16 m_textureSlot;
+	jl::s16 m_textureSlot;
 };
 
 //-----------------------------------------------------------------------------
@@ -53,12 +53,25 @@ private:
 
 //-----------------------------------------------------------------------------
 
+
+Material::Material(std::string _name)
+	: DataEntity(std::move(_name))
+	, m_shader(nullptr)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+Material::~Material() = default;
+
+//-----------------------------------------------------------------------------
+
 void Material::bind() const
 {
 	if (m_shader)
 	{
 		m_shader->bind();
-		s16 textureSlotsCounter = 0;
+		jl::s16 textureSlotsCounter = 0;
 		for (const auto& data : m_propertiesData)
 		{
 			visitors::PropertyBinder binder(*m_shader, data.name, textureSlotsCounter++);
@@ -69,7 +82,14 @@ void Material::bind() const
 
 //-----------------------------------------------------------------------------
 
-void Material::setShader(const Shader& _shader) noexcept
+const jl::Shader* Material::getShader() const noexcept
+{
+	return m_shader;
+}
+
+//-----------------------------------------------------------------------------
+
+void Material::setShader(const jl::Shader& _shader) noexcept
 {
 	m_shader = &_shader;
 }

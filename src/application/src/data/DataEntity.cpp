@@ -2,8 +2,12 @@
 
 //-----------------------------------------------------------------------------
 
-DataEntity::DataEntity(Id _id)
-	: m_id(std::move(_id))
+namespace data {
+
+//-----------------------------------------------------------------------------
+
+DataEntity::DataEntity(std::string _name)
+	: m_name(std::move(_name))
 {
 }
 
@@ -13,9 +17,20 @@ DataEntity::~DataEntity() = default;
 
 //-----------------------------------------------------------------------------
 
-const Id& DataEntity::getId() const noexcept
+const std::string& DataEntity::getName() const noexcept
 {
-	return m_id;
+	return m_name;
 }
+
+//-----------------------------------------------------------------------------
+
+void DataEntity::setName(std::string _name) noexcept
+{
+	m_name = std::move(_name);
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace data
 
 //-----------------------------------------------------------------------------

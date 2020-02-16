@@ -3,7 +3,8 @@
 #include "core/Id.hpp"
 
 #include <boost/noncopyable.hpp>
-#include <vector>
+#include <unordered_map>
+#include <string_view>
 #include <memory>
 
 //-----------------------------------------------------------------------------
@@ -17,16 +18,21 @@ class DataEntity;
 class Project : boost::noncopyable
 {
 public:
-	Project(std::string_view _fileName);
+	using EntityPtr = std::unique_ptr<DataEntity>;
+
+	Project();
 	~Project();
 
-	DataEntity* findEntity(Id _id) noexcept;
-	const DataEntity* findEntity(Id _id) const noexcept;
+	void addEntity(EntityPtr&& _entity) noexcept;
+	void removeEntity(std::string_view _name) noexcept;
 
-	void removeEntity(Id _id) noexcept;
+	DataEntity* findEntity(std::string_view _name) noexcept;
+	const DataEntity* findEntity(std::string_view _name) const noexcept;
 
 private:
-	std::vector<std::unique_ptr<DataEntity>> m_entities;
+	using EntitiesMap = std::unordered_map<std::string_view, EntityPtr>;
+
+	EntitiesMap m_entities;
 };
 
 //-----------------------------------------------------------------------------

@@ -56,10 +56,10 @@ void CubeTexture::loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 
 	details::OffsetsArray offsets = details::calculateOffsets(faceWidth);
 
 	char* faceBuffer = new char[faceWidth * faceWidth * _bpp / 8];
-	for (s32 i = 0; i < details::k_facesCount; ++i)
+	for (u32 i = 0; i < details::k_facesCount; ++i)
 	{
 		extractFace(_data, faceBuffer, _width, faceWidth, offsets[i].first, offsets[i].second, _bpp);
-		s32 target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+		u32 target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
 		glTexImage2D(target, 0, GL_RGB, faceWidth, faceWidth, 0, GL_RGB, GL_UNSIGNED_BYTE, faceBuffer);
 	}
 	delete[] faceBuffer;

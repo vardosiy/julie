@@ -4,7 +4,7 @@
 #include "renderer/Shader.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/ICamera.hpp"
-#include "renderer/scene/Object.hpp"
+//#include "renderer/scene/Object.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -37,8 +37,8 @@ CommonUniformsBinder::CommonUniformsBinder(
 
 void CommonUniformsBinder::setupCommon() const
 {
-	bindUniform(u_W, m_object.getWorldMatrix());
-	bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
+	//bindUniform(u_W, m_object.getWorldMatrix());
+	//bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
 	bindUniform(u_time, Globals::s_timeTotal);
 	bindUniform(u_camPosition, m_camera.getPosition());
 }

@@ -6,7 +6,7 @@
 #include "renderer/Globals.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/scene/Scene.hpp"
-#include "renderer/scene/Object.hpp"
+//#include "renderer/scene/Object.hpp"
 #include "renderer/managers/EffectManager.hpp"
 #include "renderer/managers/InputManager.hpp"
 #include "renderer/loaders/ModelsFactory.hpp"
@@ -29,11 +29,11 @@ void Sandbox::init()
 	m_camera->setRotationSpeed(2.0f);
 	m_camera->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 
-	std::unique_ptr<jl::Object> obj1 = std::make_unique<jl::Object>(*m_models[0]);
-	obj1->setMaterial(*m_materials[1]);
-	obj1->setScale(glm::vec3(0.01f));
-
-	m_scene.addObject(1, std::move(obj1));
+	//std::unique_ptr<jl::Object> obj1 = std::make_unique<jl::Object>(*m_models[0]);
+	//obj1->setMaterial(*m_materials[1]);
+	//obj1->setScale(glm::vec3(0.01f));
+	//
+	//m_scene.addObject(1, std::move(obj1));
 
 	//std::vector<jl::s32> objectIds;
 	//m_scene.forEachObject(
@@ -59,13 +59,13 @@ void Sandbox::initResources()
 	m_textures.emplace_back(jl::TexturesFactory::load2dTextureFromFile("res/textures/Bus.tga"));
 	m_textures.back()->setTiling(jl::TextureTiling::ClampToEdge);
 
-	auto& material1 = m_materials.emplace_back(new jl::Material);
-	material1->setShader(*m_shaders[0]);
-	material1->setProperty("u_color", glm::vec4(0.3f, 0.7f, 0.8f, 1.0f));
-
-	auto& material2 = m_materials.emplace_back(new jl::Material);
-	material2->setShader(*m_shaders[1]);
-	material2->setProperty("u_texture2D", *m_textures[1]);
+	//auto& material1 = m_materials.emplace_back(new jl::Material);
+	//material1->setShader(*m_shaders[0]);
+	//material1->setProperty("u_color", glm::vec4(0.3f, 0.7f, 0.8f, 1.0f));
+	//
+	//auto& material2 = m_materials.emplace_back(new jl::Material);
+	//material2->setShader(*m_shaders[1]);
+	//material2->setProperty("u_texture2D", *m_textures[1]);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void Sandbox::update(float _dt)
 
 void Sandbox::draw()
 {
-	m_scene.draw(*m_camera);
+	m_scene.render(*m_camera);
 }
 
 //-----------------------------------------------------------------------------

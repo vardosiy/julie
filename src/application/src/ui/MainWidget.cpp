@@ -2,7 +2,7 @@
 #include "ui_MainWidget.h"
 
 #include "renderer/scene/Scene.hpp"
-#include "renderer/scene/Object.hpp"
+//#include "renderer/scene/Object.hpp"
 
 #include <QStringListModel>
 #include <QKeyEvent>
@@ -18,7 +18,7 @@ MainWidget::MainWidget(QWidget* parent)
 	, m_listModel(std::make_unique<QStringListModel>(this))
 {
 	m_ui->setupUi(this);
-	m_ui->listv_sceneObjects->setModel(m_listModel.get());
+	m_ui->listv_objects->setModel(m_listModel.get());
 
 	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &MainWidget::chbFillPolygonsValueChanged);
 }

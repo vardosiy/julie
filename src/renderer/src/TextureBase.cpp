@@ -67,7 +67,7 @@ float TextureBase::tilingToGlValue(TextureTiling _tiling)
 			ASSERT(0);
 	}
 
-	return 0;
+	return 0.0f;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,18 +1,11 @@
 #include "renderer/scene/Scene.hpp"
 
+#include "renderer/scene/IRenderable.hpp"
 #include "renderer/scene/ICamera.hpp"
-#include "renderer/scene/Object.hpp"
-#include "renderer/scene/Light.hpp"
-
-#include "renderer/Globals.hpp"
-#include "renderer/Model.hpp"
-#include "renderer/Shader.hpp"
-#include "renderer/Material.hpp"
 
 #include "scene/CommonUniformsBinder.hpp"
 
-#include "utils/LogDefs.hpp"
-#include "utils/Assert.hpp"
+#include "utils/Utils.hpp"
 
 #include <string>
 
@@ -27,21 +20,21 @@ Scene::~Scene() = default;
 
 //-----------------------------------------------------------------------------
 
-void Scene::draw(const ICamera& _camera)
+void Scene::update(float _dt)
 {
-	for (auto& it : m_objects)
+	for (auto& it : m_renderables)
 	{
-		drawObject(_camera, *it.second);
+		it.second->update(_dt);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::update(float _dt)
+void Scene::render(const ICamera& _camera)
 {
-	for (auto& it : m_objects)
+	for (auto& it : m_renderables)
 	{
-		it.second->update(_dt);
+		it.second->render(_camera);
 	}
 }
 
@@ -75,39 +68,39 @@ void Scene::setAmbientLightData(const AmbientLightData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addObject(s32 _id, std::unique_ptr<Object>&& _object)
+void Scene::addRenderable(s32 _id, IRenderable& _renderable)
 {
-	m_objects.emplace(_id, std::move(_object));
+	m_renderables.emplace(_id, &_renderable);
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::removeObject(s32 _id)
+void Scene::removeRenderable(s32 _id)
 {
-	m_objects.erase(_id);
+	m_renderables.erase(_id);
 }
 
 //-----------------------------------------------------------------------------
 
-Object* Scene::findObject(s32 _id) noexcept
+IRenderable* Scene::findRenderable(s32 _id) noexcept
 {
-	auto it = m_objects.find(_id);
-	return it != m_objects.end() ? it->second.get() : nullptr;
+	auto it = m_renderables.find(_id);
+	return it != m_renderables.end() ? it->second : nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-const Object* Scene::findObject(s32 _id) const noexcept
+const IRenderable* Scene::findRenderable(s32 _id) const noexcept
 {
-	auto it = m_objects.find(_id);
-	return it != m_objects.end() ? it->second.get() : nullptr;
+	auto it = m_renderables.find(_id);
+	return it != m_renderables.end() ? it->second : nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::forEachObject(const std::function<void(s32, Object&)>& _callback)
+void Scene::forEachRenderable(const std::function<void(s32, IRenderable&)>& _callback)
 {
-	for (auto& it : m_objects)
+	for (auto& it : m_renderables)
 	{
 		_callback(it.first, *it.second);
 	}
@@ -115,9 +108,9 @@ void Scene::forEachObject(const std::function<void(s32, Object&)>& _callback)
 
 //-----------------------------------------------------------------------------
 
-void Scene::forEachObject(const std::function<void(s32, const Object&)>& _callback) const
+void Scene::forEachRenderable(const std::function<void(s32, const IRenderable&)>& _callback) const
 {
-	for (const auto& it : m_objects)
+	for (const auto& it : m_renderables)
 	{
 		_callback(it.first, *it.second);
 	}
@@ -125,28 +118,28 @@ void Scene::forEachObject(const std::function<void(s32, const Object&)>& _callba
 
 //-----------------------------------------------------------------------------
 
-void Scene::drawObject(const ICamera& _camera, const Object& _object) const noexcept
-{
-	const Material* material = _object.getMaterial();
-	if (material)
-	{
-		material->bind();
-
-		const Shader* shader = material->getShader();
-		if (shader)
-		{
-			CommonUniformsBinder uniformBinder(*shader, _camera, _object);
-			uniformBinder.setupCommon();
-
-			if (m_fogData)
-			{
-				uniformBinder.setupFog(*m_fogData);
-			}
-		}
-
-		Shader::draw(_object.getModel());
-	}
-}
+//void Scene::drawObject(const ICamera& _camera, const Object& _object) const noexcept
+//{
+//	const Material* material = _object.getMaterial();
+//	if (material)
+//	{
+//		material->bind();
+//
+//		const Shader* shader = material->getShader();
+//		if (shader)
+//		{
+//			CommonUniformsBinder uniformBinder(*shader, _camera, _object);
+//			uniformBinder.setupCommon();
+//
+//			if (m_fogData)
+//			{
+//				uniformBinder.setupFog(*m_fogData);
+//			}
+//		}
+//
+//		Shader::draw(_object.getModel());
+//	}
+//}
 
 //-----------------------------------------------------------------------------
 

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "core/Id.hpp"
-
 #include <boost/noncopyable.hpp>
+#include <string>
 
 //-----------------------------------------------------------------------------
 
@@ -13,13 +12,14 @@ namespace data {
 class DataEntity : boost::noncopyable
 {
 public:
-	DataEntity(Id _id);
-	~DataEntity();
+	DataEntity(std::string _name);
+	virtual ~DataEntity();
 
-	const Id& getName() const noexcept;
+	const std::string& getName() const noexcept;
+	void setName(std::string _name) noexcept;
 
 private:
-	Id m_id;
+	std::string m_name;
 };
 
 //-----------------------------------------------------------------------------

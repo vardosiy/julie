@@ -26,6 +26,7 @@ Id::Id(Id&& _rhs) noexcept
 Id& Id::operator= (const Id& _rhs) noexcept
 {
 	m_value = _rhs.m_value;
+	return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -33,6 +34,7 @@ Id& Id::operator= (const Id& _rhs) noexcept
 Id& Id::operator= (Id&& _rhs) noexcept
 {
 	m_value = std::move(_rhs.m_value);
+	return *this;
 }
 
 //-----------------------------------------------------------------------------

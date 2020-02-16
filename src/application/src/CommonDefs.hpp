@@ -16,14 +16,19 @@ using Milliseconds	= std::chrono::milliseconds;
 
 //-----------------------------------------------------------------------------
 
-template<typename Function>
-using Signal = typename boost::signals2::signal<Function>;
-
 using Connection		= boost::signals2::connection;
 using ScopedConnection	= boost::signals2::scoped_connection;
 using ConnectionBlock	= boost::signals2::shared_connection_block;
 
-//using Signal = typename boost::signals2::signal_type<Function, boost::signals2::keywords::mutex_type<boost::signals2::dummy_mutex> >::type;
+template<typename Function>
+using SignalMt = typename boost::signals2::signal<Function>;
+
+template<typename Function>
+using Signal =
+	typename boost::signals2::signal_type<
+		Function,
+		boost::signals2::keywords::mutex_type<boost::signals2::dummy_mutex>
+	>::type;
 
 //-----------------------------------------------------------------------------
 

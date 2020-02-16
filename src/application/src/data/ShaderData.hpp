@@ -2,6 +2,8 @@
 
 #include "data/DataEntity.hpp"
 
+#include <memory>
+
 namespace jl {
 class Shader;
 }
@@ -12,20 +14,22 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
-class ShaderEntity : DataEntity
+class ShaderData : public DataEntity
 {
 public:
-	ShaderEntity(Id _id);
-	~ShaderEntity();
+	ShaderData(std::string _name);
+	~ShaderData();
 
-	std::string_view getVsFile() const noexcept;
-	std::string_view getFsFile() const noexcept;
+	const std::string& getVsFile() const noexcept;
+	const std::string& getFsFile() const noexcept;
 
 	const jl::Shader* getShader() const noexcept;
 
 private:
-	std::string m_fsFile;
 	std::string m_vsFile;
+	std::string m_fsFile;
+
+	std::unique_ptr<jl::Shader> m_shader;
 };
 
 //-----------------------------------------------------------------------------
