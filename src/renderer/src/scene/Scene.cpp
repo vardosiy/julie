@@ -1,13 +1,5 @@
 #include "renderer/scene/Scene.hpp"
-
 #include "renderer/scene/IRenderable.hpp"
-#include "renderer/scene/ICamera.hpp"
-
-#include "scene/CommonUniformsBinder.hpp"
-
-#include "utils/Utils.hpp"
-
-#include <string>
 
 //-----------------------------------------------------------------------------
 
@@ -30,7 +22,7 @@ void Scene::update(float _dt)
 
 //-----------------------------------------------------------------------------
 
-void Scene::render(const ICamera& _camera)
+void Scene::render(const Camera& _camera)
 {
 	for (auto& it : m_renderables)
 	{

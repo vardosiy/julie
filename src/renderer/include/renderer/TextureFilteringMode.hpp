@@ -30,11 +30,9 @@ constexpr std::string_view toString(TextureFilteringMode _tiling)
 		ENUM_TO_STRING_CASE(TextureFilteringMode, Nearest);
 		ENUM_TO_STRING_CASE(TextureFilteringMode, Linear);
 		ENUM_TO_STRING_CASE(TextureFilteringMode, LinearMipmapLinear);
-
-		default:
-			ASSERT(0);
 	}
 
+	ASSERT(0);
 	return "";
 }
 

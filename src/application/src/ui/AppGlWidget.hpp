@@ -1,27 +1,35 @@
 #pragma once
 
-#include "Sandbox.hpp"
+#include "renderer/scene/Scene.hpp"
+#include "renderer/scene/Camera.hpp"
 
 #include <QOpenGLWidget>
 #include <QTimer>
 
 #include <functional>
 
-enum class DrawMode
-{
-	Fill,
-	Edges,
-	//BlackWhite TODO
-};
+namespace data {
+class Object;
+}
 
 class AppGlWidget : public QOpenGLWidget
 {
 	Q_OBJECT
 
 public:
+	enum class DrawMode
+	{
+		Fill,
+		Edges,
+	};
+
 	AppGlWidget(QWidget* _parent = nullptr);
 
 	void setDrawMode(DrawMode _drawMode);
+
+	void doOnGlInitialized(std::function<void()> _callback);
+
+	void onObjectAdded(data::Object& _object);
 
 protected:
 	void initializeGL() override;
@@ -37,10 +45,19 @@ private slots:
 private:
 	float getDeltaTime();
 
+	void updateCameraPosition(float _dt) noexcept;
+
 private:
+	std::function<void()> m_callback;
+
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	Sandbox m_sandbox;
+	jl::Scene m_scene;
+	jl::Camera m_camera;
+
+	float m_camMoveSpeed;
+	float m_camRotationSpeed;
+
 	QTimer m_updateTimer;
 };

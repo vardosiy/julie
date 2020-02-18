@@ -4,6 +4,7 @@
 #include "renderer/Axis.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/Model.hpp"
+#include "renderer/scene/CommonUniformsBinder.hpp"
 
 #include <glm/gtx/transform.hpp>
 
@@ -42,7 +43,7 @@ void Object::update(float _dt) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::render(const jl::ICamera& _camera) const noexcept
+void Object::render(const jl::Camera& _camera) const noexcept
 {
 	if (m_material && m_model)
 	{
@@ -51,17 +52,19 @@ void Object::render(const jl::ICamera& _camera) const noexcept
 		const jl::Shader* shader = m_material->getShader();
 		if (shader)
 		{
-			//jl::CommonUniformsBinder uniformBinder(*shader, _camera, *this);
-			//uniformBinder.setupCommon();
-			//
-			//if (m_fogData)
-			//{
-			//	uniformBinder.setupFog(*m_fogData);
-			//}
+			jl::CommonUniformsBinder uniformBinder(*shader, _camera, *this);
+			uniformBinder.setupCommon();
 		}
 
-		//jl::Shader::draw(*m_model);
+		jl::Shader::draw(*m_model);
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Object::getWorldMatrix() const noexcept
+{
+	return m_worldMatrix;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +76,7 @@ const Material* Object::getMaterial() const noexcept
 
 //-----------------------------------------------------------------------------
 
-const Model* Object::getModel() const noexcept
+const jl::Model* Object::getModel() const noexcept
 {
 	return m_model;
 }
@@ -87,7 +90,7 @@ void Object::setMaterial(const Material& _material) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setModel(const Model& _model) noexcept
+void Object::setModel(const jl::Model& _model) noexcept
 {
 	m_model = &_model;
 }
@@ -111,13 +114,6 @@ const glm::vec3& Object::getRotation() const noexcept
 const glm::vec3& Object::getScale() const noexcept
 {
 	return m_scale;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Object::getWorldMatrix() const noexcept
-{
-	return m_worldMatrix;
 }
 
 //-----------------------------------------------------------------------------

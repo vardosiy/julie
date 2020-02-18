@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 
 #include <functional>
-#include <memory>
 #include <map>
 
 //-----------------------------------------------------------------------------
@@ -18,7 +17,7 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class IRenderable;
-class ICamera;
+class Camera;
 
 class Scene
 {
@@ -27,7 +26,7 @@ public:
 	~Scene();
 
 	void update(float _dt);
-	void render(const ICamera& _camera);
+	void render(const Camera& _camera);
 
 	const FogData* getFogData() const noexcept;
 	const AmbientLightData* getAmbientLightData() const noexcept;

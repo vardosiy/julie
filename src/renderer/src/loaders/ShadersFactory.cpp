@@ -14,13 +14,6 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-//std::unique_ptr<Shader> ShadersFactory::load(std::string_view _filePath)
-//{
-//	return nullptr;
-//}
-
-//-----------------------------------------------------------------------------
-
 std::unique_ptr<Shader> ShadersFactory::load(std::string_view _vsPath, std::string_view _fsPath)
 {
 	const std::string vsSource = readShaderFile(_vsPath);

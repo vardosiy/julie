@@ -1,18 +1,15 @@
 #include <glad/glad.h>
 
 #include "ui/AppGlWidget.hpp"
-#include "managers/ResourceManager.hpp"
+
+#include "CommonDefs.hpp"
+#include "data/Object.hpp"
 
 #include "renderer/Renderer.hpp"
 #include "renderer/Globals.hpp"
-#include "renderer/scene/Scene.hpp"
-#include "renderer/managers/EffectManager.hpp"
 #include "renderer/managers/InputManager.hpp"
 
-#include "renderer/primitives/Fbo.hpp"
-#include "renderer/Shader.hpp"
-
-#include "utils/LogDefs.hpp"
+#include "utils/Utils.hpp"
 
 #include <QKeyEvent>
 
@@ -20,6 +17,9 @@
 
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
+	, m_camera(0.00001f, 100.0f, 45.0f)
+	, m_camMoveSpeed(0.1f)
+	, m_camRotationSpeed(0.001f)
 	, m_updateTimer(this)
 {
 }
@@ -67,6 +67,20 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode)
 
 //-----------------------------------------------------------------------------
 
+void AppGlWidget::doOnGlInitialized(std::function<void()> _callback)
+{
+	m_callback = _callback;
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::onObjectAdded(data::Object& _object)
+{
+	m_scene.addRenderable(0, _object);
+}
+
+//-----------------------------------------------------------------------------
+
 void AppGlWidget::initializeGL()
 {
 	gladLoadGL();
@@ -82,10 +96,10 @@ void AppGlWidget::initializeGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	m_sandbox.init();
-
 	connect(&m_updateTimer, SIGNAL(timeout()), this, SLOT(update()));
 	m_updateTimer.start(1);
+
+	m_callback();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +109,9 @@ void AppGlWidget::resizeGL(int _w, int _h)
 	jl::Globals::s_screenWidth = static_cast<jl::u32>(_w);
 	jl::Globals::s_screenHeight = static_cast<jl::u32>(_h);
 
-	m_sandbox.onWindowResized(jl::Globals::s_screenWidth, jl::Globals::s_screenHeight);
+	const float fWidth = static_cast<float>(_w);
+	const float fHeight = static_cast<float>(_h);
+	m_camera.setAspect(fWidth / fHeight);
 
 	glViewport(0, 0, _w, _h);
 }
@@ -111,7 +127,7 @@ void AppGlWidget::paintGL()
 		m_prerenderCommand();
 	}
 
-	m_sandbox.draw();
+	m_scene.render(m_camera);
 
 	if (m_postrenderCommand)
 	{
@@ -149,7 +165,9 @@ void AppGlWidget::update()
 	const float dt = getDeltaTime();
 	jl::Globals::s_timeTotal += dt;
 
-	m_sandbox.update(dt);
+	m_scene.update(dt);
+	updateCameraPosition(dt);
+
 	repaint();
 }
 
@@ -159,13 +177,48 @@ float AppGlWidget::getDeltaTime()
 {
 	using namespace std::chrono;
 
-	static auto s_lastTime = high_resolution_clock::now();
-	const auto currentTime = high_resolution_clock::now();
+	static app::TimePoint s_lastTime = app::Clock::now();
+	const app::TimePoint currentTime = app::Clock::now();
 	
 	auto durationFloat = duration_cast<duration<float>>(currentTime - s_lastTime);
 	s_lastTime = currentTime;
 
 	return durationFloat.count();
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::updateCameraPosition(float _dt) noexcept
+{
+	jl::InputManager& inputMgr = jl::InputManager::getInstance();
+
+	glm::vec3 camTraslation(0.0f);
+	const float movePoints = m_camMoveSpeed * _dt;
+	camTraslation.x += inputMgr.isPressed('D') * movePoints;
+	camTraslation.x -= inputMgr.isPressed('A') * movePoints;
+	camTraslation.y += inputMgr.isPressed('R') * movePoints;
+	camTraslation.y -= inputMgr.isPressed('F') * movePoints;
+	camTraslation.z += inputMgr.isPressed('S') * movePoints;
+	camTraslation.z -= inputMgr.isPressed('W') * movePoints;
+
+	if (camTraslation != glm::vec3(0.0f))
+	{
+		m_camera.move(camTraslation);
+	}
+
+	glm::vec2 camRotation(0.0f);
+	const float rotatePoints = m_camRotationSpeed * _dt;
+	camRotation.y += inputMgr.isPressed(jl::InputManager::Arrows::Left) * rotatePoints;
+	camRotation.y -= inputMgr.isPressed(jl::InputManager::Arrows::Right) * rotatePoints;
+	camRotation.x += inputMgr.isPressed(jl::InputManager::Arrows::Up) * rotatePoints;
+	camRotation.x -= inputMgr.isPressed(jl::InputManager::Arrows::Down) * rotatePoints;
+
+	if (camRotation != glm::vec2(0.0f))
+	{
+		m_camera.rotate(camRotation);
+	}
+
+	m_camera.update();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,10 +1,10 @@
-#include "CommonUniformsBinder.hpp"
+#include "renderer/scene/CommonUniformsBinder.hpp"
 
 #include "renderer/Globals.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/scene/Scene.hpp"
-#include "renderer/scene/ICamera.hpp"
-//#include "renderer/scene/Object.hpp"
+#include "renderer/scene/Camera.hpp"
+#include "renderer/scene/IRenderable.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -24,12 +24,12 @@ const std::string CommonUniformsBinder::u_fogColor		= "u_fogColor";
 
 CommonUniformsBinder::CommonUniformsBinder(
 	const Shader& _shader,
-	const ICamera& _camera,
-	const Object& _object
+	const Camera& _camera,
+	const IRenderable& _renderable
 ) noexcept
 	: m_shader(_shader)
 	, m_camera(_camera)
-	, m_object(_object)
+	, m_renderable(_renderable)
 {
 }
 
@@ -37,8 +37,8 @@ CommonUniformsBinder::CommonUniformsBinder(
 
 void CommonUniformsBinder::setupCommon() const
 {
-	//bindUniform(u_W, m_object.getWorldMatrix());
-	//bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_object.getWorldMatrix());
+	bindUniform(u_W, m_renderable.getWorldMatrix());
+	bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_renderable.getWorldMatrix());
 	bindUniform(u_time, Globals::s_timeTotal);
 	bindUniform(u_camPosition, m_camera.getPosition());
 }

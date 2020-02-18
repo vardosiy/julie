@@ -12,8 +12,6 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-// ASCII key codes for arrows
-enum Arrows { Left = 37, Up, Right, Down };
 
 class InputManager : public utils::Singleton<InputManager>
 {
@@ -22,6 +20,16 @@ class InputManager : public utils::Singleton<InputManager>
 public:
 	using KeyCodeT = s32;
 
+	// ASCII key codes for arrows
+	enum Arrows
+	{
+		Left = 37,
+		Up,
+		Right,
+		Down
+	};
+
+public:
 	void processKey(KeyCodeT _key, bool _bIsPressed) noexcept;
 	bool isPressed(KeyCodeT _key) const noexcept;
 

@@ -13,6 +13,7 @@ enum class TextureTiling
 {
 	ClampToEdge,
 	Repeat,
+	MirroredRepeat,
 
 	Count
 };
@@ -21,18 +22,17 @@ enum class TextureTiling
 
 constexpr std::string_view toString(TextureTiling _tiling)
 {
-	constexpr int lastVerNodeKindsCount = 2;
+	constexpr int lastVerNodeKindsCount = 3;
 	static_assert(static_cast<int>(TextureTiling::Count) == lastVerNodeKindsCount);
 
 	switch (_tiling)
 	{
 		ENUM_TO_STRING_CASE(TextureTiling, ClampToEdge);
 		ENUM_TO_STRING_CASE(TextureTiling, Repeat);
-
-		default:
-			ASSERT(0);
+		ENUM_TO_STRING_CASE(TextureTiling, MirroredRepeat);
 	}
 
+	ASSERT(0);
 	return "";
 }
 

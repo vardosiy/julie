@@ -1,4 +1,4 @@
-#include "renderer/scene/FreeflyCamera.hpp"
+#include "renderer/scene/Camera.hpp"
 
 #include "renderer/managers/InputManager.hpp"
 #include "renderer/Axis.hpp"
@@ -13,13 +13,11 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-FreeflyCamera::FreeflyCamera(float _near, float _far, float _fov)
+Camera::Camera(float _near, float _far, float _fov)
 	: m_pos(0.0f)
 	, m_target(k_camDirection)
 	, m_rotation(0.0f)
 	, m_upVector(0.0f)
-	, m_moveSpeed(0.1f)
-	, m_rotationSpeed(0.001f)
 	, m_bIsModified(true)
 	, m_aspect(1.0f)
 	, m_near(_near)
@@ -33,36 +31,8 @@ FreeflyCamera::FreeflyCamera(float _near, float _far, float _fov)
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::update(float _dt)
+void Camera::update()
 {
-	InputManager& inputMgr = InputManager::getInstance();
-
-	glm::vec3 camTraslation(0.0f);
-	const float movePoints = m_moveSpeed * _dt;
-	camTraslation.x += inputMgr.isPressed('D') * movePoints;
-	camTraslation.x -= inputMgr.isPressed('A') * movePoints;
-	camTraslation.y += inputMgr.isPressed('R') * movePoints;
-	camTraslation.y -= inputMgr.isPressed('F') * movePoints;
-	camTraslation.z += inputMgr.isPressed('S') * movePoints;
-	camTraslation.z -= inputMgr.isPressed('W') * movePoints;
-
-	if (camTraslation != glm::vec3(0.0f))
-	{
-		move(camTraslation);
-	}
-
-	glm::vec2 camRotation(0.0f);
-	const float rotatePoints = m_rotationSpeed * _dt;
-	camRotation.y += inputMgr.isPressed(Arrows::Left)  * rotatePoints;
-	camRotation.y -= inputMgr.isPressed(Arrows::Right) * rotatePoints;
-	camRotation.x += inputMgr.isPressed(Arrows::Up)    * rotatePoints;
-	camRotation.x -= inputMgr.isPressed(Arrows::Down)  * rotatePoints;
-
-	if (camRotation != glm::vec2(0.0f))
-	{
-		rotate(camRotation);
-	}
-
 	if (m_bIsModified)
 	{
 		recalculateMatrices();
@@ -72,56 +42,56 @@ void FreeflyCamera::update(float _dt)
 
 //-----------------------------------------------------------------------------
 
-const glm::vec3& FreeflyCamera::getPosition() const noexcept
+const glm::vec3& Camera::getPosition() const noexcept
 {
 	return m_pos;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4& FreeflyCamera::getViewMatrix() const noexcept
+const glm::mat4& Camera::getViewMatrix() const noexcept
 {
 	return m_viewMatrix;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4& FreeflyCamera::getProjectionMatrix() const noexcept
+const glm::mat4& Camera::getProjectionMatrix() const noexcept
 {
 	return m_projectionMatrix;
 }
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4& FreeflyCamera::getViewProjectionMatrix() const noexcept
+const glm::mat4& Camera::getViewProjectionMatrix() const noexcept
 {
 	return m_viewProjectionMatrix;
 }
 
 //-----------------------------------------------------------------------------
 
-float FreeflyCamera::getNear() const noexcept
+float Camera::getNear() const noexcept
 {
 	return m_near;
 }
 
 //-----------------------------------------------------------------------------
 
-float FreeflyCamera::getFar() const noexcept
+float Camera::getFar() const noexcept
 {
 	return m_far;
 }
 
 //-----------------------------------------------------------------------------
 
-float FreeflyCamera::getFov() const noexcept
+float Camera::getFov() const noexcept
 {
 	return m_fov;
 }
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::setAspect(float _val) noexcept
+void Camera::setAspect(float _val) noexcept
 {
 	m_aspect = _val;
 	m_bIsModified = true;
@@ -129,21 +99,7 @@ void FreeflyCamera::setAspect(float _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::setMoveSpeed(float _val) noexcept
-{
-	m_moveSpeed = _val;
-}
-
-//-----------------------------------------------------------------------------
-
-void FreeflyCamera::setRotationSpeed(float _val) noexcept
-{
-	m_rotationSpeed = _val;
-}
-
-//-----------------------------------------------------------------------------
-
-void FreeflyCamera::setPosition(const glm::vec3& _vec) noexcept
+void Camera::setPosition(const glm::vec3& _vec) noexcept
 {
 	m_pos = _vec;
 	m_target = m_pos + k_camDirection;
@@ -152,7 +108,7 @@ void FreeflyCamera::setPosition(const glm::vec3& _vec) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::setRotation(const glm::vec3& _vec) noexcept
+void Camera::setRotation(const glm::vec3& _vec) noexcept
 {
 	m_rotation = _vec;
 	rotate(glm::vec2(0.0f, 0.0f));
@@ -160,7 +116,7 @@ void FreeflyCamera::setRotation(const glm::vec3& _vec) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::setUpVector(const glm::vec3& _vec) noexcept
+void Camera::setUpVector(const glm::vec3& _vec) noexcept
 {
 	m_upVector = _vec;
 	m_bIsModified = true;
@@ -168,7 +124,7 @@ void FreeflyCamera::setUpVector(const glm::vec3& _vec) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::move(const glm::vec3& _vec) noexcept
+void Camera::move(const glm::vec3& _vec) noexcept
 {
 	const glm::mat4& m = m_viewMatrix;
 	const glm::vec3 xAxis(m[0][0], m[1][0], m[2][0]);
@@ -185,7 +141,7 @@ void FreeflyCamera::move(const glm::vec3& _vec) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::rotate(const glm::vec2& _vec) noexcept
+void Camera::rotate(const glm::vec2& _vec) noexcept
 {
 	m_rotation += _vec;
 	m_rotation.x = std::clamp(m_rotation.x, -k_maxCamRotationX, k_maxCamRotationX);
@@ -201,7 +157,7 @@ void FreeflyCamera::rotate(const glm::vec2& _vec) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCamera::recalculateMatrices()
+void Camera::recalculateMatrices()
 {
 	m_viewMatrix			= lookAt(m_pos, m_target, constants::axis::y);
 	m_projectionMatrix		= glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
@@ -210,7 +166,7 @@ void FreeflyCamera::recalculateMatrices()
 
 //-----------------------------------------------------------------------------
 
-glm::mat4 FreeflyCamera::lookAt(
+glm::mat4 Camera::lookAt(
 	const glm::vec3& _pos,
 	const glm::vec3& _target,
 	const glm::vec3& _upVector

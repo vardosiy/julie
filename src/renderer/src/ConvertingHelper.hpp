@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string_view>
-#include <memory>
+#include "renderer/Types.hpp"
+#include "renderer/TextureTiling.hpp"
+#include "renderer/TextureFilteringMode.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -9,16 +10,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Shader;
-
-class ShadersFactory
-{
-public:
-	static std::unique_ptr<Shader> load(std::string_view _vsPath, std::string_view _fsPath);
-
-private:
-	static std::string readShaderFile(std::string_view _filePath);
-};
+float	tilingToGlValue(TextureTiling _tiling) noexcept;
+s32		filteringModeToGlValue(TextureFilteringMode _mode) noexcept;
 
 //-----------------------------------------------------------------------------
 

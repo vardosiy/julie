@@ -1,20 +1,25 @@
 #pragma once
 
-#include "renderer/Types.hpp"
+#include "CommonDefs.hpp"
+#include "data/Project.hpp"
 
 #include <QWidget>
+#include <QStringListModel>
+#include <QStringList>
 
 #include <memory>
+
+//-----------------------------------------------------------------------------
 
 namespace Ui {
 class MainWidget;
 }
 
-namespace jl {
+namespace data {
 class Object;
 }
 
-class QStringListModel;
+//-----------------------------------------------------------------------------
 
 class MainWidget : public QWidget
 {
@@ -24,12 +29,24 @@ public:
 	explicit MainWidget(QWidget* parent = nullptr);
 	~MainWidget();
 
-	void refreshObjectsList(const std::vector<jl::s32>& _objects);
+	void onGlLoaded();
 
 private slots:
-	void chbFillPolygonsValueChanged(int _state);
+	void onFillPolygonsValueChanged(int _state);
+
+	void onAddEntityReleased();
+	void onDeleteEntityReleased();
+
+private:
+	void addObjectToList(const data::Object& _object);
 
 private:
 	std::unique_ptr<Ui::MainWidget> m_ui;
-	std::unique_ptr<QStringListModel> m_listModel;
+
+	QStringListModel m_objectsListModel;
+	QStringList m_objectsNamesList;
+
+	data::Project m_project;
 };
+
+//-----------------------------------------------------------------------------

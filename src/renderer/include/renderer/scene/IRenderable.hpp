@@ -1,12 +1,14 @@
 #pragma once
 
+#include "glm/glm.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class ICamera;
+class Camera;
 
 class IRenderable
 {
@@ -14,7 +16,9 @@ public:
 	virtual ~IRenderable() = default;
 
 	virtual void update(float _dt) = 0;
-	virtual void render(const ICamera& _camera) const noexcept = 0;
+	virtual void render(const Camera& _camera) const noexcept = 0;
+
+	virtual const glm::mat4& getWorldMatrix() const noexcept = 0;
 };
 
 //-----------------------------------------------------------------------------

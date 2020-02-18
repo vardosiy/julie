@@ -5,7 +5,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace jl {
+namespace app {
 
 //-----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ using ScopedConnection	= boost::signals2::scoped_connection;
 using ConnectionBlock	= boost::signals2::shared_connection_block;
 
 template<typename Function>
-using SignalMt = typename boost::signals2::signal<Function>;
+using SignalMt = boost::signals2::signal<Function>;
 
 template<typename Function>
 using Signal =
@@ -32,6 +32,6 @@ using Signal =
 
 //-----------------------------------------------------------------------------
 
-} // namespace jl
+} // namespace app
 
 //-----------------------------------------------------------------------------

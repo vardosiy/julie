@@ -3,6 +3,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/CubeTexture.hpp"
 #include "renderer/TextureTiling.hpp"
+#include "renderer/TextureFilteringMode.hpp"
 
 #include "loaders/formats/LoadTga.hpp"
 
