@@ -17,5 +17,7 @@ Resources.cmake
 UiSources.cmake
 Shaders.cmake
 
+LocalConfig.cmake
+
 # file extenstions
 *.pyc
