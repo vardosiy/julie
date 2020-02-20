@@ -1,7 +1,6 @@
 #pragma once
 
-#include "utils/Assert.hpp"
-#include "utils/EnumUtils.hpp"
+#include "utils/Utils.hpp"
 
 NAMESPACE_ENUM_WITH_UTILITY(
 	jl,
