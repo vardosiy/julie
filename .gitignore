@@ -21,3 +21,4 @@ LocalConfig.cmake
 
 # file extenstions
 *.pyc
+*.shdata
