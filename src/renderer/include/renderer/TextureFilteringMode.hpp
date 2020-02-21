@@ -2,7 +2,7 @@
 
 #include "utils/Utils.hpp"
 
-NAMESPACE_ENUM_WITH_UTILITY(
+DECLARE_ENUM_WITH_UTILITY(
 	jl,
 	TextureFilteringMode,
 	Nearest,

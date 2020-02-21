@@ -1,7 +1,5 @@
 #pragma once
 
-#include "utils/Assert.hpp"
-
 #include <string_view>
 #include <array>
 
@@ -18,16 +16,18 @@ namespace details {
 constexpr int k_minEnumValue{ 0 };
 
 template<std::size_t EnumValuesCount>
-constexpr auto getEnumNamesFromValues(std::string_view _valuesStr, std::string_view _delim) noexcept
+constexpr auto getEnumNamesFromValues(std::string_view _valuesStr) noexcept
 {
 	std::array<std::string_view, EnumValuesCount> result = { "" };
+
+	constexpr std::string_view delim = ", ";
 
 	std::size_t tokenStart{ 0 };
 	for (std::size_t i{ 0 }; i < EnumValuesCount; ++i)
 	{
-		const std::size_t tokenEnd = _valuesStr.find(_delim, tokenStart);
+		const std::size_t tokenEnd = _valuesStr.find(delim, tokenStart);
 		result[i] = _valuesStr.substr(tokenStart, tokenEnd - tokenStart);
-		tokenStart = tokenEnd + _delim.size();
+		tokenStart = tokenEnd + delim.size();
 	}
 
 	return result;
