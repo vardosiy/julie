@@ -4,9 +4,9 @@
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
 
-#include "renderer/loaders/ModelsFactory.hpp"
-#include "renderer/loaders/ShadersFactory.hpp"
-#include "renderer/loaders/TexturesFactory.hpp"
+#include "factories/ModelsFactory.hpp"
+#include "factories/ShadersFactory.hpp"
+#include "factories/TexturesFactory.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -23,33 +23,21 @@ void ResourceManager::clear()
 
 std::shared_ptr<jl::Model> ResourceManager::loadModel(const std::string& _fileName)
 {
-	return loadCommon(m_models, _fileName, jl::ModelsFactory::loadFromFile);
+	return loadCommon(m_models, _fileName, ModelsFactory::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<jl::Shader> ResourceManager::loadShader(const std::string& _fileName)
 {
-	//return loadCommon(m_shaders, _fileName, jl::ShadersFactory::load);
-
-	return nullptr;
-	//auto it = _container.find(_fileName);
-	//if (it != _container.end())
-	//{
-	//	return it->second;
-	//}
-	//
-	//std::shared_ptr<T>& resourcePtr = _container[_fileName];
-	//resourcePtr = _loadFun(_fileName);
-	//
-	//return resourcePtr;
+	return loadCommon(m_shaders, _fileName, ShadersFactory::load);
 }
 
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<jl::Texture> ResourceManager::loadTexture(const std::string& _fileName)
 {
-	return loadCommon(m_textures, _fileName, jl::TexturesFactory::load2dTextureFromFile);
+	return loadCommon(m_textures, _fileName, TexturesFactory::load2dTextureFromFile);
 }
 
 //-----------------------------------------------------------------------------

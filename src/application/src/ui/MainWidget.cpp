@@ -4,9 +4,10 @@
 #include "data/Object.hpp"
 #include "data/Material.hpp"
 
+#include "factories/ModelsFactory.hpp"
+#include "factories/ShadersFactory.hpp"
+
 #include "renderer/scene/Scene.hpp"
-#include "renderer/loaders/ModelsFactory.hpp"
-#include "renderer/loaders/ShadersFactory.hpp"
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
 #include "utils/Utils.hpp"
@@ -45,8 +46,8 @@ MainWidget::~MainWidget() = default;
 
 void MainWidget::onGlLoaded()
 {
-	g_model = jl::ModelsFactory::loadFromFile("res/models/Bila.nfg");
-	g_shader = jl::ShadersFactory::load("res/shaders/SimpleColor.vs", "res/shaders/SimpleColor.fs");
+	g_model = ModelsFactory::loadFromFile("res/models/Bila.nfg");
+	g_shader = ShadersFactory::load("res/shaders/composed/SimpleColor.shdata");
 	g_material.reset(new data::Material("material"));
 	g_material->setProperty("u_color", glm::vec4(1.0f));
 	g_material->setShader(*g_shader);
