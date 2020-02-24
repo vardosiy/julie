@@ -21,11 +21,15 @@ public:
 
 	void bind() const;
 
-	u32 getVerteciesCount() const noexcept	{ return m_vertexArray.getVerticesCount(); }
-	u32 getIndeciesCount() const noexcept	{ return m_vertexArray.getIndicesCount(); }
+	u32 getVerteciesCount() const noexcept;
+	u32 getIndeciesCount() const noexcept;
+
+	const boxf& getBoundingBox() const noexcept;
 
 private:
 	VertexArray m_vertexArray;
+
+	boxf m_boundingBox;
 };
 
 //-----------------------------------------------------------------------------
