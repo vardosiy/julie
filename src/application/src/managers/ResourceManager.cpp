@@ -8,7 +8,10 @@
 #include "factories/ShadersFactory.hpp"
 #include "factories/TexturesFactory.hpp"
 
-#include "utils/Utils.hpp"
+//-----------------------------------------------------------------------------
+
+ResourceManager::ResourceManager() = default;
+ResourceManager::~ResourceManager() = default;
 
 //-----------------------------------------------------------------------------
 
@@ -30,7 +33,7 @@ std::shared_ptr<jl::Model> ResourceManager::loadModel(const std::string& _fileNa
 
 std::shared_ptr<jl::Shader> ResourceManager::loadShader(const std::string& _fileName)
 {
-	return loadCommon(m_shaders, _fileName, ShadersFactory::load);
+	return loadCommon(m_shaders, _fileName, ShadersFactory::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------

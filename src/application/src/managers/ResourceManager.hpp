@@ -1,7 +1,11 @@
 #pragma once
 
+#include "utils/Singleton.hpp"
+
 #include <unordered_map>
 #include <memory>
+
+//-----------------------------------------------------------------------------
 
 namespace jl {
 class Model;
@@ -9,8 +13,10 @@ class Shader;
 class Texture;
 }
 
-class ResourceManager
+class ResourceManager : public utils::Singleton<ResourceManager>
 {
+	friend class utils::Singleton<ResourceManager>;
+
 public:
 	void clear();
 
@@ -25,8 +31,13 @@ private:
 	template<typename T, typename U>
 	std::shared_ptr<T> loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun);
 
+	ResourceManager();
+	~ResourceManager();
+
 private:
 	Container<jl::Model> m_models;
 	Container<jl::Shader> m_shaders;
 	Container<jl::Texture> m_textures;
 };
+
+//-----------------------------------------------------------------------------

@@ -14,8 +14,8 @@ namespace utils {
 
 struct AssertData
 {
-	const char * expr;
-	const char * file;
+	const char* expr;
+	const char* file;
 	int line;
 };
 

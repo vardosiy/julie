@@ -11,7 +11,7 @@
 
 std::unique_ptr<jl::Texture> TexturesFactory::load2dTextureFromFile(std::string_view _filePath)
 {
-	jl::s32 width, height, bpp;
+	int width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
 
 	ASSERTM(tgaBuffer, "Can not load texture from file: {}", _filePath);
@@ -39,7 +39,7 @@ std::unique_ptr<jl::Texture> TexturesFactory::load2dTextureFromFile(std::string_
 
 std::unique_ptr<jl::CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::string_view _filePath)
 {
-	jl::s32 width, height, bpp;
+	int width, height, bpp;
 	std::unique_ptr<char[]> tgaBuffer(loadTga(_filePath.data(), &width, &height, &bpp));
 
 	ASSERTM(tgaBuffer, "Can not load texture from file: {}", _filePath);

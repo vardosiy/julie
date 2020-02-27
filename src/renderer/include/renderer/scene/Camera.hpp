@@ -48,8 +48,8 @@ private:
 private:
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
-	glm::vec2 m_rotation;
 	glm::vec3 m_upVector;
+	glm::vec2 m_rotation;
 
 	float m_aspect;
 	float m_near;

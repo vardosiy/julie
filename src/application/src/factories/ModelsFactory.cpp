@@ -17,7 +17,7 @@ std::unique_ptr<jl::Model> ModelsFactory::loadFromFile(std::string_view _filePat
 		return nullptr;
 	}
 
-	jl::s32 verticesCount = 0;
+	int verticesCount = 0;
 	fscanf_s(pFile, "%*s %d", &verticesCount);
 	ASSERTM(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
@@ -34,12 +34,12 @@ std::unique_ptr<jl::Model> ModelsFactory::loadFromFile(std::string_view _filePat
 		);
 	}
 
-	jl::s32 indicesCount = 0;
+	int indicesCount = 0;
 	fscanf_s(pFile, "%*s %d", &indicesCount);
 	ASSERTM(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
 	std::vector<jl::u16> indices(indicesCount);
-	for (jl::s32 i = 0; i < indicesCount; i += 3)
+	for (int i = 0; i < indicesCount; i += 3)
 	{
 		fscanf_s(
 			pFile, " %*d. %hd, %hd, %hd",
