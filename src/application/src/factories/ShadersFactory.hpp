@@ -12,11 +12,8 @@ class Shader;
 class ShadersFactory
 {
 public:
-	static std::unique_ptr<jl::Shader> load(std::string_view _filePath);
-	//static std::unique_ptr<jl::Shader> load(std::string_view _vsPath, std::string_view _fsPath);
-
-private:
-	static std::string readFile(std::string_view _filePath);
+	static std::unique_ptr<jl::Shader> loadFromFile(std::string_view _filePath);
+	static std::unique_ptr<jl::Shader> loadFromSeparateFiles(std::string_view _vsPath, std::string_view _fsPath);
 };
 
 //-----------------------------------------------------------------------------
