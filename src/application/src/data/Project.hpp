@@ -24,7 +24,7 @@ public:
 	~Project();
 
 	void addEntity(EntityPtr&& _entity) noexcept;
-	void removeEntity(std::string_view _name) noexcept;
+	void removeEntity(const DataEntity& _entity) noexcept;
 
 	DataEntity* findEntity(std::string_view _name) noexcept;
 	const DataEntity* findEntity(std::string_view _name) const noexcept;

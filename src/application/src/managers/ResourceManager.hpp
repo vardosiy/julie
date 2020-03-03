@@ -28,11 +28,11 @@ private:
 	template<typename T>
 	using Container = std::unordered_map<std::string, std::shared_ptr<T>>; // source file => resource
 
-	template<typename T, typename U>
-	std::shared_ptr<T> loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun);
-
 	ResourceManager();
 	~ResourceManager();
+
+	template<typename T, typename U>
+	std::shared_ptr<T> loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun);
 
 private:
 	Container<jl::Model> m_models;

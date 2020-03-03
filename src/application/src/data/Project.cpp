@@ -25,9 +25,9 @@ void Project::addEntity(EntityPtr&& _entity) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Project::removeEntity(std::string_view _name) noexcept
+void Project::removeEntity(const DataEntity& _entity) noexcept
 {
-	m_entities.erase(_name);
+	m_entities.erase(_entity.getName());
 }
 
 //-----------------------------------------------------------------------------
