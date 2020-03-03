@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CommonDefs.hpp"
+
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Camera.hpp"
 
@@ -23,13 +25,18 @@ public:
 		Edges,
 	};
 
+	using GlLoadedSignal = app::Signal<void()>;
+
+public:
 	AppGlWidget(QWidget* _parent = nullptr);
 
-	void setDrawMode(DrawMode _drawMode);
-
-	void doOnGlInitialized(std::function<void()> _callback);
+	void doOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
 	void onObjectAdded(data::Object& _object);
+
+	void setDrawMode(DrawMode _drawMode);
+	void setCameraMoveSpeed(int _speed) noexcept;
+	void setCameraRotateSpeed(int _speed) noexcept;
 
 protected:
 	void initializeGL() override;
@@ -48,7 +55,7 @@ private:
 	void updateCameraPosition(float _dt) noexcept;
 
 private:
-	std::function<void()> m_callback;
+	GlLoadedSignal m_glLoadedSignal;
 
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;

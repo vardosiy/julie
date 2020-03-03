@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CommonDefs.hpp"
 #include "data/Project.hpp"
 
 #include <QWidget>
@@ -34,11 +33,13 @@ public:
 private slots:
 	void onFillPolygonsValueChanged(int _state);
 
-	void onAddEntityReleased();
-	void onDeleteEntityReleased();
+	void onAddEntityBtnReleased();
+	void onDeleteEntityBtnReleased();
 
 private:
-	void addObjectToList(const data::Object& _object);
+	void setupConnections();
+
+	void addObjectToGuiList(const data::Object& _object);
 
 private:
 	std::unique_ptr<Ui::MainWidget> m_ui;

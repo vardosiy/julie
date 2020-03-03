@@ -18,8 +18,8 @@
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_camera(0.00001f, 100.0f, 45.0f)
-	, m_camMoveSpeed(0.1f)
-	, m_camRotationSpeed(0.001f)
+	, m_camMoveSpeed(10.1f)
+	, m_camRotationSpeed(0.1f)
 	, m_updateTimer(this)
 {
 }
@@ -48,9 +48,7 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode)
 		break;
 
 		default:
-		{
-			assert(0);
-		}
+			ASSERT(0);
 	}
 
 	m_prerenderCommand = [frontPolygonsMode, backPolygonsMode]()
@@ -67,9 +65,23 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode)
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::doOnGlInitialized(std::function<void()> _callback)
+void AppGlWidget::setCameraMoveSpeed(int _speed) noexcept
 {
-	m_callback = _callback;
+	m_camMoveSpeed = static_cast<float>(_speed) / 100.0f;
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::setCameraRotateSpeed(int _speed) noexcept
+{
+	m_camRotationSpeed = static_cast<float>(_speed) / 100.0f;
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::doOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
+{
+	m_glLoadedSignal.connect(_callback);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,6 +96,7 @@ void AppGlWidget::onObjectAdded(data::Object& _object)
 void AppGlWidget::initializeGL()
 {
 	gladLoadGL();
+	m_glLoadedSignal();
 
 	LOG_INFO(
 		"OpenGL info\n-> Vendor: {}\n-> Renderer: {}\n-> Version: {}",
@@ -98,8 +111,6 @@ void AppGlWidget::initializeGL()
 
 	connect(&m_updateTimer, SIGNAL(timeout()), this, SLOT(update()));
 	m_updateTimer.start(1);
-
-	m_callback();
 }
 
 //-----------------------------------------------------------------------------
@@ -175,12 +186,10 @@ void AppGlWidget::update()
 
 float AppGlWidget::getDeltaTime()
 {
-	using namespace std::chrono;
-
 	static app::TimePoint s_lastTime = app::Clock::now();
 	const app::TimePoint currentTime = app::Clock::now();
 	
-	auto durationFloat = duration_cast<duration<float>>(currentTime - s_lastTime);
+	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
 	s_lastTime = currentTime;
 
 	return durationFloat.count();
