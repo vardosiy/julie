@@ -11,7 +11,7 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 Buffer::Buffer(Type _type) noexcept
-	: m_type(_type)
+	: m_type(bufferTypeToGlValue(_type))
 	, m_itemsCount(0)
 {
 	glGenBuffers(1, &m_id);
@@ -28,14 +28,19 @@ Buffer::~Buffer()
 
 void Buffer::bind() const noexcept
 {
-	glBindBuffer(bufferTypeToGlValue(m_type), m_id);
+	glBindBuffer(m_type, m_id);
 }
 
 //-----------------------------------------------------------------------------
 
 Buffer::Type Buffer::getType() const noexcept
 {
-	return m_type;
+	switch (m_type)
+	{
+		case GL_ARRAY_BUFFER:			return Type::VertexBuffer;
+		case GL_ELEMENT_ARRAY_BUFFER:	return Type::IndexBuffer;
+	}
+	return Type::VertexBuffer;
 }
 
 //-----------------------------------------------------------------------------
@@ -49,7 +54,7 @@ u32 Buffer::getItemsCount() const noexcept
 
 void Buffer::bufferData(const void* _data, u32 _size)
 {
-	glBufferData(bufferTypeToGlValue(m_type), _size, _data, GL_STATIC_DRAW);
+	glBufferData(m_type, _size, _data, GL_STATIC_DRAW);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,13 +63,11 @@ s32 Buffer::bufferTypeToGlValue(Type _type)
 {
 	switch (_type)
 	{
-		case jl::Buffer::Type::VertexBuffer:	return GL_ARRAY_BUFFER;
-		case jl::Buffer::Type::IndexBuffer:		return GL_ELEMENT_ARRAY_BUFFER;
-
-		default:
-			ASSERT(0);
+		case Type::VertexBuffer:	return GL_ARRAY_BUFFER;
+		case Type::IndexBuffer:		return GL_ELEMENT_ARRAY_BUFFER;
 	}
 
+	ASSERT(0);
 	return 0;
 }
 
