@@ -24,8 +24,8 @@ public:
 
 	void bind() const noexcept;
 
-	Type getType() const noexcept;
 	u32 getItemsCount() const noexcept;
+	Type getType() const noexcept;
 
 private:
 	void bufferData(const void* _data, u32 _size);
@@ -34,8 +34,8 @@ private:
 
 private:
 	u32 m_id;
+	s32 m_type;
 
-	Type m_type;
 	u32 m_itemsCount;
 };
 

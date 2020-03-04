@@ -15,9 +15,13 @@
 
 #include <QAbstractListModel>
 
+#include <renderer/Model.hpp>
+#include "factories/ModelsFactory.hpp"
+
 //-----------------------------------------------------------------------------
 
 std::unique_ptr<data::Material> g_material;
+std::unique_ptr<jl::Model> g_model;
 
 //-----------------------------------------------------------------------------
 
@@ -45,6 +49,8 @@ void MainWidget::onGlLoaded()
 	g_material.reset(new data::Material("material"));
 	g_material->setProperty("u_color", glm::vec4(1.0f));
 	g_material->setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/SimpleColor.shdata"));
+
+	g_model = ModelsFactory::createRect();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,9 +92,8 @@ void MainWidget::onAddEntityBtnReleased()
 	if (m_ui->tab_objects->isVisible())
 	{
 		auto object = std::make_unique<data::Object>("name");
-		object->setModel(*ResourceManager::getInstance().loadModel("res/models/Bila.nfg"));
+		object->setModel(*g_model);
 		object->setMaterial(*g_material);
-		object->setScale(glm::vec3(0.01f));
 
 		m_ui->oglw_screen->onObjectAdded(*object);
 

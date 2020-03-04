@@ -95,7 +95,7 @@ void AppGlWidget::onObjectAdded(data::Object& _object)
 
 void AppGlWidget::initializeGL()
 {
-	gladLoadGL();
+	ASSERT(gladLoadGL());
 	m_glLoadedSignal();
 
 	LOG_INFO(
