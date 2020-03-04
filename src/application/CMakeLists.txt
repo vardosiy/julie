@@ -1,7 +1,4 @@
-include(Sources.cmake)
-include(Headers.cmake)
-include(UiSources.cmake)
-include(Shaders.cmake)
+include(Autogen.cmake)
 
 #------------------------------------------------------------------------------
 

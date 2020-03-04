@@ -1,5 +1,4 @@
-include(Sources.cmake)
-include(Headers.cmake)
+include(Autogen.cmake)
 
 add_executable(utils_tests ${sources} ${headers})
 

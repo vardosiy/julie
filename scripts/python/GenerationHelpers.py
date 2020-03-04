@@ -4,14 +4,12 @@ from FilesListsGenerator import FilesListsGenerator
 
 #------------------------------------------------------------------------------
 
-def generate_files_lists(filters, targets_dirs):
+def generate_files_lists(filters, targets_dirs, output_file_name):
 	generator = FilesListsGenerator()
-
-	for filter in filters:
-		generator.add_filter(filter)
+	generator.set_filters(filters)
 
 	for target_dir in targets_dirs:
-		generator.generate_files_list(os.path.normpath(target_dir))
+		generator.generate_files_lists(os.path.normpath(target_dir), output_file_name)
 
 #------------------------------------------------------------------------------
 

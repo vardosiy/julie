@@ -10,13 +10,8 @@ __pycache__/
 scripts/python/__pycache__/
 src/application/Log.log
 
-# generated cmake scripts
-Sources.cmake
-Headers.cmake
-Resources.cmake
-UiSources.cmake
-Shaders.cmake
-
+# generated and local-specific cmake files
+Autogen.cmake
 LocalConfig.cmake
 
 # file extenstions
