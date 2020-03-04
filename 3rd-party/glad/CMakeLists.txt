@@ -1,5 +1,4 @@
-include(Sources.cmake)
-include(Headers.cmake)
+include(Autogen.cmake)
 
 add_library(glad STATIC ${sources} ${headers})
 
