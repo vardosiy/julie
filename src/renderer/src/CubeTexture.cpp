@@ -8,15 +8,17 @@
 
 //-----------------------------------------------------------------------------
 
+namespace jl {
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
 //-----------------------------------------------------------------------------
 
 constexpr jl::u32 k_facesCount = 6;
+
 using OffsetsArray = std::array<std::pair<jl::u32, jl::u32>, k_facesCount>;
-
-//-----------------------------------------------------------------------------
-
 OffsetsArray calculateOffsets(jl::u32 _faceWidth)
 {
 	return {
@@ -32,10 +34,6 @@ OffsetsArray calculateOffsets(jl::u32 _faceWidth)
 //-----------------------------------------------------------------------------
 
 } // namespace details
-
-//-----------------------------------------------------------------------------
-
-namespace jl {
 
 //-----------------------------------------------------------------------------
 
@@ -74,10 +72,10 @@ void CubeTexture::extractFace(
 	u32 _dstRowLength,	// pixels
 	u32 _offsetX,		// pixels
 	u32 _offsetY,		// pixels
-	u32 _bitsPerPixel
+	u32 _bpp
 )
 {
-	const u32 bytesPerPixel		= _bitsPerPixel / 8;
+	const u32 bytesPerPixel		= _bpp / 8;
 
 	const u32 srcOffsetXBytes	= _offsetX * bytesPerPixel;
 	const u32 dstRowSize		= _dstRowLength * bytesPerPixel;

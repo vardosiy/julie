@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CommonDefs.hpp"
 #include "data/Project.hpp"
 
 #include <QWidget>
@@ -48,6 +49,8 @@ private:
 	QStringList m_objectsNamesList;
 
 	data::Project m_project;
+
+	app::ScopedConnection m_glLoadedConnection;
 };
 
 //-----------------------------------------------------------------------------

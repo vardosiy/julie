@@ -23,6 +23,35 @@
 std::unique_ptr<data::Material> g_material;
 std::unique_ptr<jl::Model> g_model;
 
+static std::unique_ptr<jl::Model> createRoom()
+{
+	std::vector<jl::Vertex> vertices(8);
+	vertices[0].pos = glm::vec3(-1.0f, 1.0f, -1.0f);  // back rect
+	vertices[1].pos = glm::vec3(-1.0f, 0.0f, -1.0f);
+	vertices[2].pos = glm::vec3(1.0f, 1.0f, -1.0f);
+	vertices[3].pos = glm::vec3(1.0f, 0.0f, -1.0f);
+
+	vertices[4].pos = glm::vec3(-1.0f, 1.0f, 1.0f); // front rect
+	vertices[5].pos = glm::vec3(-1.0f, 0.0f, 1.0f);
+	vertices[6].pos = glm::vec3(1.0f, 1.0f, 1.0f);
+	vertices[7].pos = glm::vec3(1.0f, 0.0f, 1.0f);
+
+	std::vector<jl::u16> indices = {
+		0, 1, 2, // back
+		1, 2, 3,
+		4, 5, 6, // front
+		5, 6, 7,
+		0, 1, 4, // left
+		1, 4, 5,
+		2, 3, 6, // right
+		3, 6, 7,
+		1, 3, 5, // bottom
+		3, 5, 7,
+	};
+
+	return std::make_unique<jl::Model>(vertices, indices);
+}
+
 //-----------------------------------------------------------------------------
 
 MainWidget::MainWidget(QWidget* parent)
@@ -35,7 +64,13 @@ MainWidget::MainWidget(QWidget* parent)
 
 	setupConnections();
 
-	m_ui->oglw_screen->doOnGlLoaded([this]() { onGlLoaded(); });
+	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded(
+		[this]()
+		{
+			m_glLoadedConnection.disconnect();
+			onGlLoaded();
+		}
+	);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,7 +85,7 @@ void MainWidget::onGlLoaded()
 	g_material->setProperty("u_color", glm::vec4(1.0f));
 	g_material->setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/SimpleColor.shdata"));
 
-	g_model = ModelsFactory::createRect();
+	g_model = createRoom();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,21 +97,12 @@ void MainWidget::onFillPolygonsValueChanged(int _state)
 	switch (_state)
 	{
 		case Qt::CheckState::Checked:
-		{
 			drawMode = AppGlWidget::DrawMode::Fill;
-		}
-		break;
-
-		case Qt::CheckState::PartiallyChecked:
-		{
-		}
-		break;
+			break;
 
 		case Qt::CheckState::Unchecked:
-		{
 			drawMode = AppGlWidget::DrawMode::Edges;
-		}
-		break;
+			break;
 
 		default:
 			ASSERT(0);

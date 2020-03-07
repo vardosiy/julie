@@ -36,7 +36,7 @@ private:
 		u32 _dstRowLength,	// pixels
 		u32 _offsetX,		// pixels
 		u32 _offsetY,		// pixels
-		u32 _bitsPerPixel
+		u32 _bpp
 	);
 
 private:
