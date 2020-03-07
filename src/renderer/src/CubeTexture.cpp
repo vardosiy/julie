@@ -14,8 +14,6 @@ namespace jl {
 
 namespace details {
 
-//-----------------------------------------------------------------------------
-
 constexpr jl::u32 k_facesCount = 6;
 
 using OffsetsArray = std::array<std::pair<jl::u32, jl::u32>, k_facesCount>;
@@ -30,8 +28,6 @@ OffsetsArray calculateOffsets(jl::u32 _faceWidth)
 		std::pair{ _faceWidth * 3, _faceWidth }
 	};
 }
-
-//-----------------------------------------------------------------------------
 
 } // namespace details
 

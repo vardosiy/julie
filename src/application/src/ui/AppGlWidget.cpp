@@ -88,6 +88,23 @@ app::Connection AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type&
 
 void AppGlWidget::onObjectAdded(data::Object& _object)
 {
+	jl::DirectionalLightData directionalLightData;
+	directionalLightData.color		= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	directionalLightData.direction	= glm::vec3(0.0f, -1.0f, 0.0f);
+
+	jl::PointLightData pointLightData;
+	pointLightData.color	= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pointLightData.position	= glm::vec3(0.0f, 0.0f, 1.0f);
+
+	jl::AmbientLightData ambientLightData;
+	ambientLightData.color	= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ambientLightData.weight	= 0.6f;
+
+	jl::LightsHolder& lightsHolder = m_scene.getLightsHolder();
+	lightsHolder.addDirectionalLight(directionalLightData);
+	lightsHolder.addPointLight(pointLightData);
+	lightsHolder.setAmbientLight(ambientLightData);
+
 	m_scene.addRenderable(0, _object);
 }
 

@@ -39,9 +39,16 @@ const FogData* Scene::getFogData() const noexcept
 
 //-----------------------------------------------------------------------------
 
-const AmbientLightData* Scene::getAmbientLightData() const noexcept
+LightsHolder& Scene::getLightsHolder() noexcept
 {
-	return m_ambientLightData.get_ptr();
+	return m_lightsHolder;
+}
+
+//-----------------------------------------------------------------------------
+
+const LightsHolder& Scene::getLightsHolder() const noexcept
+{
+	return m_lightsHolder;
 }
 
 //-----------------------------------------------------------------------------
@@ -49,13 +56,6 @@ const AmbientLightData* Scene::getAmbientLightData() const noexcept
 void Scene::setFogData(const FogData& _data) noexcept
 {
 	m_fogData = _data;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setAmbientLightData(const AmbientLightData& _data) noexcept
-{
-	m_ambientLightData = _data;
 }
 
 //-----------------------------------------------------------------------------

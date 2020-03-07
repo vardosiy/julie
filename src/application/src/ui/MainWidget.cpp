@@ -22,6 +22,7 @@
 
 std::unique_ptr<data::Material> g_material;
 std::unique_ptr<jl::Model> g_model;
+std::unique_ptr<jl::Shader> g_shader;
 
 static std::unique_ptr<jl::Model> createRoom()
 {
@@ -79,11 +80,14 @@ MainWidget::~MainWidget() = default;
 
 //-----------------------------------------------------------------------------
 
+#include "factories/ShadersFactory.hpp"
 void MainWidget::onGlLoaded()
 {
+	g_shader = ShadersFactory::loadFromSeparateFiles("res/shaders/TriangleShader.vs", "res/shaders/TriangleShader.fs");
+
 	g_material.reset(new data::Material("material"));
 	g_material->setProperty("u_color", glm::vec4(1.0f));
-	g_material->setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/SimpleColor.shdata"));
+	g_material->setShader(*g_shader);
 
 	g_model = createRoom();
 }

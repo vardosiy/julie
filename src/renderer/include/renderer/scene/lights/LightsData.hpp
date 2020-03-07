@@ -2,15 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include <memory>
-
 //-----------------------------------------------------------------------------
 
 namespace jl {
 
 //-----------------------------------------------------------------------------
-
-class ILightMoveController;
 
 struct AmbientLightData
 {
@@ -28,7 +24,6 @@ struct PointLightData
 {
 	glm::vec4 color;
 	glm::vec3 position;
-	std::unique_ptr<ILightMoveController> moveController;
 };
 
 //-----------------------------------------------------------------------------

@@ -25,24 +25,27 @@ class MainWidget : public QWidget
 {
 	Q_OBJECT
 
+//-----------------------------------------------------------------------------
 public:
 	explicit MainWidget(QWidget* parent = nullptr);
 	~MainWidget();
 
 	void onGlLoaded();
 
+//-----------------------------------------------------------------------------
 private slots:
 	void onFillPolygonsValueChanged(int _state);
 
 	void onAddEntityBtnReleased();
 	void onDeleteEntityBtnReleased();
 
+//-----------------------------------------------------------------------------
 private:
 	void setupConnections();
 
 	void addObjectToGuiList(const data::Object& _object);
 
-private:
+//-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWidget> m_ui;
 
 	QStringListModel m_objectsListModel;

@@ -2,7 +2,6 @@
 
 #include "renderer/Types.hpp"
 #include "renderer/scene/FogData.hpp"
-#include "renderer/scene/AmbientLightData.hpp"
 
 #include <glm/glm.hpp>
 

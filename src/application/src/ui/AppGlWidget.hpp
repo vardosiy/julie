@@ -10,14 +10,19 @@
 
 #include <functional>
 
+//-----------------------------------------------------------------------------
+
 namespace data {
 class Object;
 }
+
+//-----------------------------------------------------------------------------
 
 class AppGlWidget : public QOpenGLWidget
 {
 	Q_OBJECT
 
+//-----------------------------------------------------------------------------
 public:
 	enum class DrawMode
 	{
@@ -27,7 +32,7 @@ public:
 
 	using GlLoadedSignal = app::Signal<void()>;
 
-public:
+//-----------------------------------------------------------------------------
 	AppGlWidget(QWidget* _parent = nullptr);
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
@@ -38,6 +43,7 @@ public:
 	void setCameraMoveSpeed(int _speed) noexcept;
 	void setCameraRotateSpeed(int _speed) noexcept;
 
+//-----------------------------------------------------------------------------
 protected:
 	void initializeGL() override;
 	void resizeGL(int _w, int _h) override;
@@ -46,15 +52,17 @@ protected:
 	void keyPressEvent(QKeyEvent* _event) override;
 	void keyReleaseEvent(QKeyEvent* _event) override;
 
+//-----------------------------------------------------------------------------
 private slots:
 	void update();
 
+//-----------------------------------------------------------------------------
 private:
 	float getDeltaTime();
 
 	void updateCameraPosition(float _dt) noexcept;
 
-private:
+//-----------------------------------------------------------------------------
 	GlLoadedSignal m_glLoadedSignal;
 
 	std::function<void()> m_prerenderCommand;
@@ -68,3 +76,5 @@ private:
 
 	QTimer m_updateTimer;
 };
+
+//-----------------------------------------------------------------------------
