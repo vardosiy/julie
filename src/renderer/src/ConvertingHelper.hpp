@@ -1,14 +1,15 @@
 #pragma once
 
 #include "renderer/Types.hpp"
-#include "renderer/TextureTiling.hpp"
-#include "renderer/TextureFilteringMode.hpp"
 
 //-----------------------------------------------------------------------------
 
 namespace jl {
 
 //-----------------------------------------------------------------------------
+
+enum class TextureTiling;
+enum class TextureFilteringMode;
 
 float	tilingToGlValue(TextureTiling _tiling) noexcept;
 s32		filteringModeToGlValue(TextureFilteringMode _mode) noexcept;

@@ -1,5 +1,8 @@
 #include "ConvertingHelper.hpp"
 
+#include "renderer/TextureTiling.hpp"
+#include "renderer/TextureFilteringMode.hpp"
+
 #include <glad/glad.h>
 
 //-----------------------------------------------------------------------------

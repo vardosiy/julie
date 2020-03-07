@@ -79,7 +79,7 @@ void AppGlWidget::setCameraRotateSpeed(int _speed) noexcept
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::doOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
+void AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
 {
 	m_glLoadedSignal.connect(_callback);
 }

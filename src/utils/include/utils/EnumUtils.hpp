@@ -40,14 +40,11 @@ enum class _enumName																				\
 }																									\
 																									\
 namespace utils {																					\
-namespace details {																					\
-constexpr std::string_view __##_namespace##_##_enumName##_initData{ #__VA_ARGS__ };					\
-}																									\
 																									\
 constexpr std::string_view toString(const _namespace::_enumName _value) noexcept					\
 {																									\
 	constexpr std::size_t k_valuesCount{ static_cast<std::size_t>(_namespace::_enumName::Count) };	\
-	constexpr std::string_view k_valuesStr{ details::__##_namespace##_##_enumName##_initData };		\
+	constexpr std::string_view k_valuesStr{ #__VA_ARGS__ };											\
 																									\
 	constexpr auto k_enumValuesNames{ details::getEnumNamesFromValues<k_valuesCount>(k_valuesStr) };\
 																									\

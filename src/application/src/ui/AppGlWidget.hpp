@@ -30,7 +30,7 @@ public:
 public:
 	AppGlWidget(QWidget* _parent = nullptr);
 
-	void doOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
+	void registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
 	void onObjectAdded(data::Object& _object);
 
