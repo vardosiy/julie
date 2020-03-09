@@ -56,12 +56,20 @@ message("--------------------Loading 3rd-party libs--------------------")
 
 include_directories(${boost_dir})
 
+set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(${3rd_party_dir}/fmt)
 set_target_properties(fmt PROPERTIES FOLDER ${3rd_party_targets_group})
 
+set(BUILD_SHARED_LIBS OFF)
+set(GLM_TEST_ENABLE OFF)
+set(GLM_TEST_ENABLE_CXX_17 ON)
 add_subdirectory(${3rd_party_dir}/glm)
 set_target_properties(glm_static PROPERTIES FOLDER ${3rd_party_targets_group})
 
+set(JSONCPP_WITH_TESTS OFF)
+set(JSONCPP_WITH_EXAMPLES OFF)
+set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF)
+set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF)
 add_subdirectory(${3rd_party_dir}/jsoncpp)
 set_target_properties(jsoncpp_lib PROPERTIES FOLDER ${3rd_party_targets_group})
 
@@ -83,11 +91,22 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/tests/)
 
 #------------------------------------------------------------------------------
 # tests
+function(set_structural_properties target_name folder)
+	set_target_properties(${target_name} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY	${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+		LIBRARY_OUTPUT_DIRECTORY	${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+		ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+		PDB_OUTPUT_DIRECTORY		${CMAKE_PDB_OUTPUT_DIRECTORY}
+		FOLDER						${folder}
+	)
+endfunction()
+
+set(gtest_force_shared_crt ON)
 add_subdirectory(${3rd_party_dir}/gtest)
-set_target_properties(gtest			PROPERTIES FOLDER ${tests_targets_group}/gtest)
-set_target_properties(gtest_main	PROPERTIES FOLDER ${tests_targets_group}/gtest)
-set_target_properties(gmock			PROPERTIES FOLDER ${tests_targets_group}/gtest)
-set_target_properties(gmock_main	PROPERTIES FOLDER ${tests_targets_group}/gtest)
+set_structural_properties(gtest			${tests_targets_group}/gtest)
+set_structural_properties(gtest_main	${tests_targets_group}/gtest)
+set_structural_properties(gmock			${tests_targets_group}/gtest)
+set_structural_properties(gmock_main	${tests_targets_group}/gtest)
 
 enable_testing()
 add_subdirectory(${tests_dir}/utils_tests)
