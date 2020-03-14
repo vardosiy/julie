@@ -22,9 +22,6 @@ void LightsHolder::bind(const Shader& _shader) const
 			_shader.setUniform(_uniformName, _vector.size(), _vector.data());
 		};
 
-	//setVectorUniform("u_pointLightsData", m_direcitonalLightsColors);
-	//setVectorUniform("u_directionalLightsData", m_direcitonalLightsColors);
-
 	setVectorUniform("u_directionalLightColor", m_direcitonalLightsColors);
 	setVectorUniform("u_lightDirection", m_direcitonalLightsDirection);
 

@@ -9,7 +9,6 @@
 
 #include <boost/noncopyable.hpp>
 
-#include <vector>
 #include <memory>
 #include <string_view>
 #include <unordered_map>
