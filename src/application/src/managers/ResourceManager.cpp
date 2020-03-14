@@ -24,21 +24,21 @@ void ResourceManager::clear()
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<jl::Model> ResourceManager::loadModel(const std::string& _fileName)
+jl::Model* ResourceManager::loadModel(const std::string& _fileName)
 {
 	return loadCommon(m_models, _fileName, ModelsFactory::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<jl::Shader> ResourceManager::loadShader(const std::string& _fileName)
+jl::Shader* ResourceManager::loadShader(const std::string& _fileName)
 {
 	return loadCommon(m_shaders, _fileName, ShadersFactory::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<jl::Texture> ResourceManager::loadTexture(const std::string& _fileName)
+jl::Texture* ResourceManager::loadTexture(const std::string& _fileName)
 {
 	return loadCommon(m_textures, _fileName, TexturesFactory::load2dTextureFromFile);
 }
@@ -46,18 +46,18 @@ std::shared_ptr<jl::Texture> ResourceManager::loadTexture(const std::string& _fi
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U>
-std::shared_ptr<T> ResourceManager::loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun)
+T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun)
 {
 	auto it = _container.find(_fileName);
 	if (it != _container.end())
 	{
-		return it->second;
+		return it->second.get();
 	}
 
-	std::shared_ptr<T>& resourcePtr = _container[_fileName];
-	resourcePtr = _loadFun(_fileName);
+	auto emplaceResult = _container.emplace(_fileName, _loadFun(_fileName));
+	auto itEmplacedItem = emplaceResult->first;
 
-	return resourcePtr;
+	return itEmplacedItem->secont.get();
 }
 
 //-----------------------------------------------------------------------------
