@@ -23,6 +23,13 @@ Material::~Material() = default;
 
 //-----------------------------------------------------------------------------
 
+const jl::Material& Material::getMaterial() const noexcept
+{
+	return m_material;
+}
+
+//-----------------------------------------------------------------------------
+
 void Material::setShader(std::string _val)
 {
 	m_shader = _val;

@@ -43,35 +43,9 @@ void Object::update(float _dt) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::render(const jl::Camera& _camera) const noexcept
+const jl::Material* Object::getMaterial() const noexcept
 {
-	if (m_material && m_model)
-	{
-		m_material->bind();
-
-		const jl::Shader* shader = m_material->getShader();
-		if (shader)
-		{
-			jl::CommonUniformsBinder uniformBinder(*shader, _camera, *this);
-			uniformBinder.setupCommon();
-		}
-
-		jl::Shader::draw(*m_model);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Object::getWorldMatrix() const noexcept
-{
-	return m_worldMatrix;
-}
-
-//-----------------------------------------------------------------------------
-
-const Material* Object::getMaterial() const noexcept
-{
-	return m_material;
+	return m_material ? &m_material->getMaterial() : nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -79,6 +53,13 @@ const Material* Object::getMaterial() const noexcept
 const jl::Model* Object::getModel() const noexcept
 {
 	return m_model;
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Object::getWorldMatrix() const noexcept
+{
+	return m_worldMatrix;
 }
 
 //-----------------------------------------------------------------------------

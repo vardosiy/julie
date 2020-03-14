@@ -14,14 +14,15 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Shader;
+class CommonUniformsBinder;
 
 class LightsHolder : boost::noncopyable
 {
+	friend class CommonUniformsBinder;
+
 //-----------------------------------------------------------------------------
 public:
 	void update(float _dt);
-
-	void bind(const Shader& _shader) const;
 
 	const AmbientLightData& getAmbientLightData() const noexcept;
 	void setAmbientLight(const AmbientLightData& _lightData) noexcept;

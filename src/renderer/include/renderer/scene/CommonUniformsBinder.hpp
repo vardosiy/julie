@@ -15,25 +15,26 @@ namespace jl {
 
 class Camera;
 class Shader;
-class Object;
+class LightsHolder;
 class IRenderable;
 
 class CommonUniformsBinder
 {
 public:
-	CommonUniformsBinder(const Shader& _shader, const Camera& _camera, const IRenderable& _renderable) noexcept;
+	CommonUniformsBinder(const Shader& _shader) noexcept;
 
-	void setupCommon() const;
-	void setupFog(const FogData& _fogData) const;
+	void setupCommon(const jl::Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept;
+	void setupFog(const FogData& _fogData) const noexcept;
+	void setupLights(const LightsHolder& _lightsHolder) const noexcept;
 
 private:
 	template<typename T>
-	void bindUniform(const std::string& _name, const T& _val) const;
+	void bindUniform(const std::string& _name, const T& _val) const noexcept;
+	template<typename T>
+	void bindUniform(const std::string& _name, const std::vector<T>& _val) const noexcept;
 
 private:
 	const Shader& m_shader;
-	const Camera& m_camera;
-	const IRenderable& m_renderable;
 
 	static const std::string u_W;
 	static const std::string u_WVP;

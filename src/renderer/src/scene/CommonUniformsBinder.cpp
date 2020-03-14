@@ -23,29 +23,25 @@ const std::string CommonUniformsBinder::u_fogColor		= "u_fogColor";
 //-----------------------------------------------------------------------------
 
 CommonUniformsBinder::CommonUniformsBinder(
-	const Shader& _shader,
-	const Camera& _camera,
-	const IRenderable& _renderable
+	const Shader& _shader
 ) noexcept
 	: m_shader(_shader)
-	, m_camera(_camera)
-	, m_renderable(_renderable)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CommonUniformsBinder::setupCommon() const
+void CommonUniformsBinder::setupCommon(const jl::Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept
 {
-	bindUniform(u_W,			m_renderable.getWorldMatrix());
-	bindUniform(u_WVP,			m_camera.getViewProjectionMatrix() * m_renderable.getWorldMatrix());
+	bindUniform(u_W,			_worldMatrix);
+	bindUniform(u_WVP,			_camera.getViewProjectionMatrix() * _worldMatrix);
+	bindUniform(u_camPosition,	_camera.getPosition());
 	bindUniform(u_time,			Globals::s_timeTotal);
-	bindUniform(u_camPosition,	m_camera.getPosition());
 }
 
 //-----------------------------------------------------------------------------
 
-void CommonUniformsBinder::setupFog(const FogData& _fogData) const
+void CommonUniformsBinder::setupFog(const FogData& _fogData) const noexcept
 {
 	bindUniform(u_fogStart, _fogData.start);
 	bindUniform(u_fogRange, _fogData.range);
@@ -54,14 +50,36 @@ void CommonUniformsBinder::setupFog(const FogData& _fogData) const
 
 //-----------------------------------------------------------------------------
 
+void CommonUniformsBinder::setupLights(const LightsHolder& _lightsHolder) const noexcept
+{
+	bindUniform("u_directionalLightColor",	_lightsHolder.m_direcitonalLightsColors);
+	bindUniform("u_lightDirection",			_lightsHolder.m_direcitonalLightsDirection);
+
+	bindUniform("u_pointLightColor",		_lightsHolder.m_pointLightsColors);
+	bindUniform("u_lightPosition",			_lightsHolder.m_pointLightsPositions);
+}
+
+//-----------------------------------------------------------------------------
+
 template<typename T>
-void CommonUniformsBinder::bindUniform(const std::string& _name, const T& _val) const
+void CommonUniformsBinder::bindUniform(const std::string& _name, const T& _val) const noexcept
 {
 	if (m_shader.hasUniform(_name))
 	{
 		m_shader.setUniform(_name, _val);
 	}
 };
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+void CommonUniformsBinder::bindUniform(const std::string& _name, const std::vector<T>& _val) const noexcept
+{
+	if (m_shader.hasUniform(_name))
+	{
+		m_shader.setUniform(_name, _val.size(), _val.data());
+	}
+}
 
 //-----------------------------------------------------------------------------
 

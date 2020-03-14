@@ -14,23 +14,6 @@ void LightsHolder::update(float _dt)
 
 //-----------------------------------------------------------------------------
 
-void LightsHolder::bind(const Shader& _shader) const
-{
-	auto setVectorUniform =
-		[&_shader](const std::string& _uniformName, const auto& _vector)
-		{
-			_shader.setUniform(_uniformName, _vector.size(), _vector.data());
-		};
-
-	setVectorUniform("u_directionalLightColor", m_direcitonalLightsColors);
-	setVectorUniform("u_lightDirection", m_direcitonalLightsDirection);
-
-	setVectorUniform("u_pointLightColor", m_pointLightsColors);
-	setVectorUniform("u_lightPosition", m_pointLightsPositions);
-}
-
-//-----------------------------------------------------------------------------
-
 const AmbientLightData& LightsHolder::getAmbientLightData() const noexcept
 {
 	return m_ambientLight;

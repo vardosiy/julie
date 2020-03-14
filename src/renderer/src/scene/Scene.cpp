@@ -1,5 +1,10 @@
 #include "renderer/scene/Scene.hpp"
+
 #include "renderer/scene/IRenderable.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Material.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/scene/CommonUniformsBinder.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -24,9 +29,23 @@ void Scene::update(float _dt)
 
 void Scene::render(const Camera& _camera)
 {
-	for (auto& it : m_renderables)
+	for (auto& [id, object] : m_renderables)
 	{
-		it.second->render(_camera);
+		const Model* model = object->getModel();
+		const Material* material = object->getMaterial();
+
+		if (material && model)
+		{
+			const Shader* shader = material->getShader();
+			if (shader)
+			{
+				CommonUniformsBinder uniformBinder(*shader);
+				uniformBinder.setupCommon(_camera, object->getWorldMatrix());
+				uniformBinder.setupLights(m_lightsHolder);
+			}
+
+			Shader::draw(*model);
+		}
 	}
 }
 
@@ -107,31 +126,6 @@ void Scene::forEachRenderable(const std::function<void(s32, const IRenderable&)>
 		_callback(it.first, *it.second);
 	}
 }
-
-//-----------------------------------------------------------------------------
-
-//void Scene::drawObject(const ICamera& _camera, const Object& _object) const noexcept
-//{
-//	const Material* material = _object.getMaterial();
-//	if (material)
-//	{
-//		material->bind();
-//
-//		const Shader* shader = material->getShader();
-//		if (shader)
-//		{
-//			CommonUniformsBinder uniformBinder(*shader, _camera, _object);
-//			uniformBinder.setupCommon();
-//
-//			if (m_fogData)
-//			{
-//				uniformBinder.setupFog(*m_fogData);
-//			}
-//		}
-//
-//		Shader::draw(_object.getModel());
-//	}
-//}
 
 //-----------------------------------------------------------------------------
 

@@ -22,22 +22,23 @@ class Material;
 
 class Object : public DataEntity, public jl::IRenderable
 {
+//-----------------------------------------------------------------------------
 public:
 	Object(std::string _name) noexcept;
 	~Object();
 
-	// jl::IRenderable
+// jl::IRenderable ------------------------------------------------------------
 	void update(float _dt) noexcept override;
-	void render(const jl::Camera& _camera) const noexcept override;
 
-	const glm::mat4& getWorldMatrix() const noexcept override;
+	const jl::Model*	getModel() const noexcept override;
+	const jl::Material*	getMaterial() const noexcept override;
+	const glm::mat4&	getWorldMatrix() const noexcept override;
 
-	const Material* getMaterial() const noexcept;
-	const jl::Model* getModel() const noexcept;
-
+//-----------------------------------------------------------------------------
 	void setMaterial(const Material& _material) noexcept;
 	void setModel(const jl::Model& _model) noexcept;
 
+//-----------------------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept;
 	const glm::vec3& getRotation() const noexcept;
 	const glm::vec3& getScale() const noexcept;
@@ -46,10 +47,11 @@ public:
 	void setRotation(const glm::vec3& _val) noexcept;
 	void setScale(const glm::vec3& _val) noexcept;
 
+//-----------------------------------------------------------------------------
 private:
 	void recalculateWorldMatrix();
 
-private:
+//-----------------------------------------------------------------------------
 	const jl::Model* m_model;
 	const Material* m_material;
 
