@@ -13,6 +13,7 @@ namespace jl {
 
 class CubeTexture : public TextureBase
 {
+//-----------------------------------------------------------------------------
 public:
 	struct InitData
 	{
@@ -21,12 +22,13 @@ public:
 		u32 height;
 		u32 bpp;
 	};
-
-public:
+	
+//-----------------------------------------------------------------------------
 	CubeTexture(const InitData& _initData) noexcept;
 
 	u32 getFaceWidth() const noexcept { return m_faceWidth; }
 
+//-----------------------------------------------------------------------------
 private:
 	static void loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp);
 	static void extractFace(
@@ -38,8 +40,8 @@ private:
 		u32 _offsetY,		// pixels
 		u32 _bpp
 	);
-
-private:
+	
+//-----------------------------------------------------------------------------
 	u32 m_faceWidth;
 };
 

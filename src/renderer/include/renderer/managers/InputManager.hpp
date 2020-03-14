@@ -12,11 +12,11 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-
 class InputManager : public utils::Singleton<InputManager>
 {
 	friend class utils::Singleton<InputManager>;
-
+	
+//-----------------------------------------------------------------------------
 public:
 	using KeyCodeT = s32;
 
@@ -28,11 +28,12 @@ public:
 		Right,
 		Down
 	};
-
-public:
+	
+//-----------------------------------------------------------------------------
 	void processKey(KeyCodeT _key, bool _bIsPressed) noexcept;
 	bool isPressed(KeyCodeT _key) const noexcept;
-
+	
+//-----------------------------------------------------------------------------
 private:
 	std::unordered_map<KeyCodeT, bool> m_keyStates;
 };

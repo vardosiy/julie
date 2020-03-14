@@ -13,6 +13,7 @@ namespace jl {
 
 class Camera
 {
+//-----------------------------------------------------------------------------
 public:
 	Camera(float _near, float _far, float _fov);
 
@@ -35,7 +36,8 @@ public:
 
 	void move(const glm::vec3& _vec) noexcept;
 	void rotate(const glm::vec2& _vec) noexcept;
-
+	
+//-----------------------------------------------------------------------------
 private:
 	void recalculateMatrices();
 
@@ -44,8 +46,8 @@ private:
 		const glm::vec3& _target,
 		const glm::vec3& _upVector
 	);
-
-private:
+	
+//-----------------------------------------------------------------------------
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
 	glm::vec3 m_upVector;

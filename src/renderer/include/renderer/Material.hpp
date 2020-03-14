@@ -37,7 +37,7 @@ private:
 			std::variant<float, int, glm::vec3, glm::vec4, const jl::Texture*, const jl::CubeTexture*>;
 
 		template<typename T>
-		PropertyData(std::string _name, const T& _val)
+		PropertyData(std::string&& _name, const T& _val)
 			: name(std::move(_name))
 			, value(_val)
 		{
