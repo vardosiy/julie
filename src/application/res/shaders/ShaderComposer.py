@@ -1,4 +1,5 @@
 import os
+import shutil
 from string import Template
 
 #------------------------------------------------------------------------------
@@ -7,17 +8,16 @@ file_template = """{
 	"vs": "
 		$vs
 	",
-
 	"fs": "
 		$fs
 	"
 }"""
 
-vs_file_extension = ".vs"
-fs_file_extension = ".fs"
-output_file_extension = ".shdata"
-output_folder = "composed"
-indent = "\t\t"
+vs_file_extension		= ".vs"
+fs_file_extension		= ".fs"
+output_file_extension	= ".shdata"
+output_folder			= "composed"
+indentation				= "\t\t"
 
 #------------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ def build_output_file_path(vs_file_name):
 #------------------------------------------------------------------------------
 
 def indent_file(file_content):
-	return file_content.replace("\n", "\n" + indent)
+	return file_content.replace("\n", "\n" + indentation)
 
 #------------------------------------------------------------------------------
 
@@ -59,6 +59,9 @@ def compose_shader_files_into_single_file(vs_file_name, fs_file_name, output_fil
 
 dir_content = os.listdir(os.curdir)
 vs_files_names = filter(vs_filter_fun, dir_content)
+
+if os.path.exists(output_folder):
+	shutil.rmtree(output_folder)
 
 os.mkdir(output_folder)
 

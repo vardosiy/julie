@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QStringListModel>
+#include <QStandardItemModel>
 #include <QStringList>
 
 #include <memory>
@@ -30,8 +31,6 @@ public:
 	explicit MainWidget(QWidget* parent = nullptr);
 	~MainWidget();
 
-	void onGlLoaded();
-
 //-----------------------------------------------------------------------------
 private slots:
 	void onFillPolygonsValueChanged(int _state);
@@ -41,7 +40,10 @@ private slots:
 
 //-----------------------------------------------------------------------------
 private:
+	void setupUi();
 	void setupConnections();
+
+	void onGlLoaded();
 
 	void addObjectToGuiList(const data::Object& _object);
 
@@ -50,6 +52,8 @@ private:
 
 	QStringListModel m_objectsListModel;
 	QStringList m_objectsNamesList;
+
+	QStandardItemModel m_propertiesTableModel;
 
 	data::Project m_project;
 

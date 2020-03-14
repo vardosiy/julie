@@ -1,8 +1,7 @@
 #pragma once
 
-#include "core/Id.hpp"
-
 #include <boost/noncopyable.hpp>
+
 #include <unordered_map>
 #include <string_view>
 #include <memory>
@@ -31,7 +30,6 @@ public:
 
 private:
 	using EntitiesMap = std::unordered_map<std::string_view, EntityPtr>;
-
 	EntitiesMap m_entities;
 };
 

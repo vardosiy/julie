@@ -37,10 +37,10 @@ CommonUniformsBinder::CommonUniformsBinder(
 
 void CommonUniformsBinder::setupCommon() const
 {
-	bindUniform(u_W, m_renderable.getWorldMatrix());
-	bindUniform(u_WVP, m_camera.getViewProjectionMatrix() * m_renderable.getWorldMatrix());
-	bindUniform(u_time, Globals::s_timeTotal);
-	bindUniform(u_camPosition, m_camera.getPosition());
+	bindUniform(u_W,			m_renderable.getWorldMatrix());
+	bindUniform(u_WVP,			m_camera.getViewProjectionMatrix() * m_renderable.getWorldMatrix());
+	bindUniform(u_time,			Globals::s_timeTotal);
+	bindUniform(u_camPosition,	m_camera.getPosition());
 }
 
 //-----------------------------------------------------------------------------

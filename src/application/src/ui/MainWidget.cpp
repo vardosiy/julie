@@ -4,6 +4,7 @@
 #include "data/Object.hpp"
 #include "data/Material.hpp"
 
+#include "factories/ModelsFactory.hpp"
 #include "managers/ResourceManager.hpp"
 
 #include "renderer/scene/Scene.hpp"
@@ -12,11 +13,6 @@
 #include "utils/Utils.hpp"
 
 #include <QKeyEvent>
-
-#include <QAbstractListModel>
-
-#include <renderer/Model.hpp>
-#include "factories/ModelsFactory.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -59,10 +55,9 @@ MainWidget::MainWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_ui(std::make_unique<Ui::MainWidget>())
 	, m_objectsListModel(this)
+	, m_propertiesTableModel(5, 2, this)
 {
-	m_ui->setupUi(this);
-	m_ui->listv_objects->setModel(&m_objectsListModel);
-
+	setupUi();
 	setupConnections();
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded(
@@ -163,6 +158,29 @@ void MainWidget::onDeleteEntityBtnReleased()
 	{
 		ASSERTM(0, "Unhandled case while adding entity");
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWidget::setupUi()
+{
+	m_ui->setupUi(this);
+	m_ui->listv_objects->setModel(&m_objectsListModel);
+
+	for (int i = 0; i < 5; ++i)
+	{
+		QModelIndex index = m_propertiesTableModel.index(i, 0);
+		m_propertiesTableModel.setData(index, QString("property"));
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		QModelIndex index = m_propertiesTableModel.index(i, 1);
+		m_propertiesTableModel.setData(index, QString("value"));
+	}
+
+	m_ui->tablev_properties->setModel(&m_propertiesTableModel);
+	m_ui->tablev_properties->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	m_ui->tablev_properties->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 //-----------------------------------------------------------------------------
