@@ -18,14 +18,14 @@ class Logger : public Singleton<Logger>
 
 public:
 	template<typename ... Args>
-	void log(std::string_view _topic, std::string_view _message, Args && ... _args);
+	void log(std::string_view _topic, std::string_view _message, Args&& ... _args);
 
 private:
 	Logger();
 
-	void write(const std::string & _message);
-	void writeConsole(const std::string & _message);
-	void writeFile(const std::string & _message);
+	void write(const std::string& _message);
+	void writeConsole(const std::string& _message);
+	void writeFile(const std::string& _message);
 
 private:
 	std::ofstream m_fileStream;
@@ -36,7 +36,7 @@ private:
 //-----------------------------------------------------------------------------
 
 template<typename ... Args>
-void Logger::log(std::string_view _topic, std::string_view _message, Args && ... _args)
+void Logger::log(std::string_view _topic, std::string_view _message, Args&& ... _args)
 {
 	std::string message = fmt::format(_message.data(), std::forward<Args>(_args)...);
 	write(fmt::format("{} {}", _topic.data(), message));

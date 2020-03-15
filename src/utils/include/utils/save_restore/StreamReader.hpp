@@ -15,7 +15,7 @@ namespace utils::sr {
 class StreamReader
 {
 public:
-	explicit StreamReader(std::istream & _stream);
+	explicit StreamReader(std::istream& _stream);
 
 	template<typename T>
 	std::enable_if_t<std::is_arithmetic_v<T>, T> read();

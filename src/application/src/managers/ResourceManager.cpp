@@ -54,10 +54,8 @@ T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fil
 		return it->second.get();
 	}
 
-	auto emplaceResult = _container.emplace(_fileName, _loadFun(_fileName));
-	auto itEmplacedItem = emplaceResult->first;
-
-	return itEmplacedItem->secont.get();
+	auto [itEmplacedItem, inserted] = _container.emplace(_fileName, _loadFun(_fileName));
+	return itEmplacedItem->second.get();
 }
 
 //-----------------------------------------------------------------------------

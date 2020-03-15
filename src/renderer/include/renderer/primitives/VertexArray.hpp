@@ -16,19 +16,21 @@ namespace jl {
 
 class VertexArray
 {
+//-----------------------------------------------------------------------------
 public:
 	VertexArray(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
 	~VertexArray();
 
 	void bind() const noexcept;
 
-	u32 getVerticesCount() const noexcept { return m_vertexBuffer.getItemsCount(); }
-	u32 getIndicesCount() const noexcept { return m_indexBuffer.getItemsCount(); }
+	u32 getVerticesCount() const noexcept;
+	u32 getIndicesCount() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
 	void setLayout() noexcept;
 
-private:
+//-----------------------------------------------------------------------------
 	u32 m_id;
 
 	Buffer m_vertexBuffer;

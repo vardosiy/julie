@@ -16,6 +16,7 @@ namespace jl {
 
 class Model : boost::noncopyable
 {
+//-----------------------------------------------------------------------------
 public:
 	Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
 
@@ -26,12 +27,12 @@ public:
 
 	const boxf& getBoundingBox() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
 	void calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept;
 
-private:
+//-----------------------------------------------------------------------------
 	VertexArray m_vertexArray;
-
 	boxf m_boundingBox;
 };
 

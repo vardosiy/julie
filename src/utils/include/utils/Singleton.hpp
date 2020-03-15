@@ -10,7 +10,7 @@ template<typename T>
 class Singleton
 {
 public:
-	static T & getInstance() noexcept;
+	static T& getInstance() noexcept;
 
 protected:
 	Singleton() noexcept = default;
@@ -20,7 +20,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 template<typename T>
-T & Singleton<T>::getInstance() noexcept
+T& Singleton<T>::getInstance() noexcept
 {
 	static T s_instance;
 	return s_instance;

@@ -12,7 +12,7 @@ namespace utils {
 namespace details {
 
 template<std::size_t EnumValuesCount>
-constexpr auto getEnumNamesFromValues(std::string_view _valuesStr) noexcept;
+constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(std::string_view _valuesStr) noexcept;
 
 } // namespace details
 

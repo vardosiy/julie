@@ -16,7 +16,7 @@ namespace details {
 constexpr int k_minEnumValue{ 0 };
 
 template<std::size_t EnumValuesCount>
-constexpr auto getEnumNamesFromValues(std::string_view _valuesStr) noexcept
+constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(std::string_view _valuesStr) noexcept
 {
 	std::array<std::string_view, EnumValuesCount> result = { "" };
 

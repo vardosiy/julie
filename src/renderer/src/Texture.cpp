@@ -33,11 +33,9 @@ s32 Texture::formatToGlValue(Format _format)
 		case Texture::Format::Rgb:				return GL_RGB;
 		case Texture::Format::Rgba:				return GL_RGBA;
 		case Texture::Format::DepthComponent:	return GL_DEPTH_COMPONENT;
-
-		default:
-			ASSERT(0);
 	}
 
+	ASSERT(0);
 	return 0;
 }
 
@@ -49,11 +47,9 @@ s32 Texture::fragmentTypeToGlValue(FragmentType _type)
 	{
 		case Texture::FragmentType::UnsignedByte:	return GL_UNSIGNED_BYTE;
 		case Texture::FragmentType::UnsignedInt:	return GL_UNSIGNED_INT;
-
-		default:
-			ASSERT(0);
 	}
 
+	ASSERT(0);
 	return 0;
 }
 

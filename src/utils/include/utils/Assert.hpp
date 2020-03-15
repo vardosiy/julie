@@ -26,7 +26,7 @@ inline void assertImpl(AssertData _data)
 }
 
 template<typename ... Args>
-inline void assertMessageImpl(AssertData _data, std::string_view _message, Args && ... _args)
+inline void assertMessageImpl(AssertData _data, std::string_view _message, Args&& ... _args)
 {
 	std::string message = fmt::format(_message.data(), std::forward<Args>(_args)...);
 	LOG_ASSERT("\"{}\" {} ({}, line {})", _data.expr, message, _data.file, _data.line);

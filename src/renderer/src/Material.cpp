@@ -49,7 +49,7 @@ void Material::bind() const
 	if (m_shader)
 	{
 		m_shader->bind();
-		jl::s16 textureSlotsCounter = 0;
+		s16 textureSlotsCounter = 0;
 		for (const auto& data : m_propertiesData)
 		{
 			PropertyBinder binder(*m_shader, data.name, textureSlotsCounter++);

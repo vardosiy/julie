@@ -42,6 +42,20 @@ void VertexArray::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
+u32 VertexArray::getVerticesCount() const noexcept
+{
+	return m_vertexBuffer.getItemsCount();
+}
+
+//-----------------------------------------------------------------------------
+
+u32 VertexArray::getIndicesCount() const noexcept
+{
+	return m_indexBuffer.getItemsCount();
+}
+
+//-----------------------------------------------------------------------------
+
 void VertexArray::setLayout() noexcept
 {
 	constexpr u32 k_vertexAttribsCount = 5;

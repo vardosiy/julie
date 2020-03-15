@@ -15,7 +15,7 @@ namespace jl {
 class InputManager : public utils::Singleton<InputManager>
 {
 	friend class utils::Singleton<InputManager>;
-	
+
 //-----------------------------------------------------------------------------
 public:
 	using KeyCodeT = s32;

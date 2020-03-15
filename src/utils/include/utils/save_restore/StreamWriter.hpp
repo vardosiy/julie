@@ -12,7 +12,7 @@ namespace utils::sr {
 class StreamWriter
 {
 public:
-	explicit StreamWriter(std::ostream & _stream);
+	explicit StreamWriter(std::ostream& _stream);
 
 	template<typename T>
 	std::enable_if_t<std::is_arithmetic_v<T>> write(T _value);
@@ -31,7 +31,7 @@ private:
 template<typename T>
 std::enable_if_t<std::is_arithmetic_v<T>> StreamWriter::write(T _value)
 {
-	m_stream.write(reinterpret_cast<const char *>(&_value), sizeof(_value));
+	m_stream.write(reinterpret_cast<const char*>(&_value), sizeof(_value));
 }
 
 //-----------------------------------------------------------------------------

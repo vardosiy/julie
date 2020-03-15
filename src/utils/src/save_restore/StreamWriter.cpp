@@ -6,7 +6,7 @@ namespace utils::sr {
 
 //-----------------------------------------------------------------------------
 
-StreamWriter::StreamWriter(std::ostream & _stream)
+StreamWriter::StreamWriter(std::ostream& _stream)
 	: m_stream(_stream)
 {
 }
