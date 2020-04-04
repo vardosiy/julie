@@ -1,44 +1,39 @@
 #pragma once
 
-#include "data/DataEntity.hpp"
-
 #include "renderer/scene/IRenderable.hpp"
 
 #include <glm/glm.hpp>
+#include <string>
 
 //-----------------------------------------------------------------------------
 
 namespace jl {
 class Model;
+class Material;
 }
 
 //-----------------------------------------------------------------------------
 
-namespace data {
-
-//-----------------------------------------------------------------------------
-
-class Material;
-
-class Object : public DataEntity, public jl::IRenderable
+class Object : public jl::IRenderable
 {
 //-----------------------------------------------------------------------------
 public:
 	Object(std::string _name) noexcept;
 	~Object();
 
-// jl::IRenderable ------------------------------------------------------------
-	void update(float _dt) noexcept override;
+	void update(float _dt) noexcept override {}
 
 	const jl::Model*	getModel() const noexcept override;
 	const jl::Material*	getMaterial() const noexcept override;
 	const glm::mat4&	getWorldMatrix() const noexcept override;
 
-//-----------------------------------------------------------------------------
-	void setMaterial(const Material& _material) noexcept;
 	void setModel(const jl::Model& _model) noexcept;
+	void setMaterial(const jl::Material& _material) noexcept;
 
-//-----------------------------------------------------------------------------
+	const std::string& getName() const noexcept;
+	void setName(std::string _name) noexcept;
+
+// transform data -------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept;
 	const glm::vec3& getRotation() const noexcept;
 	const glm::vec3& getScale() const noexcept;
@@ -49,22 +44,31 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	void recalculateWorldMatrix();
+	struct TransformData
+	{
+		TransformData() noexcept
+			: m_pos(0.0f)
+			, m_scale(1.0f)
+			, m_rotation(0.0f)
+		{
+		}
+
+		glm::vec3 m_pos;
+		glm::vec3 m_scale;
+		glm::vec3 m_rotation;
+	};
+
+	static glm::mat4x4 calculateWorldMatrix(const TransformData& _transformData) noexcept;
 
 //-----------------------------------------------------------------------------
-	const jl::Model* m_model;
-	const Material* m_material;
+	std::string m_name;
 
-	glm::vec3 m_pos;
-	glm::vec3 m_scale;
-	glm::vec3 m_rotation;
-	glm::mat4 m_worldMatrix;
+	const jl::Model*	m_model;
+	const jl::Material*	m_material;
 
-	bool m_bIsTransformChanged;
+	TransformData		m_transformData;
+	mutable glm::mat4	m_worldMatrix;
+	mutable bool		m_bIsTransformChanged;
 };
-
-//-----------------------------------------------------------------------------
-
-} // namespace data
 
 //-----------------------------------------------------------------------------

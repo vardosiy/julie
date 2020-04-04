@@ -3,11 +3,10 @@
 #include "ui/AppGlWidget.hpp"
 
 #include "CommonDefs.hpp"
-#include "data/Object.hpp"
+#include "managers/InputManager.hpp"
 
 #include "renderer/Renderer.hpp"
 #include "renderer/Globals.hpp"
-#include "renderer/managers/InputManager.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -17,9 +16,10 @@
 
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
+	, m_scene(nullptr)
 	, m_camera(0.00001f, 100.0f, 45.0f)
-	, m_camMoveSpeed(10.1f)
-	, m_camRotationSpeed(0.1f)
+	, m_camMoveSpeed(10.0f)
+	, m_camRotationSpeed(1.0f)
 	, m_updateTimer(this)
 {
 }
@@ -67,14 +67,28 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode)
 
 void AppGlWidget::setCameraMoveSpeed(int _speed) noexcept
 {
-	m_camMoveSpeed = static_cast<float>(_speed) / 100.0f;
+	m_camMoveSpeed = static_cast<float>(_speed) * 0.01f;
 }
 
 //-----------------------------------------------------------------------------
 
 void AppGlWidget::setCameraRotateSpeed(int _speed) noexcept
 {
-	m_camRotationSpeed = static_cast<float>(_speed) / 100.0f;
+	m_camRotationSpeed = static_cast<float>(_speed) * 0.01f;
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Scene* AppGlWidget::getScene() noexcept
+{
+	return m_scene;
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::setScene(jl::Scene* _scene) noexcept
+{
+	m_scene = _scene;
 }
 
 //-----------------------------------------------------------------------------
@@ -82,30 +96,6 @@ void AppGlWidget::setCameraRotateSpeed(int _speed) noexcept
 app::Connection AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
 {
 	return m_glLoadedSignal.connect(_callback);
-}
-
-//-----------------------------------------------------------------------------
-
-void AppGlWidget::onObjectAdded(data::Object& _object)
-{
-	jl::DirectionalLightData directionalLightData;
-	directionalLightData.color		= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	directionalLightData.direction	= glm::vec3(0.0f, -1.0f, 0.0f);
-
-	jl::PointLightData pointLightData;
-	pointLightData.color	= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	pointLightData.position	= glm::vec3(0.0f, 0.0f, 1.0f);
-
-	jl::AmbientLightData ambientLightData;
-	ambientLightData.color	= glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ambientLightData.weight	= 0.6f;
-
-	jl::LightsHolder& lightsHolder = m_scene.getLightsHolder();
-	lightsHolder.addDirectionalLight(directionalLightData);
-	lightsHolder.addPointLight(pointLightData);
-	lightsHolder.setAmbientLight(ambientLightData);
-
-	m_scene.addRenderable(0, _object);
 }
 
 //-----------------------------------------------------------------------------
@@ -150,16 +140,19 @@ void AppGlWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (m_prerenderCommand)
+	if (m_scene)
 	{
-		m_prerenderCommand();
-	}
+		if (m_prerenderCommand)
+		{
+			m_prerenderCommand();
+		}
 
-	m_scene.render(m_camera);
+		m_scene->render(m_camera);
 
-	if (m_postrenderCommand)
-	{
-		m_postrenderCommand();
+		if (m_postrenderCommand)
+		{
+			m_postrenderCommand();
+		}
 	}
 }
 
@@ -172,7 +165,7 @@ void AppGlWidget::keyPressEvent(QKeyEvent* _event)
 		return;
 	}
 	LOG_INFO("Pressed key, keycode: {}", _event->nativeVirtualKey());
-	jl::InputManager::getInstance().processKey(_event->nativeVirtualKey(), true);
+	InputManager::getInstance().processKey(_event->nativeVirtualKey(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +176,7 @@ void AppGlWidget::keyReleaseEvent(QKeyEvent* _event)
 	{
 		return;
 	}
-	jl::InputManager::getInstance().processKey(_event->nativeVirtualKey(), false);
+	InputManager::getInstance().processKey(_event->nativeVirtualKey(), false);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +186,7 @@ void AppGlWidget::update()
 	const float dt = getDeltaTime();
 	jl::Globals::s_timeTotal += dt;
 
-	m_scene.update(dt);
+	m_scene->update(dt);
 	updateCameraPosition(dt);
 
 	repaint();
@@ -203,8 +196,8 @@ void AppGlWidget::update()
 
 float AppGlWidget::getDeltaTime()
 {
-	static app::TimePoint s_lastTime = app::Clock::now();
-	const app::TimePoint currentTime = app::Clock::now();
+	static TimePoint s_lastTime = Clock::now();
+	const TimePoint currentTime = Clock::now();
 	
 	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
 	s_lastTime = currentTime;
@@ -216,7 +209,7 @@ float AppGlWidget::getDeltaTime()
 
 void AppGlWidget::updateCameraPosition(float _dt) noexcept
 {
-	jl::InputManager& inputMgr = jl::InputManager::getInstance();
+	InputManager& inputMgr = InputManager::getInstance();
 
 	glm::vec3 camTraslation(0.0f);
 	const float movePoints = m_camMoveSpeed * _dt;
@@ -234,10 +227,10 @@ void AppGlWidget::updateCameraPosition(float _dt) noexcept
 
 	glm::vec2 camRotation(0.0f);
 	const float rotatePoints = m_camRotationSpeed * _dt;
-	camRotation.y += inputMgr.isPressed(jl::InputManager::Arrows::Left) * rotatePoints;
-	camRotation.y -= inputMgr.isPressed(jl::InputManager::Arrows::Right) * rotatePoints;
-	camRotation.x += inputMgr.isPressed(jl::InputManager::Arrows::Up) * rotatePoints;
-	camRotation.x -= inputMgr.isPressed(jl::InputManager::Arrows::Down) * rotatePoints;
+	camRotation.y += inputMgr.isPressed(InputManager::Arrows::Left) * rotatePoints;
+	camRotation.y -= inputMgr.isPressed(InputManager::Arrows::Right) * rotatePoints;
+	camRotation.x += inputMgr.isPressed(InputManager::Arrows::Up) * rotatePoints;
+	camRotation.x -= inputMgr.isPressed(InputManager::Arrows::Down) * rotatePoints;
 
 	if (camRotation != glm::vec2(0.0f))
 	{

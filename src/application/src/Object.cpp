@@ -1,26 +1,15 @@
-#include "data/Object.hpp"
-#include "data/Material.hpp"
+#include "Object.hpp"
 
 #include "renderer/Axis.hpp"
-#include "renderer/Shader.hpp"
-#include "renderer/Model.hpp"
-#include "renderer/scene/CommonUniformsBinder.hpp"
 
 #include <glm/gtx/transform.hpp>
 
 //-----------------------------------------------------------------------------
 
-namespace data {
-
-//-----------------------------------------------------------------------------
-
 Object::Object(std::string _name) noexcept
-	: DataEntity(std::move(_name))
+	: m_name(std::move(_name))
 	, m_model(nullptr)
 	, m_material(nullptr)
-	, m_pos(0.0f)
-	, m_scale(1.0f)
-	, m_rotation(0.0f)
 	, m_worldMatrix(1.0f)
 	, m_bIsTransformChanged(false)
 {
@@ -32,24 +21,6 @@ Object::~Object() = default;
 
 //-----------------------------------------------------------------------------
 
-void Object::update(float _dt) noexcept
-{
-	if (m_bIsTransformChanged)
-	{
-		recalculateWorldMatrix();
-		m_bIsTransformChanged = false;
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-const jl::Material* Object::getMaterial() const noexcept
-{
-	return m_material ? &m_material->getMaterial() : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
 const jl::Model* Object::getModel() const noexcept
 {
 	return m_model;
@@ -57,16 +28,22 @@ const jl::Model* Object::getModel() const noexcept
 
 //-----------------------------------------------------------------------------
 
-const glm::mat4& Object::getWorldMatrix() const noexcept
+const jl::Material* Object::getMaterial() const noexcept
 {
-	return m_worldMatrix;
+	return m_material;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setMaterial(const Material& _material) noexcept
+const glm::mat4& Object::getWorldMatrix() const noexcept
 {
-	m_material = &_material;
+	if (m_bIsTransformChanged)
+	{
+		m_worldMatrix = calculateWorldMatrix(m_transformData);
+		m_bIsTransformChanged = false;
+	}
+
+	return m_worldMatrix;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,30 +55,51 @@ void Object::setModel(const jl::Model& _model) noexcept
 
 //-----------------------------------------------------------------------------
 
+void Object::setMaterial(const jl::Material& _material) noexcept
+{
+	m_material = &_material;
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& Object::getName() const noexcept
+{
+	return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setName(std::string _name) noexcept
+{
+	m_name = _name;
+}
+
+//-----------------------------------------------------------------------------
+
 const glm::vec3& Object::getPosition() const noexcept
 {
-	return m_pos;
+	return m_transformData.m_pos;
 }
 
 //-----------------------------------------------------------------------------
 
 const glm::vec3& Object::getRotation() const noexcept
 {
-	return m_rotation;
+	return m_transformData.m_rotation;
 }
 
 //-----------------------------------------------------------------------------
 
 const glm::vec3& Object::getScale() const noexcept
 {
-	return m_scale;
+	return m_transformData.m_scale;
 }
 
 //-----------------------------------------------------------------------------
 
 void Object::setPosition(const glm::vec3& _val) noexcept
 {
-	m_pos = _val;
+	m_transformData.m_pos = _val;
 	m_bIsTransformChanged = true;
 }
 
@@ -109,7 +107,7 @@ void Object::setPosition(const glm::vec3& _val) noexcept
 
 void Object::setRotation(const glm::vec3& _val) noexcept
 {
-	m_rotation = _val;
+	m_transformData.m_rotation = _val;
 	m_bIsTransformChanged = true;
 }
 
@@ -117,26 +115,22 @@ void Object::setRotation(const glm::vec3& _val) noexcept
 
 void Object::setScale(const glm::vec3& _val) noexcept
 {
-	m_scale = _val;
+	m_transformData.m_scale = _val;
 	m_bIsTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::recalculateWorldMatrix()
+glm::mat4x4 Object::calculateWorldMatrix(const TransformData& _transformData) noexcept
 {
-	const glm::mat4 scale = glm::scale(m_scale);
-	const glm::mat4 translate = glm::translate(m_pos);
+	const glm::mat4 scale = glm::scale(_transformData.m_scale);
+	const glm::mat4 translate = glm::translate(_transformData.m_pos);
 	const glm::mat4 rotation =
-		glm::rotate(m_rotation.x, jl::constants::axis::x) *
-		glm::rotate(m_rotation.y, jl::constants::axis::y) *
-		glm::rotate(m_rotation.z, jl::constants::axis::z);
+		glm::rotate(_transformData.m_rotation.x, jl::constants::axis::x) *
+		glm::rotate(_transformData.m_rotation.y, jl::constants::axis::y) *
+		glm::rotate(_transformData.m_rotation.z, jl::constants::axis::z);
 
-	m_worldMatrix = translate * (rotation * scale);
+	return translate * (rotation * scale);
 }
-
-//-----------------------------------------------------------------------------
-
-} // namespace data
 
 //-----------------------------------------------------------------------------

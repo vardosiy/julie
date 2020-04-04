@@ -12,12 +12,6 @@
 
 //-----------------------------------------------------------------------------
 
-namespace data {
-class Object;
-}
-
-//-----------------------------------------------------------------------------
-
 class AppGlWidget : public QOpenGLWidget
 {
 	Q_OBJECT
@@ -27,7 +21,7 @@ public:
 	enum class DrawMode
 	{
 		Fill,
-		Edges,
+		Edges
 	};
 
 	using GlLoadedSignal = app::Signal<void()>;
@@ -37,11 +31,12 @@ public:
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
-	void onObjectAdded(data::Object& _object);
-
 	void setDrawMode(DrawMode _drawMode);
 	void setCameraMoveSpeed(int _speed) noexcept;
 	void setCameraRotateSpeed(int _speed) noexcept;
+
+	jl::Scene* getScene() noexcept;
+	void setScene(jl::Scene* _scene) noexcept;
 
 //-----------------------------------------------------------------------------
 protected:
@@ -68,7 +63,7 @@ private:
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	jl::Scene m_scene;
+	jl::Scene* m_scene;
 	jl::Camera m_camera;
 
 	float m_camMoveSpeed;
