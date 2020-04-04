@@ -16,7 +16,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class IRenderable;
+class Object;
 class Camera;
 
 class Scene
@@ -27,7 +27,7 @@ public:
 	~Scene();
 
 	void update(float _dt);
-	void render(const Camera& _camera);
+	void render(const Camera& _camera) const;
 
 //-----------------------------------------------------------------------------
 	const FogData* getFogData() const noexcept;
@@ -37,19 +37,19 @@ public:
 	const LightsHolder& getLightsHolder() const noexcept;
 
 //-----------------------------------------------------------------------------
-	void addRenderable(s32 _id, IRenderable& _renderable);
-	void removeRenderable(s32 _id);
+	void addObject(s32 _id, Object& _object);
+	void removeObject(s32 _id);
 
-	IRenderable* findRenderable(s32 _id) noexcept;
-	const IRenderable* findRenderable(s32 _id) const noexcept;
+	Object* findObject(s32 _id) noexcept;
+	const Object* findObject(s32 _id) const noexcept;
 
-	void forEachRenderable(const std::function<void(s32, IRenderable&)>& _callback);
-	void forEachRenderable(const std::function<void(s32, const IRenderable&)>& _callback) const;
+	void forEachObject(const std::function<void(s32, Object&)>& _callback);
+	void forEachObject(const std::function<void(s32, const Object&)>& _callback) const;
 
 //-----------------------------------------------------------------------------
 private:
-	using RenderablesContainer = std::map<s32, IRenderable*>;
-	RenderablesContainer m_renderables;
+	using ObjectsContainer = std::map<s32, Object*>;
+	ObjectsContainer m_objects;
 
 	LightsHolder m_lightsHolder;
 

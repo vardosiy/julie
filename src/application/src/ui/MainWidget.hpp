@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CommonDefs.hpp"
-#include "data/Project.hpp"
 
 #include <QWidget>
 #include <QStringListModel>
@@ -16,11 +15,12 @@ namespace Ui {
 class MainWidget;
 }
 
-namespace data {
+namespace jl {
+class Scene;
 class Object;
+class Material;
 }
 
-//-----------------------------------------------------------------------------
 
 class MainWidget : public QWidget
 {
@@ -45,17 +45,18 @@ private:
 
 	void onGlLoaded();
 
-	void addObjectToGuiList(const data::Object& _object);
+	void addObjectToGuiList(const jl::Object& _object);
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWidget> m_ui;
+	std::unique_ptr<jl::Scene> m_scene;
 
-	QStringListModel m_objectsListModel;
-	QStringList m_objectsNamesList;
+	std::vector<std::unique_ptr<jl::Object>> m_objects;
+	std::vector<std::unique_ptr<jl::Material>> m_materials;
 
-	QStandardItemModel m_propertiesTableModel;
-
-	data::Project m_project;
+	QStringListModel	m_objectsListModel;
+	QStringList			m_objectsNamesList;
+	QStandardItemModel	m_propertiesTableModel;
 
 	app::ScopedConnection m_glLoadedConnection;
 };

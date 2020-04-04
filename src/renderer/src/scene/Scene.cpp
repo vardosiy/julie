@@ -1,10 +1,10 @@
 #include "renderer/scene/Scene.hpp"
+#include "renderer/scene/Object.hpp"
+#include "renderer/scene/CommonUniformsBinder.hpp"
 
 #include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
-#include "renderer/scene/IRenderable.hpp"
-#include "renderer/scene/CommonUniformsBinder.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -19,20 +19,20 @@ Scene::~Scene() = default;
 
 void Scene::update(float _dt)
 {
-	for (auto& [id, renderable] : m_renderables)
-	{
-		renderable->update(_dt);
-	}
+	//for (auto& [id, renderable] : m_objects)
+	//{
+	//	renderable->update(_dt);
+	//}
 }
 
 //-----------------------------------------------------------------------------
 
 void Scene::render(const Camera& _camera) const
 {
-	for (auto& [id, renderable] : m_renderables)
+	for (auto& [id, object] : m_objects)
 	{
-		const Model* model = renderable->getModel();
-		const Material* material = renderable->getMaterial();
+		const Model* model = object->getModel();
+		const Material* material = object->getMaterial();
 
 		if (material && model)
 		{
@@ -42,7 +42,7 @@ void Scene::render(const Camera& _camera) const
 			if (shader)
 			{
 				CommonUniformsBinder uniformBinder(*shader);
-				uniformBinder.setupCommon(_camera, renderable->getWorldMatrix());
+				uniformBinder.setupCommon(_camera, object->getWorldMatrix());
 				uniformBinder.setupLights(m_lightsHolder);
 
 				shader->draw(*model);
@@ -81,51 +81,51 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addRenderable(s32 _id, IRenderable& _renderable)
+void Scene::addObject(s32 _id, Object& _object)
 {
-	m_renderables.emplace(_id, &_renderable);
+	m_objects.emplace(_id, &_object);
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::removeRenderable(s32 _id)
+void Scene::removeObject(s32 _id)
 {
-	m_renderables.erase(_id);
+	m_objects.erase(_id);
 }
 
 //-----------------------------------------------------------------------------
 
-IRenderable* Scene::findRenderable(s32 _id) noexcept
+Object* Scene::findObject(s32 _id) noexcept
 {
-	auto it = m_renderables.find(_id);
-	return it != m_renderables.end() ? it->second : nullptr;
+	auto it = m_objects.find(_id);
+	return it != m_objects.end() ? it->second : nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-const IRenderable* Scene::findRenderable(s32 _id) const noexcept
+const Object* Scene::findObject(s32 _id) const noexcept
 {
-	auto it = m_renderables.find(_id);
-	return it != m_renderables.end() ? it->second : nullptr;
+	auto it = m_objects.find(_id);
+	return it != m_objects.end() ? it->second : nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::forEachRenderable(const std::function<void(s32, IRenderable&)>& _callback)
+void Scene::forEachObject(const std::function<void(s32, Object&)>& _callback)
 {
-	for (auto& [id, renderable] : m_renderables)
+	for (auto& [id, object] : m_objects)
 	{
-		_callback(id, *renderable);
+		_callback(id, *object);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::forEachRenderable(const std::function<void(s32, const IRenderable&)>& _callback) const
+void Scene::forEachObject(const std::function<void(s32, const Object&)>& _callback) const
 {
-	for (const auto& [id, renderable] : m_renderables)
+	for (const auto& [id, object] : m_objects)
 	{
-		_callback(id, *renderable);
+		_callback(id, *object);
 	}
 }
 

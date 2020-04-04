@@ -1,8 +1,11 @@
-#include "Object.hpp"
-
+#include "renderer/scene/Object.hpp"
 #include "renderer/Axis.hpp"
 
 #include <glm/gtx/transform.hpp>
+
+//-----------------------------------------------------------------------------
+
+namespace jl {
 
 //-----------------------------------------------------------------------------
 
@@ -21,14 +24,14 @@ Object::~Object() = default;
 
 //-----------------------------------------------------------------------------
 
-const jl::Model* Object::getModel() const noexcept
+const Model* Object::getModel() const noexcept
 {
 	return m_model;
 }
 
 //-----------------------------------------------------------------------------
 
-const jl::Material* Object::getMaterial() const noexcept
+const Material* Object::getMaterial() const noexcept
 {
 	return m_material;
 }
@@ -48,23 +51,23 @@ const glm::mat4& Object::getWorldMatrix() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setModel(const jl::Model& _model) noexcept
+const std::string& Object::getName() const noexcept
+{
+	return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setModel(const Model& _model) noexcept
 {
 	m_model = &_model;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setMaterial(const jl::Material& _material) noexcept
+void Object::setMaterial(const Material& _material) noexcept
 {
 	m_material = &_material;
-}
-
-//-----------------------------------------------------------------------------
-
-const std::string& Object::getName() const noexcept
-{
-	return m_name;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,11 +129,15 @@ glm::mat4x4 Object::calculateWorldMatrix(const TransformData& _transformData) no
 	const glm::mat4 scale = glm::scale(_transformData.m_scale);
 	const glm::mat4 translate = glm::translate(_transformData.m_pos);
 	const glm::mat4 rotation =
-		glm::rotate(_transformData.m_rotation.x, jl::constants::axis::x) *
-		glm::rotate(_transformData.m_rotation.y, jl::constants::axis::y) *
-		glm::rotate(_transformData.m_rotation.z, jl::constants::axis::z);
+		glm::rotate(_transformData.m_rotation.x, constants::axis::x) *
+		glm::rotate(_transformData.m_rotation.y, constants::axis::y) *
+		glm::rotate(_transformData.m_rotation.z, constants::axis::z);
 
 	return translate * (rotation * scale);
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace jl
 
 //-----------------------------------------------------------------------------

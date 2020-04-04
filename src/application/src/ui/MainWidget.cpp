@@ -1,29 +1,27 @@
 #include "ui/MainWidget.hpp"
 #include "ui_MainWidget.h"
 
-#include "data/Object.hpp"
-#include "data/Material.hpp"
-
-#include "factories/ModelsFactory.hpp"
 #include "managers/ResourceManager.hpp"
 
 #include "renderer/scene/Scene.hpp"
+#include "renderer/scene/Object.hpp"
+
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
+#include "renderer/Material.hpp"
+
 #include "utils/Utils.hpp"
 
 #include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<data::Material> g_material;
 std::unique_ptr<jl::Model> g_model;
-std::unique_ptr<jl::Shader> g_shader;
 
 static std::unique_ptr<jl::Model> createRoom()
 {
 	std::vector<jl::Vertex> vertices(8);
-	vertices[0].pos = glm::vec3(-1.0f, 1.0f, -1.0f);  // back rect
+	vertices[0].pos = glm::vec3(-1.0f, 1.0f, -1.0f); // back rect
 	vertices[1].pos = glm::vec3(-1.0f, 0.0f, -1.0f);
 	vertices[2].pos = glm::vec3(1.0f, 1.0f, -1.0f);
 	vertices[3].pos = glm::vec3(1.0f, 0.0f, -1.0f);
@@ -75,16 +73,38 @@ MainWidget::~MainWidget() = default;
 
 //-----------------------------------------------------------------------------
 
-#include "factories/ShadersFactory.hpp"
 void MainWidget::onGlLoaded()
 {
-	g_shader = ShadersFactory::loadFromSeparateFiles("res/shaders/TriangleShader.vs", "res/shaders/TriangleShader.fs");
+	m_scene.reset(new jl::Scene);
+	m_ui->oglw_screen->setScene(m_scene.get());
 
-	g_material.reset(new data::Material("material"));
-	g_material->setProperty("u_color", glm::vec4(1.0f));
-	g_material->setShader(*g_shader);
+	auto& material = m_materials.emplace_back(new jl::Material);
+	material->setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/SimpleColor.shdata"));
+	material->setProperty("u_color", glm::vec4(1.0f));
 
-	g_model = createRoom();
+	auto& object = m_objects.emplace_back(new jl::Object("name"));
+	object->setModel(*ResourceManager::getInstance().loadModel("res/models/Bila.nfg"));
+	object->setMaterial(*material);
+	m_scene->addObject(0, *object);
+
+	addObjectToGuiList(*object);
+
+	jl::DirectionalLightData directionalLightData;
+	directionalLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	directionalLightData.direction = glm::vec3(0.0f, -1.0f, 0.0f);
+
+	jl::PointLightData pointLightData;
+	pointLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pointLightData.position = glm::vec3(0.0f, 0.0f, 1.0f);
+
+	jl::AmbientLightData ambientLightData;
+	ambientLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ambientLightData.weight = 0.6f;
+
+	jl::LightsHolder& lightsHolder = m_scene->getLightsHolder();
+	lightsHolder.addDirectionalLight(directionalLightData);
+	lightsHolder.addPointLight(pointLightData);
+	lightsHolder.setAmbientLight(ambientLightData);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,14 +136,14 @@ void MainWidget::onAddEntityBtnReleased()
 {
 	if (m_ui->tab_objects->isVisible())
 	{
-		auto object = std::make_unique<data::Object>("name");
-		object->setModel(*g_model);
-		object->setMaterial(*g_material);
+		//auto object = std::make_unique<data::Object>("name");
+		//object->setModel(*ResourceManager::getInstance().loadModel("res/models/Bila.nfg"));
+		//object->setMaterial(*g_material);
 
-		m_ui->oglw_screen->onObjectAdded(*object);
+		//addObjectToGuiList(*object);
+		//m_ui->oglw_screen->onObjectAdded(*object);
 
-		addObjectToGuiList(*object);
-		m_project.addEntity(std::move(object));
+		//m_project.addEntity(std::move(object));
 	}
 	else if (m_ui->tab_materials->isVisible())
 	{
@@ -169,13 +189,11 @@ void MainWidget::setupUi()
 
 	for (int i = 0; i < 5; ++i)
 	{
-		QModelIndex index = m_propertiesTableModel.index(i, 0);
-		m_propertiesTableModel.setData(index, QString("property"));
-	}
-	for (int i = 0; i < 5; ++i)
-	{
-		QModelIndex index = m_propertiesTableModel.index(i, 1);
-		m_propertiesTableModel.setData(index, QString("value"));
+		QModelIndex propIdx = m_propertiesTableModel.index(i, 0);
+		m_propertiesTableModel.setData(propIdx, QString("property"));
+
+		QModelIndex valIdx = m_propertiesTableModel.index(i, 1);
+		m_propertiesTableModel.setData(valIdx, QString("value"));
 	}
 
 	m_ui->tablev_properties->setModel(&m_propertiesTableModel);
@@ -198,7 +216,7 @@ void MainWidget::setupConnections()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::addObjectToGuiList(const data::Object& _object)
+void MainWidget::addObjectToGuiList(const jl::Object& _object)
 {
 	m_objectsNamesList << _object.getName().c_str();
 	m_objectsListModel.setStringList(m_objectsNamesList);
