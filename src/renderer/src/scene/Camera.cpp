@@ -1,6 +1,4 @@
 #include "renderer/scene/Camera.hpp"
-
-#include "renderer/managers/InputManager.hpp"
 #include "renderer/Axis.hpp"
 
 #include <glm/gtx/transform.hpp>
