@@ -40,19 +40,21 @@ Buffer::Type Buffer::getType() const noexcept
 		case GL_ARRAY_BUFFER:			return Type::VertexBuffer;
 		case GL_ELEMENT_ARRAY_BUFFER:	return Type::IndexBuffer;
 	}
+
+	ASSERT(0);
 	return Type::VertexBuffer;
 }
 
 //-----------------------------------------------------------------------------
 
-u32 Buffer::getItemsCount() const noexcept
+u64 Buffer::getItemsCount() const noexcept
 {
 	return m_itemsCount;
 }
 
 //-----------------------------------------------------------------------------
 
-void Buffer::bufferData(const void* _data, u32 _size)
+void Buffer::bufferData(const void* _data, u64 _size)
 {
 	glBufferData(m_type, _size, _data, GL_STATIC_DRAW);
 }

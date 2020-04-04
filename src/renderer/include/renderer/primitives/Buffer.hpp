@@ -12,10 +12,11 @@ namespace jl {
 
 class Buffer
 {
+//-----------------------------------------------------------------------------
 public:
 	enum class Type{ VertexBuffer, IndexBuffer };
 
-public:
+//-----------------------------------------------------------------------------
 	Buffer(Type _type) noexcept;
 	~Buffer();
 
@@ -24,27 +25,28 @@ public:
 
 	void bind() const noexcept;
 
-	u32 getItemsCount() const noexcept;
+	u64 getItemsCount() const noexcept;
 	Type getType() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
-	void bufferData(const void* _data, u32 _size);
+	void bufferData(const void* _data, u64 _size);
 
 	static s32 bufferTypeToGlValue(Type _type);
 
-private:
+//-----------------------------------------------------------------------------
 	u32 m_id;
 	s32 m_type;
 
-	u32 m_itemsCount;
+	u64 m_itemsCount;
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-void Buffer::bufferData(const std::vector<T>& _data)
+inline void Buffer::bufferData(const std::vector<T>& _data)
 {
-	m_itemsCount = static_cast<u32>(_data.size());
+	m_itemsCount = static_cast<u64>(_data.size());
 	bufferData(_data.data(), m_itemsCount * sizeof(T));
 }
 

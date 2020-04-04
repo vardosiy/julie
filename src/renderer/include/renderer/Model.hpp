@@ -22,8 +22,8 @@ public:
 
 	void bind() const;
 
-	u32 getVerteciesCount() const noexcept;
-	u32 getIndeciesCount() const noexcept;
+	u64 getVerteciesCount() const noexcept;
+	u64 getIndeciesCount() const noexcept;
 
 	const boxf& getBoundingBox() const noexcept;
 

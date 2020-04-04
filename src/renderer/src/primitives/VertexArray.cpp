@@ -42,14 +42,14 @@ void VertexArray::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-u32 VertexArray::getVerticesCount() const noexcept
+u64 VertexArray::getVerticesCount() const noexcept
 {
 	return m_vertexBuffer.getItemsCount();
 }
 
 //-----------------------------------------------------------------------------
 
-u32 VertexArray::getIndicesCount() const noexcept
+u64 VertexArray::getIndicesCount() const noexcept
 {
 	return m_indexBuffer.getItemsCount();
 }

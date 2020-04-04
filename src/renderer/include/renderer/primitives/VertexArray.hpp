@@ -23,8 +23,8 @@ public:
 
 	void bind() const noexcept;
 
-	u32 getVerticesCount() const noexcept;
-	u32 getIndicesCount() const noexcept;
+	u64 getVerticesCount() const noexcept;
+	u64 getIndicesCount() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
