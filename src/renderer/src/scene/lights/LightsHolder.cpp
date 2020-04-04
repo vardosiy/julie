@@ -1,16 +1,10 @@
 #include "renderer/scene/lights/LightsHolder.hpp"
 
-#include "renderer/Shader.hpp"
+#include "utils/Utils.hpp"
 
 //-----------------------------------------------------------------------------
 
 namespace jl {
-
-//-----------------------------------------------------------------------------
-
-void LightsHolder::update(float _dt)
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -21,7 +15,7 @@ const AmbientLightData& LightsHolder::getAmbientLightData() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void LightsHolder::setAmbientLight(const AmbientLightData & _lightData) noexcept
+void LightsHolder::setAmbientLight(const AmbientLightData& _lightData) noexcept
 {
 	m_ambientLight = _lightData;
 }
@@ -30,20 +24,20 @@ void LightsHolder::setAmbientLight(const AmbientLightData & _lightData) noexcept
 
 void LightsHolder::addPointLight(const PointLightData& _lightData) noexcept
 {
+	ASSERT(m_pointLightsColors.size() == m_pointLightsPositions.size());
+
 	m_pointLightsColors.push_back(_lightData.color);
 	m_pointLightsPositions.push_back(_lightData.position);
-
-	//m_pointLights.emplace_back(_lightData);
 }
 
 //-----------------------------------------------------------------------------
 
-void LightsHolder::addDirectionalLight(const DirectionalLightData & _lightData) noexcept
+void LightsHolder::addDirectionalLight(const DirectionalLightData& _lightData) noexcept
 {
+	ASSERT(m_direcitonalLightsColors.size() == m_direcitonalLightsDirection.size());
+
 	m_direcitonalLightsColors.push_back(_lightData.color);
 	m_direcitonalLightsDirection.push_back(_lightData.direction);
-
-	//m_directionalLights.emplace_back(_lightData);
 }
 
 //-----------------------------------------------------------------------------

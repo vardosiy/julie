@@ -2,11 +2,7 @@
 
 #include "renderer/Types.hpp"
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
-
+#include <glm/glm.hpp>
 #include <boost/noncopyable.hpp>
 
 #include <memory>
@@ -27,12 +23,11 @@ class Shader : boost::noncopyable
 public:
 	static std::unique_ptr<Shader> create(std::string_view _vsSource, std::string_view _fsSource);
 
-	static void draw(const Model& _model);
-	
 //-----------------------------------------------------------------------------
 	~Shader();
 
 	void bind() const noexcept;
+	void draw(const Model& _model) const noexcept;
 
 //-----------------------------------------------------------------------------
 	bool hasUniform(const std::string& _name) const noexcept;
@@ -50,7 +45,7 @@ public:
 	
 //-----------------------------------------------------------------------------
 private:
-	Shader() = default;
+	Shader(u32 _programId);
 
 	s32 getUniformLocation(const std::string& _name) const;
 
@@ -63,7 +58,7 @@ private:
 	using UniformsCache = std::unordered_map<std::string, s32>;
 	mutable UniformsCache m_uniformLocationsCache;
 
-	u32 m_program;
+	u32 m_programId;
 };
 
 //-----------------------------------------------------------------------------

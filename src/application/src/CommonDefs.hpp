@@ -5,16 +5,14 @@
 
 //-----------------------------------------------------------------------------
 
-namespace app {
-
-//-----------------------------------------------------------------------------
-
 using Clock			= std::chrono::high_resolution_clock;
 using TimePoint		= std::chrono::time_point<Clock>;
 using Seconds		= std::chrono::seconds;
 using Milliseconds	= std::chrono::milliseconds;
 
 //-----------------------------------------------------------------------------
+
+namespace app {
 
 using Connection		= boost::signals2::connection;
 using ScopedConnection	= boost::signals2::scoped_connection;
@@ -29,8 +27,6 @@ using Signal =
 		Function,
 		boost::signals2::keywords::mutex_type<boost::signals2::dummy_mutex>
 	>::type;
-
-//-----------------------------------------------------------------------------
 
 } // namespace app
 

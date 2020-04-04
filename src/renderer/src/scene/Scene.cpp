@@ -1,9 +1,9 @@
 #include "renderer/scene/Scene.hpp"
 
-#include "renderer/scene/IRenderable.hpp"
 #include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
+#include "renderer/scene/IRenderable.hpp"
 #include "renderer/scene/CommonUniformsBinder.hpp"
 
 //-----------------------------------------------------------------------------
@@ -19,32 +19,34 @@ Scene::~Scene() = default;
 
 void Scene::update(float _dt)
 {
-	for (auto& it : m_renderables)
+	for (auto& [id, renderable] : m_renderables)
 	{
-		it.second->update(_dt);
+		renderable->update(_dt);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::render(const Camera& _camera)
+void Scene::render(const Camera& _camera) const
 {
-	for (auto& [id, object] : m_renderables)
+	for (auto& [id, renderable] : m_renderables)
 	{
-		const Model* model = object->getModel();
-		const Material* material = object->getMaterial();
+		const Model* model = renderable->getModel();
+		const Material* material = renderable->getMaterial();
 
 		if (material && model)
 		{
+			material->bind();
+
 			const Shader* shader = material->getShader();
 			if (shader)
 			{
 				CommonUniformsBinder uniformBinder(*shader);
-				uniformBinder.setupCommon(_camera, object->getWorldMatrix());
+				uniformBinder.setupCommon(_camera, renderable->getWorldMatrix());
 				uniformBinder.setupLights(m_lightsHolder);
-			}
 
-			Shader::draw(*model);
+				shader->draw(*model);
+			}
 		}
 	}
 }
@@ -111,9 +113,9 @@ const IRenderable* Scene::findRenderable(s32 _id) const noexcept
 
 void Scene::forEachRenderable(const std::function<void(s32, IRenderable&)>& _callback)
 {
-	for (auto& it : m_renderables)
+	for (auto& [id, renderable] : m_renderables)
 	{
-		_callback(it.first, *it.second);
+		_callback(id, *renderable);
 	}
 }
 
@@ -121,9 +123,9 @@ void Scene::forEachRenderable(const std::function<void(s32, IRenderable&)>& _cal
 
 void Scene::forEachRenderable(const std::function<void(s32, const IRenderable&)>& _callback) const
 {
-	for (const auto& it : m_renderables)
+	for (const auto& [id, renderable] : m_renderables)
 	{
-		_callback(it.first, *it.second);
+		_callback(id, *renderable);
 	}
 }
 

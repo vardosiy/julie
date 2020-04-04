@@ -10,8 +10,8 @@ namespace jl {
 
 struct AmbientLightData
 {
-	glm::vec4	color;
-	float		weight;
+	glm::vec4 color;
+	float weight;
 };
 
 struct DirectionalLightData

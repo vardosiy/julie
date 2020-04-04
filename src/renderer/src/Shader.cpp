@@ -3,8 +3,7 @@
 #include "renderer/Vertex.hpp"
 #include "renderer/Model.hpp"
 
-#include "utils/LogDefs.hpp"
-#include "utils/Assert.hpp"
+#include "utils/Utils.hpp"
 
 #include <glad/glad.h>
 
@@ -24,8 +23,7 @@ std::unique_ptr<Shader> Shader::create(std::string_view _vsSource, std::string_v
 		{
 			if (const u32 program = loadProgram(vs, fs))
 			{
-				shader.reset(new Shader);
-				shader->m_program = program;
+				shader.reset(new Shader(program));
 			}
 		}
 		else
@@ -39,24 +37,31 @@ std::unique_ptr<Shader> Shader::create(std::string_view _vsSource, std::string_v
 
 //-----------------------------------------------------------------------------
 
-void Shader::draw(const Model& _model)
+Shader::Shader(u32 _programId)
+	: m_programId(_programId)
 {
-	_model.bind();
-	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
 Shader::~Shader()
 {
-	glDeleteProgram(m_program);
+	glDeleteProgram(m_programId);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::bind() const noexcept
 {
-	glUseProgram(m_program);
+	glUseProgram(m_programId);
+}
+
+//-----------------------------------------------------------------------------
+
+void Shader::draw(const Model& _model) const noexcept
+{
+	_model.bind();
+	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,21 +89,21 @@ void Shader::setUniform(const std::string& _name, float _val) const
 
 void Shader::setUniform(const std::string& _name, const glm::vec2& _val) const
 {
-	glUniform2fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
+	glUniform2f(getUniformLocation(_name), _val.x, _val.y);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::vec3& _val) const
 {
-	glUniform3fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
+	glUniform3f(getUniformLocation(_name), _val.x, _val.y, _val.z);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::vec4& _val) const
 {
-	glUniform4fv(getUniformLocation(_name), 1, reinterpret_cast<const float*>(&_val));
+	glUniform4f(getUniformLocation(_name), _val.x, _val.y, _val.z, _val.w);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +147,7 @@ s32 Shader::getUniformLocation(const std::string& _name) const
 	}
 	else
 	{
-		location = glGetUniformLocation(m_program, _name.c_str());
+		location = glGetUniformLocation(m_programId, _name.c_str());
 		m_uniformLocationsCache[_name] = location;
 	}
 
