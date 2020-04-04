@@ -21,7 +21,6 @@ class Object;
 class Material;
 }
 
-
 class MainWidget : public QWidget
 {
 	Q_OBJECT
@@ -54,8 +53,8 @@ private:
 	std::vector<std::unique_ptr<jl::Object>> m_objects;
 	std::vector<std::unique_ptr<jl::Material>> m_materials;
 
-	QStringListModel	m_objectsListModel;
-	QStringList			m_objectsNamesList;
+	QStringList m_objectsNamesList;
+	QStringListModel m_objectsListModel;
 	QStandardItemModel	m_propertiesTableModel;
 
 	app::ScopedConnection m_glLoadedConnection;

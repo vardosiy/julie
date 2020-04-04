@@ -43,7 +43,7 @@ public:
 	const jl::Shader* getShader() const noexcept;
 	void setShader(const jl::Shader& _shader) noexcept;
 
-	const std::vector<PropertyData>& getPropertiesData() const noexcept;
+	const std::vector<PropertyData>& getProperties() const noexcept;
 
 	void setProperty(const std::string& _name, float _val) noexcept						{ setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, int _val) noexcept						{ setPropertyCommon(_name, _val); }
@@ -59,7 +59,7 @@ private:
 
 //-----------------------------------------------------------------------------
 	const jl::Shader* m_shader;
-	std::vector<PropertyData> m_propertiesData;
+	std::vector<PropertyData> m_properties;
 };
 
 //-----------------------------------------------------------------------------
@@ -72,14 +72,14 @@ inline void Material::setPropertyCommon(const std::string& _name, T _val) noexce
 		return _name == _data.name;
 	};
 
-	auto it = std::find_if(m_propertiesData.begin(), m_propertiesData.end(), predicate);
-	if (it != m_propertiesData.end())
+	auto it = std::find_if(m_properties.begin(), m_properties.end(), predicate);
+	if (it != m_properties.end())
 	{
 		it->value = _val;
 	}
 	else
 	{
-		m_propertiesData.emplace_back(_name, _val);
+		m_properties.emplace_back(_name, _val);
 	}
 }
 

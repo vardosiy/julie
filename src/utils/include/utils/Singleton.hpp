@@ -13,14 +13,14 @@ public:
 	static T& getInstance() noexcept;
 
 protected:
-	Singleton() noexcept = default;
-	~Singleton() noexcept = default;
+	Singleton() = default;
+	~Singleton() = default;
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename T>
-T& Singleton<T>::getInstance() noexcept
+inline T& Singleton<T>::getInstance() noexcept
 {
 	static T s_instance;
 	return s_instance;

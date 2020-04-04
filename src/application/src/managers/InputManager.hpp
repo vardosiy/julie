@@ -21,5 +21,8 @@ public:
 	bool isPressed(int _key) const noexcept;
 
 private:
+	InputManager() = default;
+	~InputManager() = default;
+
 	std::unordered_map<int, bool> m_keyStates;
 };

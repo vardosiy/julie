@@ -14,7 +14,7 @@ void Material::bind() const
 	{
 		m_shader->bind();
 		s16 textureSlotsCounter = 0;
-		for (const auto& data : m_propertiesData)
+		for (const auto& data : m_properties)
 		{
 			PropertyBinder binder(*m_shader, data.name, textureSlotsCounter++);
 			std::visit(binder, data.value);
@@ -38,9 +38,9 @@ void Material::setShader(const jl::Shader& _shader) noexcept
 
 //-----------------------------------------------------------------------------
 
-const std::vector<Material::PropertyData>& Material::getPropertiesData() const noexcept
+const std::vector<Material::PropertyData>& Material::getProperties() const noexcept
 {
-	return m_propertiesData;
+	return m_properties;
 }
 
 //-----------------------------------------------------------------------------
