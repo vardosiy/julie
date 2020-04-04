@@ -11,6 +11,7 @@ namespace jl {
 class Model;
 class Shader;
 class Texture;
+class CubeTexture;
 }
 
 class ResourceManager : public utils::Singleton<ResourceManager>
@@ -21,13 +22,15 @@ class ResourceManager : public utils::Singleton<ResourceManager>
 public:
 	void clear();
 
-	jl::Model*		loadModel(const std::string& _fileName);
-	jl::Shader*		loadShader(const std::string& _fileName);
-	jl::Texture*	loadTexture(const std::string& _fileName);
+	jl::Model*			loadModel(const std::string& _fileName);
+	jl::Shader*			loadShader(const std::string& _fileName);
+	jl::Texture*		loadTexture(const std::string& _fileName);
+	jl::CubeTexture*	loadCubeTexture(const std::string& _fileName);
 
 	const std::string& getSourceFile(const jl::Model& _model) const noexcept;
 	const std::string& getSourceFile(const jl::Shader& _shader) const noexcept;
 	const std::string& getSourceFile(const jl::Texture& _texture) const noexcept;
+	const std::string& getSourceFile(const jl::CubeTexture& _texture) const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
@@ -47,6 +50,7 @@ private:
 	Container<jl::Model> m_models;
 	Container<jl::Shader> m_shaders;
 	Container<jl::Texture> m_textures;
+	Container<jl::CubeTexture> m_cubeTextures;
 };
 
 //-----------------------------------------------------------------------------

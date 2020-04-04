@@ -3,6 +3,7 @@
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
+#include "renderer/CubeTexture.hpp"
 
 #include "managers/factories/ModelsFactory.hpp"
 #include "managers/factories/ShadersFactory.hpp"
@@ -45,6 +46,13 @@ jl::Texture* ResourceManager::loadTexture(const std::string& _fileName)
 
 //-----------------------------------------------------------------------------
 
+jl::CubeTexture* ResourceManager::loadCubeTexture(const std::string& _fileName)
+{
+	return loadCommon(m_cubeTextures, _fileName, TexturesFactory::loadCubeTextureFromFile);
+}
+
+//-----------------------------------------------------------------------------
+
 const std::string& ResourceManager::getSourceFile(const jl::Model& _model) const noexcept
 {
 	return getSourceFileCommon(m_models, _model);
@@ -62,6 +70,13 @@ const std::string& ResourceManager::getSourceFile(const jl::Shader& _shader) con
 const std::string& ResourceManager::getSourceFile(const jl::Texture& _texture) const noexcept
 {
 	return getSourceFileCommon(m_textures, _texture);
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& ResourceManager::getSourceFile(const jl::CubeTexture& _texture) const noexcept
+{
+	return getSourceFileCommon(m_cubeTextures, _texture);
 }
 
 //-----------------------------------------------------------------------------
