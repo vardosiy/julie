@@ -1,5 +1,5 @@
-#include "factories/TexturesFactory.hpp"
-#include "factories/formats/LoadTga.hpp"
+#include "managers/factories/TexturesFactory.hpp"
+#include "managers/factories/formats/LoadTga.hpp"
 
 #include "renderer/CubeTexture.hpp"
 #include "renderer/TextureTiling.hpp"

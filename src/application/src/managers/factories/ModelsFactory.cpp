@@ -1,4 +1,4 @@
-#include "factories/ModelsFactory.hpp"
+#include "managers/factories/ModelsFactory.hpp"
 
 #include "renderer/Vertex.hpp"
 #include "renderer/Model.hpp"

@@ -25,6 +25,10 @@ public:
 	jl::Shader*		loadShader(const std::string& _fileName);
 	jl::Texture*	loadTexture(const std::string& _fileName);
 
+	const std::string& getSourceFile(const jl::Model& _model) const noexcept;
+	const std::string& getSourceFile(const jl::Shader& _shader) const noexcept;
+	const std::string& getSourceFile(const jl::Texture& _texture) const noexcept;
+
 //-----------------------------------------------------------------------------
 private:
 	template<typename T>
@@ -34,7 +38,10 @@ private:
 	~ResourceManager();
 
 	template<typename T, typename U>
-	T* loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun);
+	static T* loadCommon(Container<T>& _container, const std::string& _fileName, U&& _loadFun);
+
+	template<typename T>
+	static const std::string& getSourceFileCommon(const Container<T>& _container, const T& _resource) noexcept;
 
 //-----------------------------------------------------------------------------
 	Container<jl::Model> m_models;

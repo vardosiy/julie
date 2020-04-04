@@ -1,4 +1,4 @@
-#include "factories/ShadersFactory.hpp"
+#include "managers/factories/ShadersFactory.hpp"
 #include "AppUtils.hpp"
 
 #include "renderer/Shader.hpp"
