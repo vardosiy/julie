@@ -27,10 +27,10 @@ public:
 	jl::Texture*		loadTexture(const std::string& _fileName);
 	jl::CubeTexture*	loadCubeTexture(const std::string& _fileName);
 
-	const std::string& getSourceFile(const jl::Model& _model) const noexcept;
-	const std::string& getSourceFile(const jl::Shader& _shader) const noexcept;
-	const std::string& getSourceFile(const jl::Texture& _texture) const noexcept;
-	const std::string& getSourceFile(const jl::CubeTexture& _texture) const noexcept;
+	const std::string&	getSourceFile(const jl::Model& _model) const noexcept;
+	const std::string&	getSourceFile(const jl::Shader& _shader) const noexcept;
+	const std::string&	getSourceFile(const jl::Texture& _texture) const noexcept;
+	const std::string&	getSourceFile(const jl::CubeTexture& _texture) const noexcept;
 
 //-----------------------------------------------------------------------------
 private:

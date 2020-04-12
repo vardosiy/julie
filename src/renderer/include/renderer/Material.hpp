@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/Types.hpp"
+
 #include <boost/noncopyable.hpp>
 #include <glm/glm.hpp>
 
@@ -21,13 +23,13 @@ class Material : boost::noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
-	struct PropertyData
+	struct Property
 	{
 		using UniformValue =
-			std::variant<float, int, glm::vec3, glm::vec4, const jl::Texture*, const jl::CubeTexture*>;
+			std::variant<float, s32, glm::vec2, glm::vec3, glm::vec4, const jl::Texture*, const jl::CubeTexture*>;
 
 		template<typename T>
-		PropertyData(const std::string& _name, const T& _val)
+		Property(const std::string& _name, const T& _val)
 			: name(_name)
 			, value(_val)
 		{
@@ -43,12 +45,13 @@ public:
 	const jl::Shader* getShader() const noexcept;
 	void setShader(const jl::Shader& _shader) noexcept;
 
-	const std::vector<PropertyData>& getProperties() const noexcept;
+	const std::vector<Property>& getProperties() const noexcept;
 
 	void setProperty(const std::string& _name, float _val) noexcept						{ setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, int _val) noexcept						{ setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, const glm::vec4& _val) noexcept			{ setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, s32 _val) noexcept						{ setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, const glm::vec2& _val) noexcept			{ setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, const glm::vec3& _val) noexcept			{ setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, const glm::vec4& _val) noexcept			{ setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, const jl::Texture& _val) noexcept		{ setPropertyCommon(_name, &_val); }
 	void setProperty(const std::string& _name, const jl::CubeTexture& _val) noexcept	{ setPropertyCommon(_name, &_val); }
 
@@ -59,7 +62,7 @@ private:
 
 //-----------------------------------------------------------------------------
 	const jl::Shader* m_shader;
-	std::vector<PropertyData> m_properties;
+	std::vector<Property> m_properties;
 };
 
 //-----------------------------------------------------------------------------
@@ -67,7 +70,7 @@ private:
 template<typename T>
 inline void Material::setPropertyCommon(const std::string& _name, T _val) noexcept
 {
-	auto predicate = [&_name](const PropertyData& _data)
+	auto predicate = [&_name](const Property& _data)
 	{
 		return _name == _data.name;
 	};

@@ -2,7 +2,7 @@
 
 #include "utils/Utils.hpp"
 
-DECLARE_ENUM_WITH_UTILITY(
+DECLARE_NS_ENUM_WITH_UTILITY(
 	jl,
 	TextureTiling,
 	ClampToEdge,

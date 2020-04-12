@@ -21,6 +21,7 @@ void ResourceManager::clear()
 	m_models.clear();
 	m_shaders.clear();
 	m_textures.clear();
+	m_cubeTextures.clear();
 }
 
 //-----------------------------------------------------------------------------

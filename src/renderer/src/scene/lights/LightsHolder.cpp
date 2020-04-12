@@ -42,6 +42,34 @@ void LightsHolder::addDirectionalLight(const DirectionalLightData& _lightData) n
 
 //-----------------------------------------------------------------------------
 
+const std::vector<glm::vec4>& LightsHolder::getPointLightsColors() const noexcept
+{
+	return m_pointLightsColors;
+}
+
+//-----------------------------------------------------------------------------
+
+const std::vector<glm::vec3>& LightsHolder::getPointLightsPositions() const noexcept
+{
+	return m_pointLightsPositions;
+}
+
+//-----------------------------------------------------------------------------
+
+const std::vector<glm::vec4>& LightsHolder::getDirectionalLightsColors() const noexcept
+{
+	return m_direcitonalLightsColors;
+}
+
+//-----------------------------------------------------------------------------
+
+const std::vector<glm::vec3>& LightsHolder::getDirectionalLightsDirections() const noexcept
+{
+	return m_direcitonalLightsDirection;
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace jl
 
 //-----------------------------------------------------------------------------

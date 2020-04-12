@@ -38,7 +38,7 @@ void Material::setShader(const jl::Shader& _shader) noexcept
 
 //-----------------------------------------------------------------------------
 
-const std::vector<Material::PropertyData>& Material::getProperties() const noexcept
+const std::vector<Material::Property>& Material::getProperties() const noexcept
 {
 	return m_properties;
 }

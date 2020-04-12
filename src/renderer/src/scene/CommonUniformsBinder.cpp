@@ -32,9 +32,7 @@ const std::string CommonUniformsBinder::u_lightPosition			= "u_lightPosition";
 
 //-----------------------------------------------------------------------------
 
-CommonUniformsBinder::CommonUniformsBinder(
-	const Shader& _shader
-) noexcept
+CommonUniformsBinder::CommonUniformsBinder(const Shader& _shader) noexcept
 	: m_shader(_shader)
 {
 }
@@ -62,14 +60,14 @@ void CommonUniformsBinder::setupFog(const FogData& _fogData) const noexcept
 
 void CommonUniformsBinder::setupLights(const LightsHolder& _lightsHolder) const noexcept
 {
-	bindUniform(u_ambientColor,				_lightsHolder.m_ambientLight.color);
-	bindUniform(u_ambientWeight,			_lightsHolder.m_ambientLight.weight);
+	bindUniform(u_ambientColor,				_lightsHolder.getAmbientLightData().color);
+	bindUniform(u_ambientWeight,			_lightsHolder.getAmbientLightData().weight);
 
-	bindUniform(u_directionalLightColor,	_lightsHolder.m_direcitonalLightsColors);
-	bindUniform(u_lightDirection,			_lightsHolder.m_direcitonalLightsDirection);
+	bindUniform(u_pointLightColor,			_lightsHolder.getPointLightsColors());
+	bindUniform(u_lightPosition,			_lightsHolder.getPointLightsPositions());
 
-	bindUniform(u_pointLightColor,			_lightsHolder.m_pointLightsColors);
-	bindUniform(u_lightPosition,			_lightsHolder.m_pointLightsPositions);
+	bindUniform(u_directionalLightColor,	_lightsHolder.getDirectionalLightsColors());
+	bindUniform(u_lightDirection,			_lightsHolder.getDirectionalLightsDirections());
 }
 
 //-----------------------------------------------------------------------------

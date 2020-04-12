@@ -12,18 +12,21 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Shader;
-class CommonUniformsBinder;
 
 class LightsHolder : boost::noncopyable
 {
-	friend class CommonUniformsBinder;
-
 public:
 	const AmbientLightData& getAmbientLightData() const noexcept;
 	void setAmbientLight(const AmbientLightData& _lightData) noexcept;
 
 	void addPointLight(const PointLightData& _lightData) noexcept;
 	void addDirectionalLight(const DirectionalLightData& _lightData) noexcept;
+
+	const std::vector<glm::vec4>& getPointLightsColors() const noexcept;
+	const std::vector<glm::vec3>& getPointLightsPositions() const noexcept;
+
+	const std::vector<glm::vec4>& getDirectionalLightsColors() const noexcept;
+	const std::vector<glm::vec3>& getDirectionalLightsDirections() const noexcept;
 
 private:
 	AmbientLightData m_ambientLight;
