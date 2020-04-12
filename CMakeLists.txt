@@ -57,17 +57,17 @@ message("--------------------Loading 3rd-party libs--------------------")
 include_directories(${boost_dir})
 
 set(BUILD_SHARED_LIBS OFF)
+set(BUILD_STATIC_LIBS ON)
+
 add_subdirectory(${3rd_party_dir}/fmt)
 set_target_properties(fmt PROPERTIES FOLDER ${3rd_party_targets_group})
 
-set(BUILD_SHARED_LIBS OFF)
-set(GLM_TEST_ENABLE OFF)
 set(GLM_TEST_ENABLE_CXX_17 ON)
 add_subdirectory(${3rd_party_dir}/glm)
 set_target_properties(glm_static PROPERTIES FOLDER ${3rd_party_targets_group})
 
 set(JSONCPP_WITH_TESTS OFF)
-set(JSONCPP_WITH_EXAMPLES OFF)
+set(JSONCPP_WITH_CMAKE_PACKAGE OFF)
 set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF)
 set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF)
 add_subdirectory(${3rd_party_dir}/jsoncpp)
@@ -109,6 +109,6 @@ set_structural_properties(gmock			${tests_targets_group}/gtest)
 set_structural_properties(gmock_main	${tests_targets_group}/gtest)
 
 enable_testing()
-add_subdirectory(${tests_dir}/utils_tests)
+#add_subdirectory(${tests_dir}/utils_tests)
 
 #------------------------------------------------------------------------------
