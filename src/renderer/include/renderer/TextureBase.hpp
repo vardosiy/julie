@@ -11,7 +11,7 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 enum class TextureTiling;
-enum class TextureFilteringMode;
+enum class TextureFiltering;
 
 class TextureBase : boost::noncopyable
 {
@@ -21,8 +21,8 @@ public:
 	void bind(u16 _slot) const noexcept;
 
 	void setTiling(TextureTiling _tiling) noexcept;
-	void setMagnificationFilteringMode(TextureFilteringMode _mode) noexcept;
-	void setMinificationFilteringMode(TextureFilteringMode _mode) noexcept;
+	void setMagnificationFilteringMode(TextureFiltering _mode) noexcept;
+	void setMinificationFilteringMode(TextureFiltering _mode) noexcept;
 
 protected:
 	TextureBase(s32 _type) noexcept;

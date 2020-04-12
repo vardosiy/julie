@@ -3,7 +3,7 @@
 
 #include "renderer/CubeTexture.hpp"
 #include "renderer/TextureTiling.hpp"
-#include "renderer/TextureFilteringMode.hpp"
+#include "renderer/TextureFiltering.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -30,8 +30,8 @@ std::unique_ptr<jl::Texture> TexturesFactory::load2dTextureFromFile(std::string_
 	texInitData.fragmentType	= jl::Texture::FragmentType::UnsignedByte;
 
 	auto texture = std::make_unique<jl::Texture>(texInitData);
-	texture->setMagnificationFilteringMode(jl::TextureFilteringMode::Linear);
-	texture->setMinificationFilteringMode(jl::TextureFilteringMode::LinearMipmapLinear);
+	texture->setMagnificationFilteringMode(jl::TextureFiltering::Linear);
+	texture->setMinificationFilteringMode(jl::TextureFiltering::LinearMipmapLinear);
 	return texture;
 }
 
@@ -59,8 +59,8 @@ std::unique_ptr<jl::CubeTexture> TexturesFactory::loadCubeTextureFromFile(std::s
 	texInitData.bpp		= static_cast<jl::u32>(bpp);
 
 	auto texture = std::make_unique<jl::CubeTexture>(texInitData);
-	texture->setMagnificationFilteringMode(jl::TextureFilteringMode::Linear);
-	texture->setMinificationFilteringMode(jl::TextureFilteringMode::LinearMipmapLinear);
+	texture->setMagnificationFilteringMode(jl::TextureFiltering::Linear);
+	texture->setMinificationFilteringMode(jl::TextureFiltering::LinearMipmapLinear);
 	return texture;
 }
 
@@ -98,8 +98,8 @@ std::unique_ptr<jl::Texture> TexturesFactory::createFrameTexture(const jl::Textu
 {
 	auto texture = std::make_unique<jl::Texture>(_textureInitData);
 	texture->setTiling(jl::TextureTiling::ClampToEdge);
-	texture->setMagnificationFilteringMode(jl::TextureFilteringMode::Nearest);
-	texture->setMinificationFilteringMode(jl::TextureFilteringMode::Nearest);
+	texture->setMagnificationFilteringMode(jl::TextureFiltering::Nearest);
+	texture->setMinificationFilteringMode(jl::TextureFiltering::Nearest);
 	return texture;
 }
 

@@ -52,16 +52,16 @@ void TextureBase::setTiling(TextureTiling _tiling) noexcept
 
 //-----------------------------------------------------------------------------
 
-void TextureBase::setMagnificationFilteringMode(TextureFilteringMode _mode) noexcept
+void TextureBase::setMagnificationFilteringMode(TextureFiltering _mode) noexcept
 {
-	glTexParameteri(m_type, GL_TEXTURE_MAG_FILTER, filteringModeToGlValue(_mode));
+	glTexParameteri(m_type, GL_TEXTURE_MAG_FILTER, filteringToGlValue(_mode));
 }
 
 //-----------------------------------------------------------------------------
 
-void TextureBase::setMinificationFilteringMode(TextureFilteringMode _mode) noexcept
+void TextureBase::setMinificationFilteringMode(TextureFiltering _mode) noexcept
 {
-	glTexParameteri(m_type, GL_TEXTURE_MIN_FILTER, filteringModeToGlValue(_mode));
+	glTexParameteri(m_type, GL_TEXTURE_MIN_FILTER, filteringToGlValue(_mode));
 }
 
 //-----------------------------------------------------------------------------

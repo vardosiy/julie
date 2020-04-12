@@ -9,10 +9,10 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 enum class TextureTiling;
-enum class TextureFilteringMode;
+enum class TextureFiltering;
 
 float	tilingToGlValue(TextureTiling _tiling) noexcept;
-s32		filteringModeToGlValue(TextureFilteringMode _mode) noexcept;
+s32		filteringToGlValue(TextureFiltering _mode) noexcept;
 
 //-----------------------------------------------------------------------------
 

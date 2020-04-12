@@ -4,7 +4,7 @@
 
 DECLARE_NS_ENUM_WITH_UTILITY(
 	jl,
-	TextureFilteringMode,
+	TextureFiltering,
 	Nearest,
 	Linear,
 	LinearMipmapLinear

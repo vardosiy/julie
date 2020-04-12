@@ -1,7 +1,7 @@
 #include "ConvertingHelper.hpp"
 
 #include "renderer/TextureTiling.hpp"
-#include "renderer/TextureFilteringMode.hpp"
+#include "renderer/TextureFiltering.hpp"
 
 #include <glad/glad.h>
 
@@ -26,13 +26,13 @@ float tilingToGlValue(TextureTiling _tiling) noexcept
 
 //-----------------------------------------------------------------------------
 
-s32 filteringModeToGlValue(TextureFilteringMode _mode) noexcept
+s32 filteringToGlValue(TextureFiltering _mode) noexcept
 {
 	switch (_mode)
 	{
-		case TextureFilteringMode::Nearest:				return GL_NEAREST;
-		case TextureFilteringMode::Linear:				return GL_LINEAR;
-		case TextureFilteringMode::LinearMipmapLinear:	return GL_LINEAR_MIPMAP_LINEAR;
+		case TextureFiltering::Nearest:				return GL_NEAREST;
+		case TextureFiltering::Linear:				return GL_LINEAR;
+		case TextureFiltering::LinearMipmapLinear:	return GL_LINEAR_MIPMAP_LINEAR;
 	}
 
 	ASSERT(0);
