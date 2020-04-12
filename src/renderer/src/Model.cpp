@@ -51,17 +51,16 @@ void Model::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
 		return std::max_element(_vertices.begin(), _vertices.end(), _predicate);
 	};
 
-	const Vertex& rightmost		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x < _rhs.pos.x; });
 	const Vertex& leftmost		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x > _rhs.pos.x; });
-	const Vertex& highest		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y < _rhs.pos.y; });
 	const Vertex& lowest		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y > _rhs.pos.y; });
 	const Vertex& closest		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z < _rhs.pos.z; });
+
+	const Vertex& rightmost		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x < _rhs.pos.x; });
+	const Vertex& highest		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y < _rhs.pos.y; });
 	const Vertex& farthest		= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z > _rhs.pos.z; });
 
-	m_boundingBox.frontRect.topLeft		= glm::vec3(rightmost.pos.x,	highest.pos.y,	farthest.pos.z);
-	m_boundingBox.frontRect.bottomRight	= glm::vec3(leftmost.pos.x,		lowest.pos.y,	farthest.pos.z);
-	m_boundingBox.backRect.topLeft		= glm::vec3(rightmost.pos.x,	highest.pos.y,	closest.pos.z);
-	m_boundingBox.backRect.bottomRight	= glm::vec3(leftmost.pos.x,		lowest.pos.y,	closest.pos.z);
+	m_boundingBox.pos1 = glm::vec3(leftmost.pos.x, highest.pos.y, farthest.pos.z);
+	m_boundingBox.pos2 = glm::vec3(rightmost.pos.x, lowest.pos.y, closest.pos.z);
 }
 
 //-----------------------------------------------------------------------------

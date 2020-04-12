@@ -6,6 +6,7 @@
 #include "utils/Utils.hpp"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -110,7 +111,7 @@ void Shader::setUniform(const std::string& _name, const glm::vec4& _val) const
 
 void Shader::setUniform(const std::string& _name, const glm::mat4& _val) const
 {
-	glUniformMatrix4fv(getUniformLocation(_name), 1, false, reinterpret_cast<const float*>(&_val));
+	glUniformMatrix4fv(getUniformLocation(_name), 1, false, glm::value_ptr(_val));
 }
 
 //-----------------------------------------------------------------------------

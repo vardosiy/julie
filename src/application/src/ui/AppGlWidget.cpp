@@ -18,7 +18,7 @@ AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_scene(nullptr)
 	, m_camera(0.00001f, 100.0f, 45.0f)
-	, m_camMoveSpeed(10.0f)
+	, m_camMoveSpeed(1.0f)
 	, m_camRotationSpeed(1.0f)
 	, m_updateTimer(this)
 {
@@ -26,7 +26,7 @@ AppGlWidget::AppGlWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setDrawMode(DrawMode _drawMode)
+void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 {
 	jl::PolygonMode frontPolygonsMode;
 	jl::PolygonMode backPolygonsMode;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string_view>
-
 constexpr char* k_materials			= "materials";
 constexpr char* k_shader			= "shader";
 constexpr char* k_properties		= "properties";

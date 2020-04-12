@@ -31,7 +31,7 @@ public:
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
-	void setDrawMode(DrawMode _drawMode);
+	void setDrawMode(DrawMode _drawMode) noexcept;
 	void setCameraMoveSpeed(int _speed) noexcept;
 	void setCameraRotateSpeed(int _speed) noexcept;
 
