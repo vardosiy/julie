@@ -1,5 +1,5 @@
-#include "ui/MainWidget.hpp"
-#include "ui_MainWidget.h"
+#include "ui/MainWindow.hpp"
+#include "ui_MainWindow.h"
 
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
@@ -52,9 +52,9 @@ static std::unique_ptr<jl::Model> createRoom()
 
 //-----------------------------------------------------------------------------
 
-MainWidget::MainWidget(QWidget* parent)
-	: QWidget(parent)
-	, m_ui(std::make_unique<Ui::MainWidget>())
+MainWindow::MainWindow(QMainWindow* parent)
+	: QMainWindow(parent)
+	, m_ui(std::make_unique<Ui::MainWindow>())
 	, m_objectsListModel(this)
 	, m_propertiesTableModel(5, 2, this)
 {
@@ -70,18 +70,19 @@ MainWidget::MainWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-MainWidget::~MainWidget()
+MainWindow::~MainWindow()
 {
-	std::ofstream file("TEST_SAVE_JSON.json");
+	std::ofstream file(k_saveFile.data());
 	JsonSceneSaver::save(file, *m_scene);
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::onGlLoaded()
+void MainWindow::onGlLoaded()
 {
-	std::ifstream file("TEST_SAVE_JSON.json");
+	std::ifstream file(k_saveFile.data());
 	m_scene = JsonSceneRestorer::restore(file);
+
 	m_ui->oglw_screen->setScene(m_scene.get());
 
 	m_scene->forEachObject([this](const jl::Object& _object)
@@ -92,7 +93,7 @@ void MainWidget::onGlLoaded()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::onFillPolygonsValueChanged(int _state)
+void MainWindow::onFillPolygonsValueChanged(int _state)
 {
 	AppGlWidget::DrawMode drawMode = AppGlWidget::DrawMode::Fill;
 
@@ -115,7 +116,7 @@ void MainWidget::onFillPolygonsValueChanged(int _state)
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::onAddEntityBtnReleased()
+void MainWindow::onAddEntityBtnReleased()
 {
 	if (m_ui->tab_objects->isVisible())
 	{
@@ -140,7 +141,7 @@ void MainWidget::onAddEntityBtnReleased()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::onDeleteEntityBtnReleased()
+void MainWindow::onDeleteEntityBtnReleased()
 {
 	if (m_ui->tab_objects->isVisible())
 	{
@@ -165,7 +166,7 @@ void MainWidget::onDeleteEntityBtnReleased()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::setupUi()
+void MainWindow::setupUi()
 {
 	m_ui->setupUi(this);
 	m_ui->listv_objects->setModel(&m_objectsListModel);
@@ -186,12 +187,12 @@ void MainWidget::setupUi()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::setupConnections()
+void MainWindow::setupConnections()
 {
-	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this,				&MainWidget::onFillPolygonsValueChanged);
+	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this,				&MainWindow::onFillPolygonsValueChanged);
 
-	connect(m_ui->btn_add,				&QPushButton::released,		this,				&MainWidget::onAddEntityBtnReleased);
-	connect(m_ui->btn_delete,			&QPushButton::released,		this,				&MainWidget::onDeleteEntityBtnReleased);
+	connect(m_ui->btn_add,				&QPushButton::released,		this,				&MainWindow::onAddEntityBtnReleased);
+	connect(m_ui->btn_delete,			&QPushButton::released,		this,				&MainWindow::onDeleteEntityBtnReleased);
 
 	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		m_ui->oglw_screen,	&AppGlWidget::setCameraMoveSpeed);
 	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		m_ui->oglw_screen,	&AppGlWidget::setCameraRotateSpeed);
@@ -199,7 +200,7 @@ void MainWidget::setupConnections()
 
 //-----------------------------------------------------------------------------
 
-void MainWidget::addObjectToGuiList(const jl::Object& _object)
+void MainWindow::addObjectToGuiList(const jl::Object& _object)
 {
 	m_objectsNamesList << _object.getName().c_str();
 	m_objectsListModel.setStringList(m_objectsNamesList);

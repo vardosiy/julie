@@ -2,7 +2,7 @@
 
 #include "CommonDefs.hpp"
 
-#include <QWidget>
+#include <QMainWindow>
 #include <QStringListModel>
 #include <QStandardItemModel>
 #include <QStringList>
@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------------
 
 namespace Ui {
-class MainWidget;
+class MainWindow;
 }
 
 namespace jl {
@@ -20,14 +20,14 @@ class Scene;
 class Object;
 }
 
-class MainWidget : public QWidget
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 //-----------------------------------------------------------------------------
 public:
-	explicit MainWidget(QWidget* parent = nullptr);
-	~MainWidget();
+	explicit MainWindow(QMainWindow* parent = nullptr);
+	~MainWindow();
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -46,14 +46,16 @@ private:
 	void addObjectToGuiList(const jl::Object& _object);
 
 //-----------------------------------------------------------------------------
-	std::unique_ptr<Ui::MainWidget> m_ui;
+	std::unique_ptr<Ui::MainWindow> m_ui;
 	std::unique_ptr<jl::Scene> m_scene;
 
 	QStringList m_objectsNamesList;
 	QStringListModel m_objectsListModel;
-	QStandardItemModel	m_propertiesTableModel;
+	QStandardItemModel m_propertiesTableModel;
 
 	app::ScopedConnection m_glLoadedConnection;
+
+	static constexpr std::string_view k_saveFile = "SaveFile.json";
 };
 
 //-----------------------------------------------------------------------------
