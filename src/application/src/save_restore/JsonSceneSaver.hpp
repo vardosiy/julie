@@ -1,31 +1,32 @@
-//#pragma once
-//
-//#include "save_restore/ISceneSaver.hpp"
-//
-//#include "json/json.h"
-//
-//#include <string_view>
-//#include <ostream>
-//
-//namespace jl {
-//class Object;
-//class FogData;
-//class AmbientLightData;
-//}
-//
-//class JsonSceneSaver : public ISceneSaver
-//{
-//public:
-//	JsonSceneSaver(std::ostream& _outputStream);
-//
-//	void save(const jl::Scene& _scene) override;
-//
-//private:
-//	static Json::Value saveObjects(const jl::Scene& _scene);
-//	static Json::Value saveObjectData(const jl::Object& _object);
-//	static Json::Value saveFogData(const jl::FogData& _fogData);
-//	static Json::Value saveAmbientLightData(const jl::AmbientLightData& _fogData);
-//
-//private:
-//	std::ostream& m_outputStream;
-//};
+#pragma once
+
+#include <json/json.h>
+#include <glm/glm.hpp>
+
+#include <ostream>
+
+namespace jl {
+class Scene;
+class Object;
+class Material;
+class LightsHolder;
+}
+
+class JsonSceneSaver
+{
+//-----------------------------------------------------------------------------
+public:
+	static void save(std::ostream& _stream, const jl::Scene& _scene);
+
+//-----------------------------------------------------------------------------
+private:
+	static Json::Value saveMaterials();
+	static Json::Value saveMaterial(const jl::Material& _material);
+
+	static Json::Value saveScene(const jl::Scene& _scene);
+	static Json::Value saveObject(const jl::Object& _object);
+
+	static Json::Value saveLights(const jl::LightsHolder& _lightsHolder);
+	static Json::Value savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions);
+	static Json::Value saveDirectionalLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& directions);
+};

@@ -18,7 +18,6 @@ class MainWidget;
 namespace jl {
 class Scene;
 class Object;
-class Material;
 }
 
 class MainWidget : public QWidget
@@ -49,9 +48,6 @@ private:
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWidget> m_ui;
 	std::unique_ptr<jl::Scene> m_scene;
-
-	std::vector<std::unique_ptr<jl::Object>> m_objects;
-	std::vector<std::unique_ptr<jl::Material>> m_materials;
 
 	QStringList m_objectsNamesList;
 	QStringListModel m_objectsListModel;

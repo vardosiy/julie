@@ -2,6 +2,10 @@
 #include "ui_MainWidget.h"
 
 #include "managers/ResourceManager.hpp"
+#include "managers/MaterialsManager.hpp"
+
+#include "save_restore/JsonSceneSaver.hpp"
+#include "save_restore/JsonSceneRestorer.hpp"
 
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Object.hpp"
@@ -13,10 +17,9 @@
 #include "utils/Utils.hpp"
 
 #include <QKeyEvent>
+#include <fstream>
 
 //-----------------------------------------------------------------------------
-
-std::unique_ptr<jl::Model> g_model;
 
 static std::unique_ptr<jl::Model> createRoom()
 {
@@ -58,53 +61,33 @@ MainWidget::MainWidget(QWidget* parent)
 	setupUi();
 	setupConnections();
 
-	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded(
-		[this]()
-		{
-			m_glLoadedConnection.disconnect();
-			onGlLoaded();
-		}
-	);
+	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
+	{
+		m_glLoadedConnection.disconnect();
+		onGlLoaded();
+	});
 }
 
 //-----------------------------------------------------------------------------
 
-MainWidget::~MainWidget() = default;
+MainWidget::~MainWidget()
+{
+	std::ofstream file("TEST_SAVE_JSON.json");
+	JsonSceneSaver::save(file, *m_scene);
+}
 
 //-----------------------------------------------------------------------------
 
 void MainWidget::onGlLoaded()
 {
-	m_scene.reset(new jl::Scene);
+	std::ifstream file("TEST_SAVE_JSON.json");
+	m_scene = JsonSceneRestorer::restore(file);
 	m_ui->oglw_screen->setScene(m_scene.get());
 
-	auto& material = m_materials.emplace_back(new jl::Material);
-	material->setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/SimpleColor.shdata"));
-	material->setProperty("u_color", glm::vec4(1.0f));
-
-	auto& object = m_objects.emplace_back(new jl::Object("name"));
-	object->setModel(*ResourceManager::getInstance().loadModel("res/models/Bila.nfg"));
-	object->setMaterial(*material);
-	m_scene->addObject(0, *object);
-
-	addObjectToGuiList(*object);
-
-	jl::DirectionalLightData directionalLightData;
-	directionalLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	directionalLightData.direction = glm::vec3(0.0f, -1.0f, 0.0f);
-
-	jl::PointLightData pointLightData;
-	pointLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	pointLightData.position = glm::vec3(0.0f, 0.0f, 1.0f);
-
-	jl::AmbientLightData ambientLightData;
-	ambientLightData.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ambientLightData.weight = 0.6f;
-
-	jl::LightsHolder& lightsHolder = m_scene->getLightsHolder();
-	lightsHolder.addDirectionalLight(directionalLightData);
-	lightsHolder.addPointLight(pointLightData);
-	lightsHolder.setAmbientLight(ambientLightData);
+	m_scene->forEachObject([this](const jl::Object& _object)
+	{
+		addObjectToGuiList(_object);
+	});
 }
 
 //-----------------------------------------------------------------------------
