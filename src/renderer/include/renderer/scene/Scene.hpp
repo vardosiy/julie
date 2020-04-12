@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 
 #include <functional>
-#include <map>
+#include <vector>
 
 //-----------------------------------------------------------------------------
 
@@ -23,6 +23,8 @@ class Scene
 {
 //-----------------------------------------------------------------------------
 public:
+	using ObjectPtr = std::unique_ptr<Object>;
+
 	Scene();
 	~Scene();
 
@@ -37,19 +39,18 @@ public:
 	const LightsHolder& getLightsHolder() const noexcept;
 
 //-----------------------------------------------------------------------------
-	void addObject(s32 _id, Object& _object);
-	void removeObject(s32 _id);
+	void addObject(ObjectPtr&& _object) noexcept;
+	void removeObject(std::string_view _name) noexcept;
 
-	Object* findObject(s32 _id) noexcept;
-	const Object* findObject(s32 _id) const noexcept;
+	Object* findObject(std::string_view _name) noexcept;
+	const Object* findObject(std::string_view _name) const noexcept;
 
-	void forEachObject(const std::function<void(s32, Object&)>& _callback);
-	void forEachObject(const std::function<void(s32, const Object&)>& _callback) const;
+	void forEachObject(const std::function<void(Object&)>& _callback);
+	void forEachObject(const std::function<void(const Object&)>& _callback) const;
 
 //-----------------------------------------------------------------------------
 private:
-	using ObjectsContainer = std::map<s32, Object*>;
-	ObjectsContainer m_objects;
+	std::vector<ObjectPtr> m_objects;
 
 	LightsHolder m_lightsHolder;
 

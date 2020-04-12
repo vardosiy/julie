@@ -6,6 +6,8 @@
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
 
+#include "utils/Utils.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace jl {
@@ -19,7 +21,7 @@ Scene::~Scene() = default;
 
 void Scene::update(float _dt)
 {
-	//for (auto& [id, renderable] : m_objects)
+	//for (auto& renderable : m_objects)
 	//{
 	//	renderable->update(_dt);
 	//}
@@ -29,7 +31,7 @@ void Scene::update(float _dt)
 
 void Scene::render(const Camera& _camera) const
 {
-	for (auto& [id, object] : m_objects)
+	for (auto& object : m_objects)
 	{
 		const Model* model = object->getModel();
 		const Material* material = object->getMaterial();
@@ -81,51 +83,69 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addObject(s32 _id, Object& _object)
+void Scene::addObject(ObjectPtr&& _object) noexcept
 {
-	m_objects.emplace(_id, &_object);
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::removeObject(s32 _id)
-{
-	m_objects.erase(_id);
-}
-
-//-----------------------------------------------------------------------------
-
-Object* Scene::findObject(s32 _id) noexcept
-{
-	auto it = m_objects.find(_id);
-	return it != m_objects.end() ? it->second : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-const Object* Scene::findObject(s32 _id) const noexcept
-{
-	auto it = m_objects.find(_id);
-	return it != m_objects.end() ? it->second : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::forEachObject(const std::function<void(s32, Object&)>& _callback)
-{
-	for (auto& [id, object] : m_objects)
+	ASSERT(_object);
+	if (_object)
 	{
-		_callback(id, *object);
+		m_objects.emplace_back(std::move(_object));
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::forEachObject(const std::function<void(s32, const Object&)>& _callback) const
+void Scene::removeObject(std::string_view _name) noexcept
 {
-	for (const auto& [id, object] : m_objects)
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
 	{
-		_callback(id, *object);
+		return object->getName() == _name;
+	});
+
+	if (it != m_objects.end())
+	{
+		m_objects.erase(it);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+Object* Scene::findObject(std::string_view _name) noexcept
+{
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
+	{
+		return object->getName() == _name;
+	});
+	return it != m_objects.end() ? it->get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+const Object* Scene::findObject(std::string_view _name) const noexcept
+{
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
+	{
+		return object->getName() == _name;
+	});
+	return it != m_objects.end() ? it->get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::forEachObject(const std::function<void(Object&)>& _callback)
+{
+	for (auto& object : m_objects)
+	{
+		_callback(*object);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::forEachObject(const std::function<void(const Object&)>& _callback) const
+{
+	for (const auto& object : m_objects)
+	{
+		_callback(*object);
 	}
 }
 
