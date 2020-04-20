@@ -17,6 +17,8 @@ class MaterialsManager : public utils::Singleton<MaterialsManager>
 public:
 	void clear() noexcept;
 
+	bool hasMaterial(const std::string& _name) const noexcept;
+
 	jl::Material& getMaterial(const std::string& _name) noexcept;
 	const std::string& getMaterialName(const jl::Material& _material) const noexcept;
 

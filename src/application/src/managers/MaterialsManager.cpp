@@ -10,6 +10,13 @@ void MaterialsManager::clear() noexcept
 
 //-----------------------------------------------------------------------------
 
+bool MaterialsManager::hasMaterial(const std::string& _name) const noexcept
+{
+	return m_materials.find(_name) != m_materials.end();
+}
+
+//-----------------------------------------------------------------------------
+
 jl::Material& MaterialsManager::getMaterial(const std::string& _name) noexcept
 {
 	return m_materials[_name];
