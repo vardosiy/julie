@@ -9,6 +9,7 @@ build/
 __pycache__/
 scripts/python/__pycache__/
 src/application/Log.log
+src/application/SaveFile.json
 
 # generated and local-specific cmake files
 Autogen.cmake
