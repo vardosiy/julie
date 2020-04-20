@@ -2,7 +2,6 @@
 #include "renderer/scene/Object.hpp"
 #include "renderer/scene/CommonUniformsBinder.hpp"
 
-#include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
 
@@ -133,7 +132,7 @@ const Object* Scene::findObject(std::string_view _name) const noexcept
 
 void Scene::forEachObject(const std::function<void(Object&)>& _callback)
 {
-	for (auto& object : m_objects)
+	for (ObjectPtr& object : m_objects)
 	{
 		_callback(*object);
 	}
@@ -143,7 +142,7 @@ void Scene::forEachObject(const std::function<void(Object&)>& _callback)
 
 void Scene::forEachObject(const std::function<void(const Object&)>& _callback) const
 {
-	for (const auto& object : m_objects)
+	for (const ObjectPtr& object : m_objects)
 	{
 		_callback(*object);
 	}

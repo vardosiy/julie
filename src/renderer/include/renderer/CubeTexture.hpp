@@ -26,7 +26,7 @@ public:
 //-----------------------------------------------------------------------------
 	CubeTexture(const InitData& _initData) noexcept;
 
-	u32 getFaceWidth() const noexcept { return m_faceWidth; }
+	u32 getFaceWidth() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:

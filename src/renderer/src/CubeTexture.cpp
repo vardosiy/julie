@@ -44,6 +44,13 @@ CubeTexture::CubeTexture(const InitData& _initData) noexcept
 
 //-----------------------------------------------------------------------------
 
+u32 CubeTexture::getFaceWidth() const noexcept
+{
+	return m_faceWidth;
+}
+
+//-----------------------------------------------------------------------------
+
 void CubeTexture::loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp)
 {
 	const u32 faceWidth = _width / 4;

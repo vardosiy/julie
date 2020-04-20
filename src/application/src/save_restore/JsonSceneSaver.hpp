@@ -14,11 +14,9 @@ class LightsHolder;
 
 class JsonSceneSaver
 {
-//-----------------------------------------------------------------------------
 public:
 	static void save(std::ostream& _stream, const jl::Scene& _scene);
 
-//-----------------------------------------------------------------------------
 private:
 	static Json::Value saveMaterials();
 	static Json::Value saveMaterial(const jl::Material& _material);

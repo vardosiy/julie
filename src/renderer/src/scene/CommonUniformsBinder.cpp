@@ -63,11 +63,11 @@ void CommonUniformsBinder::setupLights(const LightsHolder& _lightsHolder) const 
 	bindUniform(u_ambientColor,				_lightsHolder.getAmbientLightData().color);
 	bindUniform(u_ambientWeight,			_lightsHolder.getAmbientLightData().weight);
 
-	bindUniform(u_pointLightColor,			_lightsHolder.getPointLightsColors());
-	bindUniform(u_lightPosition,			_lightsHolder.getPointLightsPositions());
-
 	bindUniform(u_directionalLightColor,	_lightsHolder.getDirectionalLightsColors());
 	bindUniform(u_lightDirection,			_lightsHolder.getDirectionalLightsDirections());
+
+	bindUniform(u_pointLightColor,			_lightsHolder.getPointLightsColors());
+	bindUniform(u_lightPosition,			_lightsHolder.getPointLightsPositions());
 }
 
 //-----------------------------------------------------------------------------
