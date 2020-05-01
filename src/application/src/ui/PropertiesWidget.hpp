@@ -6,6 +6,8 @@
 #include <memory>
 #include <variant>
 
+//-----------------------------------------------------------------------------
+
 namespace Ui {
 class PropertiesWidget;
 }
@@ -14,8 +16,6 @@ namespace jl {
 class Object;
 class Material;
 }
-
-//-----------------------------------------------------------------------------
 
 class PropertiesWidget : public QWidget
 {
@@ -31,8 +31,20 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	template<typename T>
-	void setPropValue(int _idx, const QString& _name, const T& _value);
+	struct DataChangedHandleVisitor
+	{
+		void operator()(jl::Object* _object);
+		void operator()(jl::Material* _material);
+		void operator()(std::nullptr_t _null);
+
+		int m_propIdx;
+		const std::string& m_newValue;
+	};
+
+//-----------------------------------------------------------------------------
+	void setTableCellValue(int _row, int _col, const QString& _value);
+
+	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::PropertiesWidget> m_ui;
@@ -43,6 +55,12 @@ private:
 
 	static const QString k_objectPropModel;
 	static const QString k_objectPropMaterial;
+
+	static const QString k_columnHeaderPropName;
+	static const QString k_columnHeaderPropValue;
+
+	static constexpr int k_propNameIdx = 0;
+	static constexpr int k_propValueIdx = 1;
 };
 
 //-----------------------------------------------------------------------------

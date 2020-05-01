@@ -1,13 +1,15 @@
 #include "managers/ResourceManager.hpp"
 
-#include "renderer/Model.hpp"
-#include "renderer/Shader.hpp"
-#include "renderer/Texture.hpp"
-#include "renderer/CubeTexture.hpp"
+#include "controllers/AppController.hpp"
 
 #include "managers/factories/ModelsFactory.hpp"
 #include "managers/factories/ShadersFactory.hpp"
 #include "managers/factories/TexturesFactory.hpp"
+
+#include "renderer/Model.hpp"
+#include "renderer/Shader.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/CubeTexture.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -91,6 +93,7 @@ T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fil
 		return it->second.get();
 	}
 
+	AppController::makeContextCurrent();
 	auto [itEmplacedItem, inserted] = _container.emplace(_fileName, _loadFun(_fileName));
 	return itEmplacedItem->second.get();
 }

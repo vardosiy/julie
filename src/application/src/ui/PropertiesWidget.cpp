@@ -4,15 +4,18 @@
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
-#include "renderer/scene/Object.hpp"
 #include "renderer/Material.hpp"
+#include "renderer/scene/Object.hpp"
 
 #include "utils/Utils.hpp"
 
 //-----------------------------------------------------------------------------
 
-const QString PropertiesWidget::k_objectPropModel = "Model";
-const QString PropertiesWidget::k_objectPropMaterial = "Material";
+const QString PropertiesWidget::k_objectPropModel		= "Model";
+const QString PropertiesWidget::k_objectPropMaterial	= "Material";
+
+const QString PropertiesWidget::k_columnHeaderPropValue	= "Value";
+const QString PropertiesWidget::k_columnHeaderPropName	= "Property";
 
 //-----------------------------------------------------------------------------
 
@@ -25,6 +28,11 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 
 	m_ui->tablev_properties->setModel(&m_propertiesTableModel);
 	m_ui->tablev_properties->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+	m_propertiesTableModel.setHeaderData(k_propNameIdx, Qt::Horizontal, k_columnHeaderPropName);
+	m_propertiesTableModel.setHeaderData(k_propValueIdx, Qt::Horizontal, k_columnHeaderPropValue);
+
+	connect(&m_propertiesTableModel, &QStandardItemModel::dataChanged, this, &PropertiesWidget::onDataChanged);
 }
 
 //-----------------------------------------------------------------------------
@@ -33,37 +41,40 @@ void PropertiesWidget::setActiveEntity(jl::Object& _object)
 {
 	constexpr int k_objectPropsCount = 2;
 
-	m_activeEntity = &_object;
+	m_activeEntity = nullptr;
 	m_propertiesTableModel.setRowCount(k_objectPropsCount);
-
-	const ResourceManager& resourceMgr = ResourceManager::getInstance();
-	const MaterialsManager& materialsMgr = MaterialsManager::getInstance();
 
 	int propNum = 0;
 	{
 		QString modelSourceFile;
 		if (const jl::Model* model = _object.getModel())
 		{
-			modelSourceFile = QString::fromStdString(resourceMgr.getSourceFile(*model).c_str());
+			modelSourceFile = ResourceManager::getInstance().getSourceFile(*model).c_str();
 		}
-		setPropValue(propNum++, k_objectPropModel, modelSourceFile);
+
+		setTableCellValue(propNum, k_propNameIdx, k_objectPropModel);
+		setTableCellValue(propNum++, k_propValueIdx, modelSourceFile);
 	}
 	{
 		QString materialName;
 		if (const jl::Material* material = _object.getMaterial())
 		{
-			materialName = QString::fromStdString(materialsMgr.getMaterialName(*material));
+			materialName = MaterialsManager::getInstance().getMaterialName(*material).c_str();
 		}
-		setPropValue(propNum++, k_objectPropMaterial, materialName);
-	}
 
+		setTableCellValue(propNum, k_propNameIdx, k_objectPropMaterial);
+		setTableCellValue(propNum++, k_propValueIdx, materialName);
+	}
 	ASSERT(k_objectPropsCount == propNum);
+
+	m_activeEntity = &_object;
 }
 
 //-----------------------------------------------------------------------------
 
 void PropertiesWidget::setActiveEntity(jl::Material& _material)
 {
+	m_activeEntity = nullptr;
 	m_propertiesTableModel.setRowCount(0);
 }
 
@@ -77,22 +88,60 @@ void PropertiesWidget::reset()
 
 //-----------------------------------------------------------------------------
 
-template<typename T>
-void PropertiesWidget::setPropValue(int _idx, const QString& _name, const T& _value)
+void PropertiesWidget::setTableCellValue(int _row, int _col, const QString& _value)
 {
-	constexpr int k_propNameIdx = 0;
-	constexpr int k_propValueIdx = 1;
+	ASSERT(m_propertiesTableModel.rowCount() > _row);
+	ASSERT(m_propertiesTableModel.columnCount() > _col);
 
-	ASSERT(m_propertiesTableModel.rowCount() > _idx);
+	const QModelIndex idx = m_propertiesTableModel.index(_row, _col);
+	m_propertiesTableModel.setData(idx, _value);
+}
 
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles)
+{
+	ASSERT(_topLeft.row() < 2);
+
+	const std::string newValue = _topLeft.data().toString().toStdString();
+	std::visit(DataChangedHandleVisitor{ _topLeft.row(), newValue }, m_activeEntity);
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::DataChangedHandleVisitor::operator()(jl::Object* _object)
+{
+	switch (m_propIdx)
 	{
-		QModelIndex propNameIdx = m_propertiesTableModel.index(_idx, k_propNameIdx);
-		m_propertiesTableModel.setData(propNameIdx, _name);
+	case 0:
+		if (const jl::Model* model = ResourceManager::getInstance().loadModel(m_newValue))
+		{
+			_object->setModel(*model);
+		}
+		break;
+
+	case 1:
+		if (const jl::Material* material = MaterialsManager::getInstance().getMaterial(m_newValue))
+		{
+			_object->setMaterial(*material);
+		}
+		break;
+
+	default:
+		ASSERT(0);
 	}
-	{
-		QModelIndex valueIdx = m_propertiesTableModel.index(_idx, k_propValueIdx);
-		m_propertiesTableModel.setData(valueIdx, _value);
-	}
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::DataChangedHandleVisitor::operator()(jl::Material* _material)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::DataChangedHandleVisitor::operator()(std::nullptr_t _null)
+{
 }
 
 //-----------------------------------------------------------------------------
