@@ -1,12 +1,12 @@
 #pragma once
 
 #include "renderer/Types.hpp"
-#include "renderer/Vertex.hpp"
-#include "renderer/primitives/Buffer.hpp"
+#include "renderer/primitives/VertexBuffer.hpp"
+#include "renderer/primitives/IndexBuffer.hpp"
 
 #include <boost/noncopyable.hpp>
 
-#include <vector>
+#include <memory>
 
 //-----------------------------------------------------------------------------
 
@@ -18,13 +18,16 @@ class VertexArray
 {
 //-----------------------------------------------------------------------------
 public:
-	VertexArray(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
+	VertexArray();
 	~VertexArray();
 
 	void bind() const noexcept;
 
-	u64 getVerticesCount() const noexcept;
-	u64 getIndicesCount() const noexcept;
+	void setVertexBuffer(std::unique_ptr<VertexBuffer>&& _buffer) noexcept;
+	void setIndexBuffer(std::unique_ptr<IndexBuffer>&& _buffer) noexcept;
+
+	VertexBuffer* getVertexBuffer() const noexcept;
+	IndexBuffer* getIndexBuffer() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
@@ -33,8 +36,8 @@ private:
 //-----------------------------------------------------------------------------
 	u32 m_id;
 
-	Buffer m_vertexBuffer;
-	Buffer m_indexBuffer;
+	std::unique_ptr<VertexBuffer> m_vertexBuffer;
+	std::unique_ptr<IndexBuffer> m_indexBuffer;
 };
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 #include "renderer/primitives/VertexArray.hpp"
+#include "renderer/Vertex.hpp"
+
+#include "utils/Utils.hpp"
 
 #include <glad/glad.h>
-
 #include <array>
 
 //-----------------------------------------------------------------------------
@@ -10,20 +12,9 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-VertexArray::VertexArray(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices)
-	: m_id(0)
-	, m_vertexBuffer(Buffer::Type::VertexBuffer)
-	, m_indexBuffer(Buffer::Type::IndexBuffer)
+VertexArray::VertexArray()
 {
 	glGenVertexArrays(1, &m_id);
-	bind();
-
-	m_vertexBuffer.bind();
-	m_vertexBuffer.bufferData(_vertices);
-	m_indexBuffer.bind();
-	m_indexBuffer.bufferData(_indices);
-
-	setLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -42,16 +33,37 @@ void VertexArray::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-u64 VertexArray::getVerticesCount() const noexcept
+void VertexArray::setVertexBuffer(std::unique_ptr<VertexBuffer>&& _buffer) noexcept
 {
-	return m_vertexBuffer.getItemsCount();
+	m_vertexBuffer = std::move(_buffer);
+
+	bind();
+	m_vertexBuffer->bind();
+	setLayout();
 }
 
 //-----------------------------------------------------------------------------
 
-u64 VertexArray::getIndicesCount() const noexcept
+void VertexArray::setIndexBuffer(std::unique_ptr<IndexBuffer>&& _buffer) noexcept
 {
-	return m_indexBuffer.getItemsCount();
+	m_indexBuffer = std::move(_buffer);
+
+	bind();
+	m_indexBuffer->bind();
+}
+
+//-----------------------------------------------------------------------------
+
+VertexBuffer* VertexArray::getVertexBuffer() const noexcept
+{
+	return m_vertexBuffer ? m_vertexBuffer.get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+IndexBuffer* VertexArray::getIndexBuffer() const noexcept
+{
+	return m_indexBuffer ? m_indexBuffer.get() : nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +73,7 @@ void VertexArray::setLayout() noexcept
 	constexpr u32 k_vertexAttribsCount = 5;
 	constexpr std::array<u32, k_vertexAttribsCount> sizes = { 3, 2, 3, 3, 3 };
 
-	const float * offset = nullptr;
+	const float* offset = nullptr;
 	for (u32 i = 0; i < k_vertexAttribsCount; ++i)
 	{
 		glEnableVertexAttribArray(i);
