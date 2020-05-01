@@ -17,9 +17,10 @@ class MaterialsManager : public utils::Singleton<MaterialsManager>
 public:
 	void clear() noexcept;
 
+	jl::Material& createMaterial(const std::string& _name) noexcept;
+	jl::Material* getMaterial(const std::string& _name) const noexcept;
 	bool hasMaterial(const std::string& _name) const noexcept;
 
-	jl::Material& getMaterial(const std::string& _name) noexcept;
 	const std::string& getMaterialName(const jl::Material& _material) const noexcept;
 
 	void forEachMaterial(const std::function<void(const std::string&, jl::Material&)>& _callback);
@@ -28,5 +29,5 @@ private:
 	MaterialsManager() = default;
 	~MaterialsManager() = default;
 
-	std::unordered_map<std::string, jl::Material> m_materials; // name => material
+	std::unordered_map<std::string, std::unique_ptr<jl::Material>> m_materials; // name => material
 };

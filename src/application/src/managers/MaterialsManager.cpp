@@ -10,16 +10,31 @@ void MaterialsManager::clear() noexcept
 
 //-----------------------------------------------------------------------------
 
-bool MaterialsManager::hasMaterial(const std::string& _name) const noexcept
+jl::Material& MaterialsManager::createMaterial(const std::string& _name) noexcept
 {
-	return m_materials.find(_name) != m_materials.end();
+	std::unique_ptr<jl::Material>& material = m_materials[_name];
+
+	if (!material)
+	{
+		material.reset(new jl::Material);
+	}
+
+	return *material;
 }
 
 //-----------------------------------------------------------------------------
 
-jl::Material& MaterialsManager::getMaterial(const std::string& _name) noexcept
+jl::Material* MaterialsManager::getMaterial(const std::string& _name) const noexcept
 {
-	return m_materials[_name];
+	auto it = m_materials.find(_name);
+	return it != m_materials.end() ? it->second.get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+bool MaterialsManager::hasMaterial(const std::string& _name) const noexcept
+{
+	return m_materials.find(_name) != m_materials.end();
 }
 
 //-----------------------------------------------------------------------------
@@ -28,7 +43,7 @@ const std::string& MaterialsManager::getMaterialName(const jl::Material& _materi
 {
 	for (const auto& [name, material] : m_materials)
 	{
-		if (&material == &_material)
+		if (material.get() == &_material)
 		{
 			return name;
 		}
@@ -42,7 +57,7 @@ void MaterialsManager::forEachMaterial(const std::function<void(const std::strin
 {
 	for (auto& [name, material] : m_materials)
 	{
-		_callback(name, material);
+		_callback(name, *material);
 	}
 }
 

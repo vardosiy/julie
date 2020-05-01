@@ -54,7 +54,7 @@ void JsonSceneRestorer::restoreMaterials(const Json::Value& _json)
 	for (const Json::Value& value : _json)
 	{
 		const std::string& name = value[k_name].asString();
-		jl::Material& material = MaterialsManager::getInstance().getMaterial(name);
+		jl::Material& material = MaterialsManager::getInstance().createMaterial(name);
 
 		{
 			const std::string& shaderPath = value[k_shader].asString();
@@ -83,50 +83,50 @@ void JsonSceneRestorer::restoreMaterialProperties(const Json::Value& _json, jl::
 		const Json::Value& propertyValue = value[k_value];
 		switch (utils::fromString<jl::UniformType>(type))
 		{
-			case jl::UniformType::Int:
-				_material.setProperty(name, propertyValue.asInt());
-				break;
+		case jl::UniformType::Int:
+			_material.setProperty(name, propertyValue.asInt());
+			break;
 
-			case jl::UniformType::Float:
-				_material.setProperty(name, propertyValue.asFloat());
-				break;
+		case jl::UniformType::Float:
+			_material.setProperty(name, propertyValue.asFloat());
+			break;
 
-			case jl::UniformType::Vec2:
-				_material.setProperty(name, details::jsonToVec2(propertyValue));
-				break;
+		case jl::UniformType::Vec2:
+			_material.setProperty(name, details::jsonToVec2(propertyValue));
+			break;
 
-			case jl::UniformType::Vec3:
-				_material.setProperty(name, details::jsonToVec3(propertyValue));
-				break;
+		case jl::UniformType::Vec3:
+			_material.setProperty(name, details::jsonToVec3(propertyValue));
+			break;
 
-			case jl::UniformType::Vec4:
-				_material.setProperty(name, details::jsonToVec4(propertyValue));
-				break;
+		case jl::UniformType::Vec4:
+			_material.setProperty(name, details::jsonToVec4(propertyValue));
+			break;
 
-			case jl::UniformType::Texture2D:
+		case jl::UniformType::Texture2D:
+			{
+				jl::Texture* texture = ResourceManager::getInstance().loadTexture(propertyValue.asString());
+				ASSERT(texture);
+				if (texture)
 				{
-					jl::Texture* texture = ResourceManager::getInstance().loadTexture(propertyValue.asString());
-					ASSERT(texture);
-					if (texture)
-					{
-						_material.setProperty(name, *texture);
-					}
+					_material.setProperty(name, *texture);
 				}
-				break;
+			}
+			break;
 
-			case jl::UniformType::CubeTexture:
+		case jl::UniformType::CubeTexture:
+			{
+				jl::CubeTexture* texture = ResourceManager::getInstance().loadCubeTexture(propertyValue.asString());
+				ASSERT(texture);
+				if (texture)
 				{
-					jl::CubeTexture* texture = ResourceManager::getInstance().loadCubeTexture(propertyValue.asString());
-					ASSERT(texture);
-					if (texture)
-					{
-						_material.setProperty(name, *texture);
-					}
+					_material.setProperty(name, *texture);
 				}
-				break;
+			}
+			break;
 
-			default:
-				ASSERT(0);
+		default:
+			ASSERT(0);
 		}
 	}
 }
@@ -173,8 +173,10 @@ std::unique_ptr<jl::Object> JsonSceneRestorer::restoreObject(const Json::Value& 
 		const Json::Value& materialJson = _json[k_material];
 		if (materialJson.isString())
 		{
-			jl::Material& material = MaterialsManager::getInstance().getMaterial(materialJson.asString());
-			object->setMaterial(material);
+			if (jl::Material* material = MaterialsManager::getInstance().getMaterial(materialJson.asString()))
+			{
+				object->setMaterial(*material);
+			}
 		}
 	}
 
