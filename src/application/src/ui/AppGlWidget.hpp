@@ -2,15 +2,16 @@
 
 #include "CommonDefs.hpp"
 
-#include "renderer/scene/Scene.hpp"
-#include "renderer/scene/Camera.hpp"
-
 #include <QOpenGLWidget>
-#include <QTimer>
 
 #include <functional>
 
 //-----------------------------------------------------------------------------
+
+namespace jl {
+class Scene;
+class Camera;
+}
 
 class AppGlWidget : public QOpenGLWidget
 {
@@ -29,14 +30,12 @@ public:
 //-----------------------------------------------------------------------------
 	AppGlWidget(QWidget* _parent = nullptr);
 
-	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
-
 	void setDrawMode(DrawMode _drawMode) noexcept;
-	void setCameraMoveSpeed(int _speed) noexcept;
-	void setCameraRotateSpeed(int _speed) noexcept;
 
-	jl::Scene* getScene() noexcept;
-	void setScene(jl::Scene* _scene) noexcept;
+	void setScene(const jl::Scene* _scene) noexcept;
+	void setCamera(jl::Camera* _camera) noexcept;
+
+	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
 //-----------------------------------------------------------------------------
 protected:
@@ -48,28 +47,14 @@ protected:
 	void keyReleaseEvent(QKeyEvent* _event) override;
 
 //-----------------------------------------------------------------------------
-private slots:
-	void update();
-
-//-----------------------------------------------------------------------------
 private:
-	float getDeltaTime();
-
-	void updateCameraPosition(float _dt) noexcept;
-
-//-----------------------------------------------------------------------------
 	GlLoadedSignal m_glLoadedSignal;
 
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	jl::Scene* m_scene;
-	jl::Camera m_camera;
-
-	float m_camMoveSpeed;
-	float m_camRotationSpeed;
-
-	QTimer m_updateTimer;
+	const jl::Scene* m_scene;
+	jl::Camera* m_camera;
 };
 
 //-----------------------------------------------------------------------------

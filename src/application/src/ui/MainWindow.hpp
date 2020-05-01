@@ -3,7 +3,12 @@
 #include "CommonDefs.hpp"
 #include "ui/IEntityActionHandler.hpp"
 
+#include "controllers/FreeflyCameraController.hpp"
+
+#include "renderer/scene/Camera.hpp"
+
 #include <QMainWindow>
+#include <QTimer>
 #include <QStringList>
 #include <QStringListModel>
 
@@ -44,13 +49,17 @@ public:
 
 //-----------------------------------------------------------------------------
 private slots:
+	void update();
 	void onFillPolygonsValueChanged(int _state);
 
 //-----------------------------------------------------------------------------
 private:
 	void setupUi();
+	void setupConnections();
 
 	void onGlLoaded();
+
+	float getDeltaTime();
 
 	std::string computeObjectName() const;
 	std::string computeMaterialName() const;
@@ -62,7 +71,8 @@ private:
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
-	std::unique_ptr<jl::Scene> m_scene;
+
+	QTimer m_updateTimer;
 
 	QStringList m_objectsNamesList;
 	QStringListModel m_objectsListModel;
@@ -74,6 +84,11 @@ private:
 	PropertiesWidget* m_propertiesWdg;
 
 	app::ScopedConnection m_glLoadedConnection;
+
+	std::unique_ptr<jl::Scene> m_scene;
+
+	jl::Camera m_camera;
+	FreeflyCameraController m_cameraController;
 
 	static constexpr std::string_view k_saveFile = "SaveFile.json";
 	static constexpr std::string_view k_defaultObjectName = "object_000";

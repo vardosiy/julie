@@ -4,12 +4,16 @@
 
 #include "ui_MainWindow.h"
 
+#include "controllers/AppController.hpp"
+
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
 #include "save_restore/JsonSceneSaver.hpp"
 #include "save_restore/JsonSceneRestorer.hpp"
 
+#include "renderer/Renderer.hpp"
+#include "renderer/Globals.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Object.hpp"
@@ -24,10 +28,17 @@
 
 MainWindow::MainWindow(QMainWindow* parent)
 	: QMainWindow(parent)
+	, m_updateTimer(this)
 	, m_objectsListModel(this)
 	, m_entitisWdg(nullptr)
+	, m_propertiesWdg(nullptr)
+	, m_camera(0.00001f, 100.0f, 45.0f)
 {
 	setupUi();
+	setupConnections();
+
+	m_updateTimer.start(1);
+	m_cameraController.setCamera(&m_camera);
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
 	{
@@ -42,6 +53,8 @@ MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
 	JsonSceneSaver::save(file, *m_scene);
+
+	jl::Renderer::shutdown();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +98,7 @@ void MainWindow::objectSelected(const QString& _name)
 void MainWindow::addMaterial()
 {
 	const std::string materialName = computeMaterialName();
-	jl::Material& material = MaterialsManager::getInstance().getMaterial(materialName);
+	jl::Material& material = MaterialsManager::getInstance().createMaterial(materialName);
 
 	m_materialsNamesList.append(materialName.c_str());
 	m_materialsListModel.setStringList(m_materialsNamesList);
@@ -112,22 +125,35 @@ void MainWindow::resetSelection()
 
 //-----------------------------------------------------------------------------
 
+void MainWindow::update()
+{
+	const float dt = getDeltaTime();
+	jl::Globals::s_timeTotal += dt;
+
+	m_scene->update(dt);
+	m_cameraController.update(dt);
+
+	m_ui->oglw_screen->repaint();
+}
+
+//-----------------------------------------------------------------------------
+
 void MainWindow::onFillPolygonsValueChanged(int _state)
 {
 	AppGlWidget::DrawMode drawMode = AppGlWidget::DrawMode::Fill;
 
 	switch (_state)
 	{
-		case Qt::CheckState::Checked:
-			drawMode = AppGlWidget::DrawMode::Fill;
-			break;
+	case Qt::CheckState::Checked:
+		drawMode = AppGlWidget::DrawMode::Fill;
+		break;
 
-		case Qt::CheckState::Unchecked:
-			drawMode = AppGlWidget::DrawMode::Edges;
-			break;
+	case Qt::CheckState::Unchecked:
+		drawMode = AppGlWidget::DrawMode::Edges;
+		break;
 
-		default:
-			ASSERT(0);
+	default:
+		ASSERT(0);
 	}
 
 	m_ui->oglw_screen->setDrawMode(drawMode);
@@ -148,26 +174,50 @@ void MainWindow::setupUi()
 
 	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
 	m_ui->dock_props->setWidget(m_propertiesWdg);
+}
 
-	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this,				&MainWindow::onFillPolygonsValueChanged);
-	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		m_ui->oglw_screen,	&AppGlWidget::setCameraMoveSpeed);
-	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		m_ui->oglw_screen,	&AppGlWidget::setCameraRotateSpeed);
+//-----------------------------------------------------------------------------
+
+void MainWindow::setupConnections()
+{
+	connect(&m_updateTimer,				&QTimer::timeout,			this, &MainWindow::update);
+	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this, &MainWindow::onFillPolygonsValueChanged);
+
+	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged, [this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
+	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged, [this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::onGlLoaded()
 {
+	jl::Renderer::init();
+	AppController::setGlWidget(m_ui->oglw_screen);
+
 	std::ifstream file(k_saveFile.data());
 	m_scene = JsonSceneRestorer::restore(file);
 
 	m_ui->oglw_screen->setScene(m_scene.get());
+	m_ui->oglw_screen->setCamera(&m_camera);
 
 	m_scene->forEachObject([this](const jl::Object& _object)
 	{
 		m_objectsNamesList.append(_object.getName().c_str());
 	});
 	m_objectsListModel.setStringList(m_objectsNamesList);
+}
+
+//-----------------------------------------------------------------------------
+
+float MainWindow::getDeltaTime()
+{
+	static TimePoint s_lastTime = Clock::now();
+	const TimePoint currentTime = Clock::now();
+
+	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
+	s_lastTime = currentTime;
+
+	return durationFloat.count();
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +253,7 @@ std::string MainWindow::computeEntityName(
 	while (_entityExistCheckFun(result))
 	{
 		fmt::memory_buffer buf;
-		format_to(buf, "{:03d}\n", ++counter);
+		format_to(buf, "{:03d}", ++counter);
 
 		const size_t offset = result.length() - 3;
 		result.replace(offset, 3, buf.data(), 3); // last param need due to MSVC bug
