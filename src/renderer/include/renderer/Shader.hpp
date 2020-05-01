@@ -27,7 +27,6 @@ public:
 	~Shader();
 
 	void bind() const noexcept;
-	void draw(const Model& _model) const noexcept;
 
 //-----------------------------------------------------------------------------
 	bool hasUniform(const std::string& _name) const noexcept;

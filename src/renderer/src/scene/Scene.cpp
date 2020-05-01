@@ -4,6 +4,9 @@
 
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Renderer.hpp"
+#include "renderer/scene/Camera.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -20,10 +23,6 @@ Scene::~Scene() = default;
 
 void Scene::update(float _dt)
 {
-	//for (auto& renderable : m_objects)
-	//{
-	//	renderable->update(_dt);
-	//}
 }
 
 //-----------------------------------------------------------------------------
@@ -46,8 +45,13 @@ void Scene::render(const Camera& _camera) const
 				uniformBinder.setupCommon(_camera, object->getWorldMatrix());
 				uniformBinder.setupLights(m_lightsHolder);
 
-				shader->draw(*model);
+				Renderer::draw(*model);
 			}
+		}
+
+		if (model)
+		{
+			Renderer::draw(model->getBoundingBox(), glm::vec4(1.0f), _camera.getViewProjectionMatrix() * object->getWorldMatrix());
 		}
 	}
 }

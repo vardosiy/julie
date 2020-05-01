@@ -59,14 +59,6 @@ void Shader::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Shader::draw(const Model& _model) const noexcept
-{
-	_model.bind();
-	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
 bool Shader::hasUniform(const std::string& _name) const noexcept
 {
 	return getUniformLocation(_name) != -1;
