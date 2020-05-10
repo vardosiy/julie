@@ -13,45 +13,13 @@ namespace jl {
 
 class Texture : public TextureBase
 {
-//-----------------------------------------------------------------------------
 public:
-	enum class Format
-	{
-		Rgb,
-		Rgba,
-		DepthComponent,
-	};
-
-	enum class FragmentType
-	{
-		UnsignedByte,
-		UnsignedInt,
-	};
-
-	struct InitData
-	{
-		Format format;
-		FragmentType fragmentType;
-
-		std::unique_ptr<char[]> data;
-		u32 width;
-		u32 height;
-	};
+	static std::unique_ptr<Texture> loadFromFile(std::string_view _filePath);
+	static std::unique_ptr<Texture> createColorTexture(u32 _width, u32 _height);
+	static std::unique_ptr<Texture> createDepthTexture(u32 _width, u32 _height);
 	
-//-----------------------------------------------------------------------------
-	Texture(const InitData& _initData) noexcept;
-
-	u32 getWidth() const noexcept	{ return m_width; }
-	u32 getHeight() const noexcept	{ return m_height; }
-	
-//-----------------------------------------------------------------------------
 private:
-	static s32 formatToGlValue(Format _format);
-	static s32 fragmentTypeToGlValue(FragmentType _type);
-	
-//-----------------------------------------------------------------------------
-	u32 m_width;
-	u32 m_height;
+	Texture(const char* _data, u32 _width, u32 _height, Format _format, FragmentType _fragmentType);
 };
 
 //-----------------------------------------------------------------------------

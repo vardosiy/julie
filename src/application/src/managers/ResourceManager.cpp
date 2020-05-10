@@ -2,10 +2,6 @@
 
 #include "controllers/AppController.hpp"
 
-#include "managers/factories/ModelsFactory.hpp"
-#include "managers/factories/ShadersFactory.hpp"
-#include "managers/factories/TexturesFactory.hpp"
-
 #include "renderer/Model.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/Texture.hpp"
@@ -30,28 +26,28 @@ void ResourceManager::clear()
 
 jl::Model* ResourceManager::loadModel(const std::string& _fileName)
 {
-	return loadCommon(m_models, _fileName, ModelsFactory::loadFromFile);
+	return loadCommon(m_models, _fileName, jl::Model::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
 jl::Shader* ResourceManager::loadShader(const std::string& _fileName)
 {
-	return loadCommon(m_shaders, _fileName, ShadersFactory::loadFromFile);
+	return loadCommon(m_shaders, _fileName, jl::Shader::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
 jl::Texture* ResourceManager::loadTexture(const std::string& _fileName)
 {
-	return loadCommon(m_textures, _fileName, TexturesFactory::load2dTextureFromFile);
+	return loadCommon(m_textures, _fileName, jl::Texture::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------
 
 jl::CubeTexture* ResourceManager::loadCubeTexture(const std::string& _fileName)
 {
-	return loadCommon(m_cubeTextures, _fileName, TexturesFactory::loadCubeTextureFromFile);
+	return loadCommon(m_cubeTextures, _fileName, jl::CubeTexture::loadFromFile);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,4 @@
-#include "managers/factories/ShadersFactory.hpp"
-#include "AppUtils.hpp"
+#include "creation_helper/ShaderCrationHelper.hpp"
 
 #include "renderer/Shader.hpp"
 
@@ -10,7 +9,11 @@
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Shader> ShadersFactory::loadFromFile(std::string_view _filePath)
+namespace jl {
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<Shader> ShaderCrationHelper::loadFromFile(std::string_view _filePath)
 {
 	std::string vsStr;
 	std::string fsStr;
@@ -50,11 +53,33 @@ std::unique_ptr<jl::Shader> ShadersFactory::loadFromFile(std::string_view _fileP
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Shader> ShadersFactory::loadFromSeparateFiles(std::string_view _vsPath, std::string_view _fsPath)
+std::unique_ptr<Shader> ShaderCrationHelper::loadFromFiles(std::string_view _vsPath, std::string_view _fsPath)
 {
 	const std::string vsStr = readFileContent(_vsPath);
 	const std::string fsStr = readFileContent(_fsPath);
-	return jl::Shader::create(vsStr, fsStr);
+	return Shader::create(vsStr, fsStr);
 }
+
+//-----------------------------------------------------------------------------
+
+std::string ShaderCrationHelper::readFileContent(std::string_view _filePath)
+{
+	std::string fileContent;
+
+	std::ifstream file(_filePath.data());
+	ASSERTM(file.is_open(), "Can't open file {}", _filePath.data());
+	if (file.is_open())
+	{
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		fileContent = buffer.str();
+	}
+
+	return fileContent;
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace jl
 
 //-----------------------------------------------------------------------------

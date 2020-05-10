@@ -1,7 +1,8 @@
 #include "renderer/Shader.hpp"
-
 #include "renderer/Vertex.hpp"
 #include "renderer/Model.hpp"
+
+#include "creation_helper/ShaderCrationHelper.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -11,6 +12,20 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<Shader> Shader::loadFromFile(std::string_view _filePath)
+{
+	return ShaderCrationHelper::loadFromFile(_filePath);
+}
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<Shader> Shader::loadFromFiles(std::string_view _vsPath, std::string_view _fsPath)
+{
+	return ShaderCrationHelper::loadFromFiles(_vsPath, _fsPath);
+}
 
 //-----------------------------------------------------------------------------
 

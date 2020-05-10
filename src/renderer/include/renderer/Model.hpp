@@ -7,6 +7,8 @@
 #include <boost/noncopyable.hpp>
 
 #include <vector>
+#include <memory>
+#include <string_view>
 
 //-----------------------------------------------------------------------------
 
@@ -18,6 +20,9 @@ class Model : boost::noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
+	static std::unique_ptr<Model> loadFromFile(std::string_view _filePath);
+
+//-----------------------------------------------------------------------------
 	Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices);
 
 	void bind() const;

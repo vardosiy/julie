@@ -21,6 +21,8 @@ class Shader : boost::noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
+	static std::unique_ptr<Shader> loadFromFile(std::string_view _filePath);
+	static std::unique_ptr<Shader> loadFromFiles(std::string_view _vsPath, std::string_view _fsPath);
 	static std::unique_ptr<Shader> create(std::string_view _vsSource, std::string_view _fsSource);
 
 //-----------------------------------------------------------------------------

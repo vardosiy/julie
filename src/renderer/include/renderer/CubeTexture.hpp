@@ -13,24 +13,15 @@ namespace jl {
 
 class CubeTexture : public TextureBase
 {
-//-----------------------------------------------------------------------------
 public:
-	struct InitData
-	{
-		std::unique_ptr<char[]> data;
-		u32 width;
-		u32 height;
-		u32 bpp;
-	};
-	
-//-----------------------------------------------------------------------------
-	CubeTexture(const InitData& _initData) noexcept;
+	static std::unique_ptr<jl::CubeTexture> loadFromFile(std::string_view _filePath);
 
 	u32 getFaceWidth() const noexcept;
 
-//-----------------------------------------------------------------------------
 private:
-	static void loadDataToGpu(const char* _data, u32 _width, u32 _height, u32 _bpp);
+	CubeTexture(const char* _data, u32 _width, u32 _height, u32 _bpp);
+
+	static void loadDataToGpu(const char* _data, u32 _faceWidth, u32 _bpp);
 	static void extractFace(
 		const char* _pSrc,	// source
 		char* _pDst,		// destination
@@ -40,9 +31,6 @@ private:
 		u32 _offsetY,		// pixels
 		u32 _bpp
 	);
-	
-//-----------------------------------------------------------------------------
-	u32 m_faceWidth;
 };
 
 //-----------------------------------------------------------------------------
