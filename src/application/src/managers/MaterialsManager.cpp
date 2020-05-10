@@ -24,7 +24,7 @@ jl::Material& MaterialsManager::createMaterial(const std::string& _name) noexcep
 
 //-----------------------------------------------------------------------------
 
-jl::Material* MaterialsManager::getMaterial(const std::string& _name) const noexcept
+jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noexcept
 {
 	auto it = m_materials.find(_name);
 	return it != m_materials.end() ? it->second.get() : nullptr;
@@ -32,14 +32,7 @@ jl::Material* MaterialsManager::getMaterial(const std::string& _name) const noex
 
 //-----------------------------------------------------------------------------
 
-bool MaterialsManager::hasMaterial(const std::string& _name) const noexcept
-{
-	return m_materials.find(_name) != m_materials.end();
-}
-
-//-----------------------------------------------------------------------------
-
-const std::string& MaterialsManager::getMaterialName(const jl::Material& _material) const noexcept
+const std::string& MaterialsManager::findMaterialName(const jl::Material& _material) const noexcept
 {
 	for (const auto& [name, material] : m_materials)
 	{

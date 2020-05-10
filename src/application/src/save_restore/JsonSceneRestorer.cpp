@@ -173,7 +173,7 @@ std::unique_ptr<jl::Object> JsonSceneRestorer::restoreObject(const Json::Value& 
 		const Json::Value& materialJson = _json[k_material];
 		if (materialJson.isString())
 		{
-			if (jl::Material* material = MaterialsManager::getInstance().getMaterial(materialJson.asString()))
+			if (jl::Material* material = MaterialsManager::getInstance().findMaterial(materialJson.asString()))
 			{
 				object->setMaterial(*material);
 			}

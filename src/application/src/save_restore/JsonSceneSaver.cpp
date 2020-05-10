@@ -180,7 +180,7 @@ Json::Value JsonSceneSaver::saveObject(const jl::Object& _object)
 	}
 	if (const jl::Material* material = _object.getMaterial())
 	{
-		result[k_material] = MaterialsManager::getInstance().getMaterialName(*material);
+		result[k_material] = MaterialsManager::getInstance().findMaterialName(*material);
 	}
 
 	return result;
