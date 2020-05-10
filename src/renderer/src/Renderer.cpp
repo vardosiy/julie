@@ -4,7 +4,7 @@
 
 #include "renderer/primitives/VertexArray.hpp"
 
-#include "utils/Assert.hpp"
+#include "utils/Utils.hpp"
 
 #include <glad/glad.h>
 
@@ -28,6 +28,7 @@ const std::string Renderer::k_boxShaderVsSource = R"(
 		gl_Position = u_WVP * vec4(a_posL, 1.0);
 	}
 )";
+
 const std::string Renderer::k_boxShaderFsSource = R"(
 	#version 330 core
 	precision mediump float;
@@ -45,23 +46,35 @@ const std::string Renderer::k_boxShaderFsSource = R"(
 
 void Renderer::init()
 {
-	constexpr u64 k_vertexBufferSize = 1024;
-	constexpr u64 k_indexBufferSize = 1024;
+	ASSERT(gladLoadGL());
 
-	s_vertexArray.reset(new VertexArray);
-	s_vertexArray->setVertexBuffer(std::make_unique<VertexBuffer>(k_vertexBufferSize));
-	s_vertexArray->setIndexBuffer(std::make_unique<IndexBuffer>(k_indexBufferSize));
+	LOG_INFO(
+		"OpenGL info\n-> Vendor: {}\n-> Renderer: {}\n-> Version: {}",
+		glGetString(GL_VENDOR),
+		glGetString(GL_RENDERER),
+		glGetString(GL_VERSION)
+	);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	s_shader = Shader::create(k_boxShaderVsSource, k_boxShaderFsSource);
+
+	s_vertexArray.reset(new VertexArray);
+	s_vertexArray->setVertexBuffer(std::make_unique<VertexBuffer>(1024));
+	s_vertexArray->setIndexBuffer(std::make_unique<IndexBuffer>(1024));
+
 	ASSERT(s_shader);
+	ASSERT(s_vertexArray);
 }
 
 //-----------------------------------------------------------------------------
 
 void Renderer::shutdown()
 {
-	s_vertexArray.reset();
 	s_shader.reset();
+	s_vertexArray.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,15 +98,15 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 	IndexBuffer* indexBuffer = s_vertexArray->getIndexBuffer();
 
 	Vertex vertBuf[8];
-	vertBuf[0].pos = _box.pos1;
-	vertBuf[1].pos = glm::vec3(_box.pos2.x, _box.pos1.y, _box.pos1.z);
-	vertBuf[2].pos = glm::vec3(_box.pos1.x, _box.pos2.y, _box.pos1.z);
-	vertBuf[3].pos = glm::vec3(_box.pos2.x, _box.pos2.y, _box.pos1.z);
+	vertBuf[0].pos = glm::vec3(_box.min.x, _box.max.y, _box.min.z);
+	vertBuf[1].pos = glm::vec3(_box.max.x, _box.max.y, _box.min.z);
+	vertBuf[2].pos = _box.min;
+	vertBuf[3].pos = glm::vec3(_box.max.x, _box.min.y, _box.min.z);
 
-	vertBuf[4].pos = glm::vec3(_box.pos1.x, _box.pos1.y, _box.pos2.z);
-	vertBuf[5].pos = glm::vec3(_box.pos2.x, _box.pos1.y, _box.pos2.z);
-	vertBuf[6].pos = glm::vec3(_box.pos1.x, _box.pos2.y, _box.pos2.z);
-	vertBuf[7].pos = _box.pos2;
+	vertBuf[4].pos = glm::vec3(_box.min.x, _box.max.y, _box.max.z);
+	vertBuf[5].pos = _box.max;
+	vertBuf[6].pos = glm::vec3(_box.min.x, _box.min.y, _box.max.z);
+	vertBuf[7].pos = glm::vec3(_box.max.x, _box.min.y, _box.max.z);
 
 	vertexBuffer->bufferData(vertBuf, std::size(vertBuf), 0);
 
@@ -110,6 +123,20 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 
 //-----------------------------------------------------------------------------
 
+void Renderer::clear() noexcept
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+//-----------------------------------------------------------------------------
+
+void Renderer::setClearColor(const glm::vec4& _color) noexcept
+{
+	glClearColor(_color.r, _color.g, _color.b, _color.a);
+}
+
+//-----------------------------------------------------------------------------
+
 void Renderer::setFrontPolygonsMode(PolygonMode _mode) noexcept
 {
 	glPolygonMode(GL_FRONT, polygonModeToGlValue(_mode));
@@ -120,13 +147,6 @@ void Renderer::setFrontPolygonsMode(PolygonMode _mode) noexcept
 void Renderer::setBackPolygonsMode(PolygonMode _mode) noexcept
 {
 	glPolygonMode(GL_BACK, polygonModeToGlValue(_mode));
-}
-
-//-----------------------------------------------------------------------------
-
-void Renderer::setClearColor(const glm::vec4& _color) noexcept
-{
-	glClearColor(_color.r, _color.g, _color.b, _color.a);
 }
 
 //-----------------------------------------------------------------------------

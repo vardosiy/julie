@@ -32,15 +32,14 @@ public:
 
 //-----------------------------------------------------------------------------
 private slots:
+	void onCurrentTabChanged(int _idx);
+
 	void onAddEntityBtnReleased();
 	void onDeleteEntityBtnReleased();
 
-	void onObjectSelected(const QItemSelection& _selection);
-	void onMaterialSelected(const QItemSelection& _selection);
-
 //-----------------------------------------------------------------------------
 private:
-	void onEntitySelected(const QItemSelection& _selection, std::function<void(const QString&)>&& _callback);
+	void onEntitySelected(const QItemSelection& _selection);
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::EntitiesWidget> m_ui;

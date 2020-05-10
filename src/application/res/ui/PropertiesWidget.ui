@@ -60,21 +60,21 @@
        <number>2</number>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="lbl_position_2">
+       <widget class="QLabel" name="lbl_position">
         <property name="text">
          <string>Position</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="lbl_scale_2">
+       <widget class="QLabel" name="lbl_scale">
         <property name="text">
          <string>Scale</string>
         </property>
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QDoubleSpinBox" name="dsb_scaleZ_2">
+       <widget class="QDoubleSpinBox" name="dsb_scaleZ">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>
@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="dsb_positionX_2">
+       <widget class="QDoubleSpinBox" name="dsb_posX">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>
@@ -94,7 +94,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="dsb_scaleX_2">
+       <widget class="QDoubleSpinBox" name="dsb_scaleX">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>
@@ -104,7 +104,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QDoubleSpinBox" name="dsb_positionY_2">
+       <widget class="QDoubleSpinBox" name="dsb_posY">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>
@@ -114,7 +114,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QDoubleSpinBox" name="dsb_positionZ_2">
+       <widget class="QDoubleSpinBox" name="dsb_posZ">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>
@@ -124,7 +124,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QDoubleSpinBox" name="dsb_scaleY_2">
+       <widget class="QDoubleSpinBox" name="dsb_scaleY">
         <property name="minimum">
          <double>-100.000000000000000</double>
         </property>

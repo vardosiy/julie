@@ -53,17 +53,16 @@ MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
 	JsonSceneSaver::save(file, *m_scene);
-
-	jl::Renderer::shutdown();
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::addObject()
 {
-	auto object = std::make_unique<jl::Object>(computeObjectName());
+	const std::string name = computeObjectName();
+	auto object = std::make_unique<jl::Object>(name);
 
-	m_objectsNamesList.append(object->getName().c_str());
+	m_objectsNamesList.append(name.c_str());
 	m_objectsListModel.setStringList(m_objectsNamesList);
 
 	m_scene->addObject(std::move(object));
@@ -97,10 +96,10 @@ void MainWindow::objectSelected(const QString& _name)
 
 void MainWindow::addMaterial()
 {
-	const std::string materialName = computeMaterialName();
-	jl::Material& material = MaterialsManager::getInstance().createMaterial(materialName);
+	const std::string name = computeMaterialName();
+	jl::Material& material = MaterialsManager::getInstance().createMaterial(name);
 
-	m_materialsNamesList.append(materialName.c_str());
+	m_materialsNamesList.append(name.c_str());
 	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
@@ -114,6 +113,10 @@ void MainWindow::deleteMaterial(const QString& _name)
 
 void MainWindow::materialSelected(const QString& _name)
 {
+	if (jl::Material* material = MaterialsManager::getInstance().findMaterial(_name.toStdString()))
+	{
+		m_propertiesWdg->setActiveEntity(*material);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -132,6 +135,14 @@ void MainWindow::update()
 
 	m_scene->update(dt);
 	m_cameraController.update(dt);
+
+	const glm::vec3& camPos = m_camera.getPosition();
+	const std::string camPosStr = fmt::format("{:.2f} {:.2f} {:.2f}", camPos.x, camPos.y, camPos.z);
+	m_ui->lbl_camPosValue->setText(QString::fromStdString(camPosStr));
+
+	const glm::vec3& camViewTarget = m_camera.getViewTarget();
+	const std::string camViewTargetStr = fmt::format("{:.2f} {:.2f} {:.2f}", camViewTarget.x, camViewTarget.y, camViewTarget.z);
+	m_ui->lbl_camViewDirectionValue->setText(QString::fromStdString(camViewTargetStr));
 
 	m_ui->oglw_screen->repaint();
 }
@@ -183,15 +194,16 @@ void MainWindow::setupConnections()
 	connect(&m_updateTimer,				&QTimer::timeout,			this, &MainWindow::update);
 	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this, &MainWindow::onFillPolygonsValueChanged);
 
-	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged, [this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
-	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged, [this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
+	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
+	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
+
+	connect(m_ui->chb_showBb,			&QCheckBox::stateChanged,	[this](int _value) { m_ui->oglw_screen->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::onGlLoaded()
 {
-	jl::Renderer::init();
 	AppController::setGlWidget(m_ui->oglw_screen);
 
 	std::ifstream file(k_saveFile.data());
@@ -205,6 +217,12 @@ void MainWindow::onGlLoaded()
 		m_objectsNamesList.append(_object.getName().c_str());
 	});
 	m_objectsListModel.setStringList(m_objectsNamesList);
+
+	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	{
+		m_materialsNamesList.append(_name.c_str());
+	});
+	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +244,7 @@ std::string MainWindow::computeObjectName() const
 {
 	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
 	{
-		return m_scene->findObject(_name);
+		return m_scene->findObject(_name) != nullptr;
 	});
 }
 
@@ -236,7 +254,7 @@ std::string MainWindow::computeMaterialName() const
 {
 	return computeEntityName(k_defaultMaterialName, [](const std::string& _name)
 	{
-		return MaterialsManager::getInstance().hasMaterial(_name);
+		return MaterialsManager::getInstance().findMaterial(_name) != nullptr;
 	});
 }
 

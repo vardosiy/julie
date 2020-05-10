@@ -47,6 +47,13 @@ const glm::vec3& Camera::getPosition() const noexcept
 
 //-----------------------------------------------------------------------------
 
+const glm::vec3& Camera::getViewTarget() const noexcept
+{
+	return m_target;
+}
+
+//-----------------------------------------------------------------------------
+
 const glm::mat4& Camera::getViewMatrix() const noexcept
 {
 	return m_viewMatrix;

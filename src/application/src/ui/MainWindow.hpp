@@ -76,7 +76,6 @@ private:
 
 	QStringList m_objectsNamesList;
 	QStringListModel m_objectsListModel;
-
 	QStringList m_materialsNamesList;
 	QStringListModel m_materialsListModel;
 

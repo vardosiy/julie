@@ -20,6 +20,7 @@ public:
 	void update();
 
 	const glm::vec3& getPosition()				const noexcept;
+	const glm::vec3& getViewTarget()			const noexcept;
 	const glm::mat4& getViewMatrix()			const noexcept;
 	const glm::mat4& getProjectionMatrix()		const noexcept;
 	const glm::mat4& getViewProjectionMatrix()	const noexcept;

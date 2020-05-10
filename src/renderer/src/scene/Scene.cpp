@@ -34,7 +34,7 @@ void Scene::render(const Camera& _camera) const
 		const Model* model = object->getModel();
 		const Material* material = object->getMaterial();
 
-		if (material && model)
+		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawModel && material && model)
 		{
 			material->bind();
 
@@ -49,9 +49,13 @@ void Scene::render(const Camera& _camera) const
 			}
 		}
 
-		if (model)
+		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawBoundingBox && model)
 		{
-			Renderer::draw(model->getBoundingBox(), glm::vec4(1.0f), _camera.getViewProjectionMatrix() * object->getWorldMatrix());
+			Renderer::draw(
+				model->getBoundingBox(),
+				glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+				_camera.getViewProjectionMatrix() * object->getWorldMatrix()
+			);
 		}
 	}
 }

@@ -13,14 +13,11 @@ Object::Object(std::string _name) noexcept
 	: m_name(std::move(_name))
 	, m_model(nullptr)
 	, m_material(nullptr)
+	, m_renderFlags(RenderFlags::DrawModel)
 	, m_worldMatrix(1.0f)
 	, m_bIsTransformChanged(false)
 {
 }
-
-//-----------------------------------------------------------------------------
-
-Object::~Object() = default;
 
 //-----------------------------------------------------------------------------
 
@@ -54,6 +51,20 @@ const glm::mat4& Object::getWorldMatrix() const noexcept
 const std::string& Object::getName() const noexcept
 {
 	return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+Object::RenderFlags Object::getRenderFlags() const noexcept
+{
+	return m_renderFlags;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setRenderFlags(RenderFlags _flags) noexcept
+{
+	m_renderFlags = _flags;
 }
 
 //-----------------------------------------------------------------------------

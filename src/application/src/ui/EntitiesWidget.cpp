@@ -11,8 +11,9 @@ EntitiesWidget::EntitiesWidget(QWidget* parent)
 	m_ui = std::make_unique<Ui::EntitiesWidget>();
 	m_ui->setupUi(this);
 
-	connect(m_ui->btn_add, &QPushButton::released, this, &EntitiesWidget::onAddEntityBtnReleased);
-	connect(m_ui->btn_delete, &QPushButton::released, this, &EntitiesWidget::onDeleteEntityBtnReleased);
+	connect(m_ui->btn_add,		&QPushButton::released,			this, &EntitiesWidget::onAddEntityBtnReleased);
+	connect(m_ui->btn_delete,	&QPushButton::released,			this, &EntitiesWidget::onDeleteEntityBtnReleased);
+	connect(m_ui->tabv_data,	&QTabWidget::currentChanged,	this, &EntitiesWidget::onCurrentTabChanged);
 }
 
 //-----------------------------------------------------------------------------
@@ -21,8 +22,8 @@ void EntitiesWidget::setObjectsListModel(QAbstractItemModel& _model)
 {
 	m_ui->listv_objects->setModel(&_model);
 
-	const QItemSelectionModel* objectsSelectionModel = m_ui->listv_objects->selectionModel();
-	connect(objectsSelectionModel, &QItemSelectionModel::selectionChanged, this, &EntitiesWidget::onObjectSelected);
+	const QItemSelectionModel* selectionModel = m_ui->listv_objects->selectionModel();
+	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &EntitiesWidget::onEntitySelected);
 }
 
 //-----------------------------------------------------------------------------
@@ -31,8 +32,8 @@ void EntitiesWidget::setMaterialsListModel(QAbstractItemModel& _model)
 {
 	m_ui->listv_materials->setModel(&_model);
 
-	const QItemSelectionModel* objectsSelectionModel = m_ui->listv_materials->selectionModel();
-	connect(objectsSelectionModel, &QItemSelectionModel::selectionChanged, this, &EntitiesWidget::onMaterialSelected);
+	const QItemSelectionModel* selectionModel = m_ui->listv_materials->selectionModel();
+	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &EntitiesWidget::onEntitySelected);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,6 +41,23 @@ void EntitiesWidget::setMaterialsListModel(QAbstractItemModel& _model)
 void EntitiesWidget::setEntityActionHandler(IEntityActionHandler& _handler)
 {
 	m_actionHandler = &_handler;
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::onCurrentTabChanged(int _idx)
+{
+	const QWidget* currentTab = m_ui->tabv_data->widget(_idx);
+	if (currentTab == m_ui->tab_objects)
+	{
+		const QItemSelectionModel* selectionModel = m_ui->listv_objects->selectionModel();
+		onEntitySelected(selectionModel->selection());
+	}
+	else if (currentTab == m_ui->tab_materials)
+	{
+		const QItemSelectionModel* selectionModel = m_ui->listv_materials->selectionModel();
+		onEntitySelected(selectionModel->selection());
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -108,27 +126,31 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::onObjectSelected(const QItemSelection& _selection)
+void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 {
-	onEntitySelected(_selection, std::bind(&IEntityActionHandler::objectSelected, m_actionHandler, std::placeholders::_1));
-}
+	ASSERT(m_actionHandler);
+	if (!m_actionHandler)
+	{
+		return;
+	}
 
-//-----------------------------------------------------------------------------
-
-void EntitiesWidget::onMaterialSelected(const QItemSelection& _selection)
-{
-	onEntitySelected(_selection, std::bind(&IEntityActionHandler::materialSelected, m_actionHandler, std::placeholders::_1));
-}
-
-//-----------------------------------------------------------------------------
-
-void EntitiesWidget::onEntitySelected(const QItemSelection& _selection, std::function<void(const QString&)>&& _callback)
-{
 	const QModelIndexList indexList = _selection.indexes();
 	if (indexList.size() == 1)
 	{
 		const QString entityName = indexList.back().data().toString();
-		_callback(entityName);
+
+		if (m_ui->tab_objects->isVisible())
+		{
+			m_actionHandler->objectSelected(entityName);
+		}
+		else if (m_ui->tab_materials->isVisible())
+		{
+			m_actionHandler->materialSelected(entityName);
+		}
+		else
+		{
+			ASSERT(0);
+		}
 	}
 	else
 	{

@@ -17,12 +17,30 @@ public:
 		Down
 	};
 
-	void processKey(int _key, bool _bIsPressed) noexcept;
+	enum Modifiers
+	{
+		None	= 0,
+		Ctrl	= 1 << 0,
+		Alt		= 1 << 1,
+		Shift	= 1 << 2
+	};
+
+	void keyPressed(int _key) noexcept;
+	void keyReleased(int _key) noexcept;
 	bool isPressed(int _key) const noexcept;
+
+	Modifiers getModifiers() const noexcept;
+	void setModifiers(Modifiers _modifiers) noexcept;
+
+	bool isCtrlPressed() const noexcept;
+	bool isAltPressed() const noexcept;
+	bool isShiftPressed() const noexcept;
 
 private:
 	InputManager() = default;
 	~InputManager() = default;
 
 	std::unordered_map<int, bool> m_keyStates;
+
+	Modifiers m_modifiers;
 };
