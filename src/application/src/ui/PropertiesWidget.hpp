@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QDoubleSpinBox>
 #include <QStandardItemModel>
 
 #include <memory>
@@ -31,20 +32,16 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	struct DataChangedHandleVisitor
-	{
-		void operator()(jl::Object* _object);
-		void operator()(jl::Material* _material);
-		void operator()(std::nullptr_t _null);
+	void setupObjectTransform(const QModelIndex& _parent, const jl::Object& _object);
 
-		int m_propIdx;
-		const std::string& m_newValue;
-	};
+	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
+	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value);
+	void setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing);
 
-//-----------------------------------------------------------------------------
-	void setTableCellValue(int _row, int _col, const QString& _value);
+	QModelIndex index(int _row, int _col, const QModelIndex& _parent);
 
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
+	void onObjectChanged(const QModelIndex& _idx, jl::Object& _object);
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::PropertiesWidget> m_ui;
@@ -53,14 +50,8 @@ private:
 
 	std::variant<jl::Object*, jl::Material*, std::nullptr_t> m_activeEntity;
 
-	static const QString k_objectPropModel;
-	static const QString k_objectPropMaterial;
-
-	static const QString k_columnHeaderPropName;
-	static const QString k_columnHeaderPropValue;
-
-	static constexpr int k_propNameIdx = 0;
-	static constexpr int k_propValueIdx = 1;
+	static constexpr int k_nameColIdx = 0;
+	static constexpr int k_valueColIdx = 1;
 };
 
 //-----------------------------------------------------------------------------
