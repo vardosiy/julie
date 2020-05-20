@@ -9,7 +9,7 @@ namespace jl {
 
 class Shader;
 
-class ShaderCrationHelper
+class ShaderCreationHelper
 {
 public:
 	static std::unique_ptr<Shader> loadFromFile(std::string_view _filePath);

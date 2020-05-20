@@ -1,4 +1,4 @@
-#include "creation_helper/ShaderCrationHelper.hpp"
+#include "ShaderCreationHelper.hpp"
 
 #include "renderer/Shader.hpp"
 
@@ -13,7 +13,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Shader> ShaderCrationHelper::loadFromFile(std::string_view _filePath)
+std::unique_ptr<Shader> ShaderCreationHelper::loadFromFile(std::string_view _filePath)
 {
 	std::string vsStr;
 	std::string fsStr;
@@ -53,7 +53,7 @@ std::unique_ptr<Shader> ShaderCrationHelper::loadFromFile(std::string_view _file
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Shader> ShaderCrationHelper::loadFromFiles(std::string_view _vsPath, std::string_view _fsPath)
+std::unique_ptr<Shader> ShaderCreationHelper::loadFromFiles(std::string_view _vsPath, std::string_view _fsPath)
 {
 	const std::string vsStr = readFileContent(_vsPath);
 	const std::string fsStr = readFileContent(_fsPath);
@@ -62,7 +62,7 @@ std::unique_ptr<Shader> ShaderCrationHelper::loadFromFiles(std::string_view _vsP
 
 //-----------------------------------------------------------------------------
 
-std::string ShaderCrationHelper::readFileContent(std::string_view _filePath)
+std::string ShaderCreationHelper::readFileContent(std::string_view _filePath)
 {
 	std::string fileContent;
 

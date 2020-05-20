@@ -2,7 +2,7 @@
 #include "renderer/TextureTiling.hpp"
 #include "renderer/TextureFiltering.hpp"
 
-#include "creation_helper/formats/LoadTga.hpp"
+#include "formats/LoadTga.hpp"
 
 #include "utils/Utils.hpp"
 
