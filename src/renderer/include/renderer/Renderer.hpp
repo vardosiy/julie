@@ -49,8 +49,8 @@ private:
 	static std::unique_ptr<Shader> s_shader;
 	static std::unique_ptr<VertexArray> s_vertexArray;
 
-	static const std::string k_boxShaderVsSource;
-	static const std::string k_boxShaderFsSource;
+	static const std::string k_primitivesShaderVsSource;
+	static const std::string k_primitivesShaderFsSource;
 };
 
 //-----------------------------------------------------------------------------

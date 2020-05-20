@@ -17,7 +17,7 @@ namespace jl {
 std::unique_ptr<Shader> Renderer::s_shader;
 std::unique_ptr<VertexArray> Renderer::s_vertexArray;
 
-const std::string Renderer::k_boxShaderVsSource = R"(
+const std::string Renderer::k_primitivesShaderVsSource = R"(
 	#version 330 core
 
 	layout (location = 0) in vec3 a_posL;
@@ -29,7 +29,7 @@ const std::string Renderer::k_boxShaderVsSource = R"(
 	}
 )";
 
-const std::string Renderer::k_boxShaderFsSource = R"(
+const std::string Renderer::k_primitivesShaderFsSource = R"(
 	#version 330 core
 	precision mediump float;
 
@@ -59,7 +59,7 @@ void Renderer::init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	s_shader = Shader::create(k_boxShaderVsSource, k_boxShaderFsSource);
+	s_shader = Shader::create(k_primitivesShaderVsSource, k_primitivesShaderFsSource);
 
 	s_vertexArray.reset(new VertexArray);
 	s_vertexArray->setVertexBuffer(std::make_unique<VertexBuffer>(1024));

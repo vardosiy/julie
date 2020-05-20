@@ -55,14 +55,14 @@ const std::string& Object::getName() const noexcept
 
 //-----------------------------------------------------------------------------
 
-Object::RenderFlags Object::getRenderFlags() const noexcept
+s32 Object::getRenderFlags() const noexcept
 {
 	return m_renderFlags;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setRenderFlags(RenderFlags _flags) noexcept
+void Object::setRenderFlags(s32 _flags) noexcept
 {
 	m_renderFlags = _flags;
 }

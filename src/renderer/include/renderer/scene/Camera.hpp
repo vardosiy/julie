@@ -21,6 +21,7 @@ public:
 
 	const glm::vec3& getPosition()				const noexcept;
 	const glm::vec3& getViewTarget()			const noexcept;
+
 	const glm::mat4& getViewMatrix()			const noexcept;
 	const glm::mat4& getProjectionMatrix()		const noexcept;
 	const glm::mat4& getViewProjectionMatrix()	const noexcept;
@@ -65,7 +66,6 @@ private:
 
 	bool m_bIsModified;
 
-//-----------------------------------------------------------------------------
 	static constexpr glm::vec3 k_camDirection = -constants::axis::z;
 	static constexpr float k_maxCamRotationX = 0.99999999f;
 };

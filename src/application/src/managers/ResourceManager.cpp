@@ -106,7 +106,9 @@ const std::string& ResourceManager::getSourceFileCommon(const Container<T>& _con
 			return sourceFile;
 		}
 	}
-	return "";
+
+	static const std::string k_runtimeModelSource = "";
+	return k_runtimeModelSource;
 }
 
 //-----------------------------------------------------------------------------

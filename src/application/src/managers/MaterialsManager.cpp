@@ -32,6 +32,24 @@ jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noe
 
 //-----------------------------------------------------------------------------
 
+void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
+{
+	m_materials.erase(_name);
+}
+
+//-----------------------------------------------------------------------------
+
+void MaterialsManager::deleteMaterial(jl::Material& _material) noexcept
+{
+	const std::string& materialName = findMaterialName(_material);
+	if (!materialName.empty())
+	{
+		deleteMaterial(materialName);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 const std::string& MaterialsManager::findMaterialName(const jl::Material& _material) const noexcept
 {
 	for (const auto& [name, material] : m_materials)
@@ -41,7 +59,9 @@ const std::string& MaterialsManager::findMaterialName(const jl::Material& _mater
 			return name;
 		}
 	}
-	return "";
+
+	static const std::string k_unmanagedMaterialName = "";
+	return k_unmanagedMaterialName;
 }
 
 //-----------------------------------------------------------------------------

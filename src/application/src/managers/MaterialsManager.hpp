@@ -20,6 +20,9 @@ public:
 	jl::Material& createMaterial(const std::string& _name) noexcept;
 	jl::Material* findMaterial(const std::string& _name) const noexcept;
 
+	void deleteMaterial(const std::string& _name) noexcept;
+	void deleteMaterial(jl::Material& _material) noexcept;
+
 	const std::string& findMaterialName(const jl::Material& _material) const noexcept;
 
 	void forEachMaterial(const std::function<void(const std::string&, jl::Material&)>& _callback);

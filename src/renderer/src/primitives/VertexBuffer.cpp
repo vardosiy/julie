@@ -1,6 +1,6 @@
 #include "renderer/primitives/VertexBuffer.hpp"
 
-#include "utils/Assert.hpp"
+#include "utils/Utils.hpp"
 
 #include <glad/glad.h>
 

@@ -19,17 +19,29 @@ namespace details {
 
 inline glm::vec2 jsonToVec2(const Json::Value& _val) noexcept
 {
-	return glm::vec2(_val[0].asFloat(), _val[1].asFloat());
+	if (_val.isArray() && _val.size() >= 2)
+	{
+		return glm::vec2(_val[0].asFloat(), _val[1].asFloat());
+	}
+	return glm::vec2(0.0f);
 }
 
 inline glm::vec3 jsonToVec3(const Json::Value& _val) noexcept
 {
-	return glm::vec3(_val[0].asFloat(), _val[1].asFloat(), _val[2].asFloat());
+	if (_val.isArray() && _val.size() >= 3)
+	{
+		return glm::vec3(_val[0].asFloat(), _val[1].asFloat(), _val[2].asFloat());
+	}
+	return glm::vec3(0.0f);
 }
 
 inline glm::vec4 jsonToVec4(const Json::Value& _val) noexcept
 {
-	return glm::vec4(_val[0].asFloat(), _val[1].asFloat(), _val[2].asFloat(), _val[3].asFloat());
+	if (_val.isArray() && _val.size() >= 4)
+	{
+		return glm::vec4(_val[0].asFloat(), _val[1].asFloat(), _val[2].asFloat(), _val[3].asFloat());
+	}
+	return glm::vec4(0.0f);
 }
 
 //-----------------------------------------------------------------------------

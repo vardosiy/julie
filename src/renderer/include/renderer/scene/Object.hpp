@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/Types.hpp"
+
 #include <glm/glm.hpp>
 #include <string>
 
@@ -32,8 +34,8 @@ public:
 	const glm::mat4&	getWorldMatrix() const noexcept;
 	const std::string&	getName() const noexcept;
 
-	RenderFlags getRenderFlags() const noexcept;
-	void setRenderFlags(RenderFlags _flags) noexcept;
+	s32 getRenderFlags() const noexcept;
+	void setRenderFlags(s32 _flags) noexcept;
 
 	void setModel(const Model& _model) noexcept;
 	void setMaterial(const Material& _material) noexcept;
@@ -72,7 +74,7 @@ private:
 	const Model*	m_model;
 	const Material*	m_material;
 
-	RenderFlags m_renderFlags;
+	s32 m_renderFlags;
 
 	TransformData		m_transformData;
 	mutable glm::mat4	m_worldMatrix;
