@@ -24,7 +24,8 @@ AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_scene(nullptr)
 	, m_camera(nullptr)
-	, m_drawBoundingBoxes(false)
+	, m_selectedObject(nullptr)
+	, m_selectedObjDistance(0.0f)
 {
 }
 
@@ -39,33 +40,15 @@ AppGlWidget::~AppGlWidget()
 
 void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 {
-	jl::Renderer::PolygonMode frontPolygonsMode;
-	jl::Renderer::PolygonMode backPolygonsMode;
+	const jl::Renderer::PolygonMode polygonsMode =
+		_drawMode == DrawMode::Edges ?
+		jl::Renderer::PolygonMode::Line :
+		jl::Renderer::PolygonMode::Fill;
 
-	switch (_drawMode)
+	m_prerenderCommand = [polygonsMode]()
 	{
-	case DrawMode::Fill:
-		{
-			frontPolygonsMode = jl::Renderer::PolygonMode::Fill;
-			backPolygonsMode = jl::Renderer::PolygonMode::Fill;
-		}
-		break;
-
-	case DrawMode::Edges:
-		{
-			frontPolygonsMode = jl::Renderer::PolygonMode::Line;
-			backPolygonsMode = jl::Renderer::PolygonMode::Line;
-		}
-		break;
-
-	default:
-		ASSERT(0);
-	}
-
-	m_prerenderCommand = [frontPolygonsMode, backPolygonsMode]()
-	{
-		jl::Renderer::setFrontPolygonsMode(frontPolygonsMode);
-		jl::Renderer::setBackPolygonsMode(backPolygonsMode);
+		jl::Renderer::setFrontPolygonsMode(polygonsMode);
+		jl::Renderer::setBackPolygonsMode(polygonsMode);
 	};
 	m_postrenderCommand = []()
 	{
@@ -78,7 +61,6 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 
 void AppGlWidget::drawBoundingBoxes(bool _val) noexcept
 {
-	m_drawBoundingBoxes = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -97,6 +79,13 @@ void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
 
 //-----------------------------------------------------------------------------
 
+void AppGlWidget::setActionHandler(IEntityActionHandler* _handler) noexcept
+{
+	m_actionHandler = _handler;
+}
+
+//-----------------------------------------------------------------------------
+
 app::Connection AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
 {
 	return m_glLoadedSignal.connect(_callback);
@@ -107,6 +96,13 @@ app::Connection AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type&
 void AppGlWidget::initializeGL()
 {
 	jl::Renderer::init();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glLineWidth(3.0f);
+
 	m_glLoadedSignal();
 }
 
@@ -210,6 +206,7 @@ void AppGlWidget::mouseMoveEvent(QMouseEvent* _event)
 		m_selectedObject->setPosition(m_selectedObject->getPosition() + diff);
 
 		m_prevMousePos = clickPos;
+		m_actionHandler->onObjectMoved(*m_selectedObject);
 	}
 }
 
@@ -225,6 +222,7 @@ void AppGlWidget::wheelEvent(QWheelEvent* _event)
 		const glm::vec3 newScale = originalScale * scaleFactor;
 
 		m_selectedObject->setScale(newScale);
+		m_actionHandler->onObjectScaled(*m_selectedObject);
 	}
 }
 
@@ -255,9 +253,9 @@ void AppGlWidget::processKeyboardModifiers(Qt::KeyboardModifiers _modifiers)
 void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 {
 	m_selectedObject = nullptr;
-	float distance = std::numeric_limits<float>::max();
+	m_selectedObjDistance = std::numeric_limits<float>::max();
 
-	m_scene->forEachObject([&_ray, &distance, this](jl::Object& _object)
+	m_scene->forEachObject([&_ray, this](jl::Object& _object)
 	{
 		_object.setRenderFlags(jl::Object::RenderFlags::DrawModel);
 
@@ -267,10 +265,10 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 
 			float nearPos = 0.0f;
 			float farPos = 0.0f;
-			if (jl::intersects(boxWorld, _ray, nearPos, farPos) && nearPos < distance)
+			if (jl::intersects(boxWorld, _ray, nearPos, farPos) && nearPos < m_selectedObjDistance)
 			{
-				distance = nearPos;
 				m_selectedObject = &_object;
+				m_selectedObjDistance = nearPos;
 			}
 		}
 	});
@@ -286,7 +284,7 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 
 jl::rayf AppGlWidget::calcRayFromMouseClick(QPoint _pos, const jl::Camera& _camera)
 {
-	glm::vec4 rayClip(calcNormalizedClickPos(_pos, _camera), 1.0f);
+	glm::vec4 rayClip = glm::vec4(calcNormalizedClickPos(_pos, _camera), 1.0f);
 	rayClip.z = -1.0f;
 
 	glm::vec4 rayEye = glm::inverse(_camera.getProjectionMatrix()) * rayClip;
@@ -301,8 +299,7 @@ jl::rayf AppGlWidget::calcRayFromMouseClick(QPoint _pos, const jl::Camera& _came
 
 glm::vec3 AppGlWidget::calcWorldPosFromMouseClick(QPoint _pos, const jl::Camera& _camera)
 {
-	glm::vec4 posClip(calcNormalizedClickPos(_pos, _camera), 1.0f);
-
+	glm::vec4 posClip = glm::vec4(calcNormalizedClickPos(_pos, _camera), 1.0f);
 	glm::vec4 posEye = glm::inverse(_camera.getProjectionMatrix()) * posClip;
 	posEye = glm::vec4(posEye.x, posEye.y, 0.0, 0.0);
 
@@ -315,7 +312,6 @@ glm::vec3 AppGlWidget::calcNormalizedClickPos(QPoint _pos, const jl::Camera& _ca
 {
 	const float normalisedX = 2.0f * _pos.x() / jl::Globals::s_screenWidth - 1.0f;
 	const float normalisedY = 1.0f - 2.0f * _pos.y() / jl::Globals::s_screenHeight;
-
 	return glm::vec3(normalisedX, normalisedY, 0.0f);
 }
 

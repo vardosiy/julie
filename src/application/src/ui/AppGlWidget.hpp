@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CommonDefs.hpp"
+#include "ui/IEntityActionHandler.hpp"
+
 #include "renderer/Types.hpp"
 
 #include <boost/optional.hpp>
@@ -41,6 +43,7 @@ public:
 
 	void setScene(jl::Scene* _scene) noexcept;
 	void setCamera(jl::Camera* _camera) noexcept;
+	void setActionHandler(IEntityActionHandler* _handler) noexcept;
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
@@ -79,9 +82,11 @@ private:
 	jl::Camera* m_camera;
 	jl::Object* m_selectedObject;
 
-	boost::optional<glm::vec3> m_prevMousePos;
+	IEntityActionHandler* m_actionHandler;
 
-	bool m_drawBoundingBoxes;
+	float m_selectedObjDistance;
+
+	boost::optional<glm::vec3> m_prevMousePos;
 };
 
 //-----------------------------------------------------------------------------

@@ -31,11 +31,81 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 
 void PropertiesWidget::setActiveEntity(jl::Object& _object)
 {
-	constexpr int k_objectPropsCount = 3;
+	if (std::holds_alternative<jl::Object*>(m_activeEntity) &&
+		std::get<jl::Object*>(m_activeEntity) == &_object)
+	{
+		return;
+	}
 
 	m_activeEntity = nullptr;
-	m_propertiesTableModel.setRowCount(k_objectPropsCount);
+	m_propertiesTableModel.setRowCount(3);
 
+	const QModelIndex transformIdx = index(2, k_nameColIdx, QModelIndex());
+	m_propertiesTableModel.insertRows(0, 2, transformIdx);
+	m_propertiesTableModel.insertColumns(0, 2, transformIdx);
+
+	int transfromNum = 0;
+	const QModelIndex posIdx = index(transfromNum++, k_nameColIdx, transformIdx);
+	m_propertiesTableModel.insertRows(0, 3, posIdx);
+	m_propertiesTableModel.insertColumns(0, 2, posIdx);
+
+	const QModelIndex scaleIdx = index(transfromNum++, k_nameColIdx, transformIdx);
+	m_propertiesTableModel.insertRows(0, 3, scaleIdx);
+	m_propertiesTableModel.insertColumns(0, 2, scaleIdx);
+
+	refreshObjectProperties(_object);
+
+	m_activeEntity = &_object;
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::setActiveEntity(jl::Material& _material)
+{
+	if (std::holds_alternative<jl::Material*>(m_activeEntity) &&
+		std::get<jl::Material*>(m_activeEntity) == &_material)
+	{
+		return;
+	}
+
+	m_activeEntity = nullptr;
+
+	const int propertiesCount = _material.getProperties().size();
+	m_propertiesTableModel.setRowCount(propertiesCount);
+
+	refreshMaterialProperties(_material);
+
+	m_activeEntity = &_material;
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::reset()
+{
+	m_activeEntity = nullptr;
+	m_propertiesTableModel.setRowCount(0);
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::refreshValues()
+{
+	if (std::holds_alternative<jl::Object*>(m_activeEntity))
+	{
+		const jl::Object* obj = std::get<jl::Object*>(m_activeEntity);
+		refreshObjectProperties(*obj);
+	}
+	else if (std::holds_alternative<jl::Material*>(m_activeEntity))
+	{
+		const jl::Material* material = std::get<jl::Material*>(m_activeEntity);
+		refreshMaterialProperties(*material);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::refreshObjectProperties(const jl::Object& _object)
+{
 	const QModelIndex rootIdx;
 
 	int propNum = 0;
@@ -56,117 +126,55 @@ void PropertiesWidget::setActiveEntity(jl::Object& _object)
 		setPropertyRow(propNum++, rootIdx, "Material", materialName);
 	}
 	{
+		const QModelIndex transformIdx = index(propNum, k_nameColIdx, rootIdx);
+
 		setHeaderRow(propNum, rootIdx, "Transform");
-		setupObjectTransform(index(propNum, k_nameColIdx, rootIdx), _object);
+
+		int transfromNum = 0;
+		{
+			const QModelIndex posIdx = index(transfromNum, k_nameColIdx, transformIdx);
+
+			setHeaderRow(transfromNum, transformIdx, "Position");
+
+			const glm::vec3& pos = _object.getPosition();
+			setPropertyRow(0, posIdx, "X", pos.x);
+			setPropertyRow(1, posIdx, "Y", pos.y);
+			setPropertyRow(2, posIdx, "Z", pos.z);
+
+			++transfromNum;
+		}
+		{
+			const QModelIndex scaleIdx = index(transfromNum, k_nameColIdx, transformIdx);
+
+			setHeaderRow(transfromNum, transformIdx, "Actual Size (in meters)");
+
+			const glm::vec3& scale = _object.getScale();
+			setPropertyRow(0, scaleIdx, "Width",  scale.x);
+			setPropertyRow(1, scaleIdx, "Height", scale.y);
+			setPropertyRow(2, scaleIdx, "Depth",  scale.z);
+
+			++transfromNum;
+		}
+		ASSERT(transfromNum == 2);
 
 		++propNum;
 	}
-	ASSERT(k_objectPropsCount == propNum);
-
-	m_activeEntity = &_object;
+	ASSERT(propNum == 3);
 }
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setupObjectTransform(const QModelIndex& _parent, const jl::Object& _object)
+void PropertiesWidget::refreshMaterialProperties(const jl::Material& _material)
 {
-	m_propertiesTableModel.insertRows(0, 2, _parent);
-	m_propertiesTableModel.insertColumns(0, 2, _parent);
-
-	int transfromNum = 0;
-	{
-		const QModelIndex posIdx = index(transfromNum, k_nameColIdx, _parent);
-		m_propertiesTableModel.insertRows(0, 3, posIdx);
-		m_propertiesTableModel.insertColumns(0, 2, posIdx);
-
-		setHeaderRow(transfromNum, _parent, "Position");
-
-		const glm::vec3& pos = _object.getPosition();
-		setPropertyRow(0, posIdx, "X", pos.x);
-		setPropertyRow(1, posIdx, "Y", pos.y);
-		setPropertyRow(2, posIdx, "Z", pos.z);
-
-		++transfromNum;
-	}
-	{
-		const QModelIndex scaleIdx = index(transfromNum, k_nameColIdx, _parent);
-		m_propertiesTableModel.insertRows(0, 3, scaleIdx);
-		m_propertiesTableModel.insertColumns(0, 2, scaleIdx);
-
-		setHeaderRow(transfromNum, _parent, "Actual Size (in meters)");
-
-		const glm::vec3& scale = _object.getScale();
-		setPropertyRow(0, scaleIdx, "Width",  scale.x);
-		setPropertyRow(1, scaleIdx, "Height", scale.y);
-		setPropertyRow(2, scaleIdx, "Depth",  scale.z);
-
-		++transfromNum;
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void PropertiesWidget::setActiveEntity(jl::Material& _material)
-{
-	m_activeEntity = nullptr;
-
 	const auto& properties = _material.getProperties();
 	const int propertiesCount = properties.size();
 
 	const QModelIndex rootIdx;
 
-	m_propertiesTableModel.setRowCount(propertiesCount);
 	for (int i = 0; i < propertiesCount; ++i)
 	{
 		setPropertyRow(i, rootIdx, QString::fromStdString(properties[i].name), "");
 	}
-
-	m_activeEntity = &_material;
-}
-
-//-----------------------------------------------------------------------------
-
-void PropertiesWidget::reset()
-{
-	m_activeEntity = nullptr;
-	m_propertiesTableModel.setRowCount(0);
-}
-
-//-----------------------------------------------------------------------------
-
-void PropertiesWidget::setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name)
-{
-	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
-	setCellValue(index(_row, k_valueColIdx, _parent), "", false);
-}
-
-//-----------------------------------------------------------------------------
-
-void PropertiesWidget::setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value)
-{
-	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
-	setCellValue(index(_row, k_valueColIdx, _parent), _value, true);
-}
-
-//-----------------------------------------------------------------------------
-
-void PropertiesWidget::setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing)
-{
-	m_propertiesTableModel.setData(_idx, _value);
-
-	QStandardItem* item = m_propertiesTableModel.itemFromIndex(_idx);
-	ASSERT(item);
-	if (item)
-	{
-		item->setFlags(_enableEditing ? item->flags() | Qt::ItemIsEditable : item->flags() & ~Qt::ItemIsEditable);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-QModelIndex PropertiesWidget::index(int _row, int _col, const QModelIndex& _parent)
-{
-	return m_propertiesTableModel.index(_row, _col, _parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,19 +196,19 @@ void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIn
 void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _object)
 {
 	const QModelIndex rootIdx;
-	const QString newValue = _idx.data().toString();
+	const std::string newValue = _idx.data().toString().toStdString();
 
 	int propNum = 0;
 	if (_idx == index(propNum++, k_valueColIdx, rootIdx))
 	{
-		if (const jl::Model* model = ResourceManager::getInstance().loadModel(newValue.toStdString()))
+		if (const jl::Model* model = ResourceManager::getInstance().loadModel(newValue))
 		{
 			_object.setModel(*model);
 		}
 	}
 	else if (_idx == index(propNum++, k_valueColIdx, rootIdx))
 	{
-		if (const jl::Material* material = MaterialsManager::getInstance().findMaterial(newValue.toStdString()))
+		if (const jl::Material* material = MaterialsManager::getInstance().findMaterial(newValue))
 		{
 			_object.setMaterial(*material);
 		}
@@ -243,6 +251,43 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _obj
 			}
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name)
+{
+	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
+	setCellValue(index(_row, k_valueColIdx, _parent), "", false);
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value)
+{
+	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
+	setCellValue(index(_row, k_valueColIdx, _parent), _value, true);
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing)
+{
+	m_propertiesTableModel.setData(_idx, _value);
+
+	QStandardItem* item = m_propertiesTableModel.itemFromIndex(_idx);
+	ASSERT(item);
+	if (item)
+	{
+		item->setFlags(_enableEditing ? item->flags() | Qt::ItemIsEditable : item->flags() & ~Qt::ItemIsEditable);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+QModelIndex PropertiesWidget::index(int _row, int _col, const QModelIndex& _parent)
+{
+	return m_propertiesTableModel.index(_row, _col, _parent);
 }
 
 //-----------------------------------------------------------------------------

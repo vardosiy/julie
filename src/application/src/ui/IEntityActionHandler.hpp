@@ -2,6 +2,10 @@
 
 #include <QString>
 
+namespace jl {
+class Object;
+}
+
 class IEntityActionHandler
 {
 public:
@@ -16,4 +20,7 @@ public:
 	virtual void materialSelected(const QString& _name) = 0;
 
 	virtual void resetSelection() = 0;
+
+	virtual void onObjectMoved(jl::Object& _object) = 0;
+	virtual void onObjectScaled(jl::Object& _object) = 0;
 };
