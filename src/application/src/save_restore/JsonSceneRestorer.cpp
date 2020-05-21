@@ -171,13 +171,17 @@ std::unique_ptr<jl::Object> JsonSceneRestorer::restoreObject(const Json::Value& 
 
 	{
 		const Json::Value& modelJson = _json[k_model];
-		if (modelJson.isString())
+		if (modelJson.isString() && !modelJson.empty())
 		{
-			jl::Model* model = ResourceManager::getInstance().loadModel(modelJson.asString());
-			ASSERT(model);
-			if (model)
+			const std::string modelSource = modelJson.asString();
+			if (!modelSource.empty())
 			{
-				object->setModel(*model);
+				jl::Model* model = ResourceManager::getInstance().loadModel(modelJson.asString());
+				ASSERT(model);
+				if (model)
+				{
+					object->setModel(*model);
+				}
 			}
 		}
 	}

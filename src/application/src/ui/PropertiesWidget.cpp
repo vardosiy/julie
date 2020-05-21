@@ -14,6 +14,7 @@
 PropertiesWidget::PropertiesWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_propertiesTableModel(0, 2, this)
+	, m_activeEntity(nullptr)
 {
 	m_ui = std::make_unique<Ui::PropertiesWidget>();
 	m_ui->setupUi(this);
@@ -113,7 +114,7 @@ void PropertiesWidget::refreshObjectProperties(const jl::Object& _object)
 		QString modelSourceFile;
 		if (const jl::Model* model = _object.getModel())
 		{
-			modelSourceFile = ResourceManager::getInstance().getSourceFile(*model).c_str();
+			modelSourceFile = ResourceManager::getInstance().findSourceFile(*model).c_str();
 		}
 		setPropertyRow(propNum++, rootIdx, "Model", modelSourceFile);
 	}

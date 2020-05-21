@@ -12,8 +12,9 @@
 #include "save_restore/JsonSceneSaver.hpp"
 #include "save_restore/JsonSceneRestorer.hpp"
 
-#include "renderer/Renderer.hpp"
 #include "renderer/Globals.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Shader.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/scene/Scene.hpp"
 #include "renderer/scene/Object.hpp"
@@ -23,6 +24,91 @@
 #include <QKeyEvent>
 
 #include <fstream>
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<jl::Model> createRoomModel()
+{
+	constexpr size_t k_verticeCount = 30;
+
+	std::vector<jl::Vertex> vertices(k_verticeCount);
+
+	{
+		size_t i = 0;
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+		vertices[i].pos = glm::vec3(0.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, 1.0f);
+
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+		vertices[i].pos = glm::vec3(0.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 0.0f, -1.0f);
+
+		vertices[i].pos = glm::vec3(0.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(1.0f, 0.0f, 0.0f);
+
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(-1.0f, 0.0f, 0.0f);
+
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+		vertices[i].pos = glm::vec3(1.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+		vertices[i].pos = glm::vec3(0.0f, 0.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		//vertices[i].pos = glm::vec3(0.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+		//vertices[i].pos = glm::vec3(1.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+		//vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+		//vertices[i].pos = glm::vec3(1.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+		//vertices[i].pos = glm::vec3(0.0f, 1.0f, 1.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+		//vertices[i].pos = glm::vec3(0.0f, 1.0f, 0.0f); vertices[i++].norm = glm::vec3(0.0f, -1.0f, 0.0f);
+
+		ASSERT(i == k_verticeCount);
+	}
+
+	std::vector<jl::u16> indices(k_verticeCount);
+	for (jl::u16 j = 0; j < k_verticeCount; ++j)
+	{
+		indices[j] = j;
+	}
+
+	return std::make_unique<jl::Model>(vertices, indices);
+}
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<jl::Model> createPlatformModel()
+{
+	std::vector<jl::Vertex> vertices(4);
+
+	vertices[0].pos  = glm::vec3(0.0f, 0.0f, 0.0f);
+	vertices[1].pos  = glm::vec3(0.0f, 0.0f, 1.0f);
+	vertices[2].pos  = glm::vec3(1.0f, 0.0f, 0.0f);
+	vertices[3].pos  = glm::vec3(1.0f, 0.0f, 1.0f);
+
+	vertices[0].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertices[1].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertices[2].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+	vertices[3].norm = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	std::vector<jl::u16> indices{ 0, 1, 2, 1, 2, 3 };
+
+	return std::make_unique<jl::Model>(vertices, indices);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -39,6 +125,8 @@ MainWindow::MainWindow(QMainWindow* parent)
 
 	m_updateTimer.start(1);
 	m_cameraController.setCamera(&m_camera);
+
+	m_camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
 	{
@@ -107,6 +195,7 @@ void MainWindow::addMaterial()
 
 void MainWindow::deleteMaterial(const QString& _name)
 {
+	//MaterialsManager::getInstance().deleteMaterial(_name.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -124,6 +213,20 @@ void MainWindow::materialSelected(const QString& _name)
 void MainWindow::resetSelection()
 {
 	m_propertiesWdg->reset();
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::onObjectMoved(jl::Object& _object)
+{
+	m_propertiesWdg->refreshValues();
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::onObjectScaled(jl::Object& _object)
+{
+	m_propertiesWdg->refreshValues();
 }
 
 //-----------------------------------------------------------------------------
@@ -177,6 +280,8 @@ void MainWindow::setupUi()
 	m_ui = std::make_unique<Ui::MainWindow>();
 	m_ui->setupUi(this);
 
+	m_ui->oglw_screen->setActionHandler(this);
+
 	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
 	m_entitisWdg->setObjectsListModel(m_objectsListModel);
 	m_entitisWdg->setMaterialsListModel(m_materialsListModel);
@@ -185,6 +290,40 @@ void MainWindow::setupUi()
 
 	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
 	m_ui->dock_props->setWidget(m_propertiesWdg);
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::setupRoom()
+{
+	static const std::string k_roomObjName = "Room";
+	static const std::string k_roomMaterialName = "RoomMaterial";
+
+	jl::Object* room = m_scene->findObject(k_roomObjName);
+	if (!room)
+	{
+		auto obj = std::make_unique<jl::Object>(k_roomObjName);
+		room = obj.get();
+
+		m_scene->addObject(std::move(obj));
+	}
+
+	if (!m_roomModel)
+	{
+		m_roomModel = createRoomModel();
+	}
+	if (!m_roomShader)
+	{
+		m_roomShader = jl::Shader::loadFromFiles("res/shaders/LightColor.vs", "res/shaders/LightColor.fs");
+	}
+
+	jl::Material& roomMaterial = MaterialsManager::getInstance().createMaterial(k_roomMaterialName);
+	roomMaterial.setShader(*m_roomShader);
+	roomMaterial.setProperty("u_color", glm::vec4(1.0f));
+	roomMaterial.setProperty("u_specularPower", 128.0f);
+
+	room->setModel(*m_roomModel);
+	room->setMaterial(roomMaterial);
 }
 
 //-----------------------------------------------------------------------------
@@ -208,6 +347,8 @@ void MainWindow::onGlLoaded()
 
 	std::ifstream file(k_saveFile.data());
 	m_scene = JsonSceneRestorer::restore(file);
+
+	setupRoom();
 
 	m_ui->oglw_screen->setScene(m_scene.get());
 	m_ui->oglw_screen->setCamera(&m_camera);

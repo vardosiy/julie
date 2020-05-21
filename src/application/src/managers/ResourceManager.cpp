@@ -52,30 +52,30 @@ jl::CubeTexture* ResourceManager::loadCubeTexture(const std::string& _fileName)
 
 //-----------------------------------------------------------------------------
 
-const std::string& ResourceManager::getSourceFile(const jl::Model& _model) const noexcept
+const std::string& ResourceManager::findSourceFile(const jl::Model& _model) const noexcept
 {
-	return getSourceFileCommon(m_models, _model);
+	return findSourceFileCommon(m_models, _model);
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& ResourceManager::getSourceFile(const jl::Shader& _shader) const noexcept
+const std::string& ResourceManager::findSourceFile(const jl::Shader& _shader) const noexcept
 {
-	return getSourceFileCommon(m_shaders, _shader);
+	return findSourceFileCommon(m_shaders, _shader);
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& ResourceManager::getSourceFile(const jl::Texture& _texture) const noexcept
+const std::string& ResourceManager::findSourceFile(const jl::Texture& _texture) const noexcept
 {
-	return getSourceFileCommon(m_textures, _texture);
+	return findSourceFileCommon(m_textures, _texture);
 }
 
 //-----------------------------------------------------------------------------
 
-const std::string& ResourceManager::getSourceFile(const jl::CubeTexture& _texture) const noexcept
+const std::string& ResourceManager::findSourceFile(const jl::CubeTexture& _texture) const noexcept
 {
-	return getSourceFileCommon(m_cubeTextures, _texture);
+	return findSourceFileCommon(m_cubeTextures, _texture);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fil
 //-----------------------------------------------------------------------------
 
 template<typename T>
-const std::string& ResourceManager::getSourceFileCommon(const Container<T>& _container, const T& _resource) noexcept
+const std::string& ResourceManager::findSourceFileCommon(const Container<T>& _container, const T& _resource) noexcept
 {
 	for (const auto& [sourceFile, resource] : _container)
 	{

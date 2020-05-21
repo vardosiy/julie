@@ -69,12 +69,12 @@ public:
 
 	Json::Value operator() (const jl::Texture* _val)
 	{
-		return save(jl::UniformType::Texture2D, ResourceManager::getInstance().getSourceFile(*_val));
+		return save(jl::UniformType::Texture2D, ResourceManager::getInstance().findSourceFile(*_val));
 	}
 
 	Json::Value operator() (const jl::CubeTexture* _val)
 	{
-		return save(jl::UniformType::CubeTexture, ResourceManager::getInstance().getSourceFile(*_val));
+		return save(jl::UniformType::CubeTexture, ResourceManager::getInstance().findSourceFile(*_val));
 	}
 
 private:
@@ -113,6 +113,9 @@ Json::Value JsonSceneSaver::saveMaterials()
 
 	MaterialsManager::getInstance().forEachMaterial([&result](const std::string& _name, jl::Material& _material)
 	{
+		if (_name == "RoomMaterial")
+			return;
+
 		Json::Value material = saveMaterial(_material);
 		material[k_name] = _name;
 		result.append(std::move(material));
@@ -129,7 +132,7 @@ Json::Value JsonSceneSaver::saveMaterial(const jl::Material& _material)
 
 	if (const jl::Shader* shader = _material.getShader())
 	{
-		result[k_shader] = ResourceManager::getInstance().getSourceFile(*shader);
+		result[k_shader] = ResourceManager::getInstance().findSourceFile(*shader);
 	}
 
 	Json::Value properties;
@@ -176,7 +179,7 @@ Json::Value JsonSceneSaver::saveObject(const jl::Object& _object)
 
 	if (const jl::Model* model = _object.getModel())
 	{
-		result[k_model] = ResourceManager::getInstance().getSourceFile(*model);
+		result[k_model] = ResourceManager::getInstance().findSourceFile(*model);
 	}
 	if (const jl::Material* material = _object.getMaterial())
 	{

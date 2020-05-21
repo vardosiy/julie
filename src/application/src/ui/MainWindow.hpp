@@ -23,6 +23,8 @@ class MainWindow;
 namespace jl {
 class Scene;
 class Object;
+class Shader;
+class Model;
 }
 
 class EntitiesWidget;
@@ -47,6 +49,9 @@ public:
 
 	void resetSelection() override;
 
+	void onObjectMoved(jl::Object& _object) override;
+	void onObjectScaled(jl::Object& _object) override;
+
 //-----------------------------------------------------------------------------
 private slots:
 	void update();
@@ -55,6 +60,7 @@ private slots:
 //-----------------------------------------------------------------------------
 private:
 	void setupUi();
+	void setupRoom();
 	void setupConnections();
 
 	void onGlLoaded();
@@ -85,13 +91,15 @@ private:
 	app::ScopedConnection m_glLoadedConnection;
 
 	std::unique_ptr<jl::Scene> m_scene;
+	std::unique_ptr<jl::Shader> m_roomShader;
+	std::unique_ptr<jl::Model> m_roomModel;
 
 	jl::Camera m_camera;
 	FreeflyCameraController m_cameraController;
 
 	static constexpr std::string_view k_saveFile = "SaveFile.json";
-	static constexpr std::string_view k_defaultObjectName = "object_000";
-	static constexpr std::string_view k_defaultMaterialName = "material_000";
+	static constexpr std::string_view k_defaultObjectName = "Object_000";
+	static constexpr std::string_view k_defaultMaterialName = "Material_000";
 };
 
 //-----------------------------------------------------------------------------
