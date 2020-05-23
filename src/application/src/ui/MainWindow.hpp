@@ -59,11 +59,11 @@ private slots:
 
 //-----------------------------------------------------------------------------
 private:
+	void onGlLoaded();
+
 	void setupUi();
 	void setupRoom();
 	void setupConnections();
-
-	void onGlLoaded();
 
 	float getDeltaTime();
 
@@ -91,7 +91,6 @@ private:
 	app::ScopedConnection m_glLoadedConnection;
 
 	std::unique_ptr<jl::Scene> m_scene;
-	std::unique_ptr<jl::Shader> m_roomShader;
 	std::unique_ptr<jl::Model> m_roomModel;
 
 	jl::Camera m_camera;

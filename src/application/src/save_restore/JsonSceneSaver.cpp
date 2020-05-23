@@ -111,10 +111,13 @@ Json::Value JsonSceneSaver::saveMaterials()
 {
 	Json::Value result;
 
-	MaterialsManager::getInstance().forEachMaterial([&result](const std::string& _name, jl::Material& _material)
+	const jl::Material& defaultMaterial = MaterialsManager::getInstance().getDefaultMaterial();
+	MaterialsManager::getInstance().forEachMaterial([&result, &defaultMaterial](const std::string& _name, jl::Material& _material)
 	{
-		if (_name == "RoomMaterial")
+		if (&_material == &defaultMaterial)
+		{
 			return;
+		}
 
 		Json::Value material = saveMaterial(_material);
 		material[k_name] = _name;

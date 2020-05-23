@@ -8,15 +8,18 @@
 
 namespace jl {
 class Material;
+class Shader;
 }
 
 class MaterialsManager : public utils::Singleton<MaterialsManager>
 {
 	friend class utils::Singleton<MaterialsManager>;
 
+//-----------------------------------------------------------------------------
 public:
 	void clear() noexcept;
 
+	jl::Material& getDefaultMaterial() const noexcept;
 	jl::Material& createMaterial(const std::string& _name) noexcept;
 	jl::Material* findMaterial(const std::string& _name) const noexcept;
 
@@ -27,9 +30,16 @@ public:
 
 	void forEachMaterial(const std::function<void(const std::string&, jl::Material&)>& _callback);
 
+//-----------------------------------------------------------------------------
 private:
-	MaterialsManager() = default;
-	~MaterialsManager() = default;
+	MaterialsManager();
+	~MaterialsManager();
 
-	std::unordered_map<std::string, std::unique_ptr<jl::Material>> m_materials; // name => material
+//-----------------------------------------------------------------------------
+	using MaterialsMap = std::unordered_map<std::string, std::unique_ptr<jl::Material>>;
+	MaterialsMap m_materials;
+
+	std::unique_ptr<jl::Shader> m_defaultMaterialShader;
+
+	static const std::string k_defaultMaterialName;
 };

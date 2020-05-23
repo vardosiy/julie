@@ -118,7 +118,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_objectsListModel(this)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
-	, m_camera(0.00001f, 100.0f, 45.0f)
+	, m_camera(0.001f, 100.0f, 45.0f)
 {
 	setupUi();
 	setupConnections();
@@ -275,6 +275,32 @@ void MainWindow::onFillPolygonsValueChanged(int _state)
 
 //-----------------------------------------------------------------------------
 
+void MainWindow::onGlLoaded()
+{
+	std::ifstream file(k_saveFile.data());
+	m_scene = JsonSceneRestorer::restore(file);
+
+	setupRoom();
+
+	AppController::setGlWidget(m_ui->oglw_screen);
+	m_ui->oglw_screen->setScene(m_scene.get());
+	m_ui->oglw_screen->setCamera(&m_camera);
+
+	m_scene->forEachObject([this](const jl::Object& _object)
+	{
+		m_objectsNamesList.append(_object.getName().c_str());
+	});
+	m_objectsListModel.setStringList(m_objectsNamesList);
+
+	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	{
+		m_materialsNamesList.append(_name.c_str());
+	});
+	m_materialsListModel.setStringList(m_materialsNamesList);
+}
+
+//-----------------------------------------------------------------------------
+
 void MainWindow::setupUi()
 {
 	m_ui = std::make_unique<Ui::MainWindow>();
@@ -296,8 +322,7 @@ void MainWindow::setupUi()
 
 void MainWindow::setupRoom()
 {
-	static const std::string k_roomObjName = "Room";
-	static const std::string k_roomMaterialName = "RoomMaterial";
+	const std::string k_roomObjName = "Room";
 
 	jl::Object* room = m_scene->findObject(k_roomObjName);
 	if (!room)
@@ -307,23 +332,13 @@ void MainWindow::setupRoom()
 
 		m_scene->addObject(std::move(obj));
 	}
-
 	if (!m_roomModel)
 	{
 		m_roomModel = createRoomModel();
 	}
-	if (!m_roomShader)
-	{
-		m_roomShader = jl::Shader::loadFromFiles("res/shaders/LightColor.vs", "res/shaders/LightColor.fs");
-	}
-
-	jl::Material& roomMaterial = MaterialsManager::getInstance().createMaterial(k_roomMaterialName);
-	roomMaterial.setShader(*m_roomShader);
-	roomMaterial.setProperty("u_color", glm::vec4(1.0f));
-	roomMaterial.setProperty("u_specularPower", 128.0f);
 
 	room->setModel(*m_roomModel);
-	room->setMaterial(roomMaterial);
+	room->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
 }
 
 //-----------------------------------------------------------------------------
@@ -337,33 +352,6 @@ void MainWindow::setupConnections()
 	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
 
 	connect(m_ui->chb_showBb,			&QCheckBox::stateChanged,	[this](int _value) { m_ui->oglw_screen->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::onGlLoaded()
-{
-	AppController::setGlWidget(m_ui->oglw_screen);
-
-	std::ifstream file(k_saveFile.data());
-	m_scene = JsonSceneRestorer::restore(file);
-
-	setupRoom();
-
-	m_ui->oglw_screen->setScene(m_scene.get());
-	m_ui->oglw_screen->setCamera(&m_camera);
-
-	m_scene->forEachObject([this](const jl::Object& _object)
-	{
-		m_objectsNamesList.append(_object.getName().c_str());
-	});
-	m_objectsListModel.setStringList(m_objectsNamesList);
-
-	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
-	{
-		m_materialsNamesList.append(_name.c_str());
-	});
-	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
 //-----------------------------------------------------------------------------
