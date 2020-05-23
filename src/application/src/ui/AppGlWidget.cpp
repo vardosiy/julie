@@ -26,6 +26,7 @@ AppGlWidget::AppGlWidget(QWidget* parent)
 	, m_camera(nullptr)
 	, m_selectedObject(nullptr)
 	, m_selectedObjDistance(0.0f)
+	, m_actionHandler(nullptr)
 {
 }
 

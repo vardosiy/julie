@@ -80,11 +80,11 @@ private:
 
 	jl::Scene* m_scene;
 	jl::Camera* m_camera;
+
 	jl::Object* m_selectedObject;
+	float m_selectedObjDistance;
 
 	IEntityActionHandler* m_actionHandler;
-
-	float m_selectedObjDistance;
 
 	boost::optional<glm::vec3> m_prevMousePos;
 };

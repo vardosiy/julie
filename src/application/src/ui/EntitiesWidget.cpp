@@ -70,6 +70,7 @@ void EntitiesWidget::onAddEntityBtnReleased()
 		return;
 	}
 
+	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while adding entity");
 	if (m_ui->tab_objects->isVisible())
 	{
 		m_actionHandler->addObject();
@@ -77,10 +78,6 @@ void EntitiesWidget::onAddEntityBtnReleased()
 	else if (m_ui->tab_materials->isVisible())
 	{
 		m_actionHandler->addMaterial();
-	}
-	else
-	{
-		ASSERTM(0, "Unhandled case while adding entity");
 	}
 }
 
@@ -97,6 +94,7 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 	const QAbstractItemView* view = nullptr;
 	std::function<void(const QString&)> deleteFun;
 
+	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while removing entity");
 	if (m_ui->tab_objects->isVisible())
 	{
 		view = m_ui->listv_objects;
@@ -106,10 +104,6 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 	{
 		view = m_ui->listv_materials;
 		deleteFun = std::bind(&IEntityActionHandler::deleteMaterial, m_actionHandler, std::placeholders::_1);
-	}
-	else
-	{
-		ASSERTM(0, "Unhandled case while removing entity");
 	}
 
 	if (view && deleteFun)
@@ -139,6 +133,7 @@ void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 	{
 		const QString entityName = indexList.back().data().toString();
 
+		ASSERT(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible());
 		if (m_ui->tab_objects->isVisible())
 		{
 			m_actionHandler->objectSelected(entityName);
@@ -146,10 +141,6 @@ void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 		else if (m_ui->tab_materials->isVisible())
 		{
 			m_actionHandler->materialSelected(entityName);
-		}
-		else
-		{
-			ASSERT(0);
 		}
 	}
 	else
