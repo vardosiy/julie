@@ -4,6 +4,7 @@
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
+#include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/scene/Object.hpp"
 
@@ -91,6 +92,14 @@ void PropertiesWidget::reset()
 
 void PropertiesWidget::refreshValues()
 {
+	if (std::holds_alternative<std::nullptr_t>(m_activeEntity))
+	{
+		return;
+	}
+
+	decltype(m_activeEntity) currentEntity = m_activeEntity;
+	m_activeEntity = nullptr;
+
 	if (std::holds_alternative<jl::Object*>(m_activeEntity))
 	{
 		const jl::Object* obj = std::get<jl::Object*>(m_activeEntity);
@@ -101,6 +110,8 @@ void PropertiesWidget::refreshValues()
 		const jl::Material* material = std::get<jl::Material*>(m_activeEntity);
 		refreshMaterialProperties(*material);
 	}
+
+	m_activeEntity = currentEntity;
 }
 
 //-----------------------------------------------------------------------------
@@ -205,6 +216,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _obj
 		if (const jl::Model* model = ResourceManager::getInstance().loadModel(newValue))
 		{
 			_object.setModel(*model);
+			calcObjectDefaultTransform(_object);
 		}
 	}
 	else if (_idx == index(propNum++, k_valueColIdx, rootIdx))
@@ -252,6 +264,24 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _obj
 			}
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::calcObjectDefaultTransform(jl::Object& _object)
+{
+	const jl::Model* model = _object.getModel();
+	const jl::boxf& modelBox = model->getBoundingBox();
+
+	const float width = modelBox.getWidth();
+	const float height = modelBox.getHeight();
+	const float depth = modelBox.getDepth();
+
+	const float max = std::max(width, std::max(height, depth));
+	_object.setScale(glm::vec3(1.0f / max));
+
+	const jl::boxf worldBox = _object.getWorldMatrix() * modelBox;
+	_object.setPosition(-worldBox.min);
 }
 
 //-----------------------------------------------------------------------------

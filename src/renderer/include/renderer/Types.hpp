@@ -43,6 +43,10 @@ struct boxf
 	// | /        | /
 	// |/_________|/
 
+	float getWidth() const noexcept		{ return max.x - min.x; }
+	float getHeight() const noexcept	{ return max.y - min.y; }
+	float getDepth() const noexcept		{ return max.z - min.z; }
+
 	glm::vec3 min; // 1: left-bottom-far
 	glm::vec3 max; // 2: right-top-close
 };

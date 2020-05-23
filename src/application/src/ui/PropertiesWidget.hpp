@@ -40,6 +40,8 @@ private:
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
 	void onObjectChanged(const QModelIndex& _idx, jl::Object& _object);
 
+	void calcObjectDefaultTransform(jl::Object& _object);
+
 	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
 	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value);
 	void setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing);
