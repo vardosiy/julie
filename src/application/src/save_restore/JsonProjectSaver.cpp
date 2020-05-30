@@ -1,4 +1,4 @@
-#include "save_restore/JsonSceneSaver.hpp"
+#include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonStrings.hpp"
 
 #include "managers/ResourceManager.hpp"
@@ -95,7 +95,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-void JsonSceneSaver::save(std::ostream& _stream, const jl::Scene& _scene)
+void JsonProjectSaver::save(std::ostream& _stream, const jl::Scene& _scene)
 {
 	Json::Value root;
 
@@ -107,7 +107,7 @@ void JsonSceneSaver::save(std::ostream& _stream, const jl::Scene& _scene)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveMaterials()
+Json::Value JsonProjectSaver::saveMaterials()
 {
 	Json::Value result;
 
@@ -129,7 +129,7 @@ Json::Value JsonSceneSaver::saveMaterials()
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveMaterial(const jl::Material& _material)
+Json::Value JsonProjectSaver::saveMaterial(const jl::Material& _material)
 {
 	Json::Value result;
 
@@ -153,7 +153,7 @@ Json::Value JsonSceneSaver::saveMaterial(const jl::Material& _material)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveScene(const jl::Scene& _scene)
+Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene)
 {
 	Json::Value objects;
 	_scene.forEachObject([&objects](const jl::Object& _object)
@@ -170,7 +170,7 @@ Json::Value JsonSceneSaver::saveScene(const jl::Scene& _scene)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveObject(const jl::Object& _object)
+Json::Value JsonProjectSaver::saveObject(const jl::Object& _object)
 {
 	Json::Value result;
 
@@ -194,7 +194,7 @@ Json::Value JsonSceneSaver::saveObject(const jl::Object& _object)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveLights(const jl::LightsHolder& _lightsHolder)
+Json::Value JsonProjectSaver::saveLights(const jl::LightsHolder& _lightsHolder)
 {
 	Json::Value result;
 
@@ -230,7 +230,7 @@ Json::Value JsonSceneSaver::saveLights(const jl::LightsHolder& _lightsHolder)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions)
+Json::Value JsonProjectSaver::savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions)
 {
 	Json::Value result;
 
@@ -247,7 +247,7 @@ Json::Value JsonSceneSaver::savePointLights(const std::vector<glm::vec4>& colors
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonSceneSaver::saveDirectionalLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& directions)
+Json::Value JsonProjectSaver::saveDirectionalLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& directions)
 {
 	Json::Value result;
 

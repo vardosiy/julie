@@ -12,7 +12,7 @@ class Material;
 class LightsHolder;
 }
 
-class JsonSceneSaver
+class JsonProjectSaver
 {
 public:
 	static void save(std::ostream& _stream, const jl::Scene& _scene);

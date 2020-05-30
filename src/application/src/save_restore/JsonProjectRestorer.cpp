@@ -1,4 +1,4 @@
-#include "save_restore/JsonSceneRestorer.hpp"
+#include "save_restore/JsonProjectRestorer.hpp"
 #include "save_restore/JsonStrings.hpp"
 
 #include "managers/ResourceManager.hpp"
@@ -50,7 +50,7 @@ inline glm::vec4 jsonToVec4(const Json::Value& _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Scene> JsonSceneRestorer::restore(std::istream& _stream)
+std::unique_ptr<jl::Scene> JsonProjectRestorer::restore(std::istream& _stream)
 {
 	Json::Value root;
 	_stream >> root;
@@ -61,7 +61,7 @@ std::unique_ptr<jl::Scene> JsonSceneRestorer::restore(std::istream& _stream)
 
 //-----------------------------------------------------------------------------
 
-void JsonSceneRestorer::restoreMaterials(const Json::Value& _json)
+void JsonProjectRestorer::restoreMaterials(const Json::Value& _json)
 {
 	for (const Json::Value& value : _json)
 	{
@@ -85,7 +85,7 @@ void JsonSceneRestorer::restoreMaterials(const Json::Value& _json)
 
 //-----------------------------------------------------------------------------
 
-void JsonSceneRestorer::restoreMaterialProperties(const Json::Value& _json, jl::Material& _material)
+void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl::Material& _material)
 {
 	for (const Json::Value& value : _json)
 	{
@@ -145,7 +145,7 @@ void JsonSceneRestorer::restoreMaterialProperties(const Json::Value& _json, jl::
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Scene> JsonSceneRestorer::restoreScene(const Json::Value& _json)
+std::unique_ptr<jl::Scene> JsonProjectRestorer::restoreScene(const Json::Value& _json)
 {
 	auto scene = std::make_unique<jl::Scene>();
 
@@ -161,7 +161,7 @@ std::unique_ptr<jl::Scene> JsonSceneRestorer::restoreScene(const Json::Value& _j
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Object> JsonSceneRestorer::restoreObject(const Json::Value& _json)
+std::unique_ptr<jl::Object> JsonProjectRestorer::restoreObject(const Json::Value& _json)
 {
 	auto object = std::make_unique<jl::Object>(_json[k_name].asString());
 
@@ -201,7 +201,7 @@ std::unique_ptr<jl::Object> JsonSceneRestorer::restoreObject(const Json::Value& 
 
 //-----------------------------------------------------------------------------
 
-void JsonSceneRestorer::restoreLights(const Json::Value& _json, jl::LightsHolder& _lightsHolder)
+void JsonProjectRestorer::restoreLights(const Json::Value& _json, jl::LightsHolder& _lightsHolder)
 {
 	for (const Json::Value& light : _json[k_pointLights])
 	{

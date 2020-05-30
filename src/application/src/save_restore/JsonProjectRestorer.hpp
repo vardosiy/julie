@@ -12,7 +12,7 @@ class Material;
 class LightsHolder;
 }
 
-class JsonSceneRestorer
+class JsonProjectRestorer
 {
 public:
 	static std::unique_ptr<jl::Scene> restore(std::istream& _stream);
