@@ -119,13 +119,6 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 
 //-----------------------------------------------------------------------------
 
-void Renderer::clear() noexcept
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-//-----------------------------------------------------------------------------
-
 void Renderer::setClearColor(const glm::vec4& _color) noexcept
 {
 	glClearColor(_color.r, _color.g, _color.b, _color.a);

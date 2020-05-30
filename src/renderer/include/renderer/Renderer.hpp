@@ -35,7 +35,6 @@ public:
 	static void draw(const Model& _model) noexcept;
 	static void draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept;
 
-	static void clear() noexcept;
 	static void setClearColor(const glm::vec4& _color) noexcept;
 
 	static void setFrontPolygonsMode(PolygonMode _mode) noexcept;

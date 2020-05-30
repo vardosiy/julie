@@ -20,10 +20,17 @@ class Object
 public:
 	enum RenderFlags
 	{
-		None			= 0,
 		DrawModel		= 1 << 0,
 		DrawBoundingBox	= 1 << 1,
 		DrawAll			= DrawModel | DrawBoundingBox
+	};
+
+	enum TransfromFlags
+	{
+		Moveable		= 1 << 0,
+		Scaleable		= 1 << 1,
+		Rotatable		= 1 << 1,
+		TransformAll	= Moveable | Scaleable | Rotatable
 	};
 
 //-----------------------------------------------------------------------------
@@ -36,6 +43,9 @@ public:
 
 	s32 getRenderFlags() const noexcept;
 	void setRenderFlags(s32 _flags) noexcept;
+
+	s32 getTransformFlags() const noexcept;
+	void setTransformFlags(s32 _flags) noexcept;
 
 	void setModel(const Model& _model) noexcept;
 	void setMaterial(const Material& _material) noexcept;
@@ -54,16 +64,9 @@ public:
 private:
 	struct TransformData
 	{
-		TransformData() noexcept
-			: m_pos(0.0f)
-			, m_scale(1.0f)
-			, m_rotation(0.0f)
-		{
-		}
-
-		glm::vec3 m_pos;
-		glm::vec3 m_scale;
-		glm::vec3 m_rotation;
+		glm::vec3 m_pos{ 0.0f };
+		glm::vec3 m_scale{ 1.0f };
+		glm::vec3 m_rotation{ 0.0f };
 	};
 
 	static glm::mat4x4 calculateWorldMatrix(const TransformData& _transformData) noexcept;
@@ -71,14 +74,15 @@ private:
 //-----------------------------------------------------------------------------
 	std::string m_name;
 
-	const Model*	m_model;
-	const Material*	m_material;
+	const Model* m_model;
+	const Material* m_material;
 
 	s32 m_renderFlags;
+	s32 m_transformFlags;
 
 	TransformData		m_transformData;
-	mutable glm::mat4	m_worldMatrix;
 	mutable bool		m_bIsTransformChanged;
+	mutable glm::mat4	m_worldMatrix;
 };
 
 //-----------------------------------------------------------------------------

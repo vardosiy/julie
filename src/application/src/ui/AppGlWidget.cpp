@@ -41,7 +41,7 @@ AppGlWidget::~AppGlWidget()
 
 void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 {
-	const jl::Renderer::PolygonMode polygonsMode =
+	const auto polygonsMode =
 		_drawMode == DrawMode::Edges ?
 		jl::Renderer::PolygonMode::Line :
 		jl::Renderer::PolygonMode::Fill;
@@ -87,6 +87,13 @@ void AppGlWidget::setActionHandler(IEntityActionHandler* _handler) noexcept
 
 //-----------------------------------------------------------------------------
 
+void AppGlWidget::setUninteractibleObjects(std::vector<const jl::Object*> _objects) noexcept
+{
+	m_uninteractibleObjects = std::move(_objects);
+}
+
+//-----------------------------------------------------------------------------
+
 app::Connection AppGlWidget::registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback)
 {
 	return m_glLoadedSignal.connect(_callback);
@@ -100,9 +107,9 @@ void AppGlWidget::initializeGL()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glLineWidth(3.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glLineWidth(2.0f);
 
 	m_glLoadedSignal();
 }
@@ -125,7 +132,7 @@ void AppGlWidget::resizeGL(int _w, int _h)
 
 void AppGlWidget::paintGL()
 {
-	jl::Renderer::clear();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (m_scene && m_camera)
 	{
@@ -258,6 +265,12 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 
 	m_scene->forEachObject([&_ray, this](jl::Object& _object)
 	{
+		auto it = std::find(m_uninteractibleObjects.begin(), m_uninteractibleObjects.end(), &_object);
+		if (it != m_uninteractibleObjects.end())
+		{
+			return;
+		}
+
 		_object.setRenderFlags(jl::Object::RenderFlags::DrawModel);
 
 		if (const jl::Model* _model = _object.getModel())

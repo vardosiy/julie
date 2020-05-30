@@ -45,6 +45,8 @@ public:
 	void setCamera(jl::Camera* _camera) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
 
+	void setUninteractibleObjects(std::vector<const jl::Object*> _objects) noexcept;
+
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
 //-----------------------------------------------------------------------------
@@ -77,6 +79,8 @@ private:
 
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
+
+	std::vector<const jl::Object*> m_uninteractibleObjects;
 
 	jl::Scene* m_scene;
 	jl::Camera* m_camera;
