@@ -27,6 +27,7 @@ class Shader;
 class Model;
 }
 
+class ObjectWrapper;
 class EntitiesWidget;
 class PropertiesWidget;
 
@@ -63,13 +64,11 @@ private:
 
 	void setupUi();
 	void setupRoom();
-	void setupConnections();
 
 	float getDeltaTime();
 
 	std::string computeObjectName() const;
 	std::string computeMaterialName() const;
-
 	static std::string computeEntityName(
 		std::string_view _base,
 		std::function<bool(const std::string&)>&& _entityExistCheckFun
@@ -78,6 +77,9 @@ private:
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
 
+	EntitiesWidget* m_entitisWdg;
+	PropertiesWidget* m_propertiesWdg;
+
 	QTimer m_updateTimer;
 
 	QStringList m_objectsNamesList;
@@ -85,13 +87,11 @@ private:
 	QStringList m_materialsNamesList;
 	QStringListModel m_materialsListModel;
 
-	EntitiesWidget* m_entitisWdg;
-	PropertiesWidget* m_propertiesWdg;
-
 	app::ScopedConnection m_glLoadedConnection;
 
 	std::unique_ptr<jl::Scene> m_scene;
 	std::unique_ptr<jl::Model> m_roomModel;
+	std::vector<ObjectWrapper> m_objWrappers;
 
 	jl::Camera m_camera;
 	FreeflyCameraController m_cameraController;

@@ -4,6 +4,8 @@
 
 #include "ui_MainWindow.h"
 
+#include "ObjectWrapper.hpp"
+
 #include "controllers/AppController.hpp"
 
 #include "managers/ResourceManager.hpp"
@@ -114,19 +116,25 @@ std::unique_ptr<jl::Model> createPlatformModel()
 
 MainWindow::MainWindow(QMainWindow* parent)
 	: QMainWindow(parent)
-	, m_updateTimer(this)
-	, m_objectsListModel(this)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
+	, m_updateTimer(this)
+	, m_objectsListModel(this)
+	, m_materialsListModel(this)
 	, m_camera(0.001f, 100.0f, 45.0f)
 {
 	setupUi();
-	setupConnections();
+
+	connect(&m_updateTimer,				&QTimer::timeout,			this, &MainWindow::update);
+	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this, &MainWindow::onFillPolygonsValueChanged);
+	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
+	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
+	connect(m_ui->chb_showBb,			&QCheckBox::stateChanged,	[this](int _value) { m_ui->oglw_screen->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
 
 	m_updateTimer.start(1);
 	m_cameraController.setCamera(&m_camera);
 
-	m_camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+	m_camera.setPosition(glm::vec3(0.0f, 1.0f, 5.0f));
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
 	{
@@ -139,8 +147,8 @@ MainWindow::MainWindow(QMainWindow* parent)
 
 MainWindow::~MainWindow()
 {
-	std::ofstream file(k_saveFile.data());
-	JsonSceneSaver::save(file, *m_scene);
+	//std::ofstream file(k_saveFile.data());
+	//JsonSceneSaver::save(file, *m_scene);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,6 +161,7 @@ void MainWindow::addObject()
 	m_objectsNamesList.append(name.c_str());
 	m_objectsListModel.setStringList(m_objectsNamesList);
 
+	m_objWrappers.emplace_back(*object);
 	m_scene->addObject(std::move(object));
 }
 
@@ -160,12 +169,18 @@ void MainWindow::addObject()
 
 void MainWindow::deleteObject(const QString& _name)
 {
-	m_scene->removeObject(_name.toStdString());
-
-	auto it = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
-	if (it != m_objectsNamesList.end())
+	const std::string objName = _name.toStdString();
+	auto itWrappers = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&objName](const ObjectWrapper& _objWrapper)
 	{
-		m_objectsNamesList.erase(it);
+		return objName == _objWrapper.getInternalObject().getName();
+	});
+	m_objWrappers.erase(itWrappers);
+	m_scene->removeObject(objName);
+
+	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
+	if (itNames != m_objectsNamesList.end())
+	{
+		m_objectsNamesList.erase(itNames);
 		m_objectsListModel.setStringList(m_objectsNamesList);
 	}
 }
@@ -174,9 +189,15 @@ void MainWindow::deleteObject(const QString& _name)
 
 void MainWindow::objectSelected(const QString& _name)
 {
-	if (jl::Object* object = m_scene->findObject(_name.toStdString()))
+	const std::string objName = _name.toStdString();
+	auto it = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&objName](const ObjectWrapper& _objWrapper)
 	{
-		m_propertiesWdg->setActiveEntity(*object);
+		return objName == _objWrapper.getInternalObject().getName();
+	});
+
+	if (it != m_objWrappers.end())
+	{
+		m_propertiesWdg->setActiveEntity(*it);
 	}
 }
 
@@ -219,14 +240,14 @@ void MainWindow::resetSelection()
 
 void MainWindow::onObjectMoved(jl::Object& _object)
 {
-	m_propertiesWdg->refreshValues();
+	m_propertiesWdg->refreshObjectPos();
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::onObjectScaled(jl::Object& _object)
 {
-	m_propertiesWdg->refreshValues();
+	m_propertiesWdg->refreshObjectScale();
 }
 
 //-----------------------------------------------------------------------------
@@ -286,8 +307,9 @@ void MainWindow::onGlLoaded()
 	m_ui->oglw_screen->setScene(m_scene.get());
 	m_ui->oglw_screen->setCamera(&m_camera);
 
-	m_scene->forEachObject([this](const jl::Object& _object)
+	m_scene->forEachObject([this](jl::Object& _object)
 	{
+		m_objWrappers.emplace_back(_object);
 		m_objectsNamesList.append(_object.getName().c_str());
 	});
 	m_objectsListModel.setStringList(m_objectsNamesList);
@@ -339,19 +361,9 @@ void MainWindow::setupRoom()
 
 	room->setModel(*m_roomModel);
 	room->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
-}
+	room->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
-//-----------------------------------------------------------------------------
-
-void MainWindow::setupConnections()
-{
-	connect(&m_updateTimer,				&QTimer::timeout,			this, &MainWindow::update);
-	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this, &MainWindow::onFillPolygonsValueChanged);
-
-	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
-	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
-
-	connect(m_ui->chb_showBb,			&QCheckBox::stateChanged,	[this](int _value) { m_ui->oglw_screen->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
+	m_ui->oglw_screen->setUninteractibleObjects({ room });
 }
 
 //-----------------------------------------------------------------------------

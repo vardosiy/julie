@@ -1,8 +1,9 @@
 #pragma once
 
 #include <QWidget>
-#include <QDoubleSpinBox>
 #include <QStandardItemModel>
+
+#include <boost/optional.hpp>
 
 #include <memory>
 #include <variant>
@@ -14,9 +15,10 @@ class PropertiesWidget;
 }
 
 namespace jl {
-class Object;
 class Material;
 }
+
+class ObjectWrapper;
 
 class PropertiesWidget : public QWidget
 {
@@ -26,24 +28,23 @@ class PropertiesWidget : public QWidget
 public:
 	explicit PropertiesWidget(QWidget* parent = nullptr);
 
-	void setActiveEntity(jl::Object& _object);
+	void setActiveEntity(ObjectWrapper& _object);
 	void setActiveEntity(jl::Material& _material);
 	void reset();
 
-	void refreshValues();
+	void refreshObjectPos();
+	void refreshObjectScale();
 
 //-----------------------------------------------------------------------------
 private:
-	void refreshObjectProperties(const jl::Object& _object);
+	void refreshObjectProperties(const ObjectWrapper& _object);
 	void refreshMaterialProperties(const jl::Material& _material);
 
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
-	void onObjectChanged(const QModelIndex& _idx, jl::Object& _object);
-
-	void calcObjectDefaultTransform(jl::Object& _object);
+	void onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object);
 
 	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
-	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value);
+	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value, bool _editable);
 	void setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing);
 
 	QModelIndex index(int _row, int _col, const QModelIndex& _parent);
@@ -53,7 +54,7 @@ private:
 
 	QStandardItemModel m_propertiesTableModel;
 
-	std::variant<jl::Object*, jl::Material*, std::nullptr_t> m_activeEntity;
+	std::variant<ObjectWrapper*, jl::Material*, std::nullptr_t> m_activeEntity;
 
 	static constexpr int k_nameColIdx = 0;
 	static constexpr int k_valueColIdx = 1;
