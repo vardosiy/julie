@@ -11,6 +11,8 @@ EntitiesWidget::EntitiesWidget(QWidget* parent)
 	m_ui = std::make_unique<Ui::EntitiesWidget>();
 	m_ui->setupUi(this);
 
+	m_ui->tabv_data->setCurrentIndex(0);
+
 	connect(m_ui->btn_add,		&QPushButton::released,			this, &EntitiesWidget::onAddEntityBtnReleased);
 	connect(m_ui->btn_delete,	&QPushButton::released,			this, &EntitiesWidget::onDeleteEntityBtnReleased);
 	connect(m_ui->tabv_data,	&QTabWidget::currentChanged,	this, &EntitiesWidget::onCurrentTabChanged);

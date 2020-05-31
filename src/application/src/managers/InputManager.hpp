@@ -8,6 +8,7 @@ class InputManager : public utils::Singleton<InputManager>
 {
 	friend class utils::Singleton<InputManager>;
 
+//-----------------------------------------------------------------------------
 public:
 	enum Arrows
 	{
@@ -25,10 +26,12 @@ public:
 		Shift	= 1 << 2
 	};
 
+//-----------------------------------------------------------------------------
 	void keyPressed(int _key) noexcept;
 	void keyReleased(int _key) noexcept;
 	bool isPressed(int _key) const noexcept;
 
+//-----------------------------------------------------------------------------
 	Modifiers getModifiers() const noexcept;
 	void setModifiers(Modifiers _modifiers) noexcept;
 
@@ -36,6 +39,7 @@ public:
 	bool isAltPressed() const noexcept;
 	bool isShiftPressed() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
 	InputManager() = default;
 	~InputManager() = default;

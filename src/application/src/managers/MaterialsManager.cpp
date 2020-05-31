@@ -107,3 +107,13 @@ void MaterialsManager::forEachMaterial(const std::function<void(const std::strin
 }
 
 //-----------------------------------------------------------------------------
+
+void MaterialsManager::forEachMaterial(const std::function<void(const std::string&, const jl::Material&)>& _callback) const
+{
+	for (auto& [name, material] : m_materials)
+	{
+		_callback(name, *material);
+	}
+}
+
+//-----------------------------------------------------------------------------
