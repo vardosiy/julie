@@ -11,8 +11,8 @@
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
-#include "save_restore/JsonSceneSaver.hpp"
-#include "save_restore/JsonSceneRestorer.hpp"
+#include "save_restore/JsonProjectSaver.hpp"
+#include "save_restore/JsonProjectRestorer.hpp"
 
 #include "renderer/Globals.hpp"
 #include "renderer/Model.hpp"
@@ -147,8 +147,8 @@ MainWindow::MainWindow(QMainWindow* parent)
 
 MainWindow::~MainWindow()
 {
-	//std::ofstream file(k_saveFile.data());
-	//JsonSceneSaver::save(file, *m_scene);
+	std::ofstream file(k_saveFile.data());
+	JsonProjectSaver::save(file, *m_scene, m_objWrappers);
 }
 
 //-----------------------------------------------------------------------------
@@ -299,7 +299,9 @@ void MainWindow::onFillPolygonsValueChanged(int _state)
 void MainWindow::onGlLoaded()
 {
 	std::ifstream file(k_saveFile.data());
-	m_scene = JsonSceneRestorer::restore(file);
+	JsonProjectRestorer restorer(file);
+	m_scene = restorer.extractScene();
+	m_objWrappers = restorer.extractObjWrappers();
 
 	setupRoom();
 
@@ -309,7 +311,6 @@ void MainWindow::onGlLoaded()
 
 	m_scene->forEachObject([this](jl::Object& _object)
 	{
-		m_objWrappers.emplace_back(_object);
 		m_objectsNamesList.append(_object.getName().c_str());
 	});
 	m_objectsListModel.setStringList(m_objectsNamesList);
@@ -344,26 +345,37 @@ void MainWindow::setupUi()
 
 void MainWindow::setupRoom()
 {
-	const std::string k_roomObjName = "Room";
-
-	jl::Object* room = m_scene->findObject(k_roomObjName);
-	if (!room)
-	{
-		auto obj = std::make_unique<jl::Object>(k_roomObjName);
-		room = obj.get();
-
-		m_scene->addObject(std::move(obj));
-	}
 	if (!m_roomModel)
 	{
 		m_roomModel = createRoomModel();
 	}
 
-	room->setModel(*m_roomModel);
-	room->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
-	room->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
+	const std::string k_roomObjName = "Room";
 
-	m_ui->oglw_screen->setUninteractibleObjects({ room });
+	ObjectWrapper* roomWrapper = nullptr;
+
+	auto it = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&k_roomObjName](ObjectWrapper& _objWrapper)
+	{
+		return _objWrapper.getInternalObject().getName() == k_roomObjName;
+	});
+
+	if (it != m_objWrappers.end())
+	{
+		roomWrapper = &(*it);
+	}
+	else
+	{
+		auto roomObj = std::make_unique<jl::Object>(k_roomObjName);
+		roomWrapper = &m_objWrappers.emplace_back(*roomObj);
+
+		m_scene->addObject(std::move(roomObj));
+	}
+
+	roomWrapper->setModel(*m_roomModel);
+	roomWrapper->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
+	roomWrapper->getInternalObject().setTransformFlags(jl::Object::TransfromFlags::Scaleable);
+
+	m_ui->oglw_screen->setUninteractibleObjects({ &roomWrapper->getInternalObject() });
 }
 
 //-----------------------------------------------------------------------------

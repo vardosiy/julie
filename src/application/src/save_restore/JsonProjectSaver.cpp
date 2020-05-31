@@ -1,6 +1,8 @@
 #include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonStrings.hpp"
 
+#include "ObjectWrapper.hpp"
+
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
@@ -95,12 +97,12 @@ private:
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectSaver::save(std::ostream& _stream, const jl::Scene& _scene)
+void JsonProjectSaver::save(std::ostream& _stream, const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers)
 {
 	Json::Value root;
 
 	root[k_materials] = saveMaterials();
-	root[k_scene] = saveScene(_scene);
+	root[k_scene] = saveScene(_scene, _objWrappers);
 
 	_stream << root;
 }
@@ -112,7 +114,7 @@ Json::Value JsonProjectSaver::saveMaterials()
 	Json::Value result;
 
 	const jl::Material& defaultMaterial = MaterialsManager::getInstance().getDefaultMaterial();
-	MaterialsManager::getInstance().forEachMaterial([&result, &defaultMaterial](const std::string& _name, jl::Material& _material)
+	MaterialsManager::getInstance().forEachMaterial([&result, &defaultMaterial](const std::string& _name, const jl::Material& _material)
 	{
 		if (&_material == &defaultMaterial)
 		{
@@ -153,13 +155,34 @@ Json::Value JsonProjectSaver::saveMaterial(const jl::Material& _material)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene)
+Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers)
 {
-	Json::Value objects;
-	_scene.forEachObject([&objects](const jl::Object& _object)
+#if defined(_DEBUG)
 	{
-		objects.append(saveObject(_object));
-	});
+		std::vector<const jl::Object*> wrapped;
+		for (const ObjectWrapper& wrapper : _objWrappers)
+		{
+			wrapped.push_back(&wrapper.getInternalObject());
+		}
+
+		std::vector<const jl::Object*> sceneObjs;
+		_scene.forEachObject([&sceneObjs](const jl::Object& _object)
+		{
+			sceneObjs.push_back(&_object);
+		});
+
+		std::sort(wrapped.begin(), wrapped.end());
+		std::sort(sceneObjs.begin(), sceneObjs.end());
+
+		ASSERT(wrapped == sceneObjs);
+	}
+#endif
+
+	Json::Value objects;
+	for (const ObjectWrapper& wrapper : _objWrappers)
+	{
+		objects.append(saveObject(wrapper));
+	}
 
 	Json::Value result;
 	result[k_lights] = saveLights(_scene.getLightsHolder());
@@ -170,21 +193,21 @@ Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveObject(const jl::Object& _object)
+Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
 {
 	Json::Value result;
 
-	result[k_name]		= _object.getName();
+	result[k_name]		= _objWrapper.getInternalObject().getName();
 
-	result[k_position]	= details::vec3ToJson(_object.getPosition());
-	result[k_rotation]	= details::vec3ToJson(_object.getRotation());
-	result[k_scale]		= details::vec3ToJson(_object.getScale());
+	result[k_position]	= details::vec3ToJson(_objWrapper.getPosition());
+	result[k_rotation]	= details::vec3ToJson(_objWrapper.getRotation());
+	result[k_scale]		= details::vec3ToJson(_objWrapper.getScale());
 
-	if (const jl::Model* model = _object.getModel())
+	if (const jl::Model* model = _objWrapper.getModel())
 	{
 		result[k_model] = ResourceManager::getInstance().findSourceFile(*model);
 	}
-	if (const jl::Material* material = _object.getMaterial())
+	if (const jl::Material* material = _objWrapper.getMaterial())
 	{
 		result[k_material] = MaterialsManager::getInstance().findMaterialName(*material);
 	}

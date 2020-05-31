@@ -12,17 +12,19 @@ class Material;
 class LightsHolder;
 }
 
+class ObjectWrapper;
+
 class JsonProjectSaver
 {
 public:
-	static void save(std::ostream& _stream, const jl::Scene& _scene);
+	static void save(std::ostream& _stream, const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers);
 
 private:
 	static Json::Value saveMaterials();
 	static Json::Value saveMaterial(const jl::Material& _material);
 
-	static Json::Value saveScene(const jl::Scene& _scene);
-	static Json::Value saveObject(const jl::Object& _object);
+	static Json::Value saveScene(const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers);
+	static Json::Value saveObject(const ObjectWrapper& _objWrapper);
 
 	static Json::Value saveLights(const jl::LightsHolder& _lightsHolder);
 	static Json::Value savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions);

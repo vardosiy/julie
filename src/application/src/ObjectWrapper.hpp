@@ -12,6 +12,7 @@ public:
 	ObjectWrapper(const ObjectWrapper& _rhs) = default;
 	ObjectWrapper& operator= (const ObjectWrapper& _rhs) = default;
 
+	jl::Object& getInternalObject() noexcept;
 	const jl::Object& getInternalObject() const noexcept;
 
 	const jl::Model* getModel() const noexcept;
@@ -25,9 +26,11 @@ public:
 	jl::s32 getTransformFlags() const noexcept;
 
 	const glm::vec3& getPosition() const noexcept;
+	const glm::vec3& getRotation() const noexcept;
 	const glm::vec3& getScale() const noexcept;
 
 	void setPosition(const glm::vec3& _val) noexcept;
+	void setRotation(const glm::vec3& _val) noexcept;
 	void setScale(const glm::vec3& _val) noexcept;
 
 private:
@@ -44,6 +47,11 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+
+inline jl::Object& ObjectWrapper::getInternalObject() noexcept
+{
+	return *m_object;
+}
 
 inline const jl::Object& ObjectWrapper::getInternalObject() const noexcept
 {
@@ -91,6 +99,11 @@ inline const glm::vec3& ObjectWrapper::getPosition() const noexcept
 	return m_pos;
 }
 
+inline const glm::vec3& ObjectWrapper::getRotation() const noexcept
+{
+	return m_object->getRotation();
+}
+
 inline const glm::vec3& ObjectWrapper::getScale() const noexcept
 {
 	return m_scale;
@@ -102,10 +115,15 @@ inline void ObjectWrapper::setPosition(const glm::vec3& _val) noexcept
 	m_object->setPosition(m_pos + m_originOffset);
 }
 
+inline void ObjectWrapper::setRotation(const glm::vec3& _val) noexcept
+{
+	return m_object->setRotation(_val);
+}
+
 inline void ObjectWrapper::setScale(const glm::vec3& _val) noexcept
 {
 	m_scale = _val;
-	m_object->setPosition(m_scale * m_initialScale);
+	recalcTransform();
 }
 
 //-----------------------------------------------------------------------------

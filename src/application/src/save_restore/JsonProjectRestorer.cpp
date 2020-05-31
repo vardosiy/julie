@@ -1,6 +1,8 @@
 #include "save_restore/JsonProjectRestorer.hpp"
 #include "save_restore/JsonStrings.hpp"
 
+#include "ObjectWrapper.hpp"
+
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
 
@@ -50,13 +52,27 @@ inline glm::vec4 jsonToVec4(const Json::Value& _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Scene> JsonProjectRestorer::restore(std::istream& _stream)
+JsonProjectRestorer::JsonProjectRestorer(std::istream& _stream)
 {
 	Json::Value root;
 	_stream >> root;
 
 	restoreMaterials(root[k_materials]);
-	return restoreScene(root[k_scene]);
+	restoreScene(root[k_scene]);
+}
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<jl::Scene> JsonProjectRestorer::extractScene()
+{
+	return std::move(m_scene);
+}
+
+//-----------------------------------------------------------------------------
+
+std::vector<ObjectWrapper> JsonProjectRestorer::extractObjWrappers()
+{
+	return std::move(m_objWrappers);
 }
 
 //-----------------------------------------------------------------------------
@@ -145,29 +161,31 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Scene> JsonProjectRestorer::restoreScene(const Json::Value& _json)
+void JsonProjectRestorer::restoreScene(const Json::Value& _json)
 {
-	auto scene = std::make_unique<jl::Scene>();
+	m_scene = std::make_unique<jl::Scene>();
+	m_objWrappers.reserve(_json.size());
 
 	for (const Json::Value& object : _json[k_objects])
 	{
-		scene->addObject(restoreObject(object));
+		restoreObject(object);
 	}
 
-	restoreLights(_json[k_lights], scene->getLightsHolder());
-
-	return scene;
+	restoreLights(_json[k_lights], m_scene->getLightsHolder());
 }
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Object> JsonProjectRestorer::restoreObject(const Json::Value& _json)
+void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 {
 	auto object = std::make_unique<jl::Object>(_json[k_name].asString());
 
-	object->setPosition(details::jsonToVec3(_json[k_position]));
-	object->setRotation(details::jsonToVec3(_json[k_rotation]));
-	object->setScale(details::jsonToVec3(_json[k_scale]));
+	ObjectWrapper& wrapper = m_objWrappers.emplace_back(*object);
+	m_scene->addObject(std::move(object));
+
+	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
+	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));
+	wrapper.setScale(details::jsonToVec3(_json[k_scale]));
 
 	{
 		const Json::Value& modelJson = _json[k_model];
@@ -180,7 +198,7 @@ std::unique_ptr<jl::Object> JsonProjectRestorer::restoreObject(const Json::Value
 				ASSERT(model);
 				if (model)
 				{
-					object->setModel(*model);
+					wrapper.setModel(*model);
 				}
 			}
 		}
@@ -191,12 +209,10 @@ std::unique_ptr<jl::Object> JsonProjectRestorer::restoreObject(const Json::Value
 		{
 			if (jl::Material* material = MaterialsManager::getInstance().findMaterial(materialJson.asString()))
 			{
-				object->setMaterial(*material);
+				wrapper.setMaterial(*material);
 			}
 		}
 	}
-
-	return object;
 }
 
 //-----------------------------------------------------------------------------

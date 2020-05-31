@@ -31,6 +31,7 @@ void ObjectWrapper::recalcTransform()
 		const float max = std::max(width, std::max(height, depth));
 		m_initialScale = glm::vec3(1.0f / max);
 		m_object->setScale(m_scale * m_initialScale);
+		m_object->setPosition(glm::vec3(0.0f));
 
 		const jl::boxf worldBox = m_object->getWorldMatrix() * modelBox;
 		m_originOffset = -worldBox.min;
