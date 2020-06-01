@@ -33,6 +33,12 @@ constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(s
 	return result;
 }
 
+template<typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
+constexpr std::underlying_type_t<T> toUnderlying(T _val)
+{
+	return static_cast<std::underlying_type_t<T>>(_val);
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace details
@@ -68,5 +74,33 @@ constexpr std::enable_if_t<std::is_enum_v<T>, T> fromString(std::string_view _st
 //-----------------------------------------------------------------------------
 
 } // namespace utils
+
+//-----------------------------------------------------------------------------
+
+template<typename T, typename>
+constexpr T operator| (T _lhs, T _rhs)
+{
+	return static_cast<T>(utils::details::toUnderlying(_lhs) | utils::details::toUnderlying(_rhs));
+}
+
+template<typename T, typename>
+constexpr T operator& (T _lhs, T _rhs)
+{
+	return static_cast<T>(utils::details::toUnderlying(_lhs) & utils::details::toUnderlying(_rhs));
+}
+
+template<typename T, typename>
+constexpr T& operator|= (T& _lhs, T _rhs)
+{
+	_lhs = _lhs | _rhs;
+	return _lhs;
+}
+
+template<typename T, typename>
+constexpr T operator&= (T _lhs, T _rhs)
+{
+	_lhs = _lhs & _rhs;
+	return _lhs;
+}
 
 //-----------------------------------------------------------------------------

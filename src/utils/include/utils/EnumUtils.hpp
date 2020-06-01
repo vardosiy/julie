@@ -16,17 +16,39 @@ constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(s
 
 } // namespace details
 
-//-----------------------------------------------------------------------------
-
 template<typename T>
 constexpr std::enable_if_t<std::is_enum_v<T>, bool> isEnumValueValid(const T _value) noexcept;
 
 template<typename T>
 constexpr std::enable_if_t<std::is_enum_v<T>, T> fromString(std::string_view _str) noexcept;
 
+} // namespace utils
+
 //-----------------------------------------------------------------------------
 
-} // namespace utils
+template<typename T>
+struct EnableBitOperations
+{
+};
+
+#define ENABLE_BIT_OPERATIONS(_enum)	\
+template<>								\
+struct EnableBitOperations<_enum>		\
+{										\
+	static constexpr bool value = true;	\
+};
+
+template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value && std::is_enum_v<T>>>
+constexpr T operator| (T _lhs, T _rhs);
+
+template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value && std::is_enum_v<T>>>
+constexpr T operator& (T _lhs, T _rhs);
+
+template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value && std::is_enum_v<T>>>
+constexpr T& operator|= (T& _lhs, T _rhs);
+
+template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value && std::is_enum_v<T>>>
+constexpr T operator&= (T _lhs, T _rhs);
 
 //-----------------------------------------------------------------------------
 
