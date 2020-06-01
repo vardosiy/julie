@@ -4,7 +4,8 @@
 
 #include "ui_MainWindow.h"
 
-#include "ObjectWrapper.hpp"
+#include "data/SceneWrapper.hpp"
+#include "data/ObjectWrapper.hpp"
 
 #include "controllers/AppController.hpp"
 
@@ -148,7 +149,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
-	JsonProjectSaver::save(file, *m_scene, m_objWrappers);
+	JsonProjectSaver::save(file, *m_sceneWrapper);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +162,7 @@ void MainWindow::addObject()
 	m_objectsNamesList.append(name.c_str());
 	m_objectsListModel.setStringList(m_objectsNamesList);
 
-	m_objWrappers.emplace_back(*object);
-	m_scene->addObject(std::move(object));
+	m_sceneWrapper->addObject(std::move(object));
 }
 
 //-----------------------------------------------------------------------------
@@ -170,12 +170,7 @@ void MainWindow::addObject()
 void MainWindow::deleteObject(const QString& _name)
 {
 	const std::string objName = _name.toStdString();
-	auto itWrappers = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&objName](const ObjectWrapper& _objWrapper)
-	{
-		return objName == _objWrapper.getInternalObject().getName();
-	});
-	m_objWrappers.erase(itWrappers);
-	m_scene->removeObject(objName);
+	m_sceneWrapper->removeObject(objName);
 
 	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
 	if (itNames != m_objectsNamesList.end())
@@ -190,14 +185,10 @@ void MainWindow::deleteObject(const QString& _name)
 void MainWindow::objectSelected(const QString& _name)
 {
 	const std::string objName = _name.toStdString();
-	auto it = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&objName](const ObjectWrapper& _objWrapper)
-	{
-		return objName == _objWrapper.getInternalObject().getName();
-	});
 
-	if (it != m_objWrappers.end())
+	if (ObjectWrapper* objWrapper = m_sceneWrapper->findObject(objName))
 	{
-		m_propertiesWdg->setActiveEntity(*it);
+		m_propertiesWdg->setActiveEntity(*objWrapper);
 	}
 }
 
@@ -238,14 +229,14 @@ void MainWindow::resetSelection()
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectMoved(jl::Object& _object)
+void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectPos();
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectScaled(jl::Object& _object)
+void MainWindow::onObjectScaled(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectScale();
 }
@@ -257,7 +248,7 @@ void MainWindow::update()
 	const float dt = getDeltaTime();
 	jl::Globals::s_timeTotal += dt;
 
-	m_scene->update(dt);
+	m_sceneWrapper->update(dt);
 	m_cameraController.update(dt);
 
 	const glm::vec3& camPos = m_camera.getPosition();
@@ -300,18 +291,17 @@ void MainWindow::onGlLoaded()
 {
 	std::ifstream file(k_saveFile.data());
 	JsonProjectRestorer restorer(file);
-	m_scene = restorer.extractScene();
-	m_objWrappers = restorer.extractObjWrappers();
+	m_sceneWrapper = restorer.extractScene();
 
 	setupRoom();
 
 	AppController::setGlWidget(m_ui->oglw_screen);
-	m_ui->oglw_screen->setScene(m_scene.get());
+	m_ui->oglw_screen->setScene(m_sceneWrapper.get());
 	m_ui->oglw_screen->setCamera(&m_camera);
 
-	m_scene->forEachObject([this](jl::Object& _object)
+	m_sceneWrapper->forEachObject([this](ObjectWrapper& _objWrapper)
 	{
-		m_objectsNamesList.append(_object.getName().c_str());
+		m_objectsNamesList.append(_objWrapper.getName().c_str());
 	});
 	m_objectsListModel.setStringList(m_objectsNamesList);
 
@@ -352,30 +342,18 @@ void MainWindow::setupRoom()
 
 	const std::string k_roomObjName = "Room";
 
-	ObjectWrapper* roomWrapper = nullptr;
-
-	auto it = std::find_if(m_objWrappers.begin(), m_objWrappers.end(), [&k_roomObjName](ObjectWrapper& _objWrapper)
+	ObjectWrapper* roomWrapper = m_sceneWrapper->findObject(k_roomObjName);
+	if (!roomWrapper)
 	{
-		return _objWrapper.getInternalObject().getName() == k_roomObjName;
-	});
-
-	if (it != m_objWrappers.end())
-	{
-		roomWrapper = &(*it);
-	}
-	else
-	{
-		auto roomObj = std::make_unique<jl::Object>(k_roomObjName);
-		roomWrapper = &m_objWrappers.emplace_back(*roomObj);
-
-		m_scene->addObject(std::move(roomObj));
+		auto obj = std::make_unique<jl::Object>(k_roomObjName);
+		roomWrapper = &m_sceneWrapper->addObject(std::move(obj));
 	}
 
 	roomWrapper->setModel(*m_roomModel);
 	roomWrapper->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
-	roomWrapper->getInternalObject().setTransformFlags(jl::Object::TransfromFlags::Scaleable);
+	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
-	m_ui->oglw_screen->setUninteractibleObjects({ &roomWrapper->getInternalObject() });
+	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });
 }
 
 //-----------------------------------------------------------------------------
@@ -397,7 +375,7 @@ std::string MainWindow::computeObjectName() const
 {
 	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
 	{
-		return m_scene->findObject(_name) != nullptr;
+		return m_sceneWrapper->findObject(_name) != nullptr;
 	});
 }
 

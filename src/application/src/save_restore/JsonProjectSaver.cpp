@@ -1,7 +1,8 @@
 #include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonStrings.hpp"
 
-#include "ObjectWrapper.hpp"
+#include "data/SceneWrapper.hpp"
+#include "data/ObjectWrapper.hpp"
 
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
@@ -97,12 +98,12 @@ private:
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectSaver::save(std::ostream& _stream, const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers)
+void JsonProjectSaver::save(std::ostream& _stream, const SceneWrapper& _sceneWrapper)
 {
 	Json::Value root;
 
 	root[k_materials] = saveMaterials();
-	root[k_scene] = saveScene(_scene, _objWrappers);
+	root[k_scene] = saveScene(_sceneWrapper);
 
 	_stream << root;
 }
@@ -155,37 +156,16 @@ Json::Value JsonProjectSaver::saveMaterial(const jl::Material& _material)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene, const std::vector<ObjectWrapper>& _objWrappers)
+Json::Value JsonProjectSaver::saveScene(const SceneWrapper& _sceneWrapper)
 {
-#if defined(_DEBUG)
-	{
-		std::vector<const jl::Object*> wrapped;
-		for (const ObjectWrapper& wrapper : _objWrappers)
-		{
-			wrapped.push_back(&wrapper.getInternalObject());
-		}
-
-		std::vector<const jl::Object*> sceneObjs;
-		_scene.forEachObject([&sceneObjs](const jl::Object& _object)
-		{
-			sceneObjs.push_back(&_object);
-		});
-
-		std::sort(wrapped.begin(), wrapped.end());
-		std::sort(sceneObjs.begin(), sceneObjs.end());
-
-		ASSERT(wrapped == sceneObjs);
-	}
-#endif
-
 	Json::Value objects;
-	for (const ObjectWrapper& wrapper : _objWrappers)
+	_sceneWrapper.forEachObject([&objects](const ObjectWrapper& _objWrapper)
 	{
-		objects.append(saveObject(wrapper));
-	}
+		objects.append(saveObject(_objWrapper));
+	});
 
 	Json::Value result;
-	result[k_lights] = saveLights(_scene.getLightsHolder());
+	result[k_lights] = saveLights(_sceneWrapper.getLightsHolder());
 	result[k_objects] = std::move(objects);
 
 	return result;
@@ -197,7 +177,7 @@ Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
 {
 	Json::Value result;
 
-	result[k_name]		= _objWrapper.getInternalObject().getName();
+	result[k_name]		= _objWrapper.getName();
 
 	result[k_position]	= details::vec3ToJson(_objWrapper.getPosition());
 	result[k_rotation]	= details::vec3ToJson(_objWrapper.getRotation());

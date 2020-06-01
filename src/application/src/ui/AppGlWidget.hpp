@@ -15,10 +15,11 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
-class Scene;
 class Camera;
-class Object;
 }
+
+class SceneWrapper;
+class ObjectWrapper;
 
 class AppGlWidget : public QOpenGLWidget
 {
@@ -41,11 +42,11 @@ public:
 	void setDrawMode(DrawMode _drawMode) noexcept;
 	void drawBoundingBoxes(bool _val) noexcept;
 
-	void setScene(jl::Scene* _scene) noexcept;
+	void setScene(SceneWrapper* _sceneWrapper) noexcept;
+	void setUninteractibleObjects(std::vector<const ObjectWrapper*> _objWrappers) noexcept;
+
 	void setCamera(jl::Camera* _camera) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
-
-	void setUninteractibleObjects(std::vector<const jl::Object*> _objects) noexcept;
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
@@ -80,15 +81,14 @@ private:
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	std::vector<const jl::Object*> m_uninteractibleObjects;
+	SceneWrapper* m_sceneWrapper;
+	std::vector<const ObjectWrapper*> m_uninteractibleObjWrappers;
 
-	jl::Scene* m_scene;
 	jl::Camera* m_camera;
-
-	jl::Object* m_selectedObject;
-	float m_selectedObjDistance;
-
 	IEntityActionHandler* m_actionHandler;
+
+	ObjectWrapper* m_selectedObject;
+	float m_selectedObjDistance;
 
 	boost::optional<glm::vec3> m_prevMousePos;
 };

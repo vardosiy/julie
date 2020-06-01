@@ -2,9 +2,7 @@
 
 #include <QString>
 
-namespace jl {
-class Object;
-}
+class ObjectWrapper;
 
 class IEntityActionHandler
 {
@@ -21,6 +19,6 @@ public:
 
 	virtual void resetSelection() = 0;
 
-	virtual void onObjectMoved(jl::Object& _object) = 0;
-	virtual void onObjectScaled(jl::Object& _object) = 0;
+	virtual void onObjectMoved(ObjectWrapper& _objWrapper) = 0;
+	virtual void onObjectScaled(ObjectWrapper& _objWrapper) = 0;
 };

@@ -1,7 +1,8 @@
 #include "save_restore/JsonProjectRestorer.hpp"
 #include "save_restore/JsonStrings.hpp"
 
-#include "ObjectWrapper.hpp"
+#include "data/SceneWrapper.hpp"
+#include "data/ObjectWrapper.hpp"
 
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
@@ -63,16 +64,9 @@ JsonProjectRestorer::JsonProjectRestorer(std::istream& _stream)
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Scene> JsonProjectRestorer::extractScene()
+std::unique_ptr<SceneWrapper> JsonProjectRestorer::extractScene()
 {
-	return std::move(m_scene);
-}
-
-//-----------------------------------------------------------------------------
-
-std::vector<ObjectWrapper> JsonProjectRestorer::extractObjWrappers()
-{
-	return std::move(m_objWrappers);
+	return std::move(m_sceneWrapper);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,15 +157,14 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 
 void JsonProjectRestorer::restoreScene(const Json::Value& _json)
 {
-	m_scene = std::make_unique<jl::Scene>();
-	m_objWrappers.reserve(_json.size());
+	m_sceneWrapper = std::make_unique<SceneWrapper>();
 
 	for (const Json::Value& object : _json[k_objects])
 	{
 		restoreObject(object);
 	}
 
-	restoreLights(_json[k_lights], m_scene->getLightsHolder());
+	restoreLights(_json[k_lights], m_sceneWrapper->getLightsHolder());
 }
 
 //-----------------------------------------------------------------------------
@@ -179,9 +172,7 @@ void JsonProjectRestorer::restoreScene(const Json::Value& _json)
 void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 {
 	auto object = std::make_unique<jl::Object>(_json[k_name].asString());
-
-	ObjectWrapper& wrapper = m_objWrappers.emplace_back(*object);
-	m_scene->addObject(std::move(object));
+	ObjectWrapper& wrapper = m_sceneWrapper->addObject(std::move(object));
 
 	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
 	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));

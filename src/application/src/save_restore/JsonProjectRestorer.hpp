@@ -6,12 +6,11 @@
 #include <memory>
 
 namespace jl {
-class Scene;
-class Object;
 class Material;
 class LightsHolder;
 }
 
+class SceneWrapper;
 class ObjectWrapper;
 
 class JsonProjectRestorer
@@ -19,8 +18,7 @@ class JsonProjectRestorer
 public:
 	JsonProjectRestorer(std::istream& _stream);
 
-	std::unique_ptr<jl::Scene> extractScene();
-	std::vector<ObjectWrapper> extractObjWrappers();
+	std::unique_ptr<SceneWrapper> extractScene();
 
 private:
 	static void restoreMaterials(const Json::Value& _json);
@@ -31,6 +29,5 @@ private:
 	static void restoreLights(const Json::Value& _json, jl::LightsHolder& _lightsHolder);
 
 private:
-	std::unique_ptr<jl::Scene> m_scene;
-	std::vector<ObjectWrapper> m_objWrappers;
+	std::unique_ptr<SceneWrapper> m_sceneWrapper;
 };

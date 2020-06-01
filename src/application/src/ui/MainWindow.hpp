@@ -21,12 +21,10 @@ class MainWindow;
 }
 
 namespace jl {
-class Scene;
-class Object;
-class Shader;
 class Model;
 }
 
+class SceneWrapper;
 class ObjectWrapper;
 class EntitiesWidget;
 class PropertiesWidget;
@@ -50,8 +48,8 @@ public:
 
 	void resetSelection() override;
 
-	void onObjectMoved(jl::Object& _object) override;
-	void onObjectScaled(jl::Object& _object) override;
+	void onObjectMoved(ObjectWrapper& _objWrapper) override;
+	void onObjectScaled(ObjectWrapper& _objWrapper) override;
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -89,9 +87,8 @@ private:
 
 	app::ScopedConnection m_glLoadedConnection;
 
-	std::unique_ptr<jl::Scene> m_scene;
+	std::unique_ptr<SceneWrapper> m_sceneWrapper;
 	std::unique_ptr<jl::Model> m_roomModel;
-	std::vector<ObjectWrapper> m_objWrappers;
 
 	jl::Camera m_camera;
 	FreeflyCameraController m_cameraController;

@@ -2,6 +2,9 @@
 
 #include "ui/AppGlWidget.hpp"
 
+#include "data/SceneWrapper.hpp"
+#include "data/ObjectWrapper.hpp"
+
 #include "managers/InputManager.hpp"
 
 #include "renderer/Globals.hpp"
@@ -22,11 +25,11 @@
 
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
-	, m_scene(nullptr)
+	, m_sceneWrapper(nullptr)
 	, m_camera(nullptr)
+	, m_actionHandler(nullptr)
 	, m_selectedObject(nullptr)
 	, m_selectedObjDistance(0.0f)
-	, m_actionHandler(nullptr)
 {
 }
 
@@ -66,9 +69,16 @@ void AppGlWidget::drawBoundingBoxes(bool _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setScene(jl::Scene* _scene) noexcept
+void AppGlWidget::setScene(SceneWrapper* _sceneWrapper) noexcept
 {
-	m_scene = _scene;
+	m_sceneWrapper = _sceneWrapper;
+}
+
+//-----------------------------------------------------------------------------
+
+void AppGlWidget::setUninteractibleObjects(std::vector<const ObjectWrapper*> _objWrappers) noexcept
+{
+	m_uninteractibleObjWrappers = std::move(_objWrappers);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,13 +93,6 @@ void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
 void AppGlWidget::setActionHandler(IEntityActionHandler* _handler) noexcept
 {
 	m_actionHandler = _handler;
-}
-
-//-----------------------------------------------------------------------------
-
-void AppGlWidget::setUninteractibleObjects(std::vector<const jl::Object*> _objects) noexcept
-{
-	m_uninteractibleObjects = std::move(_objects);
 }
 
 //-----------------------------------------------------------------------------
@@ -134,14 +137,14 @@ void AppGlWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (m_scene && m_camera)
+	if (m_sceneWrapper && m_camera)
 	{
 		if (m_prerenderCommand)
 		{
 			m_prerenderCommand();
 		}
 
-		m_scene->render(*m_camera);
+		m_sceneWrapper->render(*m_camera);
 
 		if (m_postrenderCommand)
 		{
@@ -192,7 +195,7 @@ void AppGlWidget::mouseReleaseEvent(QMouseEvent* _event)
 {
 	if (_event->button() == Qt::MouseButton::LeftButton)
 	{
-		if (m_scene && m_camera)
+		if (m_sceneWrapper && m_camera)
 		{
 			const jl::rayf mouseRay = calcRayFromMouseClick(_event->pos(), *m_camera);
 			processObjectSelection(mouseRay);
@@ -263,25 +266,25 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 	m_selectedObject = nullptr;
 	m_selectedObjDistance = std::numeric_limits<float>::max();
 
-	m_scene->forEachObject([&_ray, this](jl::Object& _object)
+	m_sceneWrapper->forEachObject([&_ray, this](ObjectWrapper& _objWrapper)
 	{
-		auto it = std::find(m_uninteractibleObjects.begin(), m_uninteractibleObjects.end(), &_object);
-		if (it != m_uninteractibleObjects.end())
+		auto it = std::find(m_uninteractibleObjWrappers.begin(), m_uninteractibleObjWrappers.end(), &_objWrapper);
+		if (it != m_uninteractibleObjWrappers.end())
 		{
 			return;
 		}
 
-		_object.setRenderFlags(jl::Object::RenderFlags::DrawModel);
+		_objWrapper.setRenderFlags(jl::Object::RenderFlags::DrawModel);
 
-		if (const jl::Model* _model = _object.getModel())
+		if (const jl::Model* _model = _objWrapper.getModel())
 		{
-			const jl::boxf boxWorld = _object.getWorldMatrix() * _model->getBoundingBox();
+			const jl::boxf boxWorld = _objWrapper.getWorldMatrix() * _model->getBoundingBox();
 
 			float nearPos = 0.0f;
 			float farPos = 0.0f;
 			if (jl::intersects(boxWorld, _ray, nearPos, farPos) && nearPos < m_selectedObjDistance)
 			{
-				m_selectedObject = &_object;
+				m_selectedObject = &_objWrapper;
 				m_selectedObjDistance = nearPos;
 			}
 		}

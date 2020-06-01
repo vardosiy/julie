@@ -1,7 +1,7 @@
 #include "ui/PropertiesWidget.hpp"
 #include "ui_PropertiesWidget.h"
 
-#include "ObjectWrapper.hpp"
+#include "data/ObjectWrapper.hpp"
 
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
@@ -114,7 +114,6 @@ void PropertiesWidget::refreshObjectPos()
 
 	const glm::vec3& pos = obj->getPosition();
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Moveable;
-
 	setCellValue(index(0, k_valueColIdx, posIdx), pos.x, editable);
 	setCellValue(index(1, k_valueColIdx, posIdx), pos.y, editable);
 	setCellValue(index(2, k_valueColIdx, posIdx), pos.z, editable);
@@ -141,7 +140,6 @@ void PropertiesWidget::refreshObjectScale()
 
 	const glm::vec3& scale = obj->getScale();
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-
 	setCellValue(index(0, k_valueColIdx, scaleIdx), scale.x, editable);
 	setCellValue(index(1, k_valueColIdx, scaleIdx), scale.y, editable);
 	setCellValue(index(2, k_valueColIdx, scaleIdx), scale.z, editable);
@@ -277,9 +275,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 
 			if (_idx == x || _idx == y || _idx == z)
 			{
-				glm::vec3 newPos(x.data().toFloat(), y.data().toFloat(), z.data().toFloat());
-
-				_object.setPosition(newPos);
+				_object.setPosition(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
 				handled = true;
 			}
 		}
@@ -294,9 +290,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 
 			if (_idx == x || _idx == y || _idx == z)
 			{
-				glm::vec3 newPos(x.data().toFloat(), y.data().toFloat(), z.data().toFloat());
-
-				_object.setScale(newPos);
+				_object.setScale(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
 			}
 		}
 	}

@@ -15,16 +15,23 @@ public:
 	jl::Object& getInternalObject() noexcept;
 	const jl::Object& getInternalObject() const noexcept;
 
-	const jl::Model* getModel() const noexcept;
-	const jl::Material* getMaterial() const noexcept;
-	const glm::mat4& getWorldMatrix() const noexcept;
+//-----------------------------------------------------------------------------
+	const jl::Model*	getModel() const noexcept;
+	const jl::Material*	getMaterial() const noexcept;
+	const glm::mat4&	getWorldMatrix() const noexcept;
+	const std::string&	getName() const noexcept;
 
 	void setModel(const jl::Model& _model) noexcept;
 	void setMaterial(const jl::Material& _material) noexcept;
 
+//-----------------------------------------------------------------------------
 	jl::s32 getRenderFlags() const noexcept;
-	jl::s32 getTransformFlags() const noexcept;
+	void setRenderFlags(jl::s32 _flags) noexcept;
 
+	jl::s32 getTransformFlags() const noexcept;
+	void setTransformFlags(jl::s32 _flags) noexcept;
+
+//-----------------------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept;
 	const glm::vec3& getRotation() const noexcept;
 	const glm::vec3& getScale() const noexcept;
@@ -33,9 +40,11 @@ public:
 	void setRotation(const glm::vec3& _val) noexcept;
 	void setScale(const glm::vec3& _val) noexcept;
 
+//-----------------------------------------------------------------------------
 private:
 	void recalcTransform();
 
+//-----------------------------------------------------------------------------
 private:
 	jl::Object* m_object;
 
@@ -73,6 +82,11 @@ inline const glm::mat4& ObjectWrapper::getWorldMatrix() const noexcept
 	return m_object->getWorldMatrix();
 }
 
+inline const std::string& ObjectWrapper::getName() const noexcept
+{
+	return m_object->getName();
+}
+
 inline void ObjectWrapper::setModel(const jl::Model& _model) noexcept
 {
 	m_object->setModel(_model);
@@ -89,9 +103,19 @@ inline jl::s32 ObjectWrapper::getRenderFlags() const noexcept
 	return m_object->getRenderFlags();
 }
 
+inline void ObjectWrapper::setRenderFlags(jl::s32 _flags) noexcept
+{
+	m_object->setRenderFlags(_flags);
+}
+
 inline jl::s32 ObjectWrapper::getTransformFlags() const noexcept
 {
 	return m_object->getTransformFlags();
+}
+
+inline void ObjectWrapper::setTransformFlags(jl::s32 _flags) noexcept
+{
+	m_object->setTransformFlags(_flags);
 }
 
 inline const glm::vec3& ObjectWrapper::getPosition() const noexcept
