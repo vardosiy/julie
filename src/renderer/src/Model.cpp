@@ -1,6 +1,6 @@
 #include "renderer/Model.hpp"
 
-#include "utils/Utils.hpp"
+#include "creation_helpers/ModelCreationHelper.hpp"
 
 #include <algorithm>
 
@@ -12,45 +12,14 @@ namespace jl {
 
 std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath)
 {
-	FILE* pFile = fopen(_filePath.data(), "r");
-	if (!pFile)
-	{
-		return nullptr;
-	}
+	return ModelCreationHelper::loadFromFile(_filePath);
+}
 
-	int verticesCount = 0;
-	fscanf_s(pFile, "%*s %d", &verticesCount);
-	ASSERTM(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
+//-----------------------------------------------------------------------------
 
-	std::vector<Vertex> vertices(verticesCount);
-	for (Vertex& vertex : vertices)
-	{
-		fscanf_s(
-			pFile, " %*d. pos:[%f, %f, %f]; norm:[%f, %f, %f]; binorm:[%f, %f, %f]; tgt:[%f, %f, %f]; uv:[%f, %f];",
-			&vertex.pos.x, &vertex.pos.y, &vertex.pos.z,
-			&vertex.norm.x, &vertex.norm.y, &vertex.norm.z,
-			&vertex.bitangent.x, &vertex.bitangent.y, &vertex.bitangent.z,
-			&vertex.tangent.x, &vertex.tangent.y, &vertex.tangent.z,
-			&vertex.uv.x, &vertex.uv.y
-		);
-	}
-
-	s32 indicesCount = 0;
-	fscanf_s(pFile, "%*s %d", &indicesCount);
-	ASSERTM(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
-
-	std::vector<u16> indices(indicesCount);
-	for (s32 i = 0; i < indicesCount; i += 3)
-	{
-		fscanf_s(
-			pFile, " %*d. %hd, %hd, %hd",
-			&indices[i], &indices[i + 1], &indices[i + 2]
-		);
-	}
-
-	fclose(pFile);
-
-	return std::make_unique<Model>(vertices, indices);
+std::vector<std::unique_ptr<Model>> Model::load(std::string_view _filePath)
+{
+	return ModelCreationHelper::load(_filePath);
 }
 
 //-----------------------------------------------------------------------------

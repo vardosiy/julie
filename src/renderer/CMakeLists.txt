@@ -16,6 +16,9 @@ target_link_libraries(renderer glm_static)
 target_include_directories(renderer PRIVATE ${3rd_party_dir}/jsoncpp/include)
 target_link_libraries(renderer jsoncpp_lib)
 
+target_include_directories(renderer PRIVATE ${3rd_party_dir}/assimp/include)
+target_link_libraries(renderer assimp)
+
 #------------------------------------------------------------------------------
 
 add_to_filters(sources)
