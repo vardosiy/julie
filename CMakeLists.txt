@@ -76,6 +76,13 @@ set_target_properties(jsoncpp_lib PROPERTIES FOLDER ${3rd_party_targets_group})
 add_subdirectory(${3rd_party_dir}/glad)
 set_target_properties(glad PROPERTIES FOLDER ${3rd_party_targets_group})
 
+add_subdirectory(${3rd_party_dir}/assimp)
+set_target_properties(assimp PROPERTIES CXX_STANDARD 14)
+set_target_properties(assimp PROPERTIES FOLDER ${3rd_party_targets_group}/assimp)
+set_target_properties(IrrXML PROPERTIES FOLDER ${3rd_party_targets_group}/assimp)
+set_target_properties(zlibstatic PROPERTIES FOLDER ${3rd_party_targets_group}/assimp)
+set_target_properties(UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTIES FOLDER ${3rd_party_targets_group}/assimp)
+
 #------------------------------------------------------------------------------
 # subdirectories
 add_subdirectory(${targets_dir}/utils)
@@ -91,24 +98,24 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/tests/)
 
 #------------------------------------------------------------------------------
 # tests
-function(set_structural_properties target_name folder)
-	set_target_properties(${target_name} PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY	${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-		LIBRARY_OUTPUT_DIRECTORY	${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-		ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-		PDB_OUTPUT_DIRECTORY		${CMAKE_PDB_OUTPUT_DIRECTORY}
-		FOLDER						${folder}
-	)
-endfunction()
+# function(set_structural_properties target_name folder)
+# 	set_target_properties(${target_name} PROPERTIES
+# 		RUNTIME_OUTPUT_DIRECTORY	${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+# 		LIBRARY_OUTPUT_DIRECTORY	${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+# 		ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+# 		PDB_OUTPUT_DIRECTORY		${CMAKE_PDB_OUTPUT_DIRECTORY}
+# 		FOLDER						${folder}
+# 	)
+# endfunction()
 
-set(gtest_force_shared_crt ON)
-add_subdirectory(${3rd_party_dir}/gtest)
-set_structural_properties(gtest			${tests_targets_group}/gtest)
-set_structural_properties(gtest_main	${tests_targets_group}/gtest)
-set_structural_properties(gmock			${tests_targets_group}/gtest)
-set_structural_properties(gmock_main	${tests_targets_group}/gtest)
+# set(gtest_force_shared_crt ON)
+# add_subdirectory(${3rd_party_dir}/gtest)
+# set_structural_properties(gtest			${tests_targets_group}/gtest)
+# set_structural_properties(gtest_main	${tests_targets_group}/gtest)
+# set_structural_properties(gmock			${tests_targets_group}/gtest)
+# set_structural_properties(gmock_main	${tests_targets_group}/gtest)
 
-enable_testing()
-#add_subdirectory(${tests_dir}/utils_tests)
+# enable_testing()
+# add_subdirectory(${tests_dir}/utils_tests)
 
 #------------------------------------------------------------------------------
