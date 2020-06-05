@@ -77,8 +77,14 @@ void Renderer::shutdown()
 
 void Renderer::draw(const Model& _model) noexcept
 {
-	_model.bind();
-	glDrawElements(GL_TRIANGLES, _model.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
+	const u64 meshesCount = _model.getMeshedCount();
+	for (u64 i = 0; i < meshesCount; ++i)
+	{
+		const Mesh& mesh = _model.getMesh(i);
+
+		mesh.bind();
+		glDrawElements(GL_TRIANGLES, mesh.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
+	}
 }
 
 //-----------------------------------------------------------------------------

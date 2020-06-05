@@ -17,36 +17,32 @@ std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath)
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::unique_ptr<Model>> Model::load(std::string_view _filePath)
+Model::Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept
 {
-	return ModelCreationHelper::load(_filePath);
+	m_meshes.emplace_back(_vertices, _indices);
+	m_boundingBox = calculateBoundingBox(m_meshes);
 }
 
 //-----------------------------------------------------------------------------
 
-Model::Model(const std::vector<Vertex> & _vertices, const std::vector<u16> & _indices)
+Model::Model(std::vector<Mesh>&& _meshes) noexcept
+	: m_meshes(std::move(_meshes))
 {
-	m_vertexArray.bind();
-
-	m_vertexArray.setVertexBuffer(std::make_unique<VertexBuffer>(_vertices.data(), _vertices.size()));
-	m_vertexArray.setIndexBuffer(std::make_unique<IndexBuffer>(_indices.data(), _indices.size()));
-
-	calculateBoundingBox(_vertices);
+	m_boundingBox = calculateBoundingBox(m_meshes);
 }
 
 //-----------------------------------------------------------------------------
 
-void Model::bind() const
+u64 Model::getMeshedCount() const noexcept
 {
-	m_vertexArray.bind();
+	return m_meshes.size();
 }
 
 //-----------------------------------------------------------------------------
 
-u64 Model::getIndeciesCount() const noexcept
+const Mesh& Model::getMesh(u64 _idx) const noexcept
 {
-	const IndexBuffer* indexBuffer = m_vertexArray.getIndexBuffer();
-	return indexBuffer ? indexBuffer->getCount() : 0;
+	return m_meshes.at(_idx);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,23 +54,38 @@ const boxf& Model::getBoundingBox() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Model::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
+boxf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
 {
-	auto maxFinder = [&_vertices](auto&& _predicate)
+	auto minFinder = [&_meshes](auto&& _valueGetter) -> float
 	{
-		return std::max_element(_vertices.begin(), _vertices.end(), _predicate);
+		float min = std::numeric_limits<float>::max();
+		for (const Mesh& mesh : _meshes)
+		{
+			min = std::min(min, _valueGetter(mesh));
+		}
+		return min;
 	};
+	const float leftmost	= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.x; });
+	const float lowest		= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.y; });
+	const float farthest	= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.z; });
 
-	const Vertex& leftmost	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x > _rhs.pos.x; });
-	const Vertex& lowest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y > _rhs.pos.y; });
-	const Vertex& farthest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z > _rhs.pos.z; });
+	auto maxFinder = [&_meshes](auto&& _valueGetter) -> float
+	{
+		float max = std::numeric_limits<float>::lowest();
+		for (const Mesh& mesh : _meshes)
+		{
+			max = std::max(max, _valueGetter(mesh));
+		}
+		return max;
+	};
+	const float rightmost	= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.x; });
+	const float highest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.y; });
+	const float closest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.z; });
 
-	const Vertex& rightmost	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x < _rhs.pos.x; });
-	const Vertex& highest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y < _rhs.pos.y; });
-	const Vertex& closest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z < _rhs.pos.z; });
-
-	m_boundingBox.min = glm::vec3(leftmost.pos.x, lowest.pos.y, farthest.pos.z);
-	m_boundingBox.max = glm::vec3(rightmost.pos.x, highest.pos.y, closest.pos.z);
+	return boxf{
+		glm::vec3{ leftmost, lowest, farthest },
+		glm::vec3{ rightmost, highest, closest }
+	};
 }
 
 //-----------------------------------------------------------------------------
