@@ -1,4 +1,4 @@
-#include "ShaderCreationHelper.hpp"
+#include "creation_helpers/ShaderCreationHelper.hpp"
 
 #include "renderer/Shader.hpp"
 
