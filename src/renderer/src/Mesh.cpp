@@ -11,9 +11,8 @@ namespace jl {
 Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept
 {
 	m_vertexArray.bind();
-
-	m_vertexArray.setVertexBuffer(std::make_unique<VertexBuffer>(_vertices.data(), _vertices.size()));
-	m_vertexArray.setIndexBuffer(std::make_unique<IndexBuffer>(_indices.data(), _indices.size()));
+	m_vertexArray.setVertexBuffer(VertexBuffer(_vertices.data(), _vertices.size()));
+	m_vertexArray.setIndexBuffer(IndexBuffer(_indices.data(), _indices.size()));
 
 	m_boundingBox = calculateBoundingBox(_vertices);
 }

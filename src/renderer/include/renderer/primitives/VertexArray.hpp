@@ -5,8 +5,7 @@
 #include "renderer/primitives/IndexBuffer.hpp"
 
 #include <boost/noncopyable.hpp>
-
-#include <memory>
+#include <boost/optional.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -26,11 +25,14 @@ public:
 
 	void bind() const noexcept;
 
-	void setVertexBuffer(std::unique_ptr<VertexBuffer>&& _buffer) noexcept;
-	void setIndexBuffer(std::unique_ptr<IndexBuffer>&& _buffer) noexcept;
+	void setVertexBuffer(VertexBuffer&& _buffer) noexcept;
+	void setIndexBuffer(IndexBuffer&& _buffer) noexcept;
 
-	VertexBuffer* getVertexBuffer() const noexcept;
-	IndexBuffer* getIndexBuffer() const noexcept;
+	VertexBuffer* getVertexBuffer() noexcept;
+	IndexBuffer* getIndexBuffer() noexcept;
+
+	const VertexBuffer* getVertexBuffer() const noexcept;
+	const IndexBuffer* getIndexBuffer() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
@@ -39,8 +41,8 @@ private:
 //-----------------------------------------------------------------------------
 	u32 m_id;
 
-	std::unique_ptr<VertexBuffer> m_vertexBuffer;
-	std::unique_ptr<IndexBuffer> m_indexBuffer;
+	boost::optional<VertexBuffer> m_vertexBuffer;
+	boost::optional<IndexBuffer> m_indexBuffer;
 
 	static constexpr u32 k_nullId = 0;
 };

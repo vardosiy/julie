@@ -58,8 +58,8 @@ void Renderer::init()
 	s_shader = Shader::create(k_primitivesShaderVsSource, k_primitivesShaderFsSource);
 
 	s_vertexArray.reset(new VertexArray);
-	s_vertexArray->setVertexBuffer(std::make_unique<VertexBuffer>(1024));
-	s_vertexArray->setIndexBuffer(std::make_unique<IndexBuffer>(1024));
+	s_vertexArray->setVertexBuffer(VertexBuffer(1024));
+	s_vertexArray->setIndexBuffer(IndexBuffer(1024));
 
 	ASSERT(s_shader);
 	ASSERT(s_vertexArray);

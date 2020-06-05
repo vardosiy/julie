@@ -35,8 +35,8 @@ VertexArray::VertexArray(VertexArray&& _rhs) noexcept
 	, m_indexBuffer(std::move(_rhs.m_indexBuffer))
 {
 	_rhs.m_id = k_nullId;
-	m_vertexBuffer = nullptr;
-	m_indexBuffer = nullptr;
+	m_vertexBuffer.reset();
+	m_indexBuffer.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void VertexArray::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void VertexArray::setVertexBuffer(std::unique_ptr<VertexBuffer>&& _buffer) noexcept
+void VertexArray::setVertexBuffer(VertexBuffer&& _buffer) noexcept
 {
 	m_vertexBuffer = std::move(_buffer);
 
@@ -70,7 +70,7 @@ void VertexArray::setVertexBuffer(std::unique_ptr<VertexBuffer>&& _buffer) noexc
 
 //-----------------------------------------------------------------------------
 
-void VertexArray::setIndexBuffer(std::unique_ptr<IndexBuffer>&& _buffer) noexcept
+void VertexArray::setIndexBuffer(IndexBuffer&& _buffer) noexcept
 {
 	m_indexBuffer = std::move(_buffer);
 
@@ -80,16 +80,30 @@ void VertexArray::setIndexBuffer(std::unique_ptr<IndexBuffer>&& _buffer) noexcep
 
 //-----------------------------------------------------------------------------
 
-VertexBuffer* VertexArray::getVertexBuffer() const noexcept
+VertexBuffer* VertexArray::getVertexBuffer() noexcept
 {
-	return m_vertexBuffer ? m_vertexBuffer.get() : nullptr;
+	return m_vertexBuffer.get_ptr();
 }
 
 //-----------------------------------------------------------------------------
 
-IndexBuffer* VertexArray::getIndexBuffer() const noexcept
+IndexBuffer* VertexArray::getIndexBuffer() noexcept
 {
-	return m_indexBuffer ? m_indexBuffer.get() : nullptr;
+	return m_indexBuffer.get_ptr();
+}
+
+//-----------------------------------------------------------------------------
+
+const VertexBuffer* VertexArray::getVertexBuffer() const noexcept
+{
+	return m_vertexBuffer.get_ptr();
+}
+
+//-----------------------------------------------------------------------------
+
+const IndexBuffer* VertexArray::getIndexBuffer() const noexcept
+{
+	return m_indexBuffer.get_ptr();
 }
 
 //-----------------------------------------------------------------------------
