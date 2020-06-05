@@ -18,8 +18,11 @@ class VertexArray
 {
 //-----------------------------------------------------------------------------
 public:
-	VertexArray();
+	VertexArray() noexcept;
 	~VertexArray();
+
+	VertexArray(VertexArray&& _rhs) noexcept;
+	VertexArray& operator= (VertexArray&& _rhs) noexcept;
 
 	void bind() const noexcept;
 
@@ -38,6 +41,8 @@ private:
 
 	std::unique_ptr<VertexBuffer> m_vertexBuffer;
 	std::unique_ptr<IndexBuffer> m_indexBuffer;
+
+	static constexpr u32 k_nullId = 0;
 };
 
 //-----------------------------------------------------------------------------

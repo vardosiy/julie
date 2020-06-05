@@ -12,7 +12,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-VertexArray::VertexArray()
+VertexArray::VertexArray() noexcept
 {
 	glGenVertexArrays(1, &m_id);
 }
@@ -21,7 +21,33 @@ VertexArray::VertexArray()
 
 VertexArray::~VertexArray()
 {
-	glDeleteVertexArrays(1, &m_id);
+	if (m_id != k_nullId)
+	{
+		glDeleteVertexArrays(1, &m_id);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+VertexArray::VertexArray(VertexArray&& _rhs) noexcept
+	: m_id(_rhs.m_id)
+	, m_vertexBuffer(std::move(_rhs.m_vertexBuffer))
+	, m_indexBuffer(std::move(_rhs.m_indexBuffer))
+{
+	_rhs.m_id = k_nullId;
+	m_vertexBuffer = nullptr;
+	m_indexBuffer = nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+VertexArray& VertexArray::operator=(VertexArray&& _rhs) noexcept
+{
+	std::swap(m_id, _rhs.m_id);
+	std::swap(m_vertexBuffer, _rhs.m_vertexBuffer);
+	std::swap(m_indexBuffer, _rhs.m_indexBuffer);
+
+	return *this;
 }
 
 //-----------------------------------------------------------------------------
