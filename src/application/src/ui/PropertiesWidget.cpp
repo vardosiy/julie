@@ -1,4 +1,6 @@
 #include "ui/PropertiesWidget.hpp"
+#include "ui/PropertyValueDelegate.hpp"
+#include "ui/PropertyTypes.hpp"
 #include "ui_PropertiesWidget.h"
 
 #include "data/ObjectWrapper.hpp"
@@ -27,6 +29,8 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 
 	m_propertiesTableModel.setHeaderData(k_nameColIdx, Qt::Horizontal, "Property");
 	m_propertiesTableModel.setHeaderData(k_valueColIdx, Qt::Horizontal, "Value");
+
+	m_ui->treev_properties->setItemDelegateForColumn(1, new PropertyValueDelegate(m_ui->treev_properties));
 
 	connect(&m_propertiesTableModel, &QStandardItemModel::dataChanged, this, &PropertiesWidget::onDataChanged);
 }
@@ -78,7 +82,7 @@ void PropertiesWidget::setActiveEntity(jl::Material& _material)
 	}
 	else
 	{
-		const int propertiesCount = _material.getProperties().size();
+		const int propertiesCount = static_cast<int>(_material.getProperties().size());
 		m_propertiesTableModel.setRowCount(propertiesCount);
 	}
 
@@ -155,12 +159,8 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 	int propNum = 0;
 	{
-		QString modelSourceFile;
-		if (const jl::Model* model = _object.getModel())
-		{
-			modelSourceFile = ResourceManager::getInstance().findSourceFile(*model).c_str();
-		}
-		setPropertyRow(propNum++, rootIdx, "Model", modelSourceFile, true);
+		const QVariant model = QVariant::fromValue(ModelUiWrapper{ _object.getModel() });
+		setPropertyRow(propNum++, rootIdx, "Model", model, true);
 	}
 	{
 		QString materialName;
@@ -214,7 +214,7 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 void PropertiesWidget::refreshMaterialProperties(const jl::Material& _material)
 {
 	const auto& properties = _material.getProperties();
-	const int propertiesCount = properties.size();
+	const int propertiesCount = static_cast<int>(properties.size());
 
 	const QModelIndex rootIdx;
 
@@ -243,18 +243,15 @@ void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIn
 void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object)
 {
 	const QModelIndex rootIdx;
-	const std::string newValue = _idx.data().toString().toStdString();
 
-	int propNum = 0;
-	if (_idx == index(propNum++, k_valueColIdx, rootIdx))
+	if (_idx.data().canConvert<ModelUiWrapper>())
 	{
-		if (const jl::Model* model = ResourceManager::getInstance().loadModel(newValue))
-		{
-			_object.setModel(*model);
-		}
+		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
+		_object.setModel(modelWrapper.model);
 	}
-	else if (_idx == index(propNum++, k_valueColIdx, rootIdx))
+	else if (_idx == index(1, k_valueColIdx, rootIdx))
 	{
+		const std::string newValue = _idx.data().toString().toStdString();
 		if (const jl::Material* material = MaterialsManager::getInstance().findMaterial(newValue))
 		{
 			_object.setMaterial(*material);
@@ -262,7 +259,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 	}
 	else
 	{
-		const QModelIndex transformIdx = index(propNum++, k_nameColIdx, rootIdx);
+		const QModelIndex transformIdx = index(2, k_nameColIdx, rootIdx);
 		bool handled = false;
 		int transformNum = 0;
 

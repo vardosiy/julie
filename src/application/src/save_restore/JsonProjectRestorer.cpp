@@ -185,12 +185,9 @@ void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 			const std::string modelSource = modelJson.asString();
 			if (!modelSource.empty())
 			{
-				jl::Model* model = ResourceManager::getInstance().loadModel(modelJson.asString());
+				jl::Model* model = ResourceManager::getInstance().loadModel(modelSource);
 				ASSERT(model);
-				if (model)
-				{
-					wrapper.setModel(*model);
-				}
+				wrapper.setModel(model);
 			}
 		}
 	}

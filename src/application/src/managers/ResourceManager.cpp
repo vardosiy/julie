@@ -90,8 +90,13 @@ T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fil
 	}
 
 	AppController::makeContextCurrent();
-	auto [itEmplacedItem, inserted] = _container.emplace(_fileName, _loadFun(_fileName));
-	return itEmplacedItem->second.get();
+	if (std::unique_ptr<T> resource = _loadFun(_fileName))
+	{
+		auto [itEmplacedItem, inserted] = _container.emplace(_fileName, std::move(resource));
+		return itEmplacedItem->second.get();
+	}
+
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------

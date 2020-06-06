@@ -84,9 +84,9 @@ void Object::setTransformFlags(s32 _flags) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setModel(const Model& _model) noexcept
+void Object::setModel(const Model* _model) noexcept
 {
-	m_model = &_model;
+	m_model = _model;
 }
 
 //-----------------------------------------------------------------------------

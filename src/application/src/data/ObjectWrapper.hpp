@@ -21,7 +21,7 @@ public:
 	const glm::mat4&	getWorldMatrix() const noexcept;
 	const std::string&	getName() const noexcept;
 
-	void setModel(const jl::Model& _model) noexcept;
+	void setModel(const jl::Model* _model) noexcept;
 	void setMaterial(const jl::Material& _material) noexcept;
 
 //-----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ inline const std::string& ObjectWrapper::getName() const noexcept
 	return m_object->getName();
 }
 
-inline void ObjectWrapper::setModel(const jl::Model& _model) noexcept
+inline void ObjectWrapper::setModel(const jl::Model* _model) noexcept
 {
 	m_object->setModel(_model);
 	recalcTransform();

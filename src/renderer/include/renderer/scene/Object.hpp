@@ -47,7 +47,7 @@ public:
 	s32 getTransformFlags() const noexcept;
 	void setTransformFlags(s32 _flags) noexcept;
 
-	void setModel(const Model& _model) noexcept;
+	void setModel(const Model* _model) noexcept;
 	void setMaterial(const Material& _material) noexcept;
 	void setName(std::string _name) noexcept;
 
