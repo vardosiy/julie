@@ -16,7 +16,7 @@ Object::Object(std::string _name) noexcept
 	, m_renderFlags(RenderFlags::DrawModel)
 	, m_transformFlags(TransfromFlags::TransformAll)
 	, m_worldMatrix(1.0f)
-	, m_bIsTransformChanged(false)
+	, m_isTransformChanged(false)
 {
 }
 
@@ -38,10 +38,10 @@ const Material* Object::getMaterial() const noexcept
 
 const glm::mat4& Object::getWorldMatrix() const noexcept
 {
-	if (m_bIsTransformChanged)
+	if (m_isTransformChanged)
 	{
 		m_worldMatrix = calculateWorldMatrix(m_transformData);
-		m_bIsTransformChanged = false;
+		m_isTransformChanged = false;
 	}
 
 	return m_worldMatrix;
@@ -129,7 +129,7 @@ const glm::vec3& Object::getScale() const noexcept
 void Object::setPosition(const glm::vec3& _val) noexcept
 {
 	m_transformData.m_pos = _val;
-	m_bIsTransformChanged = true;
+	m_isTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ void Object::setPosition(const glm::vec3& _val) noexcept
 void Object::setRotation(const glm::vec3& _val) noexcept
 {
 	m_transformData.m_rotation = _val;
-	m_bIsTransformChanged = true;
+	m_isTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void Object::setRotation(const glm::vec3& _val) noexcept
 void Object::setScale(const glm::vec3& _val) noexcept
 {
 	m_transformData.m_scale = _val;
-	m_bIsTransformChanged = true;
+	m_isTransformChanged = true;
 }
 
 //-----------------------------------------------------------------------------

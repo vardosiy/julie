@@ -53,11 +53,11 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 	{
 		fscanf_s(
 			pFile, " %*d. pos:[%f, %f, %f]; norm:[%f, %f, %f]; binorm:[%f, %f, %f]; tgt:[%f, %f, %f]; uv:[%f, %f];",
-			&vertex.pos.x, &vertex.pos.y, &vertex.pos.z,
-			&vertex.norm.x, &vertex.norm.y, &vertex.norm.z,
-			&vertex.bitangent.x, &vertex.bitangent.y, &vertex.bitangent.z,
-			&vertex.tangent.x, &vertex.tangent.y, &vertex.tangent.z,
-			&vertex.uv.x, &vertex.uv.y
+			&vertex.pos.x,			&vertex.pos.y,			&vertex.pos.z,
+			&vertex.norm.x,			&vertex.norm.y,			&vertex.norm.z,
+			&vertex.bitangent.x,	&vertex.bitangent.y,	&vertex.bitangent.z,
+			&vertex.tangent.x,		&vertex.tangent.y,		&vertex.tangent.z,
+			&vertex.uv.x,			&vertex.uv.y
 		);
 	}
 

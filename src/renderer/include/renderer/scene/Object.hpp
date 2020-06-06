@@ -29,7 +29,7 @@ public:
 	{
 		Moveable		= 1 << 0,
 		Scaleable		= 1 << 1,
-		Rotatable		= 1 << 1,
+		Rotatable		= 1 << 2,
 		TransformAll	= Moveable | Scaleable | Rotatable
 	};
 
@@ -81,7 +81,7 @@ private:
 	s32 m_transformFlags;
 
 	TransformData		m_transformData;
-	mutable bool		m_bIsTransformChanged;
+	mutable bool		m_isTransformChanged;
 	mutable glm::mat4	m_worldMatrix;
 };
 

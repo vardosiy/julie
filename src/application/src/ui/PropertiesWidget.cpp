@@ -80,11 +80,9 @@ void PropertiesWidget::setActiveEntity(jl::Material& _material)
 			return;
 		}
 	}
-	else
-	{
-		const int propertiesCount = static_cast<int>(_material.getProperties().size());
-		m_propertiesTableModel.setRowCount(propertiesCount);
-	}
+
+	const int propertiesCount = static_cast<int>(_material.getProperties().size());
+	m_propertiesTableModel.setRowCount(propertiesCount);
 
 	m_activeEntity = nullptr;
 	refreshMaterialProperties(_material);
