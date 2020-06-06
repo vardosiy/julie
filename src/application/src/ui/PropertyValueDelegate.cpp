@@ -3,6 +3,9 @@
 #include "ui/EditableResourcePathWidget.hpp"
 
 #include "managers/ResourceManager.hpp"
+#include "managers/MaterialsManager.hpp"
+
+#include <QComboBox>
 
 //-----------------------------------------------------------------------------
 
@@ -19,6 +22,15 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 	{
 		return new EditableResourcePathWidget(_parent);
 	}
+	else if (_idx.data().canConvert<MaterialUiWrapper>())
+	{
+		QComboBox* materialsBox = new QComboBox(_parent);
+		MaterialsManager::getInstance().forEachMaterial([materialsBox](const std::string& _name, const jl::Material& _material)
+		{
+			materialsBox->addItem(QString::fromStdString(_name));
+		});
+		return materialsBox;
+	}
 	return QStyledItemDelegate::createEditor(_parent, _option, _idx);
 }
 
@@ -29,15 +41,26 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 	if (_idx.data().canConvert<ModelUiWrapper>())
 	{
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
-		EditableResourcePathWidget* wdg = qobject_cast<EditableResourcePathWidget*>(_editor);
+		EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
 
 		QString modelPath;
 		if (modelWrapper.model)
 		{
 			modelPath = ResourceManager::getInstance().findSourceFile(*modelWrapper.model).c_str();
 		}
+		pathWdg->setPath(modelPath);
+	}
+	else if (_idx.data().canConvert<MaterialUiWrapper>())
+	{
+		MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
+		QComboBox* materialsBox = qobject_cast<QComboBox*>(_editor);
 
-		wdg->setPath(modelPath);
+		QString materialName;
+		if (materialWrapper.material)
+		{
+			materialName = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
+		}
+		materialsBox->setCurrentText(materialName);
 	}
 	else
 	{
@@ -51,8 +74,8 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 {
 	if (_idx.data().canConvert<ModelUiWrapper>())
 	{
-		EditableResourcePathWidget* wdg = qobject_cast<EditableResourcePathWidget*>(_editor);
-		const QString& modelPath = wdg->getPath();
+		const EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
+		const QString& modelPath = pathWdg->getPath();
 
 		ModelUiWrapper modelWrapper;
 		if (!modelPath.isEmpty())
@@ -60,6 +83,18 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 			modelWrapper.model = ResourceManager::getInstance().loadModel(modelPath.toStdString());
 		}
 		_model->setData(_idx, QVariant::fromValue(modelWrapper));
+	}
+	else if (_idx.data().canConvert<MaterialUiWrapper>())
+	{
+		const QComboBox* materialsBox = qobject_cast<QComboBox*>(_editor);
+
+		MaterialUiWrapper materialWrapper;
+		if (materialsBox->currentIndex() != -1)
+		{
+			const std::string materialName = materialsBox->currentText().toStdString();
+			materialWrapper.material = MaterialsManager::getInstance().findMaterial(materialName);
+		}
+		_model->setData(_idx, QVariant::fromValue(materialWrapper));
 	}
 	else
 	{
@@ -79,6 +114,14 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 		if (modelWrapper.model)
 		{
 			result = ResourceManager::getInstance().findSourceFile(*modelWrapper.model).c_str();
+		}
+	}
+	else if (_value.canConvert<MaterialUiWrapper>())
+	{
+		const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_value);
+		if (materialWrapper.material)
+		{
+			result = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
 		}
 	}
 	else

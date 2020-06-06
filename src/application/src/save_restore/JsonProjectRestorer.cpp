@@ -195,9 +195,12 @@ void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 		const Json::Value& materialJson = _json[k_material];
 		if (materialJson.isString())
 		{
-			if (jl::Material* material = MaterialsManager::getInstance().findMaterial(materialJson.asString()))
+			const std::string materialName = materialJson.asString();
+			if (!materialName.empty())
 			{
-				wrapper.setMaterial(*material);
+				jl::Material* material = MaterialsManager::getInstance().findMaterial(materialName);
+				ASSERT(material);
+				wrapper.setMaterial(material);
 			}
 		}
 	}

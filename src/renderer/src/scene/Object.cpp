@@ -91,9 +91,9 @@ void Object::setModel(const Model* _model) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setMaterial(const Material& _material) noexcept
+void Object::setMaterial(const Material* _material) noexcept
 {
-	m_material = &_material;
+	m_material = _material;
 }
 
 //-----------------------------------------------------------------------------

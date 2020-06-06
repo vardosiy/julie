@@ -2,7 +2,7 @@
 
 #include "utils/Singleton.hpp"
 
-#include <unordered_map>
+#include <map>
 #include <functional>
 #include <memory>
 
@@ -37,7 +37,7 @@ private:
 	~MaterialsManager();
 
 //-----------------------------------------------------------------------------
-	using MaterialsMap = std::unordered_map<std::string, std::unique_ptr<jl::Material>>;
+	using MaterialsMap = std::map<std::string, std::unique_ptr<jl::Material>>;
 	MaterialsMap m_materials;
 
 	std::unique_ptr<jl::Shader> m_defaultMaterialShader;

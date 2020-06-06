@@ -22,7 +22,7 @@ public:
 	const std::string&	getName() const noexcept;
 
 	void setModel(const jl::Model* _model) noexcept;
-	void setMaterial(const jl::Material& _material) noexcept;
+	void setMaterial(const jl::Material* _material) noexcept;
 
 //-----------------------------------------------------------------------------
 	jl::s32 getRenderFlags() const noexcept;
@@ -93,7 +93,7 @@ inline void ObjectWrapper::setModel(const jl::Model* _model) noexcept
 	recalcTransform();
 }
 
-inline void ObjectWrapper::setMaterial(const jl::Material& _material) noexcept
+inline void ObjectWrapper::setMaterial(const jl::Material* _material) noexcept
 {
 	m_object->setMaterial(_material);
 }

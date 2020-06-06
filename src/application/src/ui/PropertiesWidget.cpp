@@ -159,16 +159,12 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 	int propNum = 0;
 	{
-		const QVariant model = QVariant::fromValue(ModelUiWrapper{ _object.getModel() });
-		setPropertyRow(propNum++, rootIdx, "Model", model, true);
+		const QVariant value = QVariant::fromValue(ModelUiWrapper{ _object.getModel() });
+		setPropertyRow(propNum++, rootIdx, "Model", value, true);
 	}
 	{
-		QString materialName;
-		if (const jl::Material* material = _object.getMaterial())
-		{
-			materialName = MaterialsManager::getInstance().findMaterialName(*material).c_str();
-		}
-		setPropertyRow(propNum++, rootIdx, "Material", materialName, true);
+		const QVariant value = QVariant::fromValue(MaterialUiWrapper{ _object.getMaterial() });
+		setPropertyRow(propNum++, rootIdx, "Material", value, true);
 	}
 	{
 		const QModelIndex transformIdx = index(propNum, k_nameColIdx, rootIdx);
@@ -249,13 +245,10 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
 		_object.setModel(modelWrapper.model);
 	}
-	else if (_idx == index(1, k_valueColIdx, rootIdx))
+	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		const std::string newValue = _idx.data().toString().toStdString();
-		if (const jl::Material* material = MaterialsManager::getInstance().findMaterial(newValue))
-		{
-			_object.setMaterial(*material);
-		}
+		MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
+		_object.setMaterial(materialWrapper.material);
 	}
 	else
 	{
