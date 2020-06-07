@@ -6,6 +6,7 @@
 #include "managers/MaterialsManager.hpp"
 
 #include <QComboBox>
+#include <QDoubleSpinBox>
 
 //-----------------------------------------------------------------------------
 
@@ -30,6 +31,14 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 			materialsBox->addItem(QString::fromStdString(_name));
 		});
 		return materialsBox;
+	}
+	else if (_idx.data().canConvert<float>())
+	{
+		QDoubleSpinBox* spinBox = new QDoubleSpinBox(_parent);
+		spinBox->setRange(-1000.0, 1000.0);
+		spinBox->setSingleStep(0.1);
+		spinBox->setDecimals(5);
+		return spinBox;
 	}
 	return QStyledItemDelegate::createEditor(_parent, _option, _idx);
 }
@@ -61,6 +70,11 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 			materialName = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
 		}
 		materialsBox->setCurrentText(materialName);
+	}
+	else if (_idx.data().canConvert<float>())
+	{
+		QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
+		spinBox->setValue(_idx.data().toDouble());
 	}
 	else
 	{
@@ -95,6 +109,11 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 			materialWrapper.material = MaterialsManager::getInstance().findMaterial(materialName);
 		}
 		_model->setData(_idx, QVariant::fromValue(materialWrapper));
+	}
+	else if (_idx.data().canConvert<float>())
+	{
+		const QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
+		_model->setData(_idx, spinBox->value());
 	}
 	else
 	{
