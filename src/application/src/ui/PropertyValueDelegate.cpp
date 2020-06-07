@@ -1,6 +1,9 @@
 #include "ui/PropertyValueDelegate.hpp"
 #include "ui/PropertyTypes.hpp"
 #include "ui/EditableResourcePathWidget.hpp"
+#include "ui/EditableVec3Widget.hpp"
+#include "ui/EditableVec4Widget.hpp"
+#include "ui/UiUtils.hpp"
 
 #include "managers/ResourceManager.hpp"
 #include "managers/MaterialsManager.hpp"
@@ -31,6 +34,15 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 		});
 		return materialsBox;
 	}
+	else if (_idx.data().type() == QVariant::Type::Vector3D)
+	{
+		return new EditableVec3Widget(_parent);
+	}
+	else if (_idx.data().type() == QVariant::Type::Vector4D)
+	{
+		return new EditableVec4Widget(_parent);
+	}
+
 	return QStyledItemDelegate::createEditor(_parent, _option, _idx);
 }
 
@@ -61,6 +73,18 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 			materialName = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
 		}
 		materialsBox->setCurrentText(materialName);
+	}
+	else if (_idx.data().type() == QVariant::Type::Vector3D)
+	{
+		QVector3D vec = qvariant_cast<QVector3D>(_idx.data());
+		EditableVec3Widget* widget = qobject_cast<EditableVec3Widget*>(_editor);
+		widget->setValue(vec);
+	}
+	else if (_idx.data().type() == QVariant::Type::Vector4D)
+	{
+		QVector4D vec = qvariant_cast<QVector4D>(_idx.data());
+		EditableVec4Widget* widget = qobject_cast<EditableVec4Widget*>(_editor);
+		widget->setValue(vec);
 	}
 	else
 	{
@@ -96,6 +120,16 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 		}
 		_model->setData(_idx, QVariant::fromValue(materialWrapper));
 	}
+	else if (_idx.data().type() == QVariant::Type::Vector3D)
+	{
+		EditableVec3Widget* widget = qobject_cast<EditableVec3Widget*>(_editor);
+		_model->setData(_idx, widget->getValue());
+	}
+	else if (_idx.data().type() == QVariant::Type::Vector4D)
+	{
+		EditableVec4Widget* widget = qobject_cast<EditableVec4Widget*>(_editor);
+		_model->setData(_idx, widget->getValue());
+	}
 	else
 	{
 		QStyledItemDelegate::setModelData(_editor, _model, _idx);
@@ -123,6 +157,16 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 		{
 			result = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
 		}
+	}
+	else if (_value.type() == QVariant::Type::Vector3D)
+	{
+		const QVector3D vec = qvariant_cast<QVector3D>(_value);
+		result = vecToString(vec);
+	}
+	else if (_value.type() == QVariant::Type::Vector4D)
+	{
+		const QVector4D vec = qvariant_cast<QVector4D>(_value);
+		result = vecToString(vec);
 	}
 	else
 	{
