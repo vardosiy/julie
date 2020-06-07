@@ -33,7 +33,7 @@ public:
 	void reset();
 
 	void refreshObjectPos();
-	void refreshObjectScale();
+	void refreshObjectSize();
 
 //-----------------------------------------------------------------------------
 private:
@@ -58,6 +58,7 @@ private:
 
 	static constexpr int k_nameColIdx = 0;
 	static constexpr int k_valueColIdx = 1;
+	static constexpr int k_transformRowIdx = 2;
 };
 
 //-----------------------------------------------------------------------------

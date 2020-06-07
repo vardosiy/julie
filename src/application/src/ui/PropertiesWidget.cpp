@@ -30,7 +30,7 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 	m_propertiesTableModel.setHeaderData(k_nameColIdx, Qt::Horizontal, "Property");
 	m_propertiesTableModel.setHeaderData(k_valueColIdx, Qt::Horizontal, "Value");
 
-	m_ui->treev_properties->setItemDelegateForColumn(1, new PropertyValueDelegate(m_ui->treev_properties));
+	m_ui->treev_properties->setItemDelegateForColumn(k_valueColIdx, new PropertyValueDelegate(m_ui->treev_properties));
 
 	connect(&m_propertiesTableModel, &QStandardItemModel::dataChanged, this, &PropertiesWidget::onDataChanged);
 }
@@ -50,7 +50,7 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 	{
 		m_propertiesTableModel.setRowCount(3);
 
-		const QModelIndex transformIdx = index(2, k_nameColIdx, QModelIndex());
+		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 		m_propertiesTableModel.insertRows(0, 2, transformIdx);
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
 
@@ -109,7 +109,6 @@ void PropertiesWidget::refreshObjectPos()
 	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
-	constexpr int k_transformRowIdx = 2;
 	constexpr int k_posRowIdx = 0;
 
 	const QModelIndex posIdx = index(k_posRowIdx, k_nameColIdx, index(k_transformRowIdx, k_nameColIdx, QModelIndex()));
@@ -125,7 +124,7 @@ void PropertiesWidget::refreshObjectPos()
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectScale()
+void PropertiesWidget::refreshObjectSize()
 {
 	if (!std::holds_alternative<ObjectWrapper*>(m_activeEntity))
 	{
@@ -135,16 +134,15 @@ void PropertiesWidget::refreshObjectScale()
 	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
-	constexpr int k_transformRowIdx = 2;
-	constexpr int k_scaleRowIdx = 1;
+	constexpr int k_sizeRowIdx = 1;
 
-	const QModelIndex scaleIdx = index(k_scaleRowIdx, k_nameColIdx, index(k_transformRowIdx, k_nameColIdx, QModelIndex()));
+	const QModelIndex scaleIdx = index(k_sizeRowIdx, k_nameColIdx, index(k_transformRowIdx, k_nameColIdx, QModelIndex()));
 
-	const glm::vec3& scale = obj->getScale();
+	const glm::vec3& size = obj->getSize();
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-	setCellValue(index(0, k_valueColIdx, scaleIdx), scale.x, editable);
-	setCellValue(index(1, k_valueColIdx, scaleIdx), scale.y, editable);
-	setCellValue(index(2, k_valueColIdx, scaleIdx), scale.z, editable);
+	setCellValue(index(0, k_valueColIdx, scaleIdx), size.x, editable);
+	setCellValue(index(1, k_valueColIdx, scaleIdx), size.y, editable);
+	setCellValue(index(2, k_valueColIdx, scaleIdx), size.z, editable);
 
 	m_activeEntity = obj;
 }
@@ -188,11 +186,11 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 			setHeaderRow(transfromNum, transformIdx, "Actual Size (in meters)");
 
-			const glm::vec3& scale = _object.getScale();
+			const glm::vec3& size = _object.getSize();
 			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-			setPropertyRow(0, scaleIdx, "Width",  scale.x, editable);
-			setPropertyRow(1, scaleIdx, "Height", scale.y, editable);
-			setPropertyRow(2, scaleIdx, "Depth",  scale.z, editable);
+			setPropertyRow(0, scaleIdx, "Width",  size.x, editable);
+			setPropertyRow(1, scaleIdx, "Height", size.y, editable);
+			setPropertyRow(2, scaleIdx, "Depth",  size.z, editable);
 
 			++transfromNum;
 		}
@@ -242,6 +240,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 	{
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
 		_object.setModel(modelWrapper.model);
+		refreshObjectSize();
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
@@ -250,7 +249,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 	}
 	else
 	{
-		const QModelIndex transformIdx = index(2, k_nameColIdx, rootIdx);
+		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, rootIdx);
 		bool handled = false;
 		int transformNum = 0;
 
@@ -270,15 +269,15 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 
 		if (!handled)
 		{
-			const QModelIndex scaleIdx = index(transformNum++, k_nameColIdx, transformIdx);
+			const QModelIndex sizeIdx = index(transformNum++, k_nameColIdx, transformIdx);
 
-			const QModelIndex x = index(0, k_valueColIdx, scaleIdx);
-			const QModelIndex y = index(1, k_valueColIdx, scaleIdx);
-			const QModelIndex z = index(2, k_valueColIdx, scaleIdx);
+			const QModelIndex x = index(0, k_valueColIdx, sizeIdx);
+			const QModelIndex y = index(1, k_valueColIdx, sizeIdx);
+			const QModelIndex z = index(2, k_valueColIdx, sizeIdx);
 
 			if (_idx == x || _idx == y || _idx == z)
 			{
-				_object.setScale(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
+				_object.setSize(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
 			}
 		}
 	}
