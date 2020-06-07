@@ -35,8 +35,8 @@ VertexArray::VertexArray(VertexArray&& _rhs) noexcept
 	, m_indexBuffer(std::move(_rhs.m_indexBuffer))
 {
 	_rhs.m_id = k_nullId;
-	m_vertexBuffer.reset();
-	m_indexBuffer.reset();
+	_rhs.m_vertexBuffer.reset();
+	_rhs.m_indexBuffer.reset();
 }
 
 //-----------------------------------------------------------------------------
