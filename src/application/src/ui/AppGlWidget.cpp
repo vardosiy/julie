@@ -229,10 +229,10 @@ void AppGlWidget::wheelEvent(QWheelEvent* _event)
 	{
 		const float scaleFactor = _event->angleDelta().y() > 0 ? 1.1f : 0.9f;
 
-		const glm::vec3& originalScale = m_selectedObject->getScale();
+		const glm::vec3& originalScale = m_selectedObject->getSize();
 		const glm::vec3 newScale = originalScale * scaleFactor;
 
-		m_selectedObject->setScale(newScale);
+		m_selectedObject->setSize(newScale);
 		m_actionHandler->onObjectScaled(*m_selectedObject);
 	}
 }

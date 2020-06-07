@@ -34,15 +34,16 @@ public:
 //-----------------------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept;
 	const glm::vec3& getRotation() const noexcept;
-	const glm::vec3& getScale() const noexcept;
+	const glm::vec3& getSize() const noexcept;
 
 	void setPosition(const glm::vec3& _val) noexcept;
 	void setRotation(const glm::vec3& _val) noexcept;
-	void setScale(const glm::vec3& _val) noexcept;
+	void setSize(const glm::vec3& _val) noexcept;
 
 //-----------------------------------------------------------------------------
 private:
 	void recalcTransform();
+	void recalcSize();
 
 //-----------------------------------------------------------------------------
 private:
@@ -53,6 +54,8 @@ private:
 
 	glm::vec3 m_initialScale;
 	glm::vec3 m_scale;
+
+	glm::vec3 m_size;
 };
 
 //-----------------------------------------------------------------------------
@@ -91,6 +94,7 @@ inline void ObjectWrapper::setModel(const jl::Model* _model) noexcept
 {
 	m_object->setModel(_model);
 	recalcTransform();
+	recalcSize();
 }
 
 inline void ObjectWrapper::setMaterial(const jl::Material* _material) noexcept
@@ -128,9 +132,9 @@ inline const glm::vec3& ObjectWrapper::getRotation() const noexcept
 	return m_object->getRotation();
 }
 
-inline const glm::vec3& ObjectWrapper::getScale() const noexcept
+inline const glm::vec3& ObjectWrapper::getSize() const noexcept
 {
-	return m_scale;
+	return m_size;
 }
 
 inline void ObjectWrapper::setPosition(const glm::vec3& _val) noexcept
@@ -141,12 +145,13 @@ inline void ObjectWrapper::setPosition(const glm::vec3& _val) noexcept
 
 inline void ObjectWrapper::setRotation(const glm::vec3& _val) noexcept
 {
-	return m_object->setRotation(_val);
+	m_object->setRotation(_val);
 }
 
-inline void ObjectWrapper::setScale(const glm::vec3& _val) noexcept
+inline void ObjectWrapper::setSize(const glm::vec3& _val) noexcept
 {
-	m_scale = _val;
+	m_scale *= _val / m_size;
+	m_size = _val;
 	recalcTransform();
 }
 

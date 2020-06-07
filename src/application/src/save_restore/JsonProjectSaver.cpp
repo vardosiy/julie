@@ -181,7 +181,7 @@ Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
 
 	result[k_position]	= details::vec3ToJson(_objWrapper.getPosition());
 	result[k_rotation]	= details::vec3ToJson(_objWrapper.getRotation());
-	result[k_scale]		= details::vec3ToJson(_objWrapper.getScale());
+	result[k_size]		= details::vec3ToJson(_objWrapper.getSize());
 
 	if (const jl::Model* model = _objWrapper.getModel())
 	{

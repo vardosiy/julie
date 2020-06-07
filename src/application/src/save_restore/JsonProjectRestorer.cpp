@@ -176,7 +176,7 @@ void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 
 	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
 	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));
-	wrapper.setScale(details::jsonToVec3(_json[k_scale]));
+	wrapper.setSize(details::jsonToVec3(_json[k_size]));
 
 	{
 		const Json::Value& modelJson = _json[k_model];

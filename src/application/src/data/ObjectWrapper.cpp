@@ -12,8 +12,10 @@ ObjectWrapper::ObjectWrapper(jl::Object& _obj)
 	, m_pos(0.0f)
 	, m_initialScale(1.0f)
 	, m_scale(1.0f)
+	, m_size(1.0f)
 {
 	recalcTransform();
+	recalcSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -36,6 +38,17 @@ void ObjectWrapper::recalcTransform()
 		const jl::boxf worldBox = m_object->getWorldMatrix() * modelBox;
 		m_originOffset = -worldBox.min;
 		m_object->setPosition(m_pos + m_originOffset);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void ObjectWrapper::recalcSize()
+{
+	if (const jl::Model* model = getModel())
+	{
+		const jl::boxf& box = model->getBoundingBox();
+		m_size = glm::vec3{ box.getWidth(), box.getHeight(), box.getDepth() } * m_initialScale;
 	}
 }
 
