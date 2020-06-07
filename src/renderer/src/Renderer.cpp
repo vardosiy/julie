@@ -75,15 +75,20 @@ void Renderer::shutdown()
 
 //-----------------------------------------------------------------------------
 
+void Renderer::draw(const Mesh& _mesh) noexcept
+{
+	_mesh.bind();
+	glDrawElements(GL_TRIANGLES, _mesh.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
+}
+
+//-----------------------------------------------------------------------------
+
 void Renderer::draw(const Model& _model) noexcept
 {
-	const u64 meshesCount = _model.getMeshedCount();
+	const u64 meshesCount = _model.getMeshesCount();
 	for (u64 i = 0; i < meshesCount; ++i)
 	{
-		const Mesh& mesh = _model.getMesh(i);
-
-		mesh.bind();
-		glDrawElements(GL_TRIANGLES, mesh.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
+		draw(_model.getMesh(i));
 	}
 }
 
@@ -150,8 +155,8 @@ s32 Renderer::polygonModeToGlValue(PolygonMode _mode) noexcept
 {
 	switch (_mode)
 	{
-		case PolygonMode::Fill: return GL_FILL;
-		case PolygonMode::Line: return GL_LINE;
+	case PolygonMode::Fill: return GL_FILL;
+	case PolygonMode::Line: return GL_LINE;
 	}
 
 	ASSERT(0);

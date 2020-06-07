@@ -25,7 +25,7 @@ public:
 	Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept;
 	Model(std::vector<Mesh>&& _meshes) noexcept;
 
-	u64 getMeshedCount() const noexcept;
+	u64 getMeshesCount() const noexcept;
 	const Mesh& getMesh(u64 _idx) const noexcept;
 
 	const boxf& getBoundingBox() const noexcept;

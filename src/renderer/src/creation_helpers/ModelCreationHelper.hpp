@@ -24,7 +24,7 @@ public:
 
 private:
 	static std::unique_ptr<Model> loadNfg(std::string_view _filePath);
-	static std::unique_ptr<Model> loadObj(std::string_view _filePath);
+	static std::unique_ptr<Model> loadAssimp(std::string_view _filePath);
 
 	static void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& _meshes);
 	static Mesh processMesh(aiMesh* mesh, const aiScene* scene);

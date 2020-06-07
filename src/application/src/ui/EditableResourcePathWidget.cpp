@@ -1,4 +1,4 @@
-#include "EditableResourcePathWidget.hpp"
+#include "ui/EditableResourcePathWidget.hpp"
 #include "ui_EditableResourcePathWidget.h"
 
 #include <QFileDialog>
@@ -7,8 +7,8 @@
 
 EditableResourcePathWidget::EditableResourcePathWidget(QWidget* _parent)
 	: QWidget(_parent)
-	, m_ui(new Ui::EditableResourcePathWidget)
 {
+	m_ui = std::make_unique<Ui::EditableResourcePathWidget>();
 	m_ui->setupUi(this);
 
 	connect(m_ui->btn_openFile, &QToolButton::pressed, this, &EditableResourcePathWidget::onOpenFilePressed);

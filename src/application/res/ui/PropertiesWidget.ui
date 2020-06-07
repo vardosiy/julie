@@ -41,7 +41,7 @@
       <bool>true</bool>
      </attribute>
      <attribute name="headerDefaultSectionSize">
-      <number>150</number>
+      <number>100</number>
      </attribute>
      <attribute name="headerHighlightSections">
       <bool>true</bool>

@@ -14,6 +14,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Mesh;
 class Model;
 class Shader;
 class VertexArray;
@@ -32,6 +33,7 @@ public:
 	static void init();
 	static void shutdown();
 
+	static void draw(const Mesh& _mesh) noexcept;
 	static void draw(const Model& _model) noexcept;
 	static void draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept;
 

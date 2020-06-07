@@ -33,7 +33,7 @@ Model::Model(std::vector<Mesh>&& _meshes) noexcept
 
 //-----------------------------------------------------------------------------
 
-u64 Model::getMeshedCount() const noexcept
+u64 Model::getMeshesCount() const noexcept
 {
 	return m_meshes.size();
 }

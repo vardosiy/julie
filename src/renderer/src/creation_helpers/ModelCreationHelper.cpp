@@ -26,9 +26,9 @@ std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _fileP
 	{
 		return loadNfg(_filePath);
 	}
-	else if (path.extension() == ".obj")
+	else if (path.extension() == ".obj" || path.extension() == ".dae")
 	{
-		return loadObj(_filePath);
+		return loadAssimp(_filePath);
 	}
 
 	return nullptr;
@@ -81,7 +81,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Model> ModelCreationHelper::loadObj(std::string_view _filePath)
+std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filePath.data(), aiProcess_Triangulate | aiProcess_FlipUVs);
