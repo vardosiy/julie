@@ -1,7 +1,7 @@
 #include "ui/MainWindow.hpp"
 #include "ui/EntitiesWidget.hpp"
 #include "ui/PropertiesWidget.hpp"
-
+#include "ui/UiUtils.hpp"
 #include "ui_MainWindow.h"
 
 #include "data/SceneWrapper.hpp"
@@ -251,13 +251,8 @@ void MainWindow::update()
 	m_sceneWrapper->update(dt);
 	m_cameraController.update(dt);
 
-	const glm::vec3& camPos = m_camera.getPosition();
-	const std::string camPosStr = fmt::format("{:.2f} {:.2f} {:.2f}", camPos.x, camPos.y, camPos.z);
-	m_ui->lbl_camPosValue->setText(QString::fromStdString(camPosStr));
-
-	const glm::vec3& camViewTarget = m_camera.getViewTarget();
-	const std::string camViewTargetStr = fmt::format("{:.2f} {:.2f} {:.2f}", camViewTarget.x, camViewTarget.y, camViewTarget.z);
-	m_ui->lbl_camViewDirectionValue->setText(QString::fromStdString(camViewTargetStr));
+	m_ui->lbl_camPosValue->setText(vecToString(m_camera.getPosition()));
+	m_ui->lbl_camViewDirectionValue->setText(vecToString(m_camera.getViewTarget()));
 
 	m_ui->oglw_screen->repaint();
 }
@@ -349,8 +344,8 @@ void MainWindow::setupRoom()
 		roomWrapper = &m_sceneWrapper->addObject(std::move(obj));
 	}
 
-	roomWrapper->setModel(*m_roomModel);
-	roomWrapper->setMaterial(MaterialsManager::getInstance().getDefaultMaterial());
+	roomWrapper->setModel(m_roomModel.get());
+	roomWrapper->setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
 	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });
