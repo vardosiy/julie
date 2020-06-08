@@ -39,7 +39,7 @@ public:
 //-----------------------------------------------------------------------------
 private:
 	void refreshObjectProperties(const ObjectWrapper& _object);
-	void refreshMeshes(const jl::Model* _model);
+	void refreshMeshes(jl::Model* _model);
 
 	void refreshMaterialProperties(const jl::Material& _material);
 

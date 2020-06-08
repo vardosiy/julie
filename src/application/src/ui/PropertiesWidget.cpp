@@ -51,13 +51,12 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 		m_propertiesTableModel.setRowCount(2);
 
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
-		m_propertiesTableModel.insertRows(0, 2, transformIdx);
+		m_propertiesTableModel.insertRows(0, 3, transformIdx);
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
 	}
 
-	refreshMeshes(_object.getModel());
-
 	m_activeEntity = nullptr;
+	refreshMeshes(_object.getModel());
 	refreshObjectProperties(_object);
 	m_activeEntity = &_object;
 }
@@ -160,7 +159,13 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 			setPropertyRow(transfromNum++, transformIdx, "Actual Size (in meters)", size, editable);
 		}
-		ASSERT(transfromNum == 2);
+		{
+			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation() });
+			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Rotatable;
+
+			setPropertyRow(transfromNum++, transformIdx, "Rotatation", rotation, editable);
+		}
+		ASSERT(transfromNum == 3);
 
 		++propNum;
 	}
@@ -169,7 +174,7 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshMeshes(const jl::Model* _model)
+void PropertiesWidget::refreshMeshes(jl::Model* _model)
 {
 	const QModelIndex modelIdx = index(k_modelRowIdx, k_nameColIdx, QModelIndex());
 
@@ -187,7 +192,15 @@ void PropertiesWidget::refreshMeshes(const jl::Model* _model)
 			const QString meshMaterialtemplate = "Mesh %1";
 			for (int i = 0; i < meshesCount; ++i)
 			{
-				const QVariant value = QVariant::fromValue(MaterialUiWrapper{ _model->getMesh(i).getMaterial() });
+				jl::Mesh& mesh = _model->getMesh(i);
+
+				QString materialName;
+				if (const jl::Material* material = mesh.getMaterial())
+				{
+					materialName = MaterialsManager::getInstance().findMaterialName(*material).c_str();
+				}
+
+				const QVariant value = QVariant::fromValue(MaterialUiWrapper{ materialName, &mesh });
 				setPropertyRow(i, modelIdx, meshMaterialtemplate.arg(i + 1), value, true);
 			}
 		}
@@ -254,6 +267,11 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 			{
 				_object.setSize(size.value);
 			}
+		}
+		else if (_idx == index(transformNum++, k_valueColIdx, transformIdx))
+		{
+			const TransformVecUiWrapper roatation = qvariant_cast<TransformVecUiWrapper>(_idx.data());
+			_object.setRotation(roatation.value);
 		}
 	}
 }

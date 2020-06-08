@@ -2,6 +2,7 @@
 #include "ui_EditableVec4Widget.h"
 
 #include "renderer/managers/MaterialsManager.hpp"
+#include "renderer/Mesh.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -12,31 +13,33 @@ EditMaterialsWidget::EditMaterialsWidget(QWidget* _parent)
 	{
 		addItem(QString::fromStdString(_name));
 	});
+
+	connect(this, SIGNAL(currentIndexChanged(QString)), this, SLOT(onMaterialChanged(const QString&)));
 }
 
 //-----------------------------------------------------------------------------
 
-MaterialUiWrapper EditMaterialsWidget::getData() const noexcept
+const MaterialUiWrapper& EditMaterialsWidget::getData() const noexcept
 {
-	MaterialUiWrapper result;
-	if (currentIndex() != -1)
-	{
-		const std::string materialName = currentText().toStdString();
-		result.value = MaterialsManager::getInstance().findMaterial(materialName);
-	}
-	return result;
+	return m_data;
 }
 
 //-----------------------------------------------------------------------------
 
-void EditMaterialsWidget::setData(MaterialUiWrapper _data) noexcept
+void EditMaterialsWidget::setData(const MaterialUiWrapper& _data) noexcept
 {
-	QString materialName;
-	if (_data.value)
-	{
-		materialName = MaterialsManager::getInstance().findMaterialName(*_data.value).c_str();
-	}
-	setCurrentText(materialName);
+	m_data = _data;
+	setCurrentText(m_data.materialName);
+}
+
+//-----------------------------------------------------------------------------
+
+void EditMaterialsWidget::onMaterialChanged(const QString& _materialName)
+{
+	m_data.materialName = _materialName;
+
+	const jl::Material* material = MaterialsManager::getInstance().findMaterial(_materialName.toStdString());
+	m_data.mesh->setMaterial(material);
 }
 
 //-----------------------------------------------------------------------------

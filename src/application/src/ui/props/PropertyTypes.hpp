@@ -7,18 +7,20 @@
 #include <functional>
 
 namespace jl {
+class Mesh;
 class Model;
 class Material;
 }
 
 struct ModelUiWrapper
 {
-	const jl::Model* value = nullptr;
+	jl::Model* value = nullptr;
 };
 
 struct MaterialUiWrapper
 {
-	const jl::Material* value = nullptr;
+	QString materialName;
+	jl::Mesh* mesh = nullptr;
 };
 
 struct TransformVecUiWrapper

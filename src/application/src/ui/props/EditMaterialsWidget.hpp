@@ -11,6 +11,12 @@ class EditMaterialsWidget : public QComboBox
 public:
 	explicit EditMaterialsWidget(QWidget* _parent = nullptr);
 
-	MaterialUiWrapper getData() const noexcept;
-	void setData(MaterialUiWrapper _data) noexcept;
+	const MaterialUiWrapper& getData() const noexcept;
+	void setData(const MaterialUiWrapper& _data) noexcept;
+
+private slots:
+	void onMaterialChanged(const QString& _materialName);
+
+private:
+	MaterialUiWrapper m_data;
 };
