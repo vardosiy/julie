@@ -61,7 +61,11 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListView" name="listv_objects"/>
+        <widget class="QListView" name="listv_objects">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -86,7 +90,11 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListView" name="listv_materials"/>
+        <widget class="QListView" name="listv_materials">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
