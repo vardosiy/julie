@@ -49,8 +49,6 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 	{
 		m_propertiesTableModel.setRowCount(2);
 
-		refreshMeshes(_object.getModel());
-
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 		m_propertiesTableModel.insertRows(0, 2, transformIdx);
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
@@ -64,6 +62,8 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 		m_propertiesTableModel.insertRows(0, 3, scaleIdx);
 		m_propertiesTableModel.insertColumns(0, 2, scaleIdx);
 	}
+
+	refreshMeshes(_object.getModel());
 
 	m_activeEntity = nullptr;
 	refreshObjectProperties(_object);
@@ -216,7 +216,7 @@ void PropertiesWidget::refreshMeshes(const jl::Model* _model)
 			m_propertiesTableModel.insertRows(0, meshesCount, modelIdx);
 			m_propertiesTableModel.insertColumns(0, 2, modelIdx);
 
-			const QString meshMaterialtemplate = "Mesh #%1 material";
+			const QString meshMaterialtemplate = "Mesh %1";
 			for (int i = 0; i < meshesCount; ++i)
 			{
 				const QVariant value = QVariant::fromValue(MaterialUiWrapper{ _model->getMesh(i).getMaterial() });
