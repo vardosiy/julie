@@ -19,7 +19,7 @@ public:
 	static std::unique_ptr<Texture> createDepthTexture(u32 _width, u32 _height);
 	
 private:
-	Texture(const char* _data, u32 _width, u32 _height, Format _format, FragmentType _fragmentType);
+	Texture(const u8* _data, u32 _width, u32 _height, Format _format, FragmentType _fragmentType);
 };
 
 //-----------------------------------------------------------------------------
