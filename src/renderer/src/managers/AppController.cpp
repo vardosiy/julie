@@ -1,23 +1,23 @@
-#include "AppController.hpp"
+#include "renderer/managers/AppController.hpp"
 
 //-----------------------------------------------------------------------------
 
-QOpenGLWidget* AppController::s_widget = nullptr;
+IOpenGlContextOwner* AppController::s_contextOwner = nullptr;
 
 //-----------------------------------------------------------------------------
 
-void AppController::setGlWidget(QOpenGLWidget* _widget)
+void AppController::setContextOwner(IOpenGlContextOwner* _contextOwner) noexcept
 {
-	s_widget = _widget;
+	s_contextOwner = _contextOwner;
 }
 
 //-----------------------------------------------------------------------------
 
 void AppController::makeContextCurrent()
 {
-	if (s_widget)
+	if (s_contextOwner)
 	{
-		s_widget->makeCurrent();
+		s_contextOwner->makeContextCurrent();
 	}
 }
 

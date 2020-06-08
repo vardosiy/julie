@@ -42,6 +42,13 @@ AppGlWidget::~AppGlWidget()
 
 //-----------------------------------------------------------------------------
 
+void AppGlWidget::makeContextCurrent()
+{
+	makeCurrent();
+}
+
+//-----------------------------------------------------------------------------
+
 void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 {
 	const auto polygonsMode =

@@ -6,6 +6,7 @@
 #include <memory>
 
 namespace jl {
+class Model;
 class Material;
 class LightsHolder;
 }
@@ -26,6 +27,7 @@ private:
 
 	void restoreScene(const Json::Value& _json);
 	void restoreObject(const Json::Value& _json);
+	void restoreModel(const Json::Value& _json, ObjectWrapper& _objWrapper);
 	static void restoreLights(const Json::Value& _json, jl::LightsHolder& _lightsHolder);
 
 private:

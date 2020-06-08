@@ -32,20 +32,26 @@ void Scene::render(const Camera& _camera) const
 	for (auto& object : m_objects)
 	{
 		const Model* model = object->getModel();
-		const Material* material = object->getMaterial();
-
-		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawModel && material && model)
+		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawModel && model)
 		{
-			material->bind();
-
-			const Shader* shader = material->getShader();
-			if (shader)
+			const u32 meshesCount = model->getMeshesCount();
+			for (u32 i = 0; i < meshesCount; ++i)
 			{
-				CommonUniformsBinder uniformBinder(*shader);
-				uniformBinder.setupCommon(_camera, object->getWorldMatrix());
-				uniformBinder.setupLights(m_lightsHolder);
+				const Mesh& mesh = model->getMesh(i);
 
-				Renderer::draw(*model);
+				if (const Material* material = mesh.getMaterial())
+				{
+					if (const Shader* shader = material->getShader())
+					{
+						material->bind();
+
+						CommonUniformsBinder uniformBinder(*shader);
+						uniformBinder.setupCommon(_camera, object->getWorldMatrix());
+						uniformBinder.setupLights(m_lightsHolder);
+
+						Renderer::draw(mesh);
+					}
+				}
 			}
 		}
 

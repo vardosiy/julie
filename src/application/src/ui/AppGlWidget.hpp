@@ -4,6 +4,7 @@
 #include "ui/IEntityActionHandler.hpp"
 
 #include "renderer/Types.hpp"
+#include "renderer/managers/AppController.hpp"
 
 #include <boost/optional.hpp>
 #include <glm/glm.hpp>
@@ -21,7 +22,7 @@ class Camera;
 class SceneWrapper;
 class ObjectWrapper;
 
-class AppGlWidget : public QOpenGLWidget
+class AppGlWidget : public QOpenGLWidget, public IOpenGlContextOwner
 {
 	Q_OBJECT
 
@@ -38,6 +39,8 @@ public:
 //-----------------------------------------------------------------------------
 	AppGlWidget(QWidget* _parent = nullptr);
 	~AppGlWidget();
+
+	void makeContextCurrent() override;
 
 	void setDrawMode(DrawMode _drawMode) noexcept;
 	void drawBoundingBoxes(bool _val) noexcept;

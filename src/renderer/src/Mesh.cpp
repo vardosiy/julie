@@ -9,6 +9,7 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept
+	 : m_material(nullptr)
 {
 	m_vertexArray.bind();
 	m_vertexArray.setVertexBuffer(VertexBuffer(_vertices.data(), _vertices.size()));
@@ -22,6 +23,7 @@ Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indice
 Mesh::Mesh(Mesh&& _rhs) noexcept
 	: m_vertexArray(std::move(_rhs.m_vertexArray))
 	, m_boundingBox(_rhs.m_boundingBox)
+	, m_material(_rhs.m_material)
 {
 }
 
@@ -31,6 +33,7 @@ Mesh& Mesh::operator=(Mesh&& _rhs) noexcept
 {
 	std::swap(m_vertexArray, _rhs.m_vertexArray);
 	std::swap(m_boundingBox, _rhs.m_boundingBox);
+	std::swap(m_material, _rhs.m_material);
 
 	return *this;
 }
@@ -40,6 +43,20 @@ Mesh& Mesh::operator=(Mesh&& _rhs) noexcept
 void Mesh::bind() const
 {
 	m_vertexArray.bind();
+}
+
+//-----------------------------------------------------------------------------
+
+const Material* Mesh::getMaterial() const noexcept
+{
+	return m_material;
+}
+
+//-----------------------------------------------------------------------------
+
+void Mesh::setMaterial(const Material* _material) noexcept
+{
+	m_material = _material;
 }
 
 //-----------------------------------------------------------------------------

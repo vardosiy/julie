@@ -12,7 +12,6 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Model;
-class Material;
 
 class Object
 {
@@ -37,19 +36,17 @@ public:
 	Object(std::string _name) noexcept;
 
 	const Model*		getModel() const noexcept;
-	const Material*		getMaterial() const noexcept;
 	const glm::mat4&	getWorldMatrix() const noexcept;
 	const std::string&	getName() const noexcept;
+
+	void setModel(const Model* _model) noexcept;
+	void setName(std::string _name) noexcept;
 
 	s32 getRenderFlags() const noexcept;
 	void setRenderFlags(s32 _flags) noexcept;
 
 	s32 getTransformFlags() const noexcept;
 	void setTransformFlags(s32 _flags) noexcept;
-
-	void setModel(const Model* _model) noexcept;
-	void setMaterial(const Material* _material) noexcept;
-	void setName(std::string _name) noexcept;
 
 // transform data -------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept;
@@ -75,7 +72,6 @@ private:
 	std::string m_name;
 
 	const Model* m_model;
-	const Material* m_material;
 
 	s32 m_renderFlags;
 	s32 m_transformFlags;

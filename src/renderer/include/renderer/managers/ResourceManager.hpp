@@ -22,7 +22,7 @@ class ResourceManager : public utils::Singleton<ResourceManager>
 public:
 	void clear();
 
-	jl::Model*			loadModel(const std::string& _fileName);
+	jl::Model*			loadModel(const std::string& _fileName, bool _loadMaterials);
 	jl::Shader*			loadShader(const std::string& _fileName);
 	jl::Texture*		loadTexture(const std::string& _fileName);
 	jl::CubeTexture*	loadCubeTexture(const std::string& _fileName);

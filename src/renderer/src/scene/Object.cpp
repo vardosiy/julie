@@ -12,7 +12,6 @@ namespace jl {
 Object::Object(std::string _name) noexcept
 	: m_name(std::move(_name))
 	, m_model(nullptr)
-	, m_material(nullptr)
 	, m_renderFlags(RenderFlags::DrawModel)
 	, m_transformFlags(TransfromFlags::TransformAll)
 	, m_worldMatrix(1.0f)
@@ -25,13 +24,6 @@ Object::Object(std::string _name) noexcept
 const Model* Object::getModel() const noexcept
 {
 	return m_model;
-}
-
-//-----------------------------------------------------------------------------
-
-const Material* Object::getMaterial() const noexcept
-{
-	return m_material;
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +44,20 @@ const glm::mat4& Object::getWorldMatrix() const noexcept
 const std::string& Object::getName() const noexcept
 {
 	return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setModel(const Model* _model) noexcept
+{
+	m_model = _model;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setName(std::string _name) noexcept
+{
+	m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,27 +86,6 @@ s32 Object::getTransformFlags() const noexcept
 void Object::setTransformFlags(s32 _flags) noexcept
 {
 	m_transformFlags = _flags;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setModel(const Model* _model) noexcept
-{
-	m_model = _model;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setMaterial(const Material* _material) noexcept
-{
-	m_material = _material;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setName(std::string _name) noexcept
-{
-	m_name = _name;
 }
 
 //-----------------------------------------------------------------------------

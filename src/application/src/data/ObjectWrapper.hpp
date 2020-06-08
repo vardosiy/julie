@@ -17,12 +17,10 @@ public:
 
 //-----------------------------------------------------------------------------
 	const jl::Model*	getModel() const noexcept;
-	const jl::Material*	getMaterial() const noexcept;
 	const glm::mat4&	getWorldMatrix() const noexcept;
 	const std::string&	getName() const noexcept;
 
 	void setModel(const jl::Model* _model) noexcept;
-	void setMaterial(const jl::Material* _material) noexcept;
 
 //-----------------------------------------------------------------------------
 	jl::s32 getRenderFlags() const noexcept;
@@ -75,11 +73,6 @@ inline const jl::Model* ObjectWrapper::getModel() const noexcept
 	return m_object->getModel();
 }
 
-inline const jl::Material* ObjectWrapper::getMaterial() const noexcept
-{
-	return m_object->getMaterial();
-}
-
 inline const glm::mat4& ObjectWrapper::getWorldMatrix() const noexcept
 {
 	return m_object->getWorldMatrix();
@@ -95,11 +88,6 @@ inline void ObjectWrapper::setModel(const jl::Model* _model) noexcept
 	m_object->setModel(_model);
 	recalcTransform();
 	recalcSize();
-}
-
-inline void ObjectWrapper::setMaterial(const jl::Material* _material) noexcept
-{
-	m_object->setMaterial(_material);
 }
 
 inline jl::s32 ObjectWrapper::getRenderFlags() const noexcept

@@ -83,17 +83,6 @@ void Renderer::draw(const Mesh& _mesh) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Renderer::draw(const Model& _model) noexcept
-{
-	const u64 meshesCount = _model.getMeshesCount();
-	for (u64 i = 0; i < meshesCount; ++i)
-	{
-		draw(_model.getMesh(i));
-	}
-}
-
-//-----------------------------------------------------------------------------
-
 void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept
 {
 	s_shader->bind();

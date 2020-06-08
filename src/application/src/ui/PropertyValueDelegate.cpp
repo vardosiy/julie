@@ -2,8 +2,8 @@
 #include "ui/PropertyTypes.hpp"
 #include "ui/EditableResourcePathWidget.hpp"
 
-#include "managers/ResourceManager.hpp"
-#include "managers/MaterialsManager.hpp"
+#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/managers/MaterialsManager.hpp"
 
 #include <QComboBox>
 #include <QDoubleSpinBox>
@@ -94,7 +94,7 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 		ModelUiWrapper modelWrapper;
 		if (!modelPath.isEmpty())
 		{
-			modelWrapper.model = ResourceManager::getInstance().loadModel(modelPath.toStdString());
+			modelWrapper.model = ResourceManager::getInstance().loadModel(modelPath.toStdString(), true /* _loadMaterials */);
 		}
 		_model->setData(_idx, QVariant::fromValue(modelWrapper));
 	}

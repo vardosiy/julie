@@ -1,7 +1,11 @@
 #include "creation_helpers/ModelCreationHelper.hpp"
 
-#include "renderer/Model.hpp"
+#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/managers/MaterialsManager.hpp"
+
 #include "renderer/Mesh.hpp"
+#include "renderer/Model.hpp"
+#include "renderer/Material.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -18,7 +22,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _filePath)
+std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _filePath, bool _loadMaterials)
 {
 	std::filesystem::path path(_filePath);
 
@@ -26,9 +30,9 @@ std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _fileP
 	{
 		return loadNfg(_filePath);
 	}
-	else if (path.extension() == ".obj" || path.extension() == ".dae")
+	else if (path.extension() == ".obj")
 	{
-		return loadAssimp(_filePath);
+		return loadAssimp(_filePath, _loadMaterials);
 	}
 
 	return nullptr;
@@ -76,12 +80,14 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 
 	fclose(pFile);
 
-	return std::make_unique<Model>(vertices, indices);
+	auto model = std::make_unique<Model>(vertices, indices);
+	model->getMesh(0).setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
+	return model;
 }
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePath)
+std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePath, bool _loadMaterials)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filePath.data(), aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -89,7 +95,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 	if (scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode)
 	{
 		std::vector<Mesh> meshes;
-		processNode(scene->mRootNode, scene, meshes);
+		processNode(scene->mRootNode, scene, meshes, _loadMaterials);
 		return std::make_unique<Model>(std::move(meshes));
 	}
 
@@ -98,49 +104,112 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 
 //-----------------------------------------------------------------------------
 
-void ModelCreationHelper::processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& _meshes)
+void ModelCreationHelper::processNode(aiNode* _node, const aiScene* _scene, std::vector<Mesh>& _meshes, bool _loadMaterials)
 {
-	for (u32 i = 0; i < node->mNumMeshes; i++)
+	for (u32 i = 0; i < _node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		_meshes.emplace_back(processMesh(mesh, scene));
+		aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
+		_meshes.emplace_back(processMesh(mesh, _scene, _loadMaterials));
 	}
 
-	for (u32 i = 0; i < node->mNumChildren; i++)
+	for (u32 i = 0; i < _node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], scene, _meshes);
+		processNode(_node->mChildren[i], _scene, _meshes, _loadMaterials);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-Mesh ModelCreationHelper::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene, bool _loadMaterials)
 {
-	std::vector<Vertex> vertices(mesh->mNumVertices);
+	std::vector<Vertex> vertices(_mesh->mNumVertices);
 	std::vector<u16> indices;
 
-	for (u32 i = 0; i < mesh->mNumVertices; ++i)
+	for (u32 i = 0; i < _mesh->mNumVertices; ++i)
 	{
-		vertices[i].pos = glm::vec3{ mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-		vertices[i].norm = glm::vec3{ mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+		vertices[i].pos = glm::vec3{ _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
+		vertices[i].norm = glm::vec3{ _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
 
 		vertices[i].uv = glm::vec2{ 0.0f };
-		if (mesh->mTextureCoords[0])
+		if (_mesh->mTextureCoords[0])
 		{
-			vertices[i].uv = glm::vec2{ mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+			vertices[i].uv = glm::vec2{ _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
 		}
 	}
 
-	for (u32 i = 0; i < mesh->mNumFaces; ++i)
+	for (u32 i = 0; i < _mesh->mNumFaces; ++i)
 	{
-		aiFace face = mesh->mFaces[i];
+		aiFace face = _mesh->mFaces[i];
 		for (u32 j = 0; j < face.mNumIndices; ++j)
 		{
 			indices.push_back(face.mIndices[j]);
 		}
 	}
 
-	return Mesh(vertices, indices);
+	Mesh mesh(vertices, indices);
+
+	if (_loadMaterials)
+	{
+		Material& material = processMaterial(_scene->mMaterials[_mesh->mMaterialIndex]);
+		mesh.setMaterial(&material);
+	}
+	else
+	{
+		mesh.setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
+	}
+
+	return mesh;
+}
+
+//-----------------------------------------------------------------------------
+
+Material& ModelCreationHelper::processMaterial(aiMaterial* _material)
+{
+	const std::string name = _material->GetName().C_Str();
+	if (Material* material = MaterialsManager::getInstance().findMaterial(name))
+	{
+		LOG_INFO("[ModelCreationHelper] Materil '{}' already exists, returning", name.c_str());
+		return *material;
+	}
+
+	Material& material = MaterialsManager::getInstance().createMaterial(name);
+
+	material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
+
+	float shininess = 8.0f;
+	_material->Get(AI_MATKEY_SHININESS, shininess);
+	material.setProperty("u_specularPower", shininess);
+
+	aiColor3D color;
+	if (_material->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS)
+	{
+		material.setProperty("u_matAmbient", glm::vec3(color.r, color.g, color.b));
+	}
+	if (_material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
+	{
+		material.setProperty("u_matDiffuse", glm::vec3(color.r, color.g, color.b));
+	}
+	if (_material->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS)
+	{
+		material.setProperty("u_matSpecular", glm::vec3(color.r, color.g, color.b));
+	}
+
+	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
+	{
+		aiString texturePath;
+		_material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
+
+		std::string test = std::string("res/models/Mustang_GT/") + texturePath.C_Str();
+
+		Texture* texture = ResourceManager::getInstance().loadTexture(test);
+		ASSERT(texture);
+		if (texture)
+		{
+			material.setProperty("u_texture2D", *texture);
+		}
+	}
+
+	return material;
 }
 
 //-----------------------------------------------------------------------------

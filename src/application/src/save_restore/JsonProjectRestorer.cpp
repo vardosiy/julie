@@ -4,9 +4,11 @@
 #include "data/SceneWrapper.hpp"
 #include "data/ObjectWrapper.hpp"
 
-#include "managers/ResourceManager.hpp"
-#include "managers/MaterialsManager.hpp"
+#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/managers/MaterialsManager.hpp"
 
+#include "renderer/Mesh.hpp"
+#include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/UniformType.hpp"
 
@@ -174,36 +176,56 @@ void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 	auto object = std::make_unique<jl::Object>(_json[k_name].asString());
 	ObjectWrapper& wrapper = m_sceneWrapper->addObject(std::move(object));
 
+	const Json::Value& modelJson = _json[k_model];
+	if (!_json.isNull())
+	{
+		restoreModel(modelJson, wrapper);
+	}
+
 	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
 	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));
 	wrapper.setSize(details::jsonToVec3(_json[k_size]));
+}
 
+//-----------------------------------------------------------------------------
+
+void JsonProjectRestorer::restoreModel(const Json::Value& _json, ObjectWrapper& _objWrapper)
+{
+	const std::string modelPath = _json[k_path].asString();
+	if (modelPath.empty())
 	{
-		const Json::Value& modelJson = _json[k_model];
-		if (modelJson.isString() && !modelJson.empty())
+		return;
+	}
+
+	jl::Model* model = ResourceManager::getInstance().loadModel(modelPath, false /* _loadMaterials */);
+	ASSERT(model);
+	if (!model)
+	{
+		return;
+	}
+
+	jl::u32 materialsToRead = 0;
+
+	const Json::Value& meshMaterials = _json[k_meshMaterials];
+	if (meshMaterials.isArray())
+	{
+		materialsToRead = std::min(static_cast<jl::u32>(meshMaterials.size()), model->getMeshesCount());
+	}
+
+	for (jl::u32 i = 0; i < materialsToRead; ++i)
+	{
+		const std::string materialName = meshMaterials[i].asString();
+		if (!materialName.empty())
 		{
-			const std::string modelSource = modelJson.asString();
-			if (!modelSource.empty())
-			{
-				jl::Model* model = ResourceManager::getInstance().loadModel(modelSource);
-				ASSERT(model);
-				wrapper.setModel(model);
-			}
+			jl::Material* material = MaterialsManager::getInstance().findMaterial(materialName);
+			ASSERT(material);
+
+			jl::Mesh& mesh = model->getMesh(i);
+			mesh.setMaterial(material);
 		}
 	}
-	{
-		const Json::Value& materialJson = _json[k_material];
-		if (materialJson.isString())
-		{
-			const std::string materialName = materialJson.asString();
-			if (!materialName.empty())
-			{
-				jl::Material* material = MaterialsManager::getInstance().findMaterial(materialName);
-				ASSERT(material);
-				wrapper.setMaterial(material);
-			}
-		}
-	}
+
+	_objWrapper.setModel(model);
 }
 
 //-----------------------------------------------------------------------------

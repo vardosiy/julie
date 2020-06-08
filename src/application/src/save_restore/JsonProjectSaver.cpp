@@ -4,9 +4,11 @@
 #include "data/SceneWrapper.hpp"
 #include "data/ObjectWrapper.hpp"
 
-#include "managers/ResourceManager.hpp"
-#include "managers/MaterialsManager.hpp"
+#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/managers/MaterialsManager.hpp"
 
+#include "renderer/Mesh.hpp"
+#include "renderer/Model.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/UniformType.hpp"
 
@@ -185,13 +187,37 @@ Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
 
 	if (const jl::Model* model = _objWrapper.getModel())
 	{
-		result[k_model] = ResourceManager::getInstance().findSourceFile(*model);
-	}
-	if (const jl::Material* material = _objWrapper.getMaterial())
-	{
-		result[k_material] = MaterialsManager::getInstance().findMaterialName(*material);
+		result[k_model] = saveModel(*model);
 	}
 
+	return result;
+}
+
+//-----------------------------------------------------------------------------
+
+Json::Value JsonProjectSaver::saveModel(const jl::Model& _model)
+{
+	Json::Value meshMaterials;
+
+	const jl::u32 meshesCount = _model.getMeshesCount();
+	for (jl::u32 i = 0; i < meshesCount; ++i)
+	{
+		const jl::Mesh& mesh = _model.getMesh(i);
+
+		if (const jl::Material* material = mesh.getMaterial())
+		{
+			const std::string& materialName = MaterialsManager::getInstance().findMaterialName(*material);
+			meshMaterials.append(materialName);
+		}
+		else
+		{
+			meshMaterials.append("");
+		}
+	}
+
+	Json::Value result;
+	result[k_path] = ResourceManager::getInstance().findSourceFile(_model);
+	result[k_meshMaterials] = std::move(meshMaterials);
 	return result;
 }
 

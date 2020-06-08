@@ -12,7 +12,7 @@ constexpr char* k_rotation			= "rotation";
 constexpr char* k_size				= "size";
 
 constexpr char* k_model				= "model";
-constexpr char* k_material			= "material";
+constexpr char* k_meshMaterials		= "meshMaterials";
 
 constexpr char* k_pointLights		= "pointLights";
 constexpr char* k_directionalLights	= "directionalLights";
@@ -25,3 +25,4 @@ constexpr char* k_id				= "id";
 constexpr char* k_type				= "type";
 constexpr char* k_value				= "value";
 constexpr char* k_name				= "name";
+constexpr char* k_path				= "path";

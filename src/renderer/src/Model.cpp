@@ -10,9 +10,9 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath)
+std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath, bool _loadMaterials)
 {
-	return ModelCreationHelper::loadFromFile(_filePath);
+	return ModelCreationHelper::loadFromFile(_filePath, _loadMaterials);
 }
 
 //-----------------------------------------------------------------------------
@@ -33,14 +33,21 @@ Model::Model(std::vector<Mesh>&& _meshes) noexcept
 
 //-----------------------------------------------------------------------------
 
-u64 Model::getMeshesCount() const noexcept
+u32 Model::getMeshesCount() const noexcept
 {
 	return m_meshes.size();
 }
 
 //-----------------------------------------------------------------------------
 
-const Mesh& Model::getMesh(u64 _idx) const noexcept
+Mesh& Model::getMesh(u32 _idx) noexcept
+{
+	return m_meshes.at(_idx);
+}
+
+//-----------------------------------------------------------------------------
+
+const Mesh& Model::getMesh(u32 _idx) const noexcept
 {
 	return m_meshes.at(_idx);
 }

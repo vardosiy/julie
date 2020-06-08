@@ -7,10 +7,9 @@
 #include "data/SceneWrapper.hpp"
 #include "data/ObjectWrapper.hpp"
 
-#include "controllers/AppController.hpp"
-
-#include "managers/ResourceManager.hpp"
-#include "managers/MaterialsManager.hpp"
+#include "renderer/managers/AppController.hpp"
+#include "renderer/managers/ResourceManager.hpp"
+#include "renderer/managers/MaterialsManager.hpp"
 
 #include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonProjectRestorer.hpp"
@@ -238,7 +237,7 @@ void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 
 void MainWindow::onObjectScaled(ObjectWrapper& _objWrapper)
 {
-	m_propertiesWdg->refreshObjectScale();
+	m_propertiesWdg->refreshObjectSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -290,7 +289,7 @@ void MainWindow::onGlLoaded()
 
 	setupRoom();
 
-	AppController::setGlWidget(m_ui->oglw_screen);
+	AppController::setContextOwner(m_ui->oglw_screen);
 	m_ui->oglw_screen->setScene(m_sceneWrapper.get());
 	m_ui->oglw_screen->setCamera(&m_camera);
 
@@ -333,6 +332,9 @@ void MainWindow::setupRoom()
 	if (!m_roomModel)
 	{
 		m_roomModel = createRoomModel();
+
+		jl::Mesh& roomMesh = m_roomModel->getMesh(0);
+		roomMesh.setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
 	}
 
 	const std::string k_roomObjName = "Room";
@@ -345,7 +347,6 @@ void MainWindow::setupRoom()
 	}
 
 	roomWrapper->setModel(m_roomModel.get());
-	roomWrapper->setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
 	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });

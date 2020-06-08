@@ -6,6 +6,7 @@
 #include <ostream>
 
 namespace jl {
+class Model;
 class Material;
 class LightsHolder;
 }
@@ -24,6 +25,7 @@ private:
 
 	static Json::Value saveScene(const SceneWrapper& _sceneWrapper);
 	static Json::Value saveObject(const ObjectWrapper& _objWrapper);
+	static Json::Value saveModel(const jl::Model& _model);
 
 	static Json::Value saveLights(const jl::LightsHolder& _lightsHolder);
 	static Json::Value savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions);

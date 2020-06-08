@@ -15,6 +15,7 @@ class PropertiesWidget;
 }
 
 namespace jl {
+class Model;
 class Material;
 }
 
@@ -38,6 +39,8 @@ public:
 //-----------------------------------------------------------------------------
 private:
 	void refreshObjectProperties(const ObjectWrapper& _object);
+	void refreshMeshes(const jl::Model* _model);
+
 	void refreshMaterialProperties(const jl::Material& _material);
 
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
@@ -58,7 +61,9 @@ private:
 
 	static constexpr int k_nameColIdx = 0;
 	static constexpr int k_valueColIdx = 1;
-	static constexpr int k_transformRowIdx = 2;
+
+	static constexpr int k_modelRowIdx = 0;
+	static constexpr int k_transformRowIdx = 1;
 };
 
 //-----------------------------------------------------------------------------

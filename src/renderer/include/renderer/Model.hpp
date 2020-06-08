@@ -19,14 +19,16 @@ class Model : boost::noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
-	static std::unique_ptr<Model> loadFromFile(std::string_view _filePath);
+	static std::unique_ptr<Model> loadFromFile(std::string_view _filePath, bool _loadMaterials);
 
 //-----------------------------------------------------------------------------
 	Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept;
 	Model(std::vector<Mesh>&& _meshes) noexcept;
 
-	u64 getMeshesCount() const noexcept;
-	const Mesh& getMesh(u64 _idx) const noexcept;
+	u32 getMeshesCount() const noexcept;
+
+	Mesh& getMesh(u32 _idx) noexcept;
+	const Mesh& getMesh(u32 _idx) const noexcept;
 
 	const boxf& getBoundingBox() const noexcept;
 

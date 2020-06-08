@@ -14,6 +14,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Material;
+
 class Mesh : boost::noncopyable
 {
 public:
@@ -24,6 +26,9 @@ public:
 
 	void bind() const;
 
+	const Material* getMaterial() const noexcept;
+	void setMaterial(const Material* _material) noexcept;
+
 	u64 getIndeciesCount() const noexcept;
 	const boxf& getBoundingBox() const noexcept;
 
@@ -32,6 +37,8 @@ private:
 
 	VertexArray m_vertexArray;
 	boxf m_boundingBox;
+
+	const Material* m_material;
 };
 
 //-----------------------------------------------------------------------------
