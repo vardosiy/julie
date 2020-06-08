@@ -94,9 +94,9 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 
 	if (scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode)
 	{
-		std::vector<Mesh> meshes;
-		processNode(scene->mRootNode, scene, meshes, _loadMaterials);
-		return std::make_unique<Model>(std::move(meshes));
+		ModelCreationHelper helper(_filePath, _loadMaterials);
+		helper.processNode(scene->mRootNode, scene);
+		return std::make_unique<Model>(std::move(helper.m_meshes));
 	}
 
 	return nullptr;
@@ -104,23 +104,35 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 
 //-----------------------------------------------------------------------------
 
-void ModelCreationHelper::processNode(aiNode* _node, const aiScene* _scene, std::vector<Mesh>& _meshes, bool _loadMaterials)
+ModelCreationHelper::ModelCreationHelper(std::string_view _filePath, bool _loadMaterials)
+	: m_filePath(_filePath)
+	, m_loadMaterials(_loadMaterials)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+ModelCreationHelper::~ModelCreationHelper() = default;
+
+//-----------------------------------------------------------------------------
+
+void ModelCreationHelper::processNode(aiNode* _node, const aiScene* _scene)
 {
 	for (u32 i = 0; i < _node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-		_meshes.emplace_back(processMesh(mesh, _scene, _loadMaterials));
+		m_meshes.emplace_back(processMesh(mesh, _scene));
 	}
 
 	for (u32 i = 0; i < _node->mNumChildren; i++)
 	{
-		processNode(_node->mChildren[i], _scene, _meshes, _loadMaterials);
+		processNode(_node->mChildren[i], _scene);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene, bool _loadMaterials)
+Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) const
 {
 	std::vector<Vertex> vertices(_mesh->mNumVertices);
 	std::vector<u16> indices;
@@ -148,7 +160,7 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene, bool
 
 	Mesh mesh(vertices, indices);
 
-	if (_loadMaterials)
+	if (m_loadMaterials)
 	{
 		Material& material = processMaterial(_scene->mMaterials[_mesh->mMaterialIndex]);
 		mesh.setMaterial(&material);
@@ -163,7 +175,7 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene, bool
 
 //-----------------------------------------------------------------------------
 
-Material& ModelCreationHelper::processMaterial(aiMaterial* _material)
+Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 {
 	const std::string name = _material->GetName().C_Str();
 	if (Material* material = MaterialsManager::getInstance().findMaterial(name))
@@ -176,7 +188,7 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material)
 
 	material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
 
-	float shininess = 8.0f;
+	float shininess = 128.0f;
 	_material->Get(AI_MATKEY_SHININESS, shininess);
 	material.setProperty("u_specularPower", shininess);
 
@@ -199,9 +211,9 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material)
 		aiString texturePath;
 		_material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
 
-		std::string test = std::string("res/models/Mustang_GT/") + texturePath.C_Str();
+		std::filesystem::path test = std::filesystem::path(m_filePath).parent_path() / texturePath.C_Str();
 
-		Texture* texture = ResourceManager::getInstance().loadTexture(test);
+		Texture* texture = ResourceManager::getInstance().loadTexture(test.string());
 		ASSERT(texture);
 		if (texture)
 		{
