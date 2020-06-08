@@ -234,19 +234,19 @@ void JsonProjectRestorer::restoreLights(const Json::Value& _json, jl::LightsHold
 {
 	for (const Json::Value& light : _json[k_pointLights])
 	{
-		jl::PointLightData lightData{ details::jsonToVec4(light[k_color]), details::jsonToVec3(light[k_position]) };
+		jl::PointLightData lightData{ details::jsonToVec3(light[k_color]), details::jsonToVec3(light[k_position]) };
 		_lightsHolder.addPointLight(lightData);
 	}
 
 	for (const Json::Value& light : _json[k_directionalLights])
 	{
-		jl::DirectionalLightData lightData{ details::jsonToVec4(light[k_color]), details::jsonToVec3(light[k_direction]) };
+		jl::DirectionalLightData lightData{ details::jsonToVec3(light[k_color]), details::jsonToVec3(light[k_direction]) };
 		_lightsHolder.addDirectionalLight(lightData);
 	}
 
 	const Json::Value& ambientlight = _json[k_ambientLight];
 
-	jl::AmbientLightData lightData{ details::jsonToVec4(ambientlight[k_color]), ambientlight[k_weight].asFloat() };
+	jl::AmbientLightData lightData{ details::jsonToVec3(ambientlight[k_color]), ambientlight[k_weight].asFloat() };
 	_lightsHolder.setAmbientLight(lightData);
 }
 

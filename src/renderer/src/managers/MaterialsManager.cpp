@@ -17,7 +17,7 @@ MaterialsManager::MaterialsManager()
 
 	jl::Material& material = createMaterial(k_defaultMaterialName);
 	material.setShader(*m_defaultMaterialShader);
-	material.setProperty("u_color", glm::vec4(1.0f));
+	material.setProperty("u_color", glm::vec3(1.0f));
 	material.setProperty("u_specularPower", 128.0f);
 }
 
@@ -66,7 +66,11 @@ jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noe
 
 void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 {
-	m_materials.erase(_name);
+	ASSERTM(_name != k_defaultMaterialName, "Can not delete default material");
+	if (_name != k_defaultMaterialName)
+	{
+		m_materials.erase(_name);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +78,9 @@ void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 void MaterialsManager::deleteMaterial(jl::Material& _material) noexcept
 {
 	const std::string& materialName = findMaterialName(_material);
-	if (!materialName.empty())
+	ASSERTM(materialName != k_defaultMaterialName, "Can not delete default material");
+
+	if (!materialName.empty() && materialName != k_defaultMaterialName)
 	{
 		deleteMaterial(materialName);
 	}

@@ -10,24 +10,24 @@ in vec3 v_posW;
 in vec3 v_normW;
 out vec4 o_color;
 
-uniform vec4 u_color;
-
-uniform vec4 u_ambientColor;
-uniform float u_ambientWeight;
+uniform vec3 u_color;
 
 #if ENABLE_SPECULAR_LIGHTNING
 uniform float u_specularPower;
 #endif
 
+uniform vec3 u_ambientColor;
+uniform float u_ambientWeight;
+
 uniform vec3 u_camPosition;
 
 #if DIRECTIONAL_LIGHTS_COUNT > 0
-uniform vec4 u_directionalLightColor[DIRECTIONAL_LIGHTS_COUNT];
+uniform vec3 u_directionalLightColor[DIRECTIONAL_LIGHTS_COUNT];
 uniform vec3 u_lightDirection[DIRECTIONAL_LIGHTS_COUNT];
 #endif
 
 #if POINT_LIGHTS_COUNT > 0
-uniform vec4 u_pointLightColor[POINT_LIGHTS_COUNT];
+uniform vec3 u_pointLightColor[POINT_LIGHTS_COUNT];
 uniform vec3 u_lightPosition[POINT_LIGHTS_COUNT];
 #endif
 
@@ -36,8 +36,8 @@ void main()
 	vec3 normalW = normalize(v_normW);
 	vec3 toEye = normalize(u_camPosition - v_posW);
 
-	vec4 diffuseLight = vec4(0.0, 0.0, 0.0, 0.0);
-	vec4 specularLight = vec4(0.0, 0.0, 0.0, 0.0);
+	vec3 diffuseLight = vec3(0.0, 0.0, 0.0);
+	vec3 specularLight = vec3(0.0, 0.0, 0.0);
 
 #if DIRECTIONAL_LIGHTS_COUNT > 0
 	for(int i = 0; i < DIRECTIONAL_LIGHTS_COUNT; ++i)
@@ -69,6 +69,6 @@ void main()
 	}
 #endif
 
-	o_color = mix(diffuseLight, u_ambientColor, u_ambientWeight) * u_color + specularLight;
-	o_color.a = u_color.a;
+	vec3 color = mix(diffuseLight, u_ambientColor, u_ambientWeight) * u_color + specularLight;
+	o_color = vec4(color, 1.0);
 }

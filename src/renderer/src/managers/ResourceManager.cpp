@@ -27,7 +27,6 @@ void ResourceManager::clear()
 
 jl::Model* ResourceManager::loadModel(const std::string& _fileName, bool _loadMaterials)
 {
-	LOG_INFO("[ResourceManager] Loading model from: {}", _fileName.c_str());
 	return loadCommon(m_models, _fileName, [_loadMaterials](const std::string& _fileName)
 	{
 		return jl::Model::loadFromFile(_fileName, _loadMaterials);
@@ -38,7 +37,6 @@ jl::Model* ResourceManager::loadModel(const std::string& _fileName, bool _loadMa
 
 jl::Shader* ResourceManager::loadShader(const std::string& _fileName)
 {
-	LOG_INFO("[ResourceManager] Loading shader from: {}", _fileName.c_str());
 	return loadCommon(m_shaders, _fileName, jl::Shader::loadFromFile);
 }
 
@@ -46,7 +44,6 @@ jl::Shader* ResourceManager::loadShader(const std::string& _fileName)
 
 jl::Texture* ResourceManager::loadTexture(const std::string& _fileName)
 {
-	LOG_INFO("[ResourceManager] Loading 2D texture from: {}", _fileName.c_str());
 	return loadCommon(m_textures, _fileName, jl::Texture::loadFromFile);
 }
 
@@ -54,7 +51,6 @@ jl::Texture* ResourceManager::loadTexture(const std::string& _fileName)
 
 jl::CubeTexture* ResourceManager::loadCubeTexture(const std::string& _fileName)
 {
-	LOG_INFO("[ResourceManager] Loading cube texture from: {}", _fileName.c_str());
 	return loadCommon(m_cubeTextures, _fileName, jl::CubeTexture::loadFromFile);
 }
 
@@ -96,6 +92,8 @@ T* ResourceManager::loadCommon(Container<T>& _container, const std::string& _fil
 	{
 		return it->second.get();
 	}
+
+	LOG_INFO("[ResourceManager] Loading resource from: {}", _fileName.c_str());
 
 	AppController::makeContextCurrent();
 	if (std::unique_ptr<T> resource = _loadFun(_fileName))

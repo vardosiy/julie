@@ -22,6 +22,7 @@ class MainWindow;
 
 namespace jl {
 class Model;
+class Material;
 }
 
 class SceneWrapper;
@@ -62,6 +63,8 @@ private:
 
 	void setupUi();
 	void setupRoom();
+
+	void replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new);
 
 	float getDeltaTime();
 

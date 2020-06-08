@@ -206,7 +206,40 @@ void MainWindow::addMaterial()
 
 void MainWindow::deleteMaterial(const QString& _name)
 {
-	//MaterialsManager::getInstance().deleteMaterial(_name.toStdString());
+	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
+	const std::string materialName = _name.toStdString();
+
+	if (jl::Material* material = materialsMgr.findMaterial(materialName))
+	{
+		replaceMaterialInAllMeshes(material, &materialsMgr.getDefaultMaterial());
+
+		materialsMgr.deleteMaterial(materialName);
+		m_materialsNamesList.removeOne(_name);
+		m_materialsListModel.setStringList(m_materialsNamesList);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new)
+{
+	m_sceneWrapper->forEachObject([_old, _new](ObjectWrapper& _objWrapper)
+	{
+		if (jl::Model* model = _objWrapper.getModel())
+		{
+			const jl::u32 meshesCount = model->getMeshesCount();
+			for (jl::u32 i = 0; i < meshesCount; i++)
+			{
+				jl::Mesh& mesh = model->getMesh(i);
+
+				const jl::Material* meshMaterial = mesh.getMaterial();
+				if (meshMaterial == _old)
+				{
+					mesh.setMaterial(_new);
+				}
+			}
+		}
+	});
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +379,9 @@ void MainWindow::setupRoom()
 		roomWrapper = &m_sceneWrapper->addObject(std::move(obj));
 	}
 
+	const glm::vec3 originalSize = roomWrapper->getSize();
 	roomWrapper->setModel(m_roomModel.get());
+	roomWrapper->setSize(originalSize);
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
 	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });

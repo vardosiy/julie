@@ -110,10 +110,20 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 	{
 		const QItemSelectionModel* selectionModel = view->selectionModel();
 		const QModelIndexList indexList = selectionModel->selectedIndexes();
-		for (const auto& index : indexList)
+
+		if (!indexList.empty())
 		{
-			const QString entityName = index.data().toString();
-			deleteFun(entityName);
+			std::vector<QString> itemsToRemove;
+			itemsToRemove.reserve(indexList.size());
+
+			for (const auto& index : indexList)
+			{
+				itemsToRemove.emplace_back(index.data().toString());
+			}
+			for (const QString& itemName : itemsToRemove)
+			{
+				deleteFun(itemName);
+			}
 		}
 	}
 }

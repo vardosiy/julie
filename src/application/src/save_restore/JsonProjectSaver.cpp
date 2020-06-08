@@ -228,7 +228,7 @@ Json::Value JsonProjectSaver::saveLights(const jl::LightsHolder& _lightsHolder)
 	Json::Value result;
 
 	{
-		const std::vector<glm::vec4>& colors = _lightsHolder.getPointLightsColors();
+		const std::vector<glm::vec3>& colors = _lightsHolder.getPointLightsColors();
 		const std::vector<glm::vec3>& positions = _lightsHolder.getPointLightsPositions();
 		ASSERT(colors.size() == positions.size());
 		if (colors.size() == positions.size())
@@ -237,19 +237,19 @@ Json::Value JsonProjectSaver::saveLights(const jl::LightsHolder& _lightsHolder)
 		}
 	}
 	{
-		const std::vector<glm::vec4>& colors = _lightsHolder.getDirectionalLightsColors();
+		const std::vector<glm::vec3>& colors = _lightsHolder.getDirectionalLightsColors();
 		const std::vector<glm::vec3>& directions = _lightsHolder.getDirectionalLightsDirections();
 		ASSERT(colors.size() == directions.size());
 		if (colors.size() == directions.size())
 		{
-			result[k_directionalLights] = savePointLights(colors, directions);
+			result[k_directionalLights] = saveDirectionalLights(colors, directions);
 		}
 	}
 	{
 		const jl::AmbientLightData data = _lightsHolder.getAmbientLightData();
 
 		Json::Value ambientLightJson;
-		ambientLightJson[k_color] = details::vec4ToJson(data.color);
+		ambientLightJson[k_color] = details::vec3ToJson(data.color);
 		ambientLightJson[k_weight] = data.weight;
 		result[k_ambientLight] = std::move(ambientLightJson);
 	}
@@ -259,14 +259,14 @@ Json::Value JsonProjectSaver::saveLights(const jl::LightsHolder& _lightsHolder)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions)
+Json::Value JsonProjectSaver::savePointLights(const std::vector<glm::vec3>& colors, const std::vector<glm::vec3>& positions)
 {
 	Json::Value result;
 
 	for (size_t i = 0, size = colors.size(); i < size; ++i)
 	{
 		Json::Value lightData;
-		lightData[k_color] = details::vec4ToJson(colors[i]);
+		lightData[k_color] = details::vec3ToJson(colors[i]);
 		lightData[k_position] = details::vec3ToJson(positions[i]);
 		result.append(std::move(lightData));
 	}
@@ -276,14 +276,14 @@ Json::Value JsonProjectSaver::savePointLights(const std::vector<glm::vec4>& colo
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveDirectionalLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& directions)
+Json::Value JsonProjectSaver::saveDirectionalLights(const std::vector<glm::vec3>& colors, const std::vector<glm::vec3>& directions)
 {
 	Json::Value result;
 
 	for (size_t i = 0, size = colors.size(); i < size; ++i)
 	{
 		Json::Value lightData;
-		lightData[k_color] = details::vec4ToJson(colors[i]);
+		lightData[k_color] = details::vec3ToJson(colors[i]);
 		lightData[k_direction] = details::vec3ToJson(directions[i]);
 		result.append(std::move(lightData));
 	}

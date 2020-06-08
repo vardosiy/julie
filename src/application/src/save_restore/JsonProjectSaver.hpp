@@ -28,6 +28,6 @@ private:
 	static Json::Value saveModel(const jl::Model& _model);
 
 	static Json::Value saveLights(const jl::LightsHolder& _lightsHolder);
-	static Json::Value savePointLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& positions);
-	static Json::Value saveDirectionalLights(const std::vector<glm::vec4>& colors, const std::vector<glm::vec3>& directions);
+	static Json::Value savePointLights(const std::vector<glm::vec3>& colors, const std::vector<glm::vec3>& positions);
+	static Json::Value saveDirectionalLights(const std::vector<glm::vec3>& colors, const std::vector<glm::vec3>& directions);
 };
