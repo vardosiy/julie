@@ -1,6 +1,7 @@
 #include "ui/PropertiesWidget.hpp"
 #include "ui_PropertiesWidget.h"
 
+#include "ui/props/MaterialPropertyValueVisitor.hpp"
 #include "ui/props/PropertyValueDelegate.hpp"
 #include "ui/props/PropertyTypes.hpp"
 
@@ -51,7 +52,7 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 		m_propertiesTableModel.setRowCount(2);
 
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
-		m_propertiesTableModel.insertRows(0, 3, transformIdx);
+		m_propertiesTableModel.insertRows(0, k_transformsNum, transformIdx);
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
 	}
 
@@ -165,7 +166,7 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 			setPropertyRow(transfromNum++, transformIdx, "Rotatation", rotation, editable);
 		}
-		ASSERT(transfromNum == 3);
+		ASSERT(transfromNum == k_transformsNum);
 
 		++propNum;
 	}
@@ -218,7 +219,8 @@ void PropertiesWidget::refreshMaterialProperties(const jl::Material& _material)
 
 	for (int i = 0; i < propertiesCount; ++i)
 	{
-		setPropertyRow(i, rootIdx, QString::fromStdString(properties[i].name), "", false);
+		const QVariant value = std::visit(MaterialPropertyValueVisitor{}, properties[i].value);
+		setPropertyRow(i, rootIdx, QString::fromStdString(properties[i].name), value, true);
 	}
 }
 

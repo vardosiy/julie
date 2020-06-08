@@ -64,6 +64,7 @@ private:
 
 	static constexpr int k_modelRowIdx = 0;
 	static constexpr int k_transformRowIdx = 1;
+	static constexpr int k_transformsNum = 3;
 };
 
 //-----------------------------------------------------------------------------

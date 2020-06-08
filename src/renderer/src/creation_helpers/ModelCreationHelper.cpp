@@ -188,9 +188,16 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 
 	material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
 
-	float shininess = 128.0f;
-	_material->Get(AI_MATKEY_SHININESS, shininess);
-	material.setProperty("u_specularPower", shininess);
+	{
+		float shininess = 128.0f;
+		_material->Get(AI_MATKEY_SHININESS, shininess);
+		material.setProperty("u_specularPower", shininess);
+	}
+	{
+		float opacity = 1.0f;
+		_material->Get(AI_MATKEY_OPACITY, opacity);
+		material.setProperty("u_opacity", opacity);
+	}
 
 	aiColor3D color;
 	if (_material->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS)
