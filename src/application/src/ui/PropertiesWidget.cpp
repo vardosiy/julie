@@ -1,7 +1,8 @@
 #include "ui/PropertiesWidget.hpp"
-#include "ui/PropertyValueDelegate.hpp"
-#include "ui/PropertyTypes.hpp"
 #include "ui_PropertiesWidget.h"
+
+#include "ui/props/PropertyValueDelegate.hpp"
+#include "ui/props/PropertyTypes.hpp"
 
 #include "data/ObjectWrapper.hpp"
 
@@ -52,15 +53,6 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 		m_propertiesTableModel.insertRows(0, 2, transformIdx);
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
-
-		int transfromNum = 0;
-		const QModelIndex posIdx = index(transfromNum++, k_nameColIdx, transformIdx);
-		m_propertiesTableModel.insertRows(0, 3, posIdx);
-		m_propertiesTableModel.insertColumns(0, 2, posIdx);
-
-		const QModelIndex scaleIdx = index(transfromNum++, k_nameColIdx, transformIdx);
-		m_propertiesTableModel.insertRows(0, 3, scaleIdx);
-		m_propertiesTableModel.insertColumns(0, 2, scaleIdx);
 	}
 
 	refreshMeshes(_object.getModel());
@@ -110,15 +102,11 @@ void PropertiesWidget::refreshObjectPos()
 	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
-	constexpr int k_posRowIdx = 0;
+	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 
-	const QModelIndex posIdx = index(k_posRowIdx, k_nameColIdx, index(k_transformRowIdx, k_nameColIdx, QModelIndex()));
-
-	const glm::vec3& pos = obj->getPosition();
+	const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ obj->getPosition() });
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Moveable;
-	setCellValue(index(0, k_valueColIdx, posIdx), pos.x, editable);
-	setCellValue(index(1, k_valueColIdx, posIdx), pos.y, editable);
-	setCellValue(index(2, k_valueColIdx, posIdx), pos.z, editable);
+	setCellValue(index(0, k_valueColIdx, transformIdx), pos, editable);
 
 	m_activeEntity = obj;
 }
@@ -135,15 +123,11 @@ void PropertiesWidget::refreshObjectSize()
 	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
-	constexpr int k_sizeRowIdx = 1;
+	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 
-	const QModelIndex scaleIdx = index(k_sizeRowIdx, k_nameColIdx, index(k_transformRowIdx, k_nameColIdx, QModelIndex()));
-
-	const glm::vec3& size = obj->getSize();
+	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getSize() });
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-	setCellValue(index(0, k_valueColIdx, scaleIdx), size.x, editable);
-	setCellValue(index(1, k_valueColIdx, scaleIdx), size.y, editable);
-	setCellValue(index(2, k_valueColIdx, scaleIdx), size.z, editable);
+	setCellValue(index(1, k_valueColIdx, transformIdx), size, editable);
 
 	m_activeEntity = obj;
 }
@@ -161,35 +145,20 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 	}
 	{
 		const QModelIndex transformIdx = index(propNum, k_nameColIdx, rootIdx);
-
 		setHeaderRow(propNum, rootIdx, "Transform");
 
 		int transfromNum = 0;
 		{
-			const QModelIndex posIdx = index(transfromNum, k_nameColIdx, transformIdx);
-
-			setHeaderRow(transfromNum, transformIdx, "Position");
-
-			const glm::vec3& pos = _object.getPosition();
+			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition() });
 			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Moveable;
-			setPropertyRow(0, posIdx, "X", pos.x, editable);
-			setPropertyRow(1, posIdx, "Y", pos.y, editable);
-			setPropertyRow(2, posIdx, "Z", pos.z, editable);
 
-			++transfromNum;
+			setPropertyRow(transfromNum++, transformIdx, "Position", pos, editable);
 		}
 		{
-			const QModelIndex scaleIdx = index(transfromNum, k_nameColIdx, transformIdx);
-
-			setHeaderRow(transfromNum, transformIdx, "Actual Size (in meters)");
-
-			const glm::vec3& size = _object.getSize();
+			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize() });
 			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-			setPropertyRow(0, scaleIdx, "Width",  size.x, editable);
-			setPropertyRow(1, scaleIdx, "Height", size.y, editable);
-			setPropertyRow(2, scaleIdx, "Depth",  size.z, editable);
 
-			++transfromNum;
+			setPropertyRow(transfromNum++, transformIdx, "Actual Size (in meters)", size, editable);
 		}
 		ASSERT(transfromNum == 2);
 
@@ -210,7 +179,6 @@ void PropertiesWidget::refreshMeshes(const jl::Model* _model)
 	if (_model)
 	{
 		const int meshesCount = static_cast<int>(_model->getMeshesCount());
-
 		if (meshesCount > 0)
 		{
 			m_propertiesTableModel.insertRows(0, meshesCount, modelIdx);
@@ -264,47 +232,27 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 	if (_idx.data().canConvert<ModelUiWrapper>())
 	{
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
-		_object.setModel(modelWrapper.model);
+		_object.setModel(modelWrapper.value);
 
 		refreshObjectSize();
 		refreshMeshes(_object.getModel());
 	}
-	else if (_idx.data().canConvert<MaterialUiWrapper>())
-	{
-		//MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
-		//_object.setMaterial(materialWrapper.material);
-	}
 	else
 	{
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, rootIdx);
-		bool handled = false;
+
 		int transformNum = 0;
-
+		if (_idx == index(transformNum++, k_valueColIdx, transformIdx))
 		{
-			const QModelIndex posIdx = index(transformNum++, k_nameColIdx, transformIdx);
-
-			const QModelIndex x = index(0, k_valueColIdx, posIdx);
-			const QModelIndex y = index(1, k_valueColIdx, posIdx);
-			const QModelIndex z = index(2, k_valueColIdx, posIdx);
-
-			if (_idx == x || _idx == y || _idx == z)
-			{
-				_object.setPosition(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
-				handled = true;
-			}
+			const TransformVecUiWrapper pos = qvariant_cast<TransformVecUiWrapper>(_idx.data());
+			_object.setPosition(pos.value);
 		}
-
-		if (!handled)
+		else if (_idx == index(transformNum++, k_nameColIdx, transformIdx))
 		{
-			const QModelIndex sizeIdx = index(transformNum++, k_nameColIdx, transformIdx);
-
-			const QModelIndex x = index(0, k_valueColIdx, sizeIdx);
-			const QModelIndex y = index(1, k_valueColIdx, sizeIdx);
-			const QModelIndex z = index(2, k_valueColIdx, sizeIdx);
-
-			if (_idx == x || _idx == y || _idx == z)
+			const TransformVecUiWrapper size = qvariant_cast<TransformVecUiWrapper>(_idx.data());
+			if (size.value != _object.getSize())
 			{
-				_object.setSize(glm::vec3{ x.data().toFloat(), y.data().toFloat(), z.data().toFloat() });
+				_object.setSize(size.value);
 			}
 		}
 	}

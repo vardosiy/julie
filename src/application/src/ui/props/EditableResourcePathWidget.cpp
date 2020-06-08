@@ -1,4 +1,4 @@
-#include "ui/EditableResourcePathWidget.hpp"
+#include "ui/props/EditableResourcePathWidget.hpp"
 #include "ui_EditableResourcePathWidget.h"
 
 #include <QFileDialog>

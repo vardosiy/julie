@@ -1,11 +1,15 @@
-#include "ui/PropertyValueDelegate.hpp"
-#include "ui/PropertyTypes.hpp"
-#include "ui/EditableResourcePathWidget.hpp"
+#include "ui/props/PropertyValueDelegate.hpp"
+#include "ui/props/PropertyTypes.hpp"
+#include "ui/props/EditableResourcePathWidget.hpp"
+#include "ui/props/EditableVec3Widget.hpp"
+#include "ui/props/EditableVec4Widget.hpp"
+#include "ui/props/EditMaterialsWidget.hpp"
+
+#include "ui/UiUtils.hpp"
 
 #include "renderer/managers/ResourceManager.hpp"
 #include "renderer/managers/MaterialsManager.hpp"
 
-#include <QComboBox>
 #include <QDoubleSpinBox>
 
 //-----------------------------------------------------------------------------
@@ -25,21 +29,21 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		QComboBox* materialsBox = new QComboBox(_parent);
-		MaterialsManager::getInstance().forEachMaterial([materialsBox](const std::string& _name, const jl::Material& _material)
-		{
-			materialsBox->addItem(QString::fromStdString(_name));
-		});
-		return materialsBox;
+		return new EditMaterialsWidget(_parent);
 	}
 	else if (_idx.data().canConvert<float>())
 	{
 		QDoubleSpinBox* spinBox = new QDoubleSpinBox(_parent);
-		spinBox->setRange(-1000.0, 1000.0);
-		spinBox->setSingleStep(0.1);
-		spinBox->setDecimals(5);
+		spinBox->setRange(k_floatUiMin, k_floatUiMax);
+		spinBox->setSingleStep(k_floatUiStep);
+		spinBox->setDecimals(k_floatDecimals);
 		return spinBox;
 	}
+	else if (_idx.data().canConvert<TransformVecUiWrapper>() || _idx.data().canConvert<ColorUiWrapper>())
+	{
+		return new EditableVec3Widget(_parent);
+	}
+
 	return QStyledItemDelegate::createEditor(_parent, _option, _idx);
 }
 
@@ -53,28 +57,34 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 		EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
 
 		QString modelPath;
-		if (modelWrapper.model)
+		if (modelWrapper.value)
 		{
-			modelPath = ResourceManager::getInstance().findSourceFile(*modelWrapper.model).c_str();
+			modelPath = ResourceManager::getInstance().findSourceFile(*modelWrapper.value).c_str();
 		}
 		pathWdg->setPath(modelPath);
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
 		MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
-		QComboBox* materialsBox = qobject_cast<QComboBox*>(_editor);
-
-		QString materialName;
-		if (materialWrapper.material)
-		{
-			materialName = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
-		}
-		materialsBox->setCurrentText(materialName);
+		EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
+		materialsBox->setData(materialWrapper);
 	}
 	else if (_idx.data().canConvert<float>())
 	{
 		QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
 		spinBox->setValue(_idx.data().toDouble());
+	}
+	else if (_idx.data().canConvert<TransformVecUiWrapper>())
+	{
+		TransformVecUiWrapper wrapper = qvariant_cast<TransformVecUiWrapper>(_idx.data());
+		EditableVec3Widget* widget = qobject_cast<EditableVec3Widget*>(_editor);
+		widget->setValue(wrapper);
+	}
+	else if (_idx.data().canConvert<ColorUiWrapper>())
+	{
+		ColorUiWrapper wrapper = qvariant_cast<ColorUiWrapper>(_idx.data());
+		EditableVec3Widget* widget = qobject_cast<EditableVec3Widget*>(_editor);
+		widget->setValue(wrapper);
 	}
 	else
 	{
@@ -94,26 +104,24 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 		ModelUiWrapper modelWrapper;
 		if (!modelPath.isEmpty())
 		{
-			modelWrapper.model = ResourceManager::getInstance().loadModel(modelPath.toStdString(), true /* _loadMaterials */);
+			modelWrapper.value = ResourceManager::getInstance().loadModel(modelPath.toStdString(), true /* _loadMaterials */);
 		}
 		_model->setData(_idx, QVariant::fromValue(modelWrapper));
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		const QComboBox* materialsBox = qobject_cast<QComboBox*>(_editor);
-
-		MaterialUiWrapper materialWrapper;
-		if (materialsBox->currentIndex() != -1)
-		{
-			const std::string materialName = materialsBox->currentText().toStdString();
-			materialWrapper.material = MaterialsManager::getInstance().findMaterial(materialName);
-		}
-		_model->setData(_idx, QVariant::fromValue(materialWrapper));
+		const EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
+		_model->setData(_idx, QVariant::fromValue(materialsBox->getData()));
 	}
 	else if (_idx.data().canConvert<float>())
 	{
 		const QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
 		_model->setData(_idx, spinBox->value());
+	}
+	else if (_idx.data().canConvert<TransformVecUiWrapper>() || _idx.data().canConvert<ColorUiWrapper>())
+	{
+		EditableVec3Widget* widget = qobject_cast<EditableVec3Widget*>(_editor);
+		_model->setData(_idx, widget->getValue());
 	}
 	else
 	{
@@ -130,18 +138,28 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 	if (_value.canConvert<ModelUiWrapper>())
 	{
 		const ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_value);
-		if (modelWrapper.model)
+		if (modelWrapper.value)
 		{
-			result = ResourceManager::getInstance().findSourceFile(*modelWrapper.model).c_str();
+			result = ResourceManager::getInstance().findSourceFile(*modelWrapper.value).c_str();
 		}
 	}
 	else if (_value.canConvert<MaterialUiWrapper>())
 	{
 		const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_value);
-		if (materialWrapper.material)
+		if (materialWrapper.value)
 		{
-			result = MaterialsManager::getInstance().findMaterialName(*materialWrapper.material).c_str();
+			result = MaterialsManager::getInstance().findMaterialName(*materialWrapper.value).c_str();
 		}
+	}
+	else if (_value.canConvert<TransformVecUiWrapper>())
+	{
+		TransformVecUiWrapper wrapper = qvariant_cast<TransformVecUiWrapper>(_value);
+		result = vecToString(wrapper.value);
+	}
+	else if (_value.canConvert<ColorUiWrapper>())
+	{
+		ColorUiWrapper wrapper = qvariant_cast<ColorUiWrapper>(_value);
+		result = vecToString(wrapper.value);
 	}
 	else
 	{
