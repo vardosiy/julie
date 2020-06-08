@@ -21,26 +21,6 @@ Object::Object(std::string _name) noexcept
 
 //-----------------------------------------------------------------------------
 
-const Model* Object::getModel() const noexcept
-{
-	return m_model;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Object::getWorldMatrix() const noexcept
-{
-	if (m_isTransformChanged)
-	{
-		m_worldMatrix = calculateWorldMatrix(m_transformData);
-		m_isTransformChanged = false;
-	}
-
-	return m_worldMatrix;
-}
-
-//-----------------------------------------------------------------------------
-
 const std::string& Object::getName() const noexcept
 {
 	return m_name;
@@ -48,16 +28,23 @@ const std::string& Object::getName() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Object::setModel(const Model* _model) noexcept
+void Object::setName(std::string _name) noexcept
 {
-	m_model = _model;
+	m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::setName(std::string _name) noexcept
+Model* Object::getModel() const noexcept
 {
-	m_name = _name;
+	return m_model;
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::setModel(Model* _model) noexcept
+{
+	m_model = _model;
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +73,19 @@ s32 Object::getTransformFlags() const noexcept
 void Object::setTransformFlags(s32 _flags) noexcept
 {
 	m_transformFlags = _flags;
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Object::getWorldMatrix() const noexcept
+{
+	if (m_isTransformChanged)
+	{
+		m_worldMatrix = calculateWorldMatrix(m_transformData);
+		m_isTransformChanged = false;
+	}
+
+	return m_worldMatrix;
 }
 
 //-----------------------------------------------------------------------------

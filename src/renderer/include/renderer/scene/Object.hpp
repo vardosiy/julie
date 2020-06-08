@@ -35,12 +35,11 @@ public:
 //-----------------------------------------------------------------------------
 	Object(std::string _name) noexcept;
 
-	const Model*		getModel() const noexcept;
-	const glm::mat4&	getWorldMatrix() const noexcept;
-	const std::string&	getName() const noexcept;
-
-	void setModel(const Model* _model) noexcept;
+	const std::string& getName() const noexcept;
 	void setName(std::string _name) noexcept;
+
+	Model* getModel() const noexcept;
+	void setModel(Model* _model) noexcept;
 
 	s32 getRenderFlags() const noexcept;
 	void setRenderFlags(s32 _flags) noexcept;
@@ -49,6 +48,8 @@ public:
 	void setTransformFlags(s32 _flags) noexcept;
 
 // transform data -------------------------------------------------------------
+	const glm::mat4& getWorldMatrix() const noexcept;
+
 	const glm::vec3& getPosition() const noexcept;
 	const glm::vec3& getRotation() const noexcept;
 	const glm::vec3& getScale() const noexcept;
@@ -71,7 +72,7 @@ private:
 //-----------------------------------------------------------------------------
 	std::string m_name;
 
-	const Model* m_model;
+	Model* m_model;
 
 	s32 m_renderFlags;
 	s32 m_transformFlags;
