@@ -79,7 +79,7 @@ void Renderer::shutdown()
 void Renderer::draw(const Mesh& _mesh) noexcept
 {
 	_mesh.bind();
-	glDrawElements(GL_TRIANGLES, _mesh.getIndeciesCount(), GL_UNSIGNED_SHORT, nullptr);
+	glDrawElements(GL_TRIANGLES, _mesh.getIndeciesCount(), GL_UNSIGNED_INT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 
 	vertexBuffer->bufferData(vertBuf, std::size(vertBuf), 0);
 
-	u16 indexBuf[] = {
+	index_t indexBuf[] = {
 		0, 4, 1, 5, 2, 6, 3, 7,
 		0, 1, 4, 5, 2, 3, 6, 7,
 		0, 2, 1, 3, 4, 6, 5, 7
@@ -115,7 +115,7 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 
 	indexBuffer->bufferData(indexBuf, std::size(indexBuf));
 
-	glDrawElements(GL_LINES, indexBuffer->getCount(), GL_UNSIGNED_SHORT, nullptr);
+	glDrawElements(GL_LINES, indexBuffer->getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
 //-----------------------------------------------------------------------------

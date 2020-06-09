@@ -17,7 +17,7 @@ std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath, bool _loa
 
 //-----------------------------------------------------------------------------
 
-Model::Model(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept
+Model::Model(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept
 {
 	m_meshes.emplace_back(_vertices, _indices);
 	m_boundingBox = calculateBoundingBox(m_meshes);

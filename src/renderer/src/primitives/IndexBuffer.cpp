@@ -10,8 +10,8 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-IndexBuffer::IndexBuffer(const u16* _data, u64 _count) noexcept
-	: m_size(_count * sizeof(u16))
+IndexBuffer::IndexBuffer(const index_t* _data, u64 _count) noexcept
+	: m_size(_count * sizeof(index_t))
 	, m_count(_count)
 {
 	glGenBuffers(1, &m_id);
@@ -72,14 +72,14 @@ void IndexBuffer::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void IndexBuffer::bufferData(const u16* _data, u64 _count)
+void IndexBuffer::bufferData(const index_t* _data, u64 _count)
 {
-	ASSERT(_count * sizeof(u16) <= m_size);
+	ASSERT(_count * sizeof(index_t) <= m_size);
 
 	m_count = _count;
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
-	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, _count * sizeof(u16), _data);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, _count * sizeof(index_t), _data);
 }
 
 //-----------------------------------------------------------------------------

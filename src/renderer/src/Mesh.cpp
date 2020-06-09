@@ -8,7 +8,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept
+Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept
 	 : m_material(nullptr)
 {
 	m_vertexArray.bind();

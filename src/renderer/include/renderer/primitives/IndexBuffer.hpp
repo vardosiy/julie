@@ -14,7 +14,7 @@ namespace jl {
 class IndexBuffer : boost::noncopyable
 {
 public:
-	IndexBuffer(const u16* _data, u64 _count) noexcept;
+	IndexBuffer(const index_t* _data, u64 _count) noexcept;
 	IndexBuffer(u64 _size) noexcept;
 	~IndexBuffer();
 
@@ -22,7 +22,7 @@ public:
 	IndexBuffer& operator=(IndexBuffer&& _rhs) noexcept;
 
 	void bind() const noexcept;
-	void bufferData(const u16* _data, u64 _count);
+	void bufferData(const index_t* _data, u64 _count);
 
 	u64 getCount() const noexcept;
 

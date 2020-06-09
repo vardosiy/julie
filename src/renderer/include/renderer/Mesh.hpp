@@ -19,7 +19,7 @@ class Material;
 class Mesh : boost::noncopyable
 {
 public:
-	Mesh(const std::vector<Vertex>& _vertices, const std::vector<u16>& _indices) noexcept;
+	Mesh(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept;
 
 	Mesh(Mesh&& _rhs) noexcept;
 	Mesh& operator=(Mesh&& _rhs) noexcept;

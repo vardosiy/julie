@@ -30,7 +30,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _fileP
 	{
 		return loadNfg(_filePath);
 	}
-	else if (path.extension() == ".obj")
+	else
 	{
 		return loadAssimp(_filePath, _loadMaterials);
 	}
@@ -69,11 +69,11 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 	fscanf_s(pFile, "%*s %d", &indicesCount);
 	ASSERTM(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
-	std::vector<u16> indices(indicesCount);
+	std::vector<index_t> indices(indicesCount);
 	for (s32 i = 0; i < indicesCount; i += 3)
 	{
 		fscanf_s(
-			pFile, " %*d. %hd, %hd, %hd",
+			pFile, " %*d. %d, %d, %d",
 			&indices[i], &indices[i + 1], &indices[i + 2]
 		);
 	}
@@ -90,7 +90,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePath, bool _loadMaterials)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filePath.data(), aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(_filePath.data(), aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
 
 	if (scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode)
 	{
@@ -135,12 +135,17 @@ void ModelCreationHelper::processNode(aiNode* _node, const aiScene* _scene)
 Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) const
 {
 	std::vector<Vertex> vertices(_mesh->mNumVertices);
-	std::vector<u16> indices;
+	std::vector<index_t> indices;
 
 	for (u32 i = 0; i < _mesh->mNumVertices; ++i)
 	{
 		vertices[i].pos = glm::vec3{ _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
-		vertices[i].norm = glm::vec3{ _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
+
+		vertices[i].norm = glm::vec3{ 0.0f };
+		if (_mesh->mNormals)
+		{
+			vertices[i].norm = glm::vec3{ _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
+		}
 
 		vertices[i].uv = glm::vec2{ 0.0f };
 		if (_mesh->mTextureCoords[0])
@@ -186,8 +191,6 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 
 	Material& material = MaterialsManager::getInstance().createMaterial(name);
 
-	material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
-
 	{
 		float shininess = 128.0f;
 		_material->Get(AI_MATKEY_SHININESS, shininess);
@@ -215,6 +218,8 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 
 	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
 	{
+		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
+
 		aiString texturePath;
 		_material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
 
@@ -226,6 +231,10 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		{
 			material.setProperty("u_texture2D", *texture);
 		}
+	}
+	else
+	{
+		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata"));
 	}
 
 	return material;
