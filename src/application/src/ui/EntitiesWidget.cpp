@@ -111,6 +111,11 @@ void EntitiesWidget::onAddEntityBtnReleased()
 	{
 		addMaterial(computeMaterialName());
 	}
+
+	if (m_actionHandler)
+	{
+		m_actionHandler->resetSelection();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -176,11 +181,11 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 				deleteFun(itemName);
 			}
 		}
+	}
 
-		if (m_actionHandler)
-		{
-			m_actionHandler->resetSelection();
-		}
+	if (m_actionHandler)
+	{
+		m_actionHandler->resetSelection();
 	}
 }
 

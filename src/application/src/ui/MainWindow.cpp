@@ -82,8 +82,8 @@ std::unique_ptr<jl::Model> createRoomModel()
 		ASSERT(i == k_verticeCount);
 	}
 
-	std::vector<jl::u16> indices(k_verticeCount);
-	for (jl::u16 j = 0; j < k_verticeCount; ++j)
+	std::vector<jl::index_t> indices(k_verticeCount);
+	for (jl::index_t j = 0; j < k_verticeCount; ++j)
 	{
 		indices[j] = j;
 	}
@@ -107,7 +107,7 @@ std::unique_ptr<jl::Model> createPlatformModel()
 	vertices[2].norm = glm::vec3(0.0f, 1.0f, 0.0f);
 	vertices[3].norm = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	std::vector<jl::u16> indices{ 0, 1, 2, 1, 2, 3 };
+	std::vector<jl::index_t> indices{ 0, 1, 2, 1, 2, 3 };
 
 	return std::make_unique<jl::Model>(vertices, indices);
 }
@@ -185,6 +185,7 @@ void MainWindow::materialSelected(jl::Material& _material)
 void MainWindow::resetSelection()
 {
 	m_propertiesWdg->reset();
+	m_ui->oglw_screen->resetSelectedObj();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +297,7 @@ void MainWindow::setupRoom()
 	roomWrapper->setSize(originalSize);
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
-	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });
+	m_ui->oglw_screen->setUninteractibleObjects({ k_roomObjName });
 }
 
 //-----------------------------------------------------------------------------

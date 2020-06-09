@@ -45,11 +45,12 @@ public:
 	void setDrawMode(DrawMode _drawMode) noexcept;
 	void drawBoundingBoxes(bool _val) noexcept;
 
-	void setScene(SceneWrapper* _sceneWrapper) noexcept;
-	void setUninteractibleObjects(std::vector<const ObjectWrapper*> _objWrappers) noexcept;
-
 	void setCamera(jl::Camera* _camera) noexcept;
+	void setScene(SceneWrapper* _sceneWrapper) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
+	void setUninteractibleObjects(std::vector<std::string> _objNames) noexcept;
+
+	void resetSelectedObj();
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
@@ -85,7 +86,7 @@ private:
 	std::function<void()> m_postrenderCommand;
 
 	SceneWrapper* m_sceneWrapper;
-	std::vector<const ObjectWrapper*> m_uninteractibleObjWrappers;
+	std::vector<std::string> m_uninteractibleObjNames;
 
 	jl::Camera* m_camera;
 	IEntityActionHandler* m_actionHandler;

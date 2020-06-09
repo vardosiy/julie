@@ -37,7 +37,7 @@ void EditableResourcePathWidget::onOpenFilePressed()
 	m_ui->btn_openFile->setFocus();
 
 	const QString fullPath =
-		QFileDialog::getOpenFileName(this, "Select Model", QDir::currentPath(), "Models (*.nfg *.obj *.dae)");
+		QFileDialog::getOpenFileName(this, "Select Model", QDir::currentPath(), "Models (*.nfg *.obj *.fbx)");
 
 	if (!fullPath.isEmpty())
 	{
