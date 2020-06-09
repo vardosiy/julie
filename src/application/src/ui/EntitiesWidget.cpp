@@ -51,11 +51,7 @@ void EntitiesWidget::setScene(SceneWrapper* _sceneWrapper)
 		});
 		m_objectsListModel.setStringList(m_objectsNamesList);
 
-		MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
-		{
-			m_materialsNamesList.append(_name.c_str());
-		});
-		m_materialsListModel.setStringList(m_materialsNamesList);
+		refreshMaterialsList();
 	}
 }
 
@@ -78,9 +74,24 @@ void EntitiesWidget::onCurrentTabChanged(int _idx)
 	}
 	else if (currentTab == m_ui->tab_materials)
 	{
+		refreshMaterialsList();
+
 		const QItemSelectionModel* selectionModel = m_ui->listv_materials->selectionModel();
 		onEntitySelected(selectionModel->selection());
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::refreshMaterialsList()
+{
+	m_materialsNamesList.clear();
+
+	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	{
+		m_materialsNamesList.append(_name.c_str());
+	});
+	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
 //-----------------------------------------------------------------------------

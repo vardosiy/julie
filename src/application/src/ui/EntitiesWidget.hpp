@@ -43,6 +43,7 @@ private slots:
 //-----------------------------------------------------------------------------
 private:
 	void onEntitySelected(const QItemSelection& _selection);
+	void refreshMaterialsList();
 
 	void addObject(const std::string& _name);
 	void addMaterial(const std::string& _name);
