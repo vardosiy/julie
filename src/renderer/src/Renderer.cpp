@@ -46,7 +46,8 @@ const std::string Renderer::k_primitivesShaderFsSource = R"(
 
 void Renderer::init()
 {
-	ASSERT(gladLoadGL());
+	const int success = gladLoadGL();
+	ASSERT(success);
 
 	LOG_INFO(
 		"OpenGL info\n-> Vendor: {}\n-> Renderer: {}\n-> Version: {}",
