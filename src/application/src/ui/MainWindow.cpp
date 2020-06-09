@@ -119,8 +119,6 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
 	, m_updateTimer(this)
-	, m_objectsListModel(this)
-	, m_materialsListModel(this)
 	, m_camera(0.001f, 100.0f, 45.0f)
 {
 	setupUi();
@@ -134,7 +132,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 	m_updateTimer.start(1);
 	m_cameraController.setCamera(&m_camera);
 
-	m_camera.setPosition(glm::vec3(0.0f, 1.0f, 5.0f));
+	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
 	{
@@ -153,103 +151,33 @@ MainWindow::~MainWindow()
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::addObject()
+void MainWindow::setupUi()
 {
-	const std::string name = computeObjectName();
-	auto object = std::make_unique<jl::Object>(name);
+	m_ui = std::make_unique<Ui::MainWindow>();
+	m_ui->setupUi(this);
 
-	m_objectsNamesList.append(name.c_str());
-	m_objectsListModel.setStringList(m_objectsNamesList);
+	m_ui->oglw_screen->setActionHandler(this);
 
-	m_sceneWrapper->addObject(std::move(object));
+	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
+	m_entitisWdg->setEntityActionHandler(this);
+	m_ui->dock_entities->setWidget(m_entitisWdg);
+
+	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
+	m_ui->dock_props->setWidget(m_propertiesWdg);
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::deleteObject(const QString& _name)
+void MainWindow::objectSelected(ObjectWrapper& _objWrapper)
 {
-	const std::string objName = _name.toStdString();
-	m_sceneWrapper->removeObject(objName);
-
-	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
-	if (itNames != m_objectsNamesList.end())
-	{
-		m_objectsNamesList.erase(itNames);
-		m_objectsListModel.setStringList(m_objectsNamesList);
-	}
+	m_propertiesWdg->setActiveEntity(_objWrapper);
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::objectSelected(const QString& _name)
+void MainWindow::materialSelected(jl::Material& _material)
 {
-	const std::string objName = _name.toStdString();
-
-	if (ObjectWrapper* objWrapper = m_sceneWrapper->findObject(objName))
-	{
-		m_propertiesWdg->setActiveEntity(*objWrapper);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::addMaterial()
-{
-	const std::string name = computeMaterialName();
-	jl::Material& material = MaterialsManager::getInstance().createMaterial(name);
-
-	m_materialsNamesList.append(name.c_str());
-	m_materialsListModel.setStringList(m_materialsNamesList);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::deleteMaterial(const QString& _name)
-{
-	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
-	const std::string materialName = _name.toStdString();
-
-	if (jl::Material* material = materialsMgr.findMaterial(materialName))
-	{
-		replaceMaterialInAllMeshes(material, &materialsMgr.getDefaultMaterial());
-
-		materialsMgr.deleteMaterial(materialName);
-		m_materialsNamesList.removeOne(_name);
-		m_materialsListModel.setStringList(m_materialsNamesList);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new)
-{
-	m_sceneWrapper->forEachObject([_old, _new](ObjectWrapper& _objWrapper)
-	{
-		if (jl::Model* model = _objWrapper.getModel())
-		{
-			const jl::u32 meshesCount = model->getMeshesCount();
-			for (jl::u32 i = 0; i < meshesCount; i++)
-			{
-				jl::Mesh& mesh = model->getMesh(i);
-
-				const jl::Material* meshMaterial = mesh.getMaterial();
-				if (meshMaterial == _old)
-				{
-					mesh.setMaterial(_new);
-				}
-			}
-		}
-	});
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::materialSelected(const QString& _name)
-{
-	if (jl::Material* material = MaterialsManager::getInstance().findMaterial(_name.toStdString()))
-	{
-		m_propertiesWdg->setActiveEntity(*material);
-	}
+	m_propertiesWdg->setActiveEntity(_material);
 }
 
 //-----------------------------------------------------------------------------
@@ -291,6 +219,19 @@ void MainWindow::update()
 
 //-----------------------------------------------------------------------------
 
+float MainWindow::getDeltaTime()
+{
+	static TimePoint s_lastTime = Clock::now();
+	const TimePoint currentTime = Clock::now();
+
+	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
+	s_lastTime = currentTime;
+
+	return durationFloat.count();
+}
+
+//-----------------------------------------------------------------------------
+
 void MainWindow::onFillPolygonsValueChanged(int _state)
 {
 	AppGlWidget::DrawMode drawMode = AppGlWidget::DrawMode::Fill;
@@ -326,36 +267,7 @@ void MainWindow::onGlLoaded()
 	m_ui->oglw_screen->setScene(m_sceneWrapper.get());
 	m_ui->oglw_screen->setCamera(&m_camera);
 
-	m_sceneWrapper->forEachObject([this](ObjectWrapper& _objWrapper)
-	{
-		m_objectsNamesList.append(_objWrapper.getName().c_str());
-	});
-	m_objectsListModel.setStringList(m_objectsNamesList);
-
-	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
-	{
-		m_materialsNamesList.append(_name.c_str());
-	});
-	m_materialsListModel.setStringList(m_materialsNamesList);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::setupUi()
-{
-	m_ui = std::make_unique<Ui::MainWindow>();
-	m_ui->setupUi(this);
-
-	m_ui->oglw_screen->setActionHandler(this);
-
-	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
-	m_entitisWdg->setObjectsListModel(m_objectsListModel);
-	m_entitisWdg->setMaterialsListModel(m_materialsListModel);
-	m_entitisWdg->setEntityActionHandler(*this);
-	m_ui->dock_entities->setWidget(m_entitisWdg);
-
-	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
-	m_ui->dock_props->setWidget(m_propertiesWdg);
+	m_entitisWdg->setScene(m_sceneWrapper.get());
 }
 
 //-----------------------------------------------------------------------------
@@ -385,61 +297,6 @@ void MainWindow::setupRoom()
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
 	m_ui->oglw_screen->setUninteractibleObjects({ roomWrapper });
-}
-
-//-----------------------------------------------------------------------------
-
-float MainWindow::getDeltaTime()
-{
-	static TimePoint s_lastTime = Clock::now();
-	const TimePoint currentTime = Clock::now();
-
-	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
-	s_lastTime = currentTime;
-
-	return durationFloat.count();
-}
-
-//-----------------------------------------------------------------------------
-
-std::string MainWindow::computeObjectName() const
-{
-	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
-	{
-		return m_sceneWrapper->findObject(_name) != nullptr;
-	});
-}
-
-//-----------------------------------------------------------------------------
-
-std::string MainWindow::computeMaterialName() const
-{
-	return computeEntityName(k_defaultMaterialName, [](const std::string& _name)
-	{
-		return MaterialsManager::getInstance().findMaterial(_name) != nullptr;
-	});
-}
-
-//-----------------------------------------------------------------------------
-
-std::string MainWindow::computeEntityName(
-	std::string_view _base,
-	std::function<bool(const std::string&)>&& _entityExistCheckFun
-)
-{
-	std::string result = _base.data();
-	int counter = 0;
-
-	while (_entityExistCheckFun(result))
-	{
-		fmt::memory_buffer buf;
-		format_to(buf, "{:03d}", ++counter);
-
-		const size_t offset = result.length() - 3;
-		result.replace(offset, 3, buf.data(), 3); // last param need due to MSVC bug
-	}
-
-	return result;
 }
 
 //-----------------------------------------------------------------------------

@@ -49,6 +49,8 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 	}
 	else
 	{
+		reset();
+
 		m_propertiesTableModel.setRowCount(2);
 
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
@@ -74,10 +76,11 @@ void PropertiesWidget::setActiveEntity(jl::Material& _material)
 		}
 	}
 
+	reset();
+
 	const int propertiesCount = static_cast<int>(_material.getProperties().size());
 	m_propertiesTableModel.setRowCount(propertiesCount);
 
-	m_activeEntity = nullptr;
 	refreshMaterialProperties(_material);
 	m_activeEntity = &_material;
 }
@@ -134,7 +137,7 @@ void PropertiesWidget::refreshObjectSize()
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
+void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 {
 	const QModelIndex rootIdx;
 
@@ -149,21 +152,24 @@ void PropertiesWidget::refreshObjectProperties(const ObjectWrapper& _object)
 
 		int transfromNum = 0;
 		{
-			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition() });
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Moveable;
+			auto editCallback = [&_object](const glm::vec3& _val) { _object.setPosition(_val); };
+			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition(), editCallback });
 
+			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Moveable;
 			setPropertyRow(transfromNum++, transformIdx, "Position", pos, editable);
 		}
 		{
-			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize() });
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
+			auto editCallback = [&_object](const glm::vec3& _val) { _object.setSize(_val); };
+			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize(), editCallback });
 
+			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
 			setPropertyRow(transfromNum++, transformIdx, "Actual Size (in meters)", size, editable);
 		}
 		{
-			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation() });
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Rotatable;
+			auto editCallback = [&_object](const glm::vec3& _val) { _object.setRotation(_val); };
+			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation(), editCallback });
 
+			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Rotatable;
 			setPropertyRow(transfromNum++, transformIdx, "Rotatation", rotation, editable);
 		}
 		ASSERT(transfromNum == k_transformsNum);

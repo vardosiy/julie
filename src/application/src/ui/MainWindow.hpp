@@ -4,13 +4,10 @@
 #include "ui/IEntityActionHandler.hpp"
 
 #include "controllers/FreeflyCameraController.hpp"
-
 #include "renderer/scene/Camera.hpp"
 
 #include <QMainWindow>
 #include <QTimer>
-#include <QStringList>
-#include <QStringListModel>
 
 #include <memory>
 
@@ -39,14 +36,8 @@ public:
 	explicit MainWindow(QMainWindow* parent = nullptr);
 	~MainWindow() override;
 
-	void addObject() override;
-	void deleteObject(const QString& _name) override;
-	void objectSelected(const QString& _name) override;
-
-	void addMaterial() override;
-	void deleteMaterial(const QString& _name) override;
-	void materialSelected(const QString& _name) override;
-
+	void objectSelected(ObjectWrapper& _objWrapper) override;
+	void materialSelected(jl::Material& _material) override;
 	void resetSelection() override;
 
 	void onObjectMoved(ObjectWrapper& _objWrapper) override;
@@ -64,16 +55,7 @@ private:
 	void setupUi();
 	void setupRoom();
 
-	void replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new);
-
 	float getDeltaTime();
-
-	std::string computeObjectName() const;
-	std::string computeMaterialName() const;
-	static std::string computeEntityName(
-		std::string_view _base,
-		std::function<bool(const std::string&)>&& _entityExistCheckFun
-	);
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
@@ -82,11 +64,6 @@ private:
 	PropertiesWidget* m_propertiesWdg;
 
 	QTimer m_updateTimer;
-
-	QStringList m_objectsNamesList;
-	QStringListModel m_objectsListModel;
-	QStringList m_materialsNamesList;
-	QStringListModel m_materialsListModel;
 
 	app::ScopedConnection m_glLoadedConnection;
 
@@ -97,8 +74,6 @@ private:
 	FreeflyCameraController m_cameraController;
 
 	static constexpr std::string_view k_saveFile = "SaveFile.json";
-	static constexpr std::string_view k_defaultObjectName = "Object_000";
-	static constexpr std::string_view k_defaultMaterialName = "Material_000";
 };
 
 //-----------------------------------------------------------------------------
