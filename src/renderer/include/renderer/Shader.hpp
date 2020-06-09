@@ -43,7 +43,7 @@ public:
 	void setUniform(const std::string& _name, u32 _count, const s32* _val) const;
 	void setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const;
 	void setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const;
-	
+
 //-----------------------------------------------------------------------------
 private:
 	Shader(u32 _programId);
@@ -54,7 +54,7 @@ private:
 	static u32 loadProgram(u32 _vsId, u32 _fsId) noexcept;
 	static bool checkShaderCompilationSucceded(u32 _shaderId) noexcept;
 	static bool checkProgramLinkageSucceded(u32 _programId) noexcept;
-	
+
 //-----------------------------------------------------------------------------
 	using UniformsCache = std::unordered_map<std::string, s32>;
 	mutable UniformsCache m_uniformLocationsCache;

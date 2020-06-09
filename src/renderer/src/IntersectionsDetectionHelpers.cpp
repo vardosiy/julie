@@ -2,6 +2,8 @@
 
 #include "renderer/IntersectionsDetectionHelpers.hpp"
 
+#include <utility>
+
 //-----------------------------------------------------------------------------
 
 namespace jl {
