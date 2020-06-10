@@ -107,7 +107,9 @@ void PropertiesWidget::refreshObjectPos()
 
 	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 
-	const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ obj->getPosition() });
+	auto editCallback = [obj](const glm::vec3& _val) { obj->setPosition(_val); };
+	const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ obj->getPosition(), editCallback });
+
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Moveable;
 	setCellValue(index(0, k_valueColIdx, transformIdx), pos, editable);
 
@@ -128,7 +130,9 @@ void PropertiesWidget::refreshObjectSize()
 
 	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, QModelIndex());
 
-	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getSize() });
+	auto editCallback = [obj](const glm::vec3& _val) { obj->setSize(_val); };
+	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getSize(), editCallback });
+
 	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
 	setCellValue(index(1, k_valueColIdx, transformIdx), size, editable);
 
@@ -170,7 +174,7 @@ void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation(), editCallback });
 
 			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Rotatable;
-			setPropertyRow(transfromNum++, transformIdx, "Rotatation", rotation, editable);
+			setPropertyRow(transfromNum++, transformIdx, "Rotation", rotation, editable);
 		}
 		ASSERT(transfromNum == k_transformsNum);
 
@@ -196,7 +200,7 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model)
 			m_propertiesTableModel.insertRows(0, meshesCount, modelIdx);
 			m_propertiesTableModel.insertColumns(0, 2, modelIdx);
 
-			const QString meshMaterialtemplate = "Mesh %1";
+			const QString meshMaterialtemplate = "Mesh %1 Material";
 			for (int i = 0; i < meshesCount; ++i)
 			{
 				jl::Mesh& mesh = _model->getMesh(i);
@@ -248,8 +252,6 @@ void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIn
 
 void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object)
 {
-	const QModelIndex rootIdx;
-
 	if (_idx.data().canConvert<ModelUiWrapper>())
 	{
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
@@ -257,30 +259,6 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 
 		refreshObjectSize();
 		refreshMeshes(_object.getModel());
-	}
-	else
-	{
-		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx, rootIdx);
-
-		int transformNum = 0;
-		if (_idx == index(transformNum++, k_valueColIdx, transformIdx))
-		{
-			const TransformVecUiWrapper pos = qvariant_cast<TransformVecUiWrapper>(_idx.data());
-			_object.setPosition(pos.value);
-		}
-		else if (_idx == index(transformNum++, k_nameColIdx, transformIdx))
-		{
-			const TransformVecUiWrapper size = qvariant_cast<TransformVecUiWrapper>(_idx.data());
-			if (size.value != _object.getSize())
-			{
-				_object.setSize(size.value);
-			}
-		}
-		else if (_idx == index(transformNum++, k_valueColIdx, transformIdx))
-		{
-			const TransformVecUiWrapper roatation = qvariant_cast<TransformVecUiWrapper>(_idx.data());
-			_object.setRotation(roatation.value);
-		}
 	}
 }
 

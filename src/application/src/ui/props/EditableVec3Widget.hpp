@@ -33,4 +33,5 @@ private:
 	std::unique_ptr<Ui::EditableVec3Widget> m_ui;
 
 	QVariant m_value;
+	bool m_editingValue;
 };
