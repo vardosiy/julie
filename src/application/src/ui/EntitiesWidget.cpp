@@ -83,19 +83,6 @@ void EntitiesWidget::onCurrentTabChanged(int _idx)
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::refreshMaterialsList()
-{
-	m_materialsNamesList.clear();
-
-	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
-	{
-		m_materialsNamesList.append(_name.c_str());
-	});
-	m_materialsListModel.setStringList(m_materialsNamesList);
-}
-
-//-----------------------------------------------------------------------------
-
 void EntitiesWidget::onAddEntityBtnReleased()
 {
 	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while adding entity");
@@ -135,6 +122,13 @@ void EntitiesWidget::addObject(const std::string& _name)
 void EntitiesWidget::addMaterial(const std::string& _name)
 {
 	jl::Material& material = MaterialsManager::getInstance().createMaterial(_name);
+	material.setShader(MaterialsManager::getInstance().getColorShader());
+	material.setProperty("u_shininess",		128.0f);
+	material.setProperty("u_opacity",		1.0f);
+	material.setProperty("u_matAmbient",	glm::vec3(1.0f));
+	material.setProperty("u_matDiffuse",	glm::vec3(1.0f));
+	material.setProperty("u_matSpecular",	glm::vec3(1.0f));
+	material.setProperty("u_texture2D",		static_cast<const jl::Texture*>(nullptr));
 
 	m_materialsNamesList.append(_name.c_str());
 	m_materialsListModel.setStringList(m_materialsNamesList);
@@ -144,43 +138,20 @@ void EntitiesWidget::addMaterial(const std::string& _name)
 
 void EntitiesWidget::onDeleteEntityBtnReleased()
 {
-	const QItemSelectionModel* selectionModel = nullptr;
-	std::function<void(const QString&)> deleteFun;
-
 	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while removing entity");
 	if (m_ui->tab_objects->isVisible())
 	{
 		ASSERT(m_sceneWrapper);
 		if (m_sceneWrapper)
 		{
-			selectionModel = m_ui->listv_objects->selectionModel();
-			deleteFun = std::bind(&EntitiesWidget::deleteObject, this, std::placeholders::_1);
+			auto deleteFun = std::bind(&EntitiesWidget::deleteObject, this, std::placeholders::_1);
+			deleteEntities(*m_ui->listv_objects->selectionModel(), deleteFun);
 		}
 	}
 	else if (m_ui->tab_materials->isVisible())
 	{
-		selectionModel = m_ui->listv_materials->selectionModel();
-		deleteFun = std::bind(&EntitiesWidget::deleteMaterial, this, std::placeholders::_1);
-	}
-
-	if (selectionModel && deleteFun)
-	{
-		const QModelIndexList indexList = selectionModel->selectedIndexes();
-
-		if (!indexList.empty())
-		{
-			std::vector<QString> itemsToRemove;
-			itemsToRemove.reserve(indexList.size());
-
-			for (const auto& index : indexList)
-			{
-				itemsToRemove.emplace_back(index.data().toString());
-			}
-			for (const QString& itemName : itemsToRemove)
-			{
-				deleteFun(itemName);
-			}
-		}
+		auto deleteFun = std::bind(&EntitiesWidget::deleteMaterial, this, std::placeholders::_1);
+		deleteEntities(*m_ui->listv_materials->selectionModel(), deleteFun);
 	}
 
 	if (m_actionHandler)
@@ -223,6 +194,31 @@ void EntitiesWidget::deleteMaterial(const QString& _name)
 
 //-----------------------------------------------------------------------------
 
+void EntitiesWidget::deleteEntities(
+	const QItemSelectionModel& _selectionModel,
+	std::function<void(const QString&)>&& _deleteFun
+)
+{
+	const QModelIndexList indexList = _selectionModel.selectedIndexes();
+
+	if (!indexList.empty())
+	{
+		std::vector<QString> itemsToRemove;
+		itemsToRemove.reserve(indexList.size());
+
+		for (const QModelIndex& index : indexList)
+		{
+			itemsToRemove.emplace_back(index.data().toString());
+		}
+		for (const QString& itemName : itemsToRemove)
+		{
+			_deleteFun(itemName);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 void EntitiesWidget::replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new)
 {
 	if (!m_sceneWrapper)
@@ -247,6 +243,19 @@ void EntitiesWidget::replaceMaterialInAllMeshes(const jl::Material* _old, const 
 			}
 		}
 	});
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::refreshMaterialsList()
+{
+	m_materialsNamesList.clear();
+
+	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	{
+		m_materialsNamesList.append(_name.c_str());
+	});
+	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
 //-----------------------------------------------------------------------------

@@ -54,7 +54,7 @@ private:
 	void setPropertyCommon(const std::string& _name, T _val) noexcept;
 
 //-----------------------------------------------------------------------------
-	const jl::Shader* m_shader;
+	const jl::Shader* m_shader = nullptr;
 	std::vector<Property> m_properties;
 };
 

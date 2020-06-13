@@ -129,17 +129,25 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 
 		case jl::UniformType::Texture2D:
 			{
-				jl::Texture* texture = ResourceManager::getInstance().loadTexture(propertyValue.asString());
-				ASSERT(texture);
-				_material.setProperty(name, texture);
+				const std::string path = propertyValue.asString();
+				if (!path.empty())
+				{
+					jl::Texture* texture = ResourceManager::getInstance().loadTexture(path);
+					ASSERT(texture);
+					_material.setProperty(name, texture);
+				}
 			}
 			break;
 
 		case jl::UniformType::CubeTexture:
 			{
-				jl::CubeTexture* texture = ResourceManager::getInstance().loadCubeTexture(propertyValue.asString());
-				ASSERT(texture);
-				_material.setProperty(name, texture);
+				const std::string path = propertyValue.asString();
+				if (!path.empty())
+				{
+					jl::CubeTexture* texture = ResourceManager::getInstance().loadCubeTexture(path);
+					ASSERT(texture);
+					_material.setProperty(name, texture);
+				}
 			}
 			break;
 
