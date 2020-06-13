@@ -13,7 +13,7 @@ out vec4 o_color;
 uniform vec3 u_color;
 
 #if ENABLE_SPECULAR_LIGHTNING
-uniform float u_specularPower;
+uniform float u_shinennes;
 #endif
 
 uniform vec3 u_ambientColor;
@@ -47,7 +47,7 @@ void main()
 
 	#if ENABLE_SPECULAR_LIGHTNING
 		vec3 reflectionDir = normalize( reflect(u_lightDirection[i], normalW) );
-		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_specularPower );
+		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shinennes );
 		specularLight += u_directionalLightColor[i] * specularIntensity;
 	#endif
 	}
@@ -63,7 +63,7 @@ void main()
 
 	#if ENABLE_SPECULAR_LIGHTNING
 		vec3 reflectionDir = normalize( reflect(lightDirection, normalW) );
-		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_specularPower );
+		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shinennes );
 		specularLight += u_pointLightColor[i] * specularIntensity;
 	#endif
 	}
