@@ -1,6 +1,7 @@
 #include "ui/MainWindow.hpp"
 #include "ui/EntitiesWidget.hpp"
 #include "ui/PropertiesWidget.hpp"
+#include "ui/ViewPropertiesWidget.hpp"
 #include "ui/UiUtils.hpp"
 #include "ui_MainWindow.h"
 
@@ -121,18 +122,15 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_updateTimer(this)
 	, m_camera(0.001f, 100.0f, 45.0f)
 {
-	setupUi();
-
-	connect(&m_updateTimer,				&QTimer::timeout,			this, &MainWindow::update);
-	connect(m_ui->chb_fillPolygons,		&QCheckBox::stateChanged,	this, &MainWindow::onFillPolygonsValueChanged);
-	connect(m_ui->sld_camMoveSpeed,		&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraMoveSpeed(_value); });
-	connect(m_ui->sld_camRotateSpeed,	&QSlider::valueChanged,		[this](int _value) { m_cameraController.setCameraRotateSpeed(_value); });
-	connect(m_ui->chb_showBb,			&QCheckBox::stateChanged,	[this](int _value) { m_ui->oglw_screen->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
-
-	m_updateTimer.start(1);
+	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
+	m_cameraController.setCameraMoveSpeed(3.0f);
+	m_cameraController.setCameraRotateSpeed(2.0f);
 	m_cameraController.setCamera(&m_camera);
 
-	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
+	setupUi();
+
+	connect(&m_updateTimer, &QTimer::timeout, this, &MainWindow::update);
+	m_updateTimer.start(1);
 
 	m_glLoadedConnection = m_ui->oglw_screen->registerOnGlLoaded([this]()
 	{
@@ -164,6 +162,11 @@ void MainWindow::setupUi()
 
 	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
 	m_ui->dock_props->setWidget(m_propertiesWdg);
+
+	m_viewPropertiesWdg = new ViewPropertiesWidget(m_ui->dock_viewProps);
+	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
+	m_viewPropertiesWdg->setCameraController(&m_cameraController);
+	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +197,7 @@ void MainWindow::resetSelection()
 void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectPos();
+	m_ui->oglw_screen->refreshIntersections();
 }
 
 //-----------------------------------------------------------------------------
@@ -201,6 +205,7 @@ void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 void MainWindow::onObjectScaled(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectSize();
+	m_ui->oglw_screen->refreshIntersections();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,10 +216,7 @@ void MainWindow::update()
 	jl::Globals::s_timeTotal += dt;
 
 	m_sceneWrapper->update(dt);
-	m_cameraController.update(dt);
-
-	m_ui->lbl_camPosValue->setText(vecToString(m_camera.getPosition()));
-	m_ui->lbl_camViewDirectionValue->setText(vecToString(m_camera.getViewTarget()));
+	m_viewPropertiesWdg->update(dt);
 
 	m_ui->oglw_screen->repaint();
 }
@@ -230,29 +232,6 @@ float MainWindow::getDeltaTime()
 	s_lastTime = currentTime;
 
 	return durationFloat.count();
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::onFillPolygonsValueChanged(int _state)
-{
-	AppGlWidget::DrawMode drawMode = AppGlWidget::DrawMode::Fill;
-
-	switch (_state)
-	{
-	case Qt::CheckState::Checked:
-		drawMode = AppGlWidget::DrawMode::Fill;
-		break;
-
-	case Qt::CheckState::Unchecked:
-		drawMode = AppGlWidget::DrawMode::Edges;
-		break;
-
-	default:
-		ASSERT(0);
-	}
-
-	m_ui->oglw_screen->setDrawMode(drawMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -305,7 +284,8 @@ void MainWindow::setupRoom()
 	roomWrapper->setSize(originalSize);
 	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
 
-	m_ui->oglw_screen->setUninteractibleObjects({ k_roomObjName });
+	m_entitisWdg->setUndeletableObjectName(k_roomObjName);
+	m_ui->oglw_screen->setUninteractibleObjectName(k_roomObjName);
 }
 
 //-----------------------------------------------------------------------------

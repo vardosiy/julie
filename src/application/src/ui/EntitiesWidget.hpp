@@ -32,6 +32,7 @@ public:
 
 	void setScene(SceneWrapper* _sceneWrapper);
 	void setEntityActionHandler(IEntityActionHandler* _handler);
+	void setUndeletableObjectName(const std::string& _objName);
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -43,7 +44,6 @@ private slots:
 //-----------------------------------------------------------------------------
 private:
 	void onEntitySelected(const QItemSelection& _selection);
-	void refreshMaterialsList();
 
 	void addObject(const std::string& _name);
 	void addMaterial(const std::string& _name);
@@ -72,6 +72,7 @@ private:
 
 	SceneWrapper* m_sceneWrapper;
 	IEntityActionHandler* m_actionHandler;
+	std::string m_undeletableObjName;
 
 	static constexpr std::string_view k_defaultObjectName = "Object_000";
 	static constexpr std::string_view k_defaultMaterialName = "Material_000";

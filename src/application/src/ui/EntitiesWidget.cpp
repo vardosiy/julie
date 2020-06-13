@@ -16,6 +16,8 @@ EntitiesWidget::EntitiesWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_objectsListModel(this)
 	, m_materialsListModel(this)
+	, m_sceneWrapper(nullptr)
+	, m_actionHandler(nullptr)
 {
 	m_ui = std::make_unique<Ui::EntitiesWidget>();
 	m_ui->setupUi(this);
@@ -53,6 +55,13 @@ void EntitiesWidget::setScene(SceneWrapper* _sceneWrapper)
 
 		refreshMaterialsList();
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::setUndeletableObjectName(const std::string& _objName)
+{
+	m_undeletableObjName = _objName;
 }
 
 //-----------------------------------------------------------------------------
@@ -165,6 +174,11 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 void EntitiesWidget::deleteObject(const QString& _name)
 {
 	const std::string objName = _name.toStdString();
+	if (m_undeletableObjName == objName)
+	{
+		return;
+	}
+
 	m_sceneWrapper->removeObject(objName);
 
 	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);

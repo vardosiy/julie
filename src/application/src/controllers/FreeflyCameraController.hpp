@@ -11,10 +11,14 @@ public:
 
 	void update(float _dt) noexcept;
 
+	const jl::Camera* getCamera() const noexcept;
 	void setCamera(jl::Camera* _camera) noexcept;
 
-	void setCameraMoveSpeed(int _speed) noexcept;
-	void setCameraRotateSpeed(int _speed) noexcept;
+	float getCameraMoveSpeed() const noexcept;
+	float getCameraRotateSpeed() const noexcept;
+
+	void setCameraMoveSpeed(float _value) noexcept;
+	void setCameraRotateSpeed(float _value) noexcept;
 
 private:
 	float m_camMoveSpeed;

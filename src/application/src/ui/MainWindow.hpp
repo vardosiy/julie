@@ -26,6 +26,7 @@ class SceneWrapper;
 class ObjectWrapper;
 class EntitiesWidget;
 class PropertiesWidget;
+class ViewPropertiesWidget;
 
 class MainWindow : public QMainWindow, public IEntityActionHandler
 {
@@ -46,7 +47,6 @@ public:
 //-----------------------------------------------------------------------------
 private slots:
 	void update();
-	void onFillPolygonsValueChanged(int _state);
 
 //-----------------------------------------------------------------------------
 private:
@@ -62,9 +62,9 @@ private:
 
 	EntitiesWidget* m_entitisWdg;
 	PropertiesWidget* m_propertiesWdg;
+	ViewPropertiesWidget* m_viewPropertiesWdg;
 
 	QTimer m_updateTimer;
-
 	app::ScopedConnection m_glLoadedConnection;
 
 	std::unique_ptr<SceneWrapper> m_sceneWrapper;

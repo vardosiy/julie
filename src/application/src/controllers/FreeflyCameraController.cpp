@@ -55,6 +55,13 @@ void FreeflyCameraController::update(float _dt) noexcept
 
 //-----------------------------------------------------------------------------
 
+const jl::Camera* FreeflyCameraController::getCamera() const noexcept
+{
+	return m_camera;
+}
+
+//-----------------------------------------------------------------------------
+
 void FreeflyCameraController::setCamera(jl::Camera* _camera) noexcept
 {
 	m_camera = _camera;
@@ -62,16 +69,30 @@ void FreeflyCameraController::setCamera(jl::Camera* _camera) noexcept
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCameraController::setCameraMoveSpeed(int _speed) noexcept
+float FreeflyCameraController::getCameraMoveSpeed() const noexcept
 {
-	m_camMoveSpeed = static_cast<float>(_speed) * 0.01f;
+	return m_camMoveSpeed;
 }
 
 //-----------------------------------------------------------------------------
 
-void FreeflyCameraController::setCameraRotateSpeed(int _speed) noexcept
+float FreeflyCameraController::getCameraRotateSpeed() const noexcept
 {
-	m_camRotationSpeed = static_cast<float>(_speed) * 0.01f;
+	return m_camRotationSpeed;
+}
+
+//-----------------------------------------------------------------------------
+
+void FreeflyCameraController::setCameraMoveSpeed(float _value) noexcept
+{
+	m_camMoveSpeed = _value;
+}
+
+//-----------------------------------------------------------------------------
+
+void FreeflyCameraController::setCameraRotateSpeed(float _value) noexcept
+{
+	m_camRotationSpeed = _value;
 }
 
 //-----------------------------------------------------------------------------
