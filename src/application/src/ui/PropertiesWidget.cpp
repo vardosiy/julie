@@ -244,7 +244,7 @@ void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIn
 	}
 	else if (std::holds_alternative<jl::Material*>(m_activeEntity))
 	{
-
+		onMaterialChanged(_topLeft, *std::get<jl::Material*>(m_activeEntity));
 	}
 }
 
@@ -259,6 +259,24 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 
 		refreshObjectSize();
 		refreshMeshes(_object.getModel());
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void PropertiesWidget::onMaterialChanged(const QModelIndex& _idx, jl::Material& _material)
+{
+	if (_idx.data().canConvert<TextureUiWrapper>())
+	{
+		const auto& props = _material.getProperties();
+
+		TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_idx.data());
+		_material.setProperty(props[_idx.row()].name, textureWrapper.value);
+
+		const jl::Shader& shader =
+			textureWrapper.value ?
+			MaterialsManager::getInstance().getTextureShader() :
+			MaterialsManager::getInstance().getColorShader();
 	}
 }
 

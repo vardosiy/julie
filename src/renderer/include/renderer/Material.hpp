@@ -45,8 +45,8 @@ public:
 	void setProperty(const std::string& _name, glm::vec2				_val) noexcept { setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, glm::vec3				_val) noexcept { setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, glm::vec4				_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, const jl::Texture&		_val) noexcept { setPropertyCommon(_name, &_val); }
-	void setProperty(const std::string& _name, const jl::CubeTexture&	_val) noexcept { setPropertyCommon(_name, &_val); }
+	void setProperty(const std::string& _name, const jl::Texture*		_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, const jl::CubeTexture*	_val) noexcept { setPropertyCommon(_name, _val); }
 
 //-----------------------------------------------------------------------------
 private:

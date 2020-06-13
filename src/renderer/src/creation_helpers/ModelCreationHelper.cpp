@@ -182,14 +182,16 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) cons
 
 Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 {
+	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
 	const std::string name = _material->GetName().C_Str();
-	if (Material* material = MaterialsManager::getInstance().findMaterial(name))
+
+	if (Material* material = materialsMgr.findMaterial(name))
 	{
 		LOG_INFO("[ModelCreationHelper] Material '{}' already exists, returning", name.c_str());
 		return *material;
 	}
 
-	Material& material = MaterialsManager::getInstance().createMaterial(name);
+	Material& material = materialsMgr.createMaterial(name);
 
 	{
 		float shininess = 128.0f;
@@ -216,25 +218,22 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		material.setProperty("u_matSpecular", glm::vec3(color.r, color.g, color.b));
 	}
 
+	bool textureLoaded = false;
 	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
 	{
-		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialTextureShader.shdata"));
-
 		aiString textureName;
 		_material->GetTexture(aiTextureType_DIFFUSE, 0, &textureName);
 
 		std::filesystem::path texturePath = std::filesystem::path(m_filePath).parent_path() / textureName.C_Str();
 		Texture* texture = ResourceManager::getInstance().loadTexture(texturePath.string());
 		ASSERT(texture);
-		if (texture)
-		{
-			material.setProperty("u_texture2D", *texture);
-		}
+
+		textureLoaded = texture != nullptr;
+		material.setProperty("u_texture2D", texture);
 	}
-	else
-	{
-		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata"));
-	}
+
+	const jl::Shader& shader = textureLoaded ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
+	material.setShader(shader);
 
 	return material;
 }

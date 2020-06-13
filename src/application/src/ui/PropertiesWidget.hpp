@@ -45,6 +45,7 @@ private:
 
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
 	void onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object);
+	void onMaterialChanged(const QModelIndex& _idx, jl::Material& _material);
 
 	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
 	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value, bool _editable);

@@ -131,10 +131,7 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 			{
 				jl::Texture* texture = ResourceManager::getInstance().loadTexture(propertyValue.asString());
 				ASSERT(texture);
-				if (texture)
-				{
-					_material.setProperty(name, *texture);
-				}
+				_material.setProperty(name, texture);
 			}
 			break;
 
@@ -142,10 +139,7 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 			{
 				jl::CubeTexture* texture = ResourceManager::getInstance().loadCubeTexture(propertyValue.asString());
 				ASSERT(texture);
-				if (texture)
-				{
-					_material.setProperty(name, *texture);
-				}
+				_material.setProperty(name, texture);
 			}
 			break;
 

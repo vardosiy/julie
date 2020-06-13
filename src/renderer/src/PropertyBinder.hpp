@@ -21,14 +21,20 @@ public:
 
 	void operator() (const Texture* _texture) const noexcept
 	{
-		_texture->bind(m_textureSlot);
-		m_shader.setUniform(m_uniformName, m_textureSlot);
+		if (_texture)
+		{
+			_texture->bind(m_textureSlot);
+			m_shader.setUniform(m_uniformName, m_textureSlot);
+		}
 	}
 
 	void operator() (const CubeTexture* _texture) const noexcept
 	{
-		_texture->bind(m_textureSlot);
-		m_shader.setUniform(m_uniformName, m_textureSlot);
+		if (_texture)
+		{
+			_texture->bind(m_textureSlot);
+			m_shader.setUniform(m_uniformName, m_textureSlot);
+		}
 	}
 
 	template<typename T>

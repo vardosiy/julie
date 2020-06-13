@@ -1,4 +1,5 @@
 #include "renderer/managers/MaterialsManager.hpp"
+#include "renderer/managers/ResourceManager.hpp"
 
 #include "renderer/Material.hpp"
 #include "renderer/Shader.hpp"
@@ -13,12 +14,12 @@ const std::string MaterialsManager::k_defaultMaterialName = "Default";
 
 MaterialsManager::MaterialsManager()
 {
-	m_defaultMaterialShader = jl::Shader::loadFromFiles("res/shaders/LightColor.vs", "res/shaders/LightColor.fs");
+	const jl::Shader* defaultShader = ResourceManager::getInstance().loadShader("res/shaders/composed/LightColor.shdata");
 
 	jl::Material& material = createMaterial(k_defaultMaterialName);
-	material.setShader(*m_defaultMaterialShader);
+	material.setShader(*defaultShader);
 	material.setProperty("u_color", glm::vec3(1.0f));
-	material.setProperty("u_specularPower", 128.0f);
+	material.setProperty("u_shininess", 128.0f);
 }
 
 //-----------------------------------------------------------------------------
@@ -30,6 +31,20 @@ MaterialsManager::~MaterialsManager() = default;
 void MaterialsManager::clear() noexcept
 {
 	m_materials.clear();
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Shader& MaterialsManager::getColorShader() const noexcept
+{
+	return *ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata");
+}
+
+//-----------------------------------------------------------------------------
+
+jl::Shader& MaterialsManager::getTextureShader() const noexcept
+{
+	return *ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialTextureShader.shdata");
 }
 
 //-----------------------------------------------------------------------------

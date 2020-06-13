@@ -23,7 +23,7 @@ PropertyValueDelegate::PropertyValueDelegate(QWidget* _parent)
 
 QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptionViewItem& _option, const QModelIndex& _idx) const
 {
-	if (_idx.data().canConvert<ModelUiWrapper>())
+	if (_idx.data().canConvert<ModelUiWrapper>() || _idx.data().canConvert<TextureUiWrapper>())
 	{
 		return new EditableResourcePathWidget(_parent);
 	}
@@ -55,13 +55,13 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 	{
 		ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_idx.data());
 		EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
-
-		QString modelPath;
-		if (modelWrapper.value)
-		{
-			modelPath = ResourceManager::getInstance().findSourceFile(*modelWrapper.value).c_str();
-		}
-		pathWdg->setPath(modelPath);
+		pathWdg->setValue(modelWrapper);
+	}
+	else if (_idx.data().canConvert<TextureUiWrapper>())
+	{
+		TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_idx.data());
+		EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
+		pathWdg->setValue(textureWrapper);
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
@@ -96,17 +96,10 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 
 void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _model, const QModelIndex& _idx) const
 {
-	if (_idx.data().canConvert<ModelUiWrapper>())
+	if (_idx.data().canConvert<ModelUiWrapper>() || _idx.data().canConvert<TextureUiWrapper>())
 	{
 		const EditableResourcePathWidget* pathWdg = qobject_cast<EditableResourcePathWidget*>(_editor);
-		const QString& modelPath = pathWdg->getPath();
-
-		ModelUiWrapper modelWrapper;
-		if (!modelPath.isEmpty())
-		{
-			modelWrapper.value = ResourceManager::getInstance().loadModel(modelPath.toStdString(), true /* _loadMaterials */);
-		}
-		_model->setData(_idx, QVariant::fromValue(modelWrapper));
+		_model->setData(_idx, pathWdg->getValue());
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
@@ -141,6 +134,14 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 		if (modelWrapper.value)
 		{
 			result = ResourceManager::getInstance().findSourceFile(*modelWrapper.value).c_str();
+		}
+	}
+	else if (_value.canConvert<TextureUiWrapper>())
+	{
+		const TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_value);
+		if (textureWrapper.value)
+		{
+			result = ResourceManager::getInstance().findSourceFile(*textureWrapper.value).c_str();
 		}
 	}
 	else if (_value.canConvert<MaterialUiWrapper>())
