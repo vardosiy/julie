@@ -41,7 +41,7 @@ private:
 	void refreshObjectProperties(ObjectWrapper& _object);
 	void refreshMeshes(jl::Model* _model);
 
-	void refreshMaterialProperties(const jl::Material& _material);
+	void refreshMaterialProperties(jl::Material& _material);
 
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
 	void onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object);
@@ -54,7 +54,6 @@ private:
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::PropertiesWidget> m_ui;
-
 	QStandardItemModel m_propertiesTableModel;
 
 	std::variant<ObjectWrapper*, jl::Material*, std::nullptr_t> m_activeEntity;

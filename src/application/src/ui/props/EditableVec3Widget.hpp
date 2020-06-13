@@ -17,7 +17,7 @@ class EditableVec3Widget : public QWidget
 public:
 	explicit EditableVec3Widget(QWidget* _parent = nullptr);
 
-	QVariant getValue() const noexcept;
+	const QVariant& getValue() const noexcept;
 	void setValue(TransformVecUiWrapper _wrapper) noexcept;
 	void setValue(ColorUiWrapper _wrapper) noexcept;
 

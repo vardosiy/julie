@@ -23,7 +23,7 @@ EditableVec3Widget::EditableVec3Widget(QWidget* _parent)
 
 //-----------------------------------------------------------------------------
 
-QVariant EditableVec3Widget::getValue() const noexcept
+const QVariant& EditableVec3Widget::getValue() const noexcept
 {
 	return m_value;
 }
@@ -63,12 +63,14 @@ void EditableVec3Widget::onValueChanged()
 	{
 		TransformVecUiWrapper transformValue = qvariant_cast<TransformVecUiWrapper>(m_value);
 		transformValue.editCallback(value);
+		transformValue.value = value;
 		m_value = QVariant::fromValue(transformValue);
 	}
 	else if (m_value.canConvert<ColorUiWrapper>())
 	{
 		ColorUiWrapper colorValue = qvariant_cast<ColorUiWrapper>(m_value);
 		colorValue.editCallback(value);
+		colorValue.value = value;
 		m_value = QVariant::fromValue(colorValue);
 	}
 }

@@ -220,7 +220,7 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model)
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshMaterialProperties(const jl::Material& _material)
+void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 {
 	const auto& properties = _material.getProperties();
 	const int propertiesCount = static_cast<int>(properties.size());
@@ -229,7 +229,7 @@ void PropertiesWidget::refreshMaterialProperties(const jl::Material& _material)
 
 	for (int i = 0; i < propertiesCount; ++i)
 	{
-		const QVariant value = std::visit(MaterialPropertyValueVisitor{}, properties[i].value);
+		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, properties[i].name), properties[i].value);
 		setPropertyRow(i, rootIdx, QString::fromStdString(properties[i].name), value, true);
 	}
 }
