@@ -31,7 +31,7 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 	{
 		return new EditMaterialsWidget(_parent);
 	}
-	else if (_idx.data().canConvert<float>())
+	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
 		QDoubleSpinBox* spinBox = new QDoubleSpinBox(_parent);
 		spinBox->setRange(k_floatUiMin, k_floatUiMax);
@@ -69,10 +69,12 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 		EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
 		materialsBox->setData(materialWrapper);
 	}
-	else if (_idx.data().canConvert<float>())
+	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
+		FloatValUiWrapper floatWrapper = qvariant_cast<FloatValUiWrapper>(_idx.data());
 		QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
-		spinBox->setValue(_idx.data().toDouble());
+		spinBox->setValue(floatWrapper.value);
+		connect(spinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), floatWrapper.editCallback);
 	}
 	else if (_idx.data().canConvert<TransformVecUiWrapper>())
 	{
@@ -106,10 +108,12 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 		const EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
 		_model->setData(_idx, QVariant::fromValue(materialsBox->getData()));
 	}
-	else if (_idx.data().canConvert<float>())
+	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
 		const QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(_editor);
-		_model->setData(_idx, spinBox->value());
+		FloatValUiWrapper floatWrapper = qvariant_cast<FloatValUiWrapper>(_idx.data());
+		floatWrapper.value = static_cast<float>(spinBox->value());
+		_model->setData(_idx, QVariant::fromValue(floatWrapper));
 	}
 	else if (_idx.data().canConvert<TransformVecUiWrapper>() || _idx.data().canConvert<ColorUiWrapper>())
 	{
@@ -148,6 +152,11 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 	{
 		const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_value);
 		result = materialWrapper.materialName;
+	}
+	else if (_value.canConvert<FloatValUiWrapper>())
+	{
+		const FloatValUiWrapper floatWrapper = qvariant_cast<FloatValUiWrapper>(_value);
+		result = QStyledItemDelegate::displayText(floatWrapper.value, _locale);
 	}
 	else if (_value.canConvert<TransformVecUiWrapper>())
 	{

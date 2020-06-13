@@ -16,9 +16,9 @@ EditableVec3Widget::EditableVec3Widget(QWidget* _parent)
 	m_ui->dsb_y->setDecimals(k_floatDecimals);
 	m_ui->dsb_z->setDecimals(k_floatDecimals);
 
-	connect(m_ui->dsb_x, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged()));
-	connect(m_ui->dsb_y, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged()));
-	connect(m_ui->dsb_z, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged()));
+	connect(m_ui->dsb_x, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &EditableVec3Widget::onValueChanged);
+	connect(m_ui->dsb_y, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &EditableVec3Widget::onValueChanged);
+	connect(m_ui->dsb_z, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &EditableVec3Widget::onValueChanged);
 }
 
 //-----------------------------------------------------------------------------

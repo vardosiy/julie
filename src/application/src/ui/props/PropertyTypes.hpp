@@ -29,6 +29,12 @@ struct MaterialUiWrapper
 	jl::Mesh* mesh = nullptr;
 };
 
+struct FloatValUiWrapper
+{
+	float value{ 0.0f };
+	std::function<void(float)> editCallback;
+};
+
 struct TransformVecUiWrapper
 {
 	glm::vec3 value{ 0.0f };
@@ -46,6 +52,7 @@ struct ColorUiWrapper
 Q_DECLARE_METATYPE(ModelUiWrapper)
 Q_DECLARE_METATYPE(TextureUiWrapper)
 Q_DECLARE_METATYPE(MaterialUiWrapper)
+Q_DECLARE_METATYPE(FloatValUiWrapper)
 Q_DECLARE_METATYPE(TransformVecUiWrapper)
 Q_DECLARE_METATYPE(ColorUiWrapper)
 

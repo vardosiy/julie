@@ -14,7 +14,7 @@ EditMaterialsWidget::EditMaterialsWidget(QWidget* _parent)
 		addItem(QString::fromStdString(_name));
 	});
 
-	connect(this, SIGNAL(currentIndexChanged(QString)), this, SLOT(onMaterialChanged(const QString&)));
+	connect(this, qOverload<const QString&>(&QComboBox::currentIndexChanged), this, &EditMaterialsWidget::onMaterialChanged);
 }
 
 //-----------------------------------------------------------------------------

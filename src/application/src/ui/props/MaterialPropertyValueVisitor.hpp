@@ -30,7 +30,16 @@ public:
 
 	QVariant operator() (float _value) const noexcept
 	{
-		return QVariant(_value);
+		jl::Material& material = m_material;
+		const std::string& propName = m_propName;
+
+		auto editCallback = [&material, &propName](float _val) { material.setProperty(propName, _val); };
+		return QVariant::fromValue(FloatValUiWrapper{ _value, editCallback });
+	}
+
+	QVariant operator() (jl::s32 _value) const noexcept
+	{
+		return (*this)(static_cast<float>(_value));
 	}
 
 	template<typename T>
