@@ -17,6 +17,7 @@ public:
 
 //-----------------------------------------------------------------------------
 	const std::string& getName() const noexcept;
+	void setName(std::string _name) noexcept;
 
 	jl::Model* getModel() const noexcept;
 	void setModel(jl::Model* _model) noexcept;
@@ -73,6 +74,11 @@ inline const std::string& ObjectWrapper::getName() const noexcept
 	return m_object->getName();
 }
 
+inline void ObjectWrapper::setName(std::string _name) noexcept
+{
+	m_object->setName(std::move(_name));
+}
+
 inline jl::Model* ObjectWrapper::getModel() const noexcept
 {
 	return m_object->getModel();
@@ -81,6 +87,7 @@ inline jl::Model* ObjectWrapper::getModel() const noexcept
 inline void ObjectWrapper::setModel(jl::Model* _model) noexcept
 {
 	m_object->setModel(_model);
+	m_scale = glm::vec3(1.0f);
 	recalcTransform();
 	recalcSize();
 }
