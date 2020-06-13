@@ -185,7 +185,7 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 	const std::string name = _material->GetName().C_Str();
 	if (Material* material = MaterialsManager::getInstance().findMaterial(name))
 	{
-		LOG_INFO("[ModelCreationHelper] Materil '{}' already exists, returning", name.c_str());
+		LOG_INFO("[ModelCreationHelper] Material '{}' already exists, returning", name.c_str());
 		return *material;
 	}
 
@@ -194,7 +194,7 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 	{
 		float shininess = 128.0f;
 		_material->Get(AI_MATKEY_SHININESS, shininess);
-		material.setProperty("u_specularPower", shininess);
+		material.setProperty("u_shininess", shininess);
 	}
 	{
 		float opacity = 1.0f;
@@ -218,14 +218,13 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 
 	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
 	{
-		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialShader.shdata"));
+		material.setShader(*ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialTextureShader.shdata"));
 
-		aiString texturePath;
-		_material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
+		aiString textureName;
+		_material->GetTexture(aiTextureType_DIFFUSE, 0, &textureName);
 
-		std::filesystem::path test = std::filesystem::path(m_filePath).parent_path() / texturePath.C_Str();
-
-		Texture* texture = ResourceManager::getInstance().loadTexture(test.string());
+		std::filesystem::path texturePath = std::filesystem::path(m_filePath).parent_path() / textureName.C_Str();
+		Texture* texture = ResourceManager::getInstance().loadTexture(texturePath.string());
 		ASSERT(texture);
 		if (texture)
 		{

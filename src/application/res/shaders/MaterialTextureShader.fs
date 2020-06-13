@@ -9,13 +9,17 @@ in vec3 v_posW;
 in vec3 v_normW;
 out vec4 o_color;
 
+//-----------------------------------------------------------------------------
+// material props
 uniform vec3 u_matAmbient;
 uniform vec3 u_matDiffuse;
 uniform vec3 u_matSpecular;
 uniform float u_opacity;
-uniform float u_specularPower;
+uniform float u_shininess;
 uniform sampler2D u_texture2D;
 
+//-----------------------------------------------------------------------------
+// cam and lights
 uniform vec3 u_camPosition;
 
 uniform vec3 u_ambientColor;
@@ -30,6 +34,8 @@ uniform vec3 u_lightDirection[DIRECTIONAL_LIGHTS_COUNT];
 uniform vec3 u_pointLightColor[POINT_LIGHTS_COUNT];
 uniform vec3 u_lightPosition[POINT_LIGHTS_COUNT];
 #endif
+
+//-----------------------------------------------------------------------------
 
 void main()
 {
@@ -46,7 +52,7 @@ void main()
 		diffuseLight += u_directionalLightColor[i] * (diffuseIntensity * u_matDiffuse);
 
 		vec3 reflectionDir = normalize( reflect(u_lightDirection[i], normalW) );
-		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_specularPower );
+		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shininess );
 		specularLight += u_directionalLightColor[i] * (specularIntensity * u_matSpecular);
 	}
 #endif
@@ -60,7 +66,7 @@ void main()
 		diffuseLight += u_pointLightColor[i] * (diffuseIntensity * u_matDiffuse);
 
 		vec3 reflectionDir = normalize( reflect(lightDirection, normalW) );
-		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_specularPower );
+		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shininess );
 		specularLight += u_pointLightColor[i] * (specularIntensity * u_matSpecular);
 	}
 #endif
