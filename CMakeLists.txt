@@ -29,10 +29,6 @@ set(CMAKE_PDB_OUTPUT_DIRECTORY		${CMAKE_SOURCE_DIR}/${bin_dir}/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY	${CMAKE_SOURCE_DIR}/${lib_dir}/)
 
-# temp
-set(CMAKE_INSTALL_PREFIX			${CMAKE_SOURCE_DIR}/TEST)
-set(CMAKE_INSTALL_LIBDIR			lib)
-
 #------------------------------------------------------------------------------
 # setup filters
 include(${scripts_dir}/cmake/SetupFilters.cmake)
