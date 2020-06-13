@@ -178,6 +178,7 @@ void MainWindow::objectSelected(ObjectWrapper& _objWrapper)
 void MainWindow::materialSelected(jl::Material& _material)
 {
 	m_propertiesWdg->setActiveEntity(_material);
+	m_ui->oglw_screen->resetSelectedObj();
 }
 
 //-----------------------------------------------------------------------------
@@ -259,8 +260,15 @@ void MainWindow::onFillPolygonsValueChanged(int _state)
 void MainWindow::onGlLoaded()
 {
 	std::ifstream file(k_saveFile.data());
-	JsonProjectRestorer restorer(file);
-	m_sceneWrapper = restorer.extractScene();
+	if (file.is_open())
+	{
+		JsonProjectRestorer restorer(file);
+		m_sceneWrapper = restorer.extractScene();
+	}
+	else
+	{
+		m_sceneWrapper = std::make_unique<SceneWrapper>();
+	}
 
 	setupRoom();
 

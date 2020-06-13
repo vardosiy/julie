@@ -74,9 +74,10 @@ private:
 	void processKeyboardModifiers(Qt::KeyboardModifiers _modifiers);
 	void processObjectSelection(const jl::rayf& _ray);
 
+	bool canInteractWithObject(ObjectWrapper& _objWrapper);
+
 	static jl::rayf calcRayFromMouseClick(QPoint _pos, const jl::Camera& _camera);
 	static glm::vec3 calcWorldPosFromMouseClick(QPoint _pos, const jl::Camera& _camera);
-
 	static glm::vec3 calcNormalizedClickPos(QPoint _pos, const jl::Camera& _camera);
 
 //-----------------------------------------------------------------------------

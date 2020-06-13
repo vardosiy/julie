@@ -287,11 +287,7 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 
 	m_sceneWrapper->forEachObject([&_ray, this](ObjectWrapper& _objWrapper)
 	{
-		auto it = std::find_if(m_uninteractibleObjNames.begin(), m_uninteractibleObjNames.end(), [&_objWrapper](const std::string& _name)
-		{
-			return _name == _objWrapper.getName();
-		});
-		if (it != m_uninteractibleObjNames.end())
+		if (!canInteractWithObject(_objWrapper))
 		{
 			return;
 		}
@@ -320,6 +316,17 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 			m_actionHandler->objectSelected(*m_selectedObject);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+bool AppGlWidget::canInteractWithObject(ObjectWrapper& _objWrapper)
+{
+	auto it = std::find_if(m_uninteractibleObjNames.begin(), m_uninteractibleObjNames.end(), [&_objWrapper](const std::string& _name)
+	{
+		return _name == _objWrapper.getName();
+	});
+	return it == m_uninteractibleObjNames.end();
 }
 
 //-----------------------------------------------------------------------------
