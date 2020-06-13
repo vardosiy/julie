@@ -21,7 +21,8 @@ public:
 	{
 		DrawModel		= 1 << 0,
 		DrawBoundingBox	= 1 << 1,
-		DrawAll			= DrawModel | DrawBoundingBox
+		IsIntersected	= 1 << 2,
+		IsSelected		= 1 << 3
 	};
 
 	enum TransfromFlags

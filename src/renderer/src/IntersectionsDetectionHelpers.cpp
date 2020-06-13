@@ -58,9 +58,9 @@ bool intersects(const boxf& _box, const rayf& _ray, float& _nearDistance, float&
 bool intersect(const boxf& _lhs, const boxf& _rhs)
 {
 	return
-		(_lhs.min.x <= _rhs.max.x && _lhs.max.x >= _rhs.min.x) &&
-		(_lhs.min.y <= _rhs.max.y && _lhs.max.y >= _rhs.min.y) &&
-		(_lhs.min.z <= _rhs.max.z && _lhs.max.z >= _rhs.min.z);
+		(_lhs.min.x < _rhs.max.x && _lhs.max.x > _rhs.min.x) &&
+		(_lhs.min.y < _rhs.max.y && _lhs.max.y > _rhs.min.y) &&
+		(_lhs.min.z < _rhs.max.z && _lhs.max.z > _rhs.min.z);
 }
 
 //-----------------------------------------------------------------------------

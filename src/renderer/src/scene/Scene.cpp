@@ -32,36 +32,64 @@ void Scene::render(const Camera& _camera) const
 	for (auto& object : m_objects)
 	{
 		const Model* model = object->getModel();
-		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawModel && model)
+		if (!model)
 		{
-			const u32 meshesCount = model->getMeshesCount();
-			for (u32 i = 0; i < meshesCount; ++i)
+			continue;
+		}
+
+		const s32 renderFlags = object->getRenderFlags();
+		if (renderFlags & jl::Object::RenderFlags::DrawModel)
+		{
+			drawModel(*model, _camera, object->getWorldMatrix());
+		}
+
+		boost::optional<glm::vec4> bbColor;
+		if (renderFlags & jl::Object::RenderFlags::IsSelected)
+		{
+			bbColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
 			{
-				const Mesh& mesh = model->getMesh(i);
-
-				if (const Material* material = mesh.getMaterial())
-				{
-					if (const Shader* shader = material->getShader())
-					{
-						material->bind();
-
-						CommonUniformsBinder uniformBinder(*shader);
-						uniformBinder.setupCommon(_camera, object->getWorldMatrix());
-						uniformBinder.setupLights(m_lightsHolder);
-
-						Renderer::draw(mesh);
-					}
-				}
+				bbColor->b = 1.0f;
+			}
+		}
+		else if (renderFlags & jl::Object::RenderFlags::DrawBoundingBox)
+		{
+			bbColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
+			{
+				bbColor->r = 1.0f;
 			}
 		}
 
-		if (object->getRenderFlags() & jl::Object::RenderFlags::DrawBoundingBox && model)
+		if (bbColor)
 		{
-			Renderer::draw(
-				model->getBoundingBox(),
-				glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-				_camera.getViewProjectionMatrix() * object->getWorldMatrix()
-			);
+			const glm::mat4 transform = _camera.getViewProjectionMatrix() * object->getWorldMatrix();
+			Renderer::draw(model->getBoundingBox(), *bbColor, transform);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::drawModel(const Model& _model, const Camera& _camera, const glm::mat4& _worldMat) const
+{
+	const u32 meshesCount = _model.getMeshesCount();
+	for (u32 i = 0; i < meshesCount; ++i)
+	{
+		const Mesh& mesh = _model.getMesh(i);
+
+		if (const Material* material = mesh.getMaterial())
+		{
+			if (const Shader* shader = material->getShader())
+			{
+				material->bind();
+
+				CommonUniformsBinder uniformBinder(*shader);
+				uniformBinder.setupCommon(_camera, _worldMat);
+				uniformBinder.setupLights(m_lightsHolder);
+
+				Renderer::draw(mesh);
+			}
 		}
 	}
 }

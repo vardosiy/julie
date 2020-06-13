@@ -18,6 +18,7 @@ namespace jl {
 
 class Object;
 class Camera;
+class Model;
 
 class Scene
 {
@@ -50,6 +51,9 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
+	void drawModel(const Model& _model, const Camera& _camera, const glm::mat4& _worldMat) const;
+
+//-----------------------------------------------------------------------------
 	std::vector<ObjectPtr> m_objects;
 
 	LightsHolder m_lightsHolder;

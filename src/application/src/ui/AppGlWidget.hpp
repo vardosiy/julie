@@ -48,9 +48,10 @@ public:
 	void setCamera(jl::Camera* _camera) noexcept;
 	void setScene(SceneWrapper* _sceneWrapper) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
-	void setUninteractibleObjects(std::vector<std::string> _objNames) noexcept;
+	void setUninteractibleObjectName(const std::string& _objName) noexcept;
 
 	void resetSelectedObj();
+	void refreshIntersections();
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
@@ -71,10 +72,10 @@ protected:
 
 //-----------------------------------------------------------------------------
 private:
+	void checkIntersectionsWithRoom();
+
 	void processKeyboardModifiers(Qt::KeyboardModifiers _modifiers);
 	void processObjectSelection(const jl::rayf& _ray);
-
-	bool canInteractWithObject(ObjectWrapper& _objWrapper);
 
 	static jl::rayf calcRayFromMouseClick(QPoint _pos, const jl::Camera& _camera);
 	static glm::vec3 calcWorldPosFromMouseClick(QPoint _pos, const jl::Camera& _camera);
@@ -87,7 +88,7 @@ private:
 	std::function<void()> m_postrenderCommand;
 
 	SceneWrapper* m_sceneWrapper;
-	std::vector<std::string> m_uninteractibleObjNames;
+	std::string m_uninteractibleObjName;
 
 	jl::Camera* m_camera;
 	IEntityActionHandler* m_actionHandler;
