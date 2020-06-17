@@ -72,9 +72,12 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 
 void AppGlWidget::drawBoundingBoxes(bool _val) noexcept
 {
-	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
+	m_sceneWrapper->forEachObject([_val](ObjectWrapper& _objWrapper)
 	{
-		const jl::s32 flags = _objWrapper.getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox;
+		const jl::s32 flags = _val ?
+			_objWrapper.getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox :
+			_objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
+
 		_objWrapper.setRenderFlags(flags);
 	});
 }
