@@ -94,33 +94,12 @@ std::unique_ptr<jl::Model> createRoomModel()
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<jl::Model> createPlatformModel()
-{
-	std::vector<jl::Vertex> vertices(4);
-
-	vertices[0].pos  = glm::vec3(0.0f, 0.0f, 0.0f);
-	vertices[1].pos  = glm::vec3(0.0f, 0.0f, 1.0f);
-	vertices[2].pos  = glm::vec3(1.0f, 0.0f, 0.0f);
-	vertices[3].pos  = glm::vec3(1.0f, 0.0f, 1.0f);
-
-	vertices[0].norm = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertices[1].norm = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertices[2].norm = glm::vec3(0.0f, 1.0f, 0.0f);
-	vertices[3].norm = glm::vec3(0.0f, 1.0f, 0.0f);
-
-	std::vector<jl::index_t> indices{ 0, 1, 2, 1, 2, 3 };
-
-	return std::make_unique<jl::Model>(vertices, indices);
-}
-
-//-----------------------------------------------------------------------------
-
 MainWindow::MainWindow(QMainWindow* parent)
 	: QMainWindow(parent)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
 	, m_updateTimer(this)
-	, m_camera(0.001f, 100.0f, 45.0f)
+	, m_camera(0.001f, 100.0f, 30.0f)
 {
 	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
 	m_cameraController.setCameraMoveSpeed(3.0f);

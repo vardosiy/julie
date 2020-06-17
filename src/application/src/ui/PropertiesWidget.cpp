@@ -222,6 +222,15 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model)
 
 void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 {
+	static const std::map<std::string, std::string> k_materialNamesMap{
+		{ "u_shininess",	"Shininnes" },
+		{ "u_opacity",		"Opacity" },
+		{ "u_matAmbient",	"Color" },
+		{ "u_matDiffuse",	"Light Reflect Color" },
+		{ "u_matSpecular",	"Light Blink Color" },
+		{ "u_texture2D",	"Texture" }
+	};
+
 	const auto& properties = _material.getProperties();
 	const int propertiesCount = static_cast<int>(properties.size());
 
@@ -229,8 +238,12 @@ void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 
 	for (int i = 0; i < propertiesCount; ++i)
 	{
+		auto itName = k_materialNamesMap.find(properties[i].name);
+		ASSERT(itName != k_materialNamesMap.end());
+
+		const std::string& name = itName != k_materialNamesMap.end() ? itName->second : properties[i].name;
 		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, properties[i].name), properties[i].value);
-		setPropertyRow(i, rootIdx, QString::fromStdString(properties[i].name), value, true);
+		setPropertyRow(i, rootIdx, QString::fromStdString(name), value, true);
 	}
 }
 
@@ -277,6 +290,7 @@ void PropertiesWidget::onMaterialChanged(const QModelIndex& _idx, jl::Material& 
 			textureWrapper.value ?
 			MaterialsManager::getInstance().getTextureShader() :
 			MaterialsManager::getInstance().getColorShader();
+		_material.setShader(shader);
 	}
 }
 

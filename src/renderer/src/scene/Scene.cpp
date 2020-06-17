@@ -49,15 +49,18 @@ void Scene::render(const Camera& _camera) const
 			bbColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
 			{
-				bbColor->b = 1.0f;
+				bbColor->r = 1.0f;
 			}
 		}
 		else if (renderFlags & jl::Object::RenderFlags::DrawBoundingBox)
 		{
-			bbColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
 			{
-				bbColor->r = 1.0f;
+				bbColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			}
+			else
+			{
+				bbColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 			}
 		}
 
