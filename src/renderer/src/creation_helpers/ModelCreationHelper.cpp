@@ -218,21 +218,19 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		material.setProperty("u_matSpecular", glm::vec3(color.r, color.g, color.b));
 	}
 
-	bool textureLoaded = false;
+	Texture* texture = nullptr;
 	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
 	{
 		aiString textureName;
 		_material->GetTexture(aiTextureType_DIFFUSE, 0, &textureName);
 
 		std::filesystem::path texturePath = std::filesystem::path(m_filePath).parent_path() / textureName.C_Str();
-		Texture* texture = ResourceManager::getInstance().loadTexture(texturePath.string());
+		texture = ResourceManager::getInstance().loadTexture(texturePath.string());
 		ASSERT(texture);
-
-		textureLoaded = texture != nullptr;
-		material.setProperty("u_texture2D", texture);
 	}
 
-	const jl::Shader& shader = textureLoaded ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
+	const jl::Shader& shader = texture ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
+	material.setProperty("u_texture2D", texture);
 	material.setShader(shader);
 
 	return material;
