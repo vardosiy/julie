@@ -154,8 +154,7 @@ void AppGlWidget::refreshIntersections()
 		{
 			if (&_j == &_i ||
 				_j.getModel() == nullptr ||
-				_j.getName() == m_uninteractibleObjName ||
-				_j.getRenderFlags() & jl::Object::RenderFlags::IsIntersected)
+				_j.getName() == m_uninteractibleObjName)
 				return;
 
 			const jl::boxf worldBoxJ = _j.getWorldMatrix() * _j.getModel()->getBoundingBox();

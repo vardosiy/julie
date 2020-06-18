@@ -1,5 +1,3 @@
-#pragma once
-
 #include "renderer/IntersectionsDetectionHelpers.hpp"
 
 #include <utility>

@@ -54,7 +54,7 @@ do { if (!(_expr)) utils::assertImpl(CREATE_ASSERT_DATA(#_expr)); } while(false)
 #	define ASSERT(_expr) ASSERT_IMPL(_expr)
 #else
 #	define ASSERTM(_expr, _message, ...) void(0)
-#	define ASSERT(_expr, _message) void(0)
+#	define ASSERT(_expr) void(0)
 #endif
 
 //-----------------------------------------------------------------------------

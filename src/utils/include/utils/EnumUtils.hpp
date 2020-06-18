@@ -70,7 +70,7 @@ enum class _enumName																				\
 	Count																							\
 };																									\
 }																									\
-DECLARE_ENUM_UTILITY(_namespace##::##_enumName, __VA_ARGS__)										\
+DECLARE_ENUM_UTILITY(_namespace::_enumName, __VA_ARGS__)											\
 
 //-----------------------------------------------------------------------------
 
