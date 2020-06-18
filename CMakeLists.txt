@@ -35,8 +35,8 @@ include(${scripts_dir}/cmake/SetupFilters.cmake)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER cmake_autogen)
-set(3rd_party_targets_group 3rd-party)
-set(tests_targets_group tests)
+set(3rd_party_targets_group	3rd-party)
+set(tests_targets_group		tests)
 
 #------------------------------------------------------------------------------
 # Qt stuff
@@ -82,8 +82,8 @@ set_target_properties(UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTIES FOLDER ${3r
 #------------------------------------------------------------------------------
 # subdirectories
 add_subdirectory(${targets_dir}/utils)
-add_subdirectory(${targets_dir}/renderer)
-add_subdirectory(${targets_dir}/application)
+add_subdirectory(${targets_dir}/julie)
+add_subdirectory(${targets_dir}/app)
 
 #------------------------------------------------------------------------------
 # output directories for tests

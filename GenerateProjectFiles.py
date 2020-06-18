@@ -18,8 +18,8 @@ filters.append(FilterData("shaders",	[".vs", ".fs"]))
 
 targets_dirs = list()
 targets_dirs.append("3rd-party/glad")
-targets_dirs.append("src/application")
-targets_dirs.append("src/renderer")
+targets_dirs.append("src/app")
+targets_dirs.append("src/julie")
 targets_dirs.append("src/utils")
 targets_dirs.append("src/tests/utils_tests")
 
