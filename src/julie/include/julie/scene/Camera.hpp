@@ -19,16 +19,16 @@ public:
 
 	void update();
 
-	const glm::vec3& getPosition()				const noexcept;
-	const glm::vec3& getViewTarget()			const noexcept;
+	const glm::vec3& getPosition() const noexcept;
+	const glm::vec3& getViewTarget() const noexcept;
 
-	const glm::mat4& getViewMatrix()			const noexcept;
-	const glm::mat4& getProjectionMatrix()		const noexcept;
-	const glm::mat4& getViewProjectionMatrix()	const noexcept;
+	const glm::mat4& getViewMatrix() const noexcept;
+	const glm::mat4& getProjectionMatrix() const noexcept;
+	const glm::mat4& getViewProjectionMatrix() const noexcept;
 
-	float getNear()	const noexcept;
-	float getFar()	const noexcept;
-	float getFov()	const noexcept;
+	float getNear() const noexcept;
+	float getFar() const noexcept;
+	float getFov() const noexcept;
 
 	void setAspect(float _val) noexcept;
 
@@ -64,7 +64,7 @@ private:
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_viewProjectionMatrix;
 
-	bool m_bIsModified;
+	bool m_isModified;
 
 	static constexpr glm::vec3 k_camDirection = -constants::axis::z;
 	static constexpr float k_maxCamRotationX = 0.99999999f;

@@ -206,8 +206,7 @@ Json::Value JsonProjectSaver::saveModel(const jl::Model& _model)
 
 		if (const jl::Material* material = mesh.getMaterial())
 		{
-			const std::string& materialName = MaterialsManager::getInstance().findMaterialName(*material);
-			meshMaterials.append(materialName);
+			meshMaterials.append(MaterialsManager::getInstance().findMaterialName(*material));
 		}
 		else
 		{

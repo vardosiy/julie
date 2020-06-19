@@ -16,7 +16,7 @@ Camera::Camera(float _near, float _far, float _fov)
 	, m_target(k_camDirection)
 	, m_upVector(0.0f)
 	, m_rotation(0.0f)
-	, m_bIsModified(true)
+	, m_isModified(true)
 	, m_aspect(1.0f)
 	, m_near(_near)
 	, m_far(_far)
@@ -31,10 +31,10 @@ Camera::Camera(float _near, float _far, float _fov)
 
 void Camera::update()
 {
-	if (m_bIsModified)
+	if (m_isModified)
 	{
 		recalculateMatrices();
-		m_bIsModified = false;
+		m_isModified = false;
 	}
 }
 
@@ -99,7 +99,7 @@ float Camera::getFov() const noexcept
 void Camera::setAspect(float _val) noexcept
 {
 	m_aspect = _val;
-	m_bIsModified = true;
+	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void Camera::setPosition(const glm::vec3& _vec) noexcept
 {
 	m_pos = _vec;
 	m_target = m_pos + k_camDirection;
-	m_bIsModified = true;
+	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void Camera::setRotation(const glm::vec3& _vec) noexcept
 void Camera::setUpVector(const glm::vec3& _vec) noexcept
 {
 	m_upVector = _vec;
-	m_bIsModified = true;
+	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void Camera::move(const glm::vec3& _vec) noexcept
 	m_pos.y += _vec.y;
 	m_target.y += _vec.y;
 
-	m_bIsModified = true;
+	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ void Camera::rotate(const glm::vec2& _vec) noexcept
 	const glm::vec4 rotated = yRotationMat * (xRotationMat * glm::vec4(k_camDirection, 1.0));
 	m_target = m_pos + glm::vec3(rotated.x, rotated.y, rotated.z);
 
-	m_bIsModified = true;
+	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------

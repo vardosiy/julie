@@ -3,7 +3,8 @@
 #include "CommonDefs.hpp"
 #include "ui/IEntityActionHandler.hpp"
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
+#include "julie/core/Aabb.hpp"
 #include "julie/managers/AppController.hpp"
 
 #include <boost/optional.hpp>
@@ -48,10 +49,8 @@ public:
 	void setCamera(jl::Camera* _camera) noexcept;
 	void setScene(SceneWrapper* _sceneWrapper) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
-	void setUninteractibleObjectName(const std::string& _objName) noexcept;
 
 	void resetSelectedObj();
-	void refreshIntersections();
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
 
@@ -72,8 +71,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 private:
-	void checkIntersectionsWithRoom();
-
 	void processKeyboardModifiers(Qt::KeyboardModifiers _modifiers);
 	void processObjectSelection(const jl::rayf& _ray);
 
@@ -87,10 +84,8 @@ private:
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	SceneWrapper* m_sceneWrapper;
-	std::string m_uninteractibleObjName;
-
 	jl::Camera* m_camera;
+	SceneWrapper* m_sceneWrapper;
 	IEntityActionHandler* m_actionHandler;
 
 	ObjectWrapper* m_selectedObject;

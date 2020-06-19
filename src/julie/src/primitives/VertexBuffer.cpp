@@ -32,7 +32,7 @@ VertexBuffer::VertexBuffer(u64 _size) noexcept
 
 VertexBuffer::~VertexBuffer()
 {
-	if (m_id != k_nullId)
+	if (m_id != 0)
 	{
 		glDeleteBuffers(1, &m_id);
 	}
@@ -44,7 +44,7 @@ VertexBuffer::VertexBuffer(VertexBuffer&& _rhs) noexcept
 	: m_id(_rhs.m_id)
 	, m_size(_rhs.m_size)
 {
-	_rhs.m_id = k_nullId;
+	_rhs.m_id = 0;
 	_rhs.m_size = 0;
 }
 

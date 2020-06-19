@@ -11,13 +11,12 @@ class SceneWrapper
 public:
 	SceneWrapper();
 
-	void update(float _dt);
-	void render(const jl::Camera& _camera) const;
+	void render(const jl::Camera& _cam) const;
 
 	jl::LightsHolder& getLightsHolder() noexcept;
 	const jl::LightsHolder& getLightsHolder() const noexcept;
 
-	ObjectWrapper& addObject(std::unique_ptr<jl::Object>&& _object) noexcept;
+	ObjectWrapper& createObject(std::string _name) noexcept;
 	void removeObject(std::string_view _name) noexcept;
 
 	ObjectWrapper* findObject(std::string_view _name) noexcept;
@@ -33,14 +32,9 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline void SceneWrapper::update(float _dt)
+inline void SceneWrapper::render(const jl::Camera& _cam) const
 {
-	m_scene->update(_dt);
-}
-
-inline void SceneWrapper::render(const jl::Camera& _camera) const
-{
-	m_scene->render(_camera);
+	m_scene->render(_cam);
 }
 
 inline jl::LightsHolder& SceneWrapper::getLightsHolder() noexcept

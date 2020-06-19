@@ -32,7 +32,6 @@ public:
 
 	void setScene(SceneWrapper* _sceneWrapper);
 	void setEntityActionHandler(IEntityActionHandler* _handler);
-	void setUndeletableObjectName(const std::string& _objName);
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -72,7 +71,6 @@ private:
 
 	SceneWrapper* m_sceneWrapper;
 	IEntityActionHandler* m_actionHandler;
-	std::string m_undeletableObjName;
 
 	static constexpr std::string_view k_defaultObjectName = "Object_000";
 	static constexpr std::string_view k_defaultMaterialName = "Material_000";

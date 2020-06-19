@@ -77,18 +77,15 @@ void JsonProjectRestorer::restoreMaterials(const Json::Value& _json)
 {
 	for (const Json::Value& value : _json)
 	{
-		const std::string& name = value[k_name].asString();
+		const std::string name = value[k_name].asString();
 		jl::Material& material = MaterialsManager::getInstance().createMaterial(name);
 
 		{
-			const std::string& shaderPath = value[k_shader].asString();
+			const std::string shaderPath = value[k_shader].asString();
 			jl::Shader* shader = ResourceManager::getInstance().loadShader(shaderPath);
-
 			ASSERT(shader);
-			if (shader)
-			{
-				material.setShader(*shader);
-			}
+
+			material.setShader(shader);
 		}
 
 		restoreMaterialProperties(value[k_properties], material);
@@ -101,8 +98,8 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 {
 	for (const Json::Value& value : _json)
 	{
-		const std::string& name = value[k_name].asString();
-		const std::string& type = value[k_type].asString();
+		const std::string name = value[k_name].asString();
+		const std::string type = value[k_type].asString();
 
 		const Json::Value& propertyValue = value[k_value];
 		switch (utils::fromString<jl::UniformType>(type))
@@ -175,8 +172,8 @@ void JsonProjectRestorer::restoreScene(const Json::Value& _json)
 
 void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 {
-	auto object = std::make_unique<jl::Object>(_json[k_name].asString());
-	ObjectWrapper& wrapper = m_sceneWrapper->addObject(std::move(object));
+	std::string objName = _json[k_name].asString();
+	ObjectWrapper& wrapper = m_sceneWrapper->createObject(std::move(objName));
 
 	const Json::Value& modelJson = _json[k_model];
 	if (!_json.isNull())

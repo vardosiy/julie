@@ -1,12 +1,12 @@
 #include "julie/scene/Scene.hpp"
 #include "julie/scene/Object.hpp"
+#include "julie/scene/Camera.hpp"
 #include "julie/scene/CommonUniformsBinder.hpp"
 
 #include "julie/Material.hpp"
 #include "julie/Shader.hpp"
 #include "julie/Model.hpp"
 #include "julie/Renderer.hpp"
-#include "julie/scene/Camera.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -21,13 +21,7 @@ Scene::~Scene() = default;
 
 //-----------------------------------------------------------------------------
 
-void Scene::update(float _dt)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::render(const Camera& _camera) const
+void Scene::render(const Camera& _cam) const
 {
 	for (auto& object : m_objects)
 	{
@@ -40,41 +34,19 @@ void Scene::render(const Camera& _camera) const
 		const s32 renderFlags = object->getRenderFlags();
 		if (renderFlags & jl::Object::RenderFlags::DrawModel)
 		{
-			drawModel(*model, _camera, object->getWorldMatrix());
+			drawModel(*model, _cam, object->getWorldMatrix());
 		}
-
-		boost::optional<glm::vec4> bbColor;
-		if (renderFlags & jl::Object::RenderFlags::IsSelected)
+		if (renderFlags & jl::Object::RenderFlags::DrawBoundingBox)
 		{
-			bbColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
-			{
-				bbColor->r = 1.0f;
-			}
-		}
-		else if (renderFlags & jl::Object::RenderFlags::DrawBoundingBox)
-		{
-			if (renderFlags & jl::Object::RenderFlags::IsIntersected)
-			{
-				bbColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-			}
-			else
-			{
-				bbColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-			}
-		}
-
-		if (bbColor)
-		{
-			const glm::mat4 transform = _camera.getViewProjectionMatrix() * object->getWorldMatrix();
-			Renderer::draw(model->getBoundingBox(), *bbColor, transform);
+			const glm::mat4 transform = _cam.getViewProjectionMatrix() * object->getWorldMatrix();
+			Renderer::draw(model->getBoundingBox(), glm::vec4(1.0f), transform);
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::drawModel(const Model& _model, const Camera& _camera, const glm::mat4& _worldMat) const
+void Scene::drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept
 {
 	const u32 meshesCount = _model.getMeshesCount();
 	for (u32 i = 0; i < meshesCount; ++i)
@@ -88,7 +60,7 @@ void Scene::drawModel(const Model& _model, const Camera& _camera, const glm::mat
 				material->bind();
 
 				CommonUniformsBinder uniformBinder(*shader);
-				uniformBinder.setupCommon(_camera, _worldMat);
+				uniformBinder.setupCommon(_cam, _worldMat);
 				uniformBinder.setupLights(m_lightsHolder);
 
 				Renderer::draw(mesh);
@@ -127,69 +99,58 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addObject(ObjectPtr&& _object) noexcept
+void Scene::addObject(ObjectPtr&& _obj) noexcept
 {
-	ASSERT(_object);
-	if (_object)
+	ASSERT(_obj);
+	if (_obj)
 	{
-		m_objects.emplace_back(std::move(_object));
+		m_objects.emplace_back(std::move(_obj));
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::removeObject(std::string_view _name) noexcept
+u32 Scene::getObjectsCount() const noexcept
 {
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
+	return m_objects.size();
+}
+
+//-----------------------------------------------------------------------------
+
+Object* Scene::getObject(u32 _idx) noexcept
+{
+	return _idx < m_objects.size() ? m_objects[_idx].get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+const Object* Scene::getObject(u32 _idx) const noexcept
+{
+	return _idx < m_objects.size() ? m_objects[_idx].get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::removeObject(u32 _idx) noexcept
+{
+	if (_idx < m_objects.size())
 	{
-		return object->getName() == _name;
+		m_objects.erase(m_objects.begin() + _idx);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::removeObject(const Object& _obj) noexcept
+{
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [&_obj](const ObjectPtr& _objPtr)
+	{
+		return _objPtr.get() == &_obj;
 	});
 
 	if (it != m_objects.end())
 	{
 		m_objects.erase(it);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-Object* Scene::findObject(std::string_view _name) noexcept
-{
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
-	{
-		return object->getName() == _name;
-	});
-	return it != m_objects.end() ? it->get() : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-const Object* Scene::findObject(std::string_view _name) const noexcept
-{
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [_name](const ObjectPtr& object)
-	{
-		return object->getName() == _name;
-	});
-	return it != m_objects.end() ? it->get() : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::forEachObject(const std::function<void(Object&)>& _callback)
-{
-	for (ObjectPtr& object : m_objects)
-	{
-		_callback(*object);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::forEachObject(const std::function<void(const Object&)>& _callback) const
-{
-	for (const ObjectPtr& object : m_objects)
-	{
-		_callback(*object);
 	}
 }
 

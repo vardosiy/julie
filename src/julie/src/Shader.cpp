@@ -31,6 +31,11 @@ std::unique_ptr<Shader> Shader::loadFromFiles(std::string_view _vsPath, std::str
 
 std::unique_ptr<Shader> Shader::create(std::string_view _vsSource, std::string_view _fsSource)
 {
+	if (_vsSource.empty() || _fsSource.empty())
+	{
+		return nullptr;
+	}
+
 	std::unique_ptr<Shader> shader;
 
 	if (const u32 vs = loadShader(GL_VERTEX_SHADER, _vsSource))
@@ -166,13 +171,7 @@ s32 Shader::getUniformLocation(const std::string& _name) const
 
 u32 Shader::loadShader(u32 _type, std::string_view _source) noexcept
 {
-	ASSERT(!_source.empty());
-	if (_source.empty())
-	{
-		return 0;
-	}
-
-	s32 shader = glCreateShader(_type);
+	u32 shader = glCreateShader(_type);
 
 	const char* c_str = _source.data();
 	glShaderSource(shader, 1, &c_str, nullptr);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 
 #include <boost/noncopyable.hpp>
 
@@ -43,11 +43,11 @@ protected:
 	TextureBase(s32 _type, u32 _width, u32 _height) noexcept;
 	~TextureBase();
 
-	static s32		formatToGlValue(Format _format) noexcept;
-	static s32		fragmentTypeToGlValue(FragmentType _type) noexcept;
+	static s32 formatToGlValue(Format _format) noexcept;
+	static s32 fragmentTypeToGlValue(FragmentType _type) noexcept;
 
-	static float	tilingToGlValue(TextureTiling _tiling) noexcept;
-	static s32		filteringToGlValue(TextureFiltering _mode) noexcept;
+	static float tilingToGlValue(TextureTiling _tiling) noexcept;
+	static s32 filteringToGlValue(TextureFiltering _mode) noexcept;
 
 private:
 	u32 m_id;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 #include "julie/scene/FogData.hpp"
 #include "julie/scene/lights/LightsHolder.hpp"
 
@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 #include <functional>
+#include <memory>
 #include <vector>
 
 //-----------------------------------------------------------------------------
@@ -29,8 +30,7 @@ public:
 	Scene();
 	~Scene();
 
-	void update(float _dt);
-	void render(const Camera& _camera) const;
+	void render(const Camera& _cam) const;
 
 //-----------------------------------------------------------------------------
 	const FogData* getFogData() const noexcept;
@@ -40,18 +40,18 @@ public:
 	const LightsHolder& getLightsHolder() const noexcept;
 
 //-----------------------------------------------------------------------------
-	void addObject(ObjectPtr&& _object) noexcept;
-	void removeObject(std::string_view _name) noexcept;
+	void addObject(ObjectPtr&& _obj) noexcept;
+	u32 getObjectsCount() const noexcept;
 
-	Object* findObject(std::string_view _name) noexcept;
-	const Object* findObject(std::string_view _name) const noexcept;
+	Object* getObject(u32 _idx) noexcept;
+	const Object* getObject(u32 _idx) const noexcept;
 
-	void forEachObject(const std::function<void(Object&)>& _callback);
-	void forEachObject(const std::function<void(const Object&)>& _callback) const;
+	void removeObject(u32 _idx) noexcept;
+	void removeObject(const Object& _obj) noexcept;
 
 //-----------------------------------------------------------------------------
 private:
-	void drawModel(const Model& _model, const Camera& _camera, const glm::mat4& _worldMat) const;
+	void drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept;
 
 //-----------------------------------------------------------------------------
 	std::vector<ObjectPtr> m_objects;

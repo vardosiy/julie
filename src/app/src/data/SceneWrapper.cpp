@@ -1,5 +1,7 @@
 #include "SceneWrapper.hpp"
 
+#include "utils/Utils.hpp"
+
 //-----------------------------------------------------------------------------
 
 SceneWrapper::SceneWrapper()
@@ -9,10 +11,13 @@ SceneWrapper::SceneWrapper()
 
 //-----------------------------------------------------------------------------
 
-ObjectWrapper& SceneWrapper::addObject(std::unique_ptr<jl::Object>&& _object) noexcept
+ObjectWrapper& SceneWrapper::createObject(std::string _name) noexcept
 {
-	ObjectWrapper& objWrapper = m_objWrappers.emplace_back(*_object);
-	m_scene->addObject(std::move(_object));
+	ASSERT(findObject(_name) == nullptr);
+
+	auto obj = std::make_unique<jl::Object>();
+	ObjectWrapper& objWrapper = m_objWrappers.emplace_back(*obj, std::move(_name));
+	m_scene->addObject(std::move(obj));
 
 	return objWrapper;
 }
@@ -26,8 +31,13 @@ void SceneWrapper::removeObject(std::string_view _name) noexcept
 		return _name == _objWrapper.getName();
 	});
 
-	m_objWrappers.erase(it);
-	m_scene->removeObject(_name);
+	if (it != m_objWrappers.end())
+	{
+		const jl::Object& obj = it->getInternalObject();
+
+		m_objWrappers.erase(it);
+		m_scene->removeObject(obj);
+	}
 }
 
 //-----------------------------------------------------------------------------

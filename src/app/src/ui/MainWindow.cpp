@@ -99,7 +99,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
 	, m_updateTimer(this)
-	, m_camera(0.001f, 100.0f, 30.0f)
+	, m_camera(0.1f, 100.0f, 30.0f)
 {
 	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
 	m_cameraController.setCameraMoveSpeed(3.0f);
@@ -176,7 +176,6 @@ void MainWindow::resetSelection()
 void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectPos();
-	m_ui->oglw_screen->refreshIntersections();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +183,6 @@ void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
 void MainWindow::onObjectScaled(ObjectWrapper& _objWrapper)
 {
 	m_propertiesWdg->refreshObjectSize();
-	m_ui->oglw_screen->refreshIntersections();
 }
 
 //-----------------------------------------------------------------------------
@@ -194,7 +192,6 @@ void MainWindow::update()
 	const float dt = getDeltaTime();
 	jl::Globals::s_timeTotal += dt;
 
-	m_sceneWrapper->update(dt);
 	m_viewPropertiesWdg->update(dt);
 
 	m_ui->oglw_screen->repaint();
@@ -254,17 +251,12 @@ void MainWindow::setupRoom()
 	ObjectWrapper* roomWrapper = m_sceneWrapper->findObject(k_roomObjName);
 	if (!roomWrapper)
 	{
-		auto obj = std::make_unique<jl::Object>(k_roomObjName);
-		roomWrapper = &m_sceneWrapper->addObject(std::move(obj));
+		roomWrapper = &m_sceneWrapper->createObject(k_roomObjName);
 	}
 
 	const glm::vec3 originalSize = roomWrapper->getSize();
 	roomWrapper->setModel(m_roomModel.get());
 	roomWrapper->setSize(originalSize);
-	roomWrapper->setTransformFlags(jl::Object::TransfromFlags::Scaleable);
-
-	m_entitisWdg->setUndeletableObjectName(k_roomObjName);
-	m_ui->oglw_screen->setUninteractibleObjectName(k_roomObjName);
 }
 
 //-----------------------------------------------------------------------------

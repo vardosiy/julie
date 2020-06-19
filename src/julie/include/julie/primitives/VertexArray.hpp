@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 #include "julie/primitives/VertexBuffer.hpp"
 #include "julie/primitives/IndexBuffer.hpp"
 
@@ -43,8 +43,6 @@ private:
 
 	boost::optional<VertexBuffer> m_vertexBuffer;
 	boost::optional<IndexBuffer> m_indexBuffer;
-
-	static constexpr u32 k_nullId = 0;
 };
 
 //-----------------------------------------------------------------------------

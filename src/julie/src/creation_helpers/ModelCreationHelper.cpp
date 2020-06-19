@@ -48,7 +48,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 		return nullptr;
 	}
 
-	int verticesCount = 0;
+	s32 verticesCount = 0;
 	fscanf_s(pFile, "%*s %d", &verticesCount);
 	ASSERTM(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
 
@@ -229,7 +229,7 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		ASSERT(texture);
 	}
 
-	const jl::Shader& shader = texture ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
+	const Shader* shader = texture ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
 	material.setProperty("u_texture2D", texture);
 	material.setShader(shader);
 

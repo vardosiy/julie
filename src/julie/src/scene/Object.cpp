@@ -9,28 +9,12 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Object::Object(std::string _name) noexcept
-	: m_name(std::move(_name))
-	, m_model(nullptr)
+Object::Object() noexcept
+	: m_model(nullptr)
 	, m_renderFlags(RenderFlags::DrawModel)
-	, m_transformFlags(TransfromFlags::TransformAll)
 	, m_worldMatrix(1.0f)
 	, m_isTransformChanged(false)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-const std::string& Object::getName() const noexcept
-{
-	return m_name;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setName(std::string _name) noexcept
-{
-	m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
@@ -59,20 +43,6 @@ s32 Object::getRenderFlags() const noexcept
 void Object::setRenderFlags(s32 _flags) noexcept
 {
 	m_renderFlags = _flags;
-}
-
-//-----------------------------------------------------------------------------
-
-s32 Object::getTransformFlags() const noexcept
-{
-	return m_transformFlags;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setTransformFlags(s32 _flags) noexcept
-{
-	m_transformFlags = _flags;
 }
 
 //-----------------------------------------------------------------------------

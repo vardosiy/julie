@@ -4,7 +4,6 @@ class IOpenGlContextOwner
 {
 public:
 	virtual ~IOpenGlContextOwner() = default;
-
 	virtual void makeContextCurrent() = 0;
 };
 

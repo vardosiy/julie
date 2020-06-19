@@ -37,16 +37,16 @@ void MaterialsManager::clear() noexcept
 
 //-----------------------------------------------------------------------------
 
-jl::Shader& MaterialsManager::getColorShader() const noexcept
+jl::Shader* MaterialsManager::getColorShader() const noexcept
 {
-	return *ResourceManager::getInstance().loadShader("res/shaders/MaterialColorShader.shdata");
+	return ResourceManager::getInstance().loadShader("res/shaders/MaterialColorShader.shdata");
 }
 
 //-----------------------------------------------------------------------------
 
-jl::Shader& MaterialsManager::getTextureShader() const noexcept
+jl::Shader* MaterialsManager::getTextureShader() const noexcept
 {
-	return *ResourceManager::getInstance().loadShader("res/shaders/MaterialTextureShader.shdata");
+	return ResourceManager::getInstance().loadShader("res/shaders/MaterialTextureShader.shdata");
 }
 
 //-----------------------------------------------------------------------------
@@ -94,10 +94,8 @@ void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 
 void MaterialsManager::deleteMaterial(jl::Material& _material) noexcept
 {
-	const std::string& materialName = findMaterialName(_material);
-	ASSERTM(materialName != k_defaultMaterialName, "Can not delete default material");
-
-	if (!materialName.empty() && materialName != k_defaultMaterialName)
+	const std::string materialName = findMaterialName(_material);
+	if (!materialName.empty())
 	{
 		deleteMaterial(materialName);
 	}
@@ -105,7 +103,7 @@ void MaterialsManager::deleteMaterial(jl::Material& _material) noexcept
 
 //-----------------------------------------------------------------------------
 
-const std::string& MaterialsManager::findMaterialName(const jl::Material& _material) const noexcept
+std::string MaterialsManager::findMaterialName(const jl::Material& _material) const noexcept
 {
 	for (const auto& [name, material] : m_materials)
 	{
@@ -115,8 +113,7 @@ const std::string& MaterialsManager::findMaterialName(const jl::Material& _mater
 		}
 	}
 
-	static const std::string k_unmanagedMaterialName = "";
-	return k_unmanagedMaterialName;
+	return "";
 }
 
 //-----------------------------------------------------------------------------

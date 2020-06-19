@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 
 #include <glm/glm.hpp>
 
@@ -24,7 +24,7 @@ class CommonUniformsBinder
 public:
 	CommonUniformsBinder(const Shader& _shader) noexcept;
 
-	void setupCommon(const jl::Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept;
+	void setupCommon(const Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept;
 	void setupFog(const FogData& _fogData) const noexcept;
 	void setupLights(const LightsHolder& _lightsHolder) const noexcept;
 
@@ -50,10 +50,8 @@ private:
 
 	static const std::string u_ambientColor;
 	static const std::string u_ambientWeight;
-
 	static const std::string u_directionalLightColor;
 	static const std::string u_lightDirection;
-
 	static const std::string u_pointLightColor;
 	static const std::string u_lightPosition;
 };

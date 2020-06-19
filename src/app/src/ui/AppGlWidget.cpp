@@ -25,8 +25,8 @@
 
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
-	, m_sceneWrapper(nullptr)
 	, m_camera(nullptr)
+	, m_sceneWrapper(nullptr)
 	, m_actionHandler(nullptr)
 	, m_selectedObject(nullptr)
 	, m_selectedObjDistance(0.0f)
@@ -94,7 +94,6 @@ void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
 void AppGlWidget::setScene(SceneWrapper* _sceneWrapper) noexcept
 {
 	m_sceneWrapper = _sceneWrapper;
-	refreshIntersections();
 }
 
 //-----------------------------------------------------------------------------
@@ -106,18 +105,11 @@ void AppGlWidget::setActionHandler(IEntityActionHandler* _handler) noexcept
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setUninteractibleObjectName(const std::string& _objName) noexcept
-{
-	m_uninteractibleObjName = _objName;
-}
-
-//-----------------------------------------------------------------------------
-
 void AppGlWidget::resetSelectedObj()
 {
 	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
 	{
-		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::IsSelected;
+		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
 		_objWrapper.setRenderFlags(flags);
 	});
 
@@ -127,83 +119,43 @@ void AppGlWidget::resetSelectedObj()
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::refreshIntersections()
-{
-	if (!m_sceneWrapper)
-	{
-		return;
-	}
-
-	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
-	{
-		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::IsIntersected;
-		_objWrapper.setRenderFlags(flags);
-	});
-
-	checkIntersectionsWithRoom();
-
-	m_sceneWrapper->forEachObject([this](ObjectWrapper& _i)
-	{
-		if (_i.getModel() == nullptr ||
-			_i.getName() == m_uninteractibleObjName ||
-			_i.getRenderFlags() & jl::Object::RenderFlags::IsIntersected)
-			return;
-
-		const jl::boxf worldBoxI = _i.getWorldMatrix() * _i.getModel()->getBoundingBox();
-		m_sceneWrapper->forEachObject([this, &_i, &worldBoxI](ObjectWrapper& _j)
-		{
-			if (&_j == &_i ||
-				_j.getModel() == nullptr ||
-				_j.getName() == m_uninteractibleObjName)
-				return;
-
-			const jl::boxf worldBoxJ = _j.getWorldMatrix() * _j.getModel()->getBoundingBox();
-			if (jl::intersect(worldBoxI, worldBoxJ))
-			{
-				_i.setRenderFlags(_i.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
-				_j.setRenderFlags(_j.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
-			}
-		});
-	});
-}
-
-//-----------------------------------------------------------------------------
-
-void AppGlWidget::checkIntersectionsWithRoom()
-{
-	const ObjectWrapper* roomObj = m_sceneWrapper->findObject(m_uninteractibleObjName);
-	const glm::vec3 roomSize = roomObj->getSize();
-
-	std::array<jl::boxf, 5> wallsBbs;
-	wallsBbs[0].min = glm::vec3(0.0f,		0.0f,		0.0f);
-	wallsBbs[0].max = glm::vec3(roomSize.x,	roomSize.y,	0.0f);
-	wallsBbs[1].min = glm::vec3(0.0f,		0.0f,		roomSize.z);
-	wallsBbs[1].max = glm::vec3(roomSize.x,	roomSize.y,	roomSize.z);
-	wallsBbs[2].min = glm::vec3(0.0f,		0.0f,		0.0f);
-	wallsBbs[2].max = glm::vec3(0.0f,		roomSize.y,	roomSize.z);
-	wallsBbs[3].min = glm::vec3(roomSize.x,	0.0f,		0.0f);
-	wallsBbs[3].max = glm::vec3(roomSize.x,	roomSize.y,	roomSize.z);
-	wallsBbs[4].min = glm::vec3(0.0f,		0.0f,		0.0f);
-	wallsBbs[4].max = glm::vec3(roomSize.x,	0.0f,		roomSize.z);
-
-	m_sceneWrapper->forEachObject([this, &wallsBbs](ObjectWrapper& _i)
-	{
-		if (_i.getModel() == nullptr ||
-			_i.getName() == m_uninteractibleObjName ||
-			_i.getRenderFlags() & jl::Object::RenderFlags::IsIntersected)
-			return;
-
-		const jl::boxf worldBox = _i.getWorldMatrix() * _i.getModel()->getBoundingBox();
-		for (const jl::boxf& box : wallsBbs)
-		{
-			if (jl::intersect(worldBox, box))
-			{
-				_i.setRenderFlags(_i.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
-				break;
-			}
-		}
-	});
-}
+//void AppGlWidget::refreshIntersections()
+//{
+//	if (!m_sceneWrapper)
+//	{
+//		return;
+//	}
+//
+//	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
+//	{
+//		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::IsIntersected;
+//		_objWrapper.setRenderFlags(flags);
+//	});
+//
+//	m_sceneWrapper->forEachObject([this](ObjectWrapper& _i)
+//	{
+//		if (_i.getModel() == nullptr ||
+//			_i.getName() == m_uninteractibleObjName ||
+//			_i.getRenderFlags() & jl::Object::RenderFlags::IsIntersected)
+//			return;
+//
+//		const jl::boxf worldBoxI = _i.getWorldMatrix() * _i.getModel()->getBoundingBox();
+//		m_sceneWrapper->forEachObject([this, &_i, &worldBoxI](ObjectWrapper& _j)
+//		{
+//			if (&_j == &_i ||
+//				_j.getModel() == nullptr ||
+//				_j.getName() == m_uninteractibleObjName)
+//				return;
+//
+//			const jl::boxf worldBoxJ = _j.getWorldMatrix() * _j.getModel()->getBoundingBox();
+//			if (jl::intersect(worldBoxI, worldBoxJ))
+//			{
+//				_i.setRenderFlags(_i.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
+//				_j.setRenderFlags(_j.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
+//			}
+//		});
+//	});
+//}
 
 //-----------------------------------------------------------------------------
 
@@ -377,12 +329,9 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 
 	m_sceneWrapper->forEachObject([&_ray, this](ObjectWrapper& _objWrapper)
 	{
-		if (m_uninteractibleObjName == _objWrapper.getName())
-			return;
-
 		if (const jl::Model* _model = _objWrapper.getModel())
 		{
-			const jl::boxf boxWorld = _objWrapper.getWorldMatrix() * _model->getBoundingBox();
+			const jl::aabbf boxWorld = _objWrapper.getWorldMatrix() * _model->getBoundingBox();
 
 			float nearPos = 0.0f;
 			float farPos = 0.0f;
@@ -398,7 +347,7 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 	{
 		LOG_INFO("[AppGlWidget] Selected object: {}", m_selectedObject->getName());
 
-		const jl::s32 flags = m_selectedObject->getRenderFlags() | jl::Object::RenderFlags::IsSelected;
+		const jl::s32 flags = m_selectedObject->getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox;
 		m_selectedObject->setRenderFlags(flags);
 
 		if (m_actionHandler)

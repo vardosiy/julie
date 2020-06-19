@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 #include "julie/Vertex.hpp"
 
 #include <boost/noncopyable.hpp>
@@ -29,8 +29,6 @@ public:
 private:
 	u32 m_id;
 	u64 m_size;
-
-	static constexpr u32 k_nullId = 0;
 };
 
 //-----------------------------------------------------------------------------

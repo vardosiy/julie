@@ -6,8 +6,9 @@
 
 //-----------------------------------------------------------------------------
 
-ObjectWrapper::ObjectWrapper(jl::Object& _obj)
+ObjectWrapper::ObjectWrapper(jl::Object& _obj, std::string _name)
 	: m_object(&_obj)
+	, m_name(std::move(_name))
 	, m_originOffset(0.0f)
 	, m_pos(0.0f)
 	, m_initialScale(1.0f)
@@ -24,7 +25,7 @@ void ObjectWrapper::recalcTransform()
 {
 	if (const jl::Model* model = getModel())
 	{
-		const jl::boxf& modelBox = model->getBoundingBox();
+		const jl::aabbf& modelBox = model->getBoundingBox();
 
 		const float width = modelBox.getWidth();
 		const float height = modelBox.getHeight();
@@ -35,7 +36,7 @@ void ObjectWrapper::recalcTransform()
 		m_object->setScale(m_scale * m_initialScale);
 		m_object->setPosition(glm::vec3(0.0f));
 
-		const jl::boxf worldBox = m_object->getWorldMatrix() * modelBox;
+		const jl::aabbf worldBox = m_object->getWorldMatrix() * modelBox;
 		m_originOffset = -worldBox.min;
 		m_object->setPosition(m_pos + m_originOffset);
 	}
@@ -47,7 +48,7 @@ void ObjectWrapper::recalcSize()
 {
 	if (const jl::Model* model = getModel())
 	{
-		const jl::boxf& box = model->getBoundingBox();
+		const jl::aabbf& box = model->getBoundingBox();
 		m_size = glm::vec3{ box.getWidth(), box.getHeight(), box.getDepth() } * m_initialScale;
 	}
 }

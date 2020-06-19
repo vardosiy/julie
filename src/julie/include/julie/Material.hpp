@@ -1,8 +1,7 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 
-#include <boost/noncopyable.hpp>
 #include <glm/glm.hpp>
 
 #include <vector>
@@ -19,14 +18,14 @@ class Shader;
 class Texture;
 class CubeTexture;
 
-class Material : boost::noncopyable
+class Material
 {
 //-----------------------------------------------------------------------------
 public:
 	struct Property
 	{
 		using TValue =
-			std::variant<float, s32, glm::vec2, glm::vec3, glm::vec4, const jl::Texture*, const jl::CubeTexture*>;
+			std::variant<float, s32, glm::vec2, glm::vec3, glm::vec4, const Texture*, const CubeTexture*>;
 
 		std::string name;
 		TValue value;
@@ -35,18 +34,18 @@ public:
 //-----------------------------------------------------------------------------
 	void bind() const;
 
-	const jl::Shader* getShader() const noexcept;
-	void setShader(const jl::Shader& _shader) noexcept;
+	const Shader* getShader() const noexcept;
+	void setShader(const Shader* _shader) noexcept;
 
 	const std::vector<Property>& getProperties() const noexcept;
 
-	void setProperty(const std::string& _name, float					_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, s32						_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, glm::vec2				_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, glm::vec3				_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, glm::vec4				_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, const jl::Texture*		_val) noexcept { setPropertyCommon(_name, _val); }
-	void setProperty(const std::string& _name, const jl::CubeTexture*	_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, float				_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, s32					_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, glm::vec2			_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, glm::vec3			_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, glm::vec4			_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, const Texture*		_val) noexcept { setPropertyCommon(_name, _val); }
+	void setProperty(const std::string& _name, const CubeTexture*	_val) noexcept { setPropertyCommon(_name, _val); }
 
 //-----------------------------------------------------------------------------
 private:
@@ -54,7 +53,7 @@ private:
 	void setPropertyCommon(const std::string& _name, T _val) noexcept;
 
 //-----------------------------------------------------------------------------
-	const jl::Shader* m_shader = nullptr;
+	const Shader* m_shader = nullptr;
 	std::vector<Property> m_properties;
 };
 

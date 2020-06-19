@@ -23,10 +23,8 @@ const std::string CommonUniformsBinder::u_fogColor				= "u_fogColor";
 
 const std::string CommonUniformsBinder::u_ambientColor			= "u_ambientColor";
 const std::string CommonUniformsBinder::u_ambientWeight			= "u_ambientWeight";
-
 const std::string CommonUniformsBinder::u_directionalLightColor	= "u_directionalLightColor";
 const std::string CommonUniformsBinder::u_lightDirection		= "u_lightDirection";
-
 const std::string CommonUniformsBinder::u_pointLightColor		= "u_pointLightColor";
 const std::string CommonUniformsBinder::u_lightPosition			= "u_lightPosition";
 
@@ -39,7 +37,7 @@ CommonUniformsBinder::CommonUniformsBinder(const Shader& _shader) noexcept
 
 //-----------------------------------------------------------------------------
 
-void CommonUniformsBinder::setupCommon(const jl::Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept
+void CommonUniformsBinder::setupCommon(const Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept
 {
 	bindUniform(u_W,			_worldMatrix);
 	bindUniform(u_WVP,			_camera.getViewProjectionMatrix() * _worldMatrix);

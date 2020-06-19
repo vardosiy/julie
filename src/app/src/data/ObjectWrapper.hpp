@@ -7,10 +7,13 @@
 class ObjectWrapper
 {
 public:
-	ObjectWrapper(jl::Object& _obj);
+	ObjectWrapper(jl::Object& _obj, std::string _name);
 
 	ObjectWrapper(const ObjectWrapper& _rhs) = default;
 	ObjectWrapper& operator=(const ObjectWrapper& _rhs) = default;
+
+	ObjectWrapper(ObjectWrapper&& _rhs) = default;
+	ObjectWrapper& operator=(ObjectWrapper&& _rhs) = default;
 
 	jl::Object& getInternalObject() noexcept;
 	const jl::Object& getInternalObject() const noexcept;
@@ -24,9 +27,6 @@ public:
 
 	jl::s32 getRenderFlags() const noexcept;
 	void setRenderFlags(jl::s32 _flags) noexcept;
-
-	jl::s32 getTransformFlags() const noexcept;
-	void setTransformFlags(jl::s32 _flags) noexcept;
 
 //-----------------------------------------------------------------------------
 	const glm::mat4& getWorldMatrix() const noexcept;
@@ -47,6 +47,7 @@ private:
 //-----------------------------------------------------------------------------
 private:
 	jl::Object* m_object;
+	std::string m_name;
 
 	glm::vec3 m_originOffset;
 	glm::vec3 m_pos;
@@ -71,12 +72,12 @@ inline const jl::Object& ObjectWrapper::getInternalObject() const noexcept
 
 inline const std::string& ObjectWrapper::getName() const noexcept
 {
-	return m_object->getName();
+	return m_name;
 }
 
 inline void ObjectWrapper::setName(std::string _name) noexcept
 {
-	m_object->setName(std::move(_name));
+	m_name = std::move(_name);
 }
 
 inline jl::Model* ObjectWrapper::getModel() const noexcept
@@ -100,16 +101,6 @@ inline jl::s32 ObjectWrapper::getRenderFlags() const noexcept
 inline void ObjectWrapper::setRenderFlags(jl::s32 _flags) noexcept
 {
 	m_object->setRenderFlags(_flags);
-}
-
-inline jl::s32 ObjectWrapper::getTransformFlags() const noexcept
-{
-	return m_object->getTransformFlags();
-}
-
-inline void ObjectWrapper::setTransformFlags(jl::s32 _flags) noexcept
-{
-	m_object->setTransformFlags(_flags);
 }
 
 inline const glm::mat4& ObjectWrapper::getWorldMatrix() const noexcept

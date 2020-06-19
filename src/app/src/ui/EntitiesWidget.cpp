@@ -59,13 +59,6 @@ void EntitiesWidget::setScene(SceneWrapper* _sceneWrapper)
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::setUndeletableObjectName(const std::string& _objName)
-{
-	m_undeletableObjName = _objName;
-}
-
-//-----------------------------------------------------------------------------
-
 void EntitiesWidget::setEntityActionHandler(IEntityActionHandler* _handler)
 {
 	m_actionHandler = _handler;
@@ -118,12 +111,10 @@ void EntitiesWidget::onAddEntityBtnReleased()
 
 void EntitiesWidget::addObject(const std::string& _name)
 {
-	auto object = std::make_unique<jl::Object>(_name);
+	m_sceneWrapper->createObject(_name);
 
 	m_objectsNamesList.append(_name.c_str());
 	m_objectsListModel.setStringList(m_objectsNamesList);
-
-	m_sceneWrapper->addObject(std::move(object));
 }
 
 //-----------------------------------------------------------------------------
@@ -173,13 +164,7 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 
 void EntitiesWidget::deleteObject(const QString& _name)
 {
-	const std::string objName = _name.toStdString();
-	if (m_undeletableObjName == objName)
-	{
-		return;
-	}
-
-	m_sceneWrapper->removeObject(objName);
+	m_sceneWrapper->removeObject(_name.toStdString());
 
 	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
 	if (itNames != m_objectsNamesList.end())

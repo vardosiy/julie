@@ -21,7 +21,7 @@ VertexArray::VertexArray() noexcept
 
 VertexArray::~VertexArray()
 {
-	if (m_id != k_nullId)
+	if (m_id != 0)
 	{
 		glDeleteVertexArrays(1, &m_id);
 	}
@@ -34,7 +34,7 @@ VertexArray::VertexArray(VertexArray&& _rhs) noexcept
 	, m_vertexBuffer(std::move(_rhs.m_vertexBuffer))
 	, m_indexBuffer(std::move(_rhs.m_indexBuffer))
 {
-	_rhs.m_id = k_nullId;
+	_rhs.m_id = 0;
 	_rhs.m_vertexBuffer.reset();
 	_rhs.m_indexBuffer.reset();
 }

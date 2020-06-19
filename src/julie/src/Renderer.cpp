@@ -76,6 +76,27 @@ void Renderer::shutdown()
 
 //-----------------------------------------------------------------------------
 
+void Renderer::setClearColor(const glm::vec4& _color) noexcept
+{
+	glClearColor(_color.r, _color.g, _color.b, _color.a);
+}
+
+//-----------------------------------------------------------------------------
+
+void Renderer::setFrontPolygonsMode(PolygonMode _mode) noexcept
+{
+	glPolygonMode(GL_FRONT, polygonModeToGlValue(_mode));
+}
+
+//-----------------------------------------------------------------------------
+
+void Renderer::setBackPolygonsMode(PolygonMode _mode) noexcept
+{
+	glPolygonMode(GL_BACK, polygonModeToGlValue(_mode));
+}
+
+//-----------------------------------------------------------------------------
+
 void Renderer::draw(const Mesh& _mesh) noexcept
 {
 	_mesh.bind();
@@ -84,7 +105,7 @@ void Renderer::draw(const Mesh& _mesh) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept
+void Renderer::draw(const aabbf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept
 {
 	s_shader->bind();
 	s_shader->setUniform("u_color", _color);
@@ -116,27 +137,6 @@ void Renderer::draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& 
 	indexBuffer->bufferData(indexBuf, std::size(indexBuf));
 
 	glDrawElements(GL_LINES, indexBuffer->getCount(), GL_UNSIGNED_INT, nullptr);
-}
-
-//-----------------------------------------------------------------------------
-
-void Renderer::setClearColor(const glm::vec4& _color) noexcept
-{
-	glClearColor(_color.r, _color.g, _color.b, _color.a);
-}
-
-//-----------------------------------------------------------------------------
-
-void Renderer::setFrontPolygonsMode(PolygonMode _mode) noexcept
-{
-	glPolygonMode(GL_FRONT, polygonModeToGlValue(_mode));
-}
-
-//-----------------------------------------------------------------------------
-
-void Renderer::setBackPolygonsMode(PolygonMode _mode) noexcept
-{
-	glPolygonMode(GL_BACK, polygonModeToGlValue(_mode));
 }
 
 //-----------------------------------------------------------------------------

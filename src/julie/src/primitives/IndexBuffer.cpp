@@ -34,7 +34,7 @@ IndexBuffer::IndexBuffer(u64 _size) noexcept
 
 IndexBuffer::~IndexBuffer()
 {
-	if (m_id != k_nullId)
+	if (m_id != 0)
 	{
 		glDeleteBuffers(1, &m_id);
 	}
@@ -47,7 +47,7 @@ IndexBuffer::IndexBuffer(IndexBuffer&& _rhs) noexcept
 	, m_size(_rhs.m_size)
 	, m_count(_rhs.m_count)
 {
-	_rhs.m_id = k_nullId;
+	_rhs.m_id = 0;
 	_rhs.m_size = 0;
 	_rhs.m_count = 0;
 }

@@ -1,5 +1,6 @@
 #include "julie/Material.hpp"
 #include "julie/Shader.hpp"
+
 #include "PropertyBinder.hpp"
 
 //-----------------------------------------------------------------------------
@@ -16,7 +17,7 @@ void Material::bind() const
 		s16 textureSlotsCounter = 0;
 		for (const auto& data : m_properties)
 		{
-			PropertyBinder binder(*m_shader, data.name, textureSlotsCounter++);
+			PropertyBinder binder(*m_shader, data.name, textureSlotsCounter);
 			std::visit(binder, data.value);
 		}
 	}
@@ -24,16 +25,16 @@ void Material::bind() const
 
 //-----------------------------------------------------------------------------
 
-const jl::Shader* Material::getShader() const noexcept
+const Shader* Material::getShader() const noexcept
 {
 	return m_shader;
 }
 
 //-----------------------------------------------------------------------------
 
-void Material::setShader(const jl::Shader& _shader) noexcept
+void Material::setShader(const Shader* _shader) noexcept
 {
-	m_shader = &_shader;
+	m_shader = _shader;
 }
 
 //-----------------------------------------------------------------------------
