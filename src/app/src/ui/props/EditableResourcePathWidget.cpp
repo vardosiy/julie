@@ -20,25 +20,25 @@ EditableResourcePathWidget::EditableResourcePathWidget(QWidget* _parent)
 
 const QVariant& EditableResourcePathWidget::getValue() const noexcept
 {
-	const std::string path = m_ui->text_path->text().toStdString();
+	const QString path = m_ui->text_path->text();
 
 	if (m_value.canConvert<ModelUiWrapper>())
 	{
-		ModelUiWrapper newValue;
-		if (!path.empty())
+		jl::Model* model = nullptr;
+		if (!path.isEmpty())
 		{
-			newValue.value = ResourceManager::getInstance().loadModel(path, true /* _loadMaterials */);
+			model = ResourceManager::getInstance().loadModel(path.toStdString(), true /* _loadMaterials */);
 		}
-		m_value = QVariant::fromValue(newValue);
+		m_value = QVariant::fromValue(ModelUiWrapper{ path, model });
 	}
 	else if (m_value.canConvert<TextureUiWrapper>())
 	{
-		TextureUiWrapper newValue;
-		if (!path.empty())
+		jl::Texture* texture = nullptr;
+		if (!path.isEmpty())
 		{
-			newValue.value = ResourceManager::getInstance().loadTexture(path);
+			texture = ResourceManager::getInstance().loadTexture(path.toStdString());
 		}
-		m_value = QVariant::fromValue(newValue);
+		m_value = QVariant::fromValue(TextureUiWrapper{ path, texture });
 	}
 
 	return m_value;
@@ -46,7 +46,7 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void EditableResourcePathWidget::setValue(ModelUiWrapper _value) noexcept
+void EditableResourcePathWidget::setValue(const ModelUiWrapper& _value) noexcept
 {
 	m_value = QVariant::fromValue(_value);
 
@@ -60,7 +60,7 @@ void EditableResourcePathWidget::setValue(ModelUiWrapper _value) noexcept
 
 //-----------------------------------------------------------------------------
 
-void EditableResourcePathWidget::setValue(TextureUiWrapper _value) noexcept
+void EditableResourcePathWidget::setValue(const TextureUiWrapper& _value) noexcept
 {
 	m_value = QVariant::fromValue(_value);
 

@@ -1,4 +1,6 @@
 #include "ui/props/PropertyTypes.hpp"
+
+#include "julie/managers/ResourceManager.hpp"
 #include "julie/Material.hpp"
 
 #include "utils/Utils.hpp"
@@ -16,7 +18,14 @@ public:
 
 	QVariant operator() (const jl::Texture* _value) const noexcept
 	{
-		return QVariant::fromValue(TextureUiWrapper{ _value });
+		QString filePath;
+
+		if (_value)
+		{
+			filePath = ResourceManager::getInstance().findSourceFile(*_value).c_str();
+		}
+
+		return QVariant::fromValue(TextureUiWrapper{ filePath, _value });
 	}
 
 	QVariant operator() (const glm::vec3& _value) const noexcept

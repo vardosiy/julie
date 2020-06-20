@@ -4,6 +4,8 @@
 #include <glm/vec3.hpp>
 #include <functional>
 
+//-----------------------------------------------------------------------------
+
 namespace jl {
 class Mesh;
 class Model;
@@ -15,11 +17,13 @@ class Texture;
 
 struct ModelUiWrapper
 {
+	QString filePath;
 	jl::Model* value = nullptr;
 };
 
 struct TextureUiWrapper
 {
+	QString filePath;
 	const jl::Texture* value = nullptr;
 };
 

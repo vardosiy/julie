@@ -18,8 +18,8 @@ public:
 	explicit EditableResourcePathWidget(QWidget* _parent = nullptr);
 
 	const QVariant& getValue() const noexcept;
-	void setValue(ModelUiWrapper _value) noexcept;
-	void setValue(TextureUiWrapper _value) noexcept;
+	void setValue(const ModelUiWrapper& _value) noexcept;
+	void setValue(const TextureUiWrapper& _value) noexcept;
 
 //-----------------------------------------------------------------------------
 private slots:

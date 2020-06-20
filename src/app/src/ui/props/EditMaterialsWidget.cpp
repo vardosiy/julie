@@ -19,14 +19,14 @@ EditMaterialsWidget::EditMaterialsWidget(QWidget* _parent)
 
 //-----------------------------------------------------------------------------
 
-const MaterialUiWrapper& EditMaterialsWidget::getData() const noexcept
+const MaterialUiWrapper& EditMaterialsWidget::getValue() const noexcept
 {
 	return m_data;
 }
 
 //-----------------------------------------------------------------------------
 
-void EditMaterialsWidget::setData(const MaterialUiWrapper& _data) noexcept
+void EditMaterialsWidget::setValue(const MaterialUiWrapper& _data) noexcept
 {
 	m_data = _data;
 	setCurrentText(m_data.materialName);

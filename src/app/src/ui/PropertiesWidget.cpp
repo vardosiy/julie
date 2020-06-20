@@ -109,9 +109,7 @@ void PropertiesWidget::refreshObjectPos()
 
 	auto editCallback = [obj](const glm::vec3& _val) { obj->setPosition(_val); };
 	const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ obj->getPosition(), editCallback });
-
-	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Moveable;
-	setCellValue(index(0, k_valueColIdx, transformIdx), pos, editable);
+	setCellValue(index(0, k_valueColIdx, transformIdx), pos, true);
 
 	m_activeEntity = obj;
 }
@@ -132,9 +130,7 @@ void PropertiesWidget::refreshObjectSize()
 
 	auto editCallback = [obj](const glm::vec3& _val) { obj->setSize(_val); };
 	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getSize(), editCallback });
-
-	const bool editable = obj->getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-	setCellValue(index(1, k_valueColIdx, transformIdx), size, editable);
+	setCellValue(index(1, k_valueColIdx, transformIdx), size, true);
 
 	m_activeEntity = obj;
 }
@@ -147,8 +143,16 @@ void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 
 	int propNum = 0;
 	{
-		const QVariant value = QVariant::fromValue(ModelUiWrapper{ _object.getModel() });
-		setPropertyRow(propNum++, rootIdx, "Model", value, true);
+		QString filePath;
+
+		jl::Model* model = _object.getModel();
+		if (model)
+		{
+			filePath = ResourceManager::getInstance().findSourceFile(*model).c_str();
+		}
+
+		const QVariant value = QVariant::fromValue(ModelUiWrapper{ filePath, model });
+		setPropertyRow(propNum++, rootIdx, "Model", value);
 	}
 	{
 		const QModelIndex transformIdx = index(propNum, k_nameColIdx, rootIdx);
@@ -158,23 +162,17 @@ void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setPosition(_val); };
 			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition(), editCallback });
-
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Moveable;
-			setPropertyRow(transfromNum++, transformIdx, "Position", pos, editable);
+			setPropertyRow(transfromNum++, transformIdx, "Position", pos);
 		}
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setSize(_val); };
 			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize(), editCallback });
-
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Scaleable;
-			setPropertyRow(transfromNum++, transformIdx, "Actual Size (in meters)", size, editable);
+			setPropertyRow(transfromNum++, transformIdx, "Scale", size);
 		}
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setRotation(_val); };
 			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation(), editCallback });
-
-			const bool editable = _object.getTransformFlags() & jl::Object::TransfromFlags::Rotatable;
-			setPropertyRow(transfromNum++, transformIdx, "Rotation", rotation, editable);
+			setPropertyRow(transfromNum++, transformIdx, "Rotation", rotation);
 		}
 		ASSERT(transfromNum == k_transformsNum);
 
@@ -212,7 +210,7 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model)
 				}
 
 				const QVariant value = QVariant::fromValue(MaterialUiWrapper{ materialName, &mesh });
-				setPropertyRow(i, modelIdx, meshMaterialtemplate.arg(i + 1), value, true);
+				setPropertyRow(i, modelIdx, meshMaterialtemplate.arg(i + 1), value);
 			}
 		}
 	}
@@ -222,15 +220,6 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model)
 
 void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 {
-	static const std::map<std::string, std::string> k_materialNamesMap{
-		{ "u_shininess",	"Shininnes" },
-		{ "u_opacity",		"Opacity" },
-		{ "u_matAmbient",	"Color" },
-		{ "u_matDiffuse",	"Light Reflect Color" },
-		{ "u_matSpecular",	"Light Blink Color" },
-		{ "u_texture2D",	"Texture" }
-	};
-
 	const auto& properties = _material.getProperties();
 	const int propertiesCount = static_cast<int>(properties.size());
 
@@ -238,12 +227,9 @@ void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 
 	for (int i = 0; i < propertiesCount; ++i)
 	{
-		auto itName = k_materialNamesMap.find(properties[i].name);
-		ASSERT(itName != k_materialNamesMap.end());
-
-		const std::string& name = itName != k_materialNamesMap.end() ? itName->second : properties[i].name;
+		const QString name = QString::fromStdString(properties[i].name);
 		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, properties[i].name), properties[i].value);
-		setPropertyRow(i, rootIdx, QString::fromStdString(name), value, true);
+		setPropertyRow(i, rootIdx, name, value);
 	}
 }
 
@@ -286,10 +272,11 @@ void PropertiesWidget::onMaterialChanged(const QModelIndex& _idx, jl::Material& 
 		TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_idx.data());
 		_material.setProperty(props[_idx.row()].name, textureWrapper.value);
 
-		const jl::Shader& shader =
+		const jl::Shader* shader =
 			textureWrapper.value ?
 			MaterialsManager::getInstance().getTextureShader() :
 			MaterialsManager::getInstance().getColorShader();
+
 		_material.setShader(shader);
 	}
 }
@@ -304,10 +291,10 @@ void PropertiesWidget::setHeaderRow(int _row, const QModelIndex& _parent, const 
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value, bool _editable)
+void PropertiesWidget::setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value)
 {
 	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
-	setCellValue(index(_row, k_valueColIdx, _parent), _value, _editable);
+	setCellValue(index(_row, k_valueColIdx, _parent), _value, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -320,7 +307,11 @@ void PropertiesWidget::setCellValue(const QModelIndex& _idx, const QVariant& _va
 	ASSERT(item);
 	if (item)
 	{
-		item->setFlags(_enableEditing ? item->flags() | Qt::ItemIsEditable : item->flags() & ~Qt::ItemIsEditable);
+		item->setFlags(
+			_enableEditing ?
+			item->flags() | Qt::ItemIsEditable :
+			item->flags() & ~Qt::ItemIsEditable
+		);
 	}
 }
 

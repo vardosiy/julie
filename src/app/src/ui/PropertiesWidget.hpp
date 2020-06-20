@@ -48,7 +48,7 @@ private:
 	void onMaterialChanged(const QModelIndex& _idx, jl::Material& _material);
 
 	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
-	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value, bool _editable);
+	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value);
 	void setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing);
 
 	QModelIndex index(int _row, int _col, const QModelIndex& _parent);

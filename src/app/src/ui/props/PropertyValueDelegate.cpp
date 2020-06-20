@@ -7,9 +7,6 @@
 
 #include "ui/UiUtils.hpp"
 
-#include "julie/managers/ResourceManager.hpp"
-#include "julie/managers/MaterialsManager.hpp"
-
 #include <QDoubleSpinBox>
 
 //-----------------------------------------------------------------------------
@@ -67,7 +64,7 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 	{
 		MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
 		EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
-		materialsBox->setData(materialWrapper);
+		materialsBox->setValue(materialWrapper);
 	}
 	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
@@ -106,7 +103,7 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
 		const EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
-		_model->setData(_idx, QVariant::fromValue(materialsBox->getData()));
+		_model->setData(_idx, QVariant::fromValue(materialsBox->getValue()));
 	}
 	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
@@ -135,18 +132,12 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 	if (_value.canConvert<ModelUiWrapper>())
 	{
 		const ModelUiWrapper modelWrapper = qvariant_cast<ModelUiWrapper>(_value);
-		if (modelWrapper.value)
-		{
-			result = ResourceManager::getInstance().findSourceFile(*modelWrapper.value).c_str();
-		}
+		result = modelWrapper.filePath;
 	}
 	else if (_value.canConvert<TextureUiWrapper>())
 	{
 		const TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_value);
-		if (textureWrapper.value)
-		{
-			result = ResourceManager::getInstance().findSourceFile(*textureWrapper.value).c_str();
-		}
+		result = textureWrapper.filePath;
 	}
 	else if (_value.canConvert<MaterialUiWrapper>())
 	{
