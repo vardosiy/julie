@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/core/Types.hpp"
+#include <cstdint>
 
 //-----------------------------------------------------------------------------
 
@@ -8,14 +8,19 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Globals
-{
-public:
-	static u32 s_screenWidth;
-	static u32 s_screenHeight;
+using s8 = int8_t;
+using u8 = uint8_t;
 
-	static float s_timeTotal;
-};
+using s16 = int16_t;
+using u16 = uint16_t;
+
+using s32 = int32_t;
+using u32 = uint32_t;
+
+using s64 = int64_t;
+using u64 = uint64_t;
+
+using index_t = u32;
 
 //-----------------------------------------------------------------------------
 

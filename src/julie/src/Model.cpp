@@ -54,14 +54,14 @@ const Mesh& Model::getMesh(u32 _idx) const noexcept
 
 //-----------------------------------------------------------------------------
 
-const boxf& Model::getBoundingBox() const noexcept
+const aabbf& Model::getBoundingBox() const noexcept
 {
 	return m_boundingBox;
 }
 
 //-----------------------------------------------------------------------------
 
-boxf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
+aabbf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
 {
 	auto minFinder = [&_meshes](auto&& _valueGetter) -> float
 	{
@@ -89,7 +89,7 @@ boxf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
 	const float highest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.y; });
 	const float closest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.z; });
 
-	return boxf{
+	return aabbf{
 		glm::vec3{ leftmost, lowest, farthest },
 		glm::vec3{ rightmost, highest, closest }
 	};

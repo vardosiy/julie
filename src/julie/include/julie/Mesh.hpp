@@ -1,6 +1,7 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
+#include "julie/core/Aabb.hpp"
 #include "julie/Vertex.hpp"
 #include "julie/primitives/VertexArray.hpp"
 
@@ -18,25 +19,29 @@ class Material;
 
 class Mesh : boost::noncopyable
 {
+//-----------------------------------------------------------------------------
 public:
 	Mesh(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept;
 
 	Mesh(Mesh&& _rhs) noexcept;
 	Mesh& operator=(Mesh&& _rhs) noexcept;
 
+//-----------------------------------------------------------------------------
 	void bind() const;
 
 	const Material* getMaterial() const noexcept;
 	void setMaterial(const Material* _material) noexcept;
 
 	u64 getIndeciesCount() const noexcept;
-	const boxf& getBoundingBox() const noexcept;
+	const aabbf& getBoundingBox() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
-	static boxf calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept;
+	static aabbf calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept;
 
+//-----------------------------------------------------------------------------
 	VertexArray m_vertexArray;
-	boxf m_boundingBox;
+	aabbf m_boundingBox;
 
 	const Material* m_material;
 };

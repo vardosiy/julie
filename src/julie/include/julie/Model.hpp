@@ -1,6 +1,7 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
+#include "julie/core/Aabb.hpp"
 #include "julie/Mesh.hpp"
 
 #include <boost/noncopyable.hpp>
@@ -30,15 +31,15 @@ public:
 	Mesh& getMesh(u32 _idx) noexcept;
 	const Mesh& getMesh(u32 _idx) const noexcept;
 
-	const boxf& getBoundingBox() const noexcept;
+	const aabbf& getBoundingBox() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
-	static boxf calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept;
+	static aabbf calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept;
 
 //-----------------------------------------------------------------------------
 	std::vector<Mesh> m_meshes;
-	boxf m_boundingBox;
+	aabbf m_boundingBox;
 };
 
 //-----------------------------------------------------------------------------

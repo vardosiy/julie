@@ -69,14 +69,14 @@ u64 Mesh::getIndeciesCount() const noexcept
 
 //-----------------------------------------------------------------------------
 
-const boxf& Mesh::getBoundingBox() const noexcept
+const aabbf& Mesh::getBoundingBox() const noexcept
 {
 	return m_boundingBox;
 }
 
 //-----------------------------------------------------------------------------
 
-boxf Mesh::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
+aabbf Mesh::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
 {
 	auto maxFinder = [&_vertices](auto&& _predicate)
 	{
@@ -91,7 +91,7 @@ boxf Mesh::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
 	const Vertex& highest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y < _rhs.pos.y; });
 	const Vertex& closest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z < _rhs.pos.z; });
 
-	return boxf{
+	return aabbf{
 		glm::vec3{ leftmost.pos.x, lowest.pos.y, farthest.pos.z },
 		glm::vec3{ rightmost.pos.x, highest.pos.y, closest.pos.z }
 	};

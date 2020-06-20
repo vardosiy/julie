@@ -1,6 +1,6 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
 
 #include <glm/glm.hpp>
 #include <boost/noncopyable.hpp>

@@ -1,29 +1,11 @@
 #pragma once
 
-#include <cstdint>
-
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 //-----------------------------------------------------------------------------
 
 namespace jl {
-
-//-----------------------------------------------------------------------------
-
-using s8 = int8_t;
-using u8 = uint8_t;
-
-using s16 = int16_t;
-using u16 = uint16_t;
-
-using s32 = int32_t;
-using u32 = uint32_t;
-
-using s64 = int64_t;
-using u64 = uint64_t;
-
-using index_t = u32;
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +17,7 @@ struct rayf
 
 //-----------------------------------------------------------------------------
 
-struct boxf
+struct aabbf
 {
 	//   ___________
 	//  /|         /|
@@ -53,9 +35,9 @@ struct boxf
 	glm::vec3 max; // 2: right-top-close
 };
 
-inline boxf operator*(const glm::mat4& _mat, const boxf& _box)
+inline aabbf operator*(const glm::mat4& _mat, const aabbf& _box)
 {
-	return jl::boxf{
+	return aabbf{
 		_mat * glm::vec4(_box.min, 1.0f),
 		_mat * glm::vec4(_box.max, 1.0f)
 	};

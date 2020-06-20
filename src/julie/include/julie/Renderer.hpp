@@ -1,6 +1,7 @@
 #pragma once
 
-#include "julie/Types.hpp"
+#include "julie/core/Types.hpp"
+#include "julie/core/Aabb.hpp"
 
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -33,13 +34,13 @@ public:
 	static void init();
 	static void shutdown();
 
-	static void draw(const Mesh& _mesh) noexcept;
-	static void draw(const boxf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept;
-
 	static void setClearColor(const glm::vec4& _color) noexcept;
 
 	static void setFrontPolygonsMode(PolygonMode _mode) noexcept;
 	static void setBackPolygonsMode(PolygonMode _mode) noexcept;
+
+	static void draw(const Mesh& _mesh) noexcept;
+	static void draw(const aabbf& _box, const glm::vec4& _color, const glm::mat4& _transform) noexcept;
 
 //-----------------------------------------------------------------------------
 private:
