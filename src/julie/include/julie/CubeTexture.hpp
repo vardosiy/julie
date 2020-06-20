@@ -14,22 +14,22 @@ namespace jl {
 class CubeTexture : public TextureBase
 {
 public:
-	static std::unique_ptr<jl::CubeTexture> loadFromFile(std::string_view _filePath);
+	static std::unique_ptr<CubeTexture> loadFromFile(std::string_view _filePath);
 
 	u32 getFaceWidth() const noexcept;
 
 private:
-	CubeTexture(const char* _data, u32 _width, u32 _height, u32 _bpp);
+	CubeTexture(const u8* _data, u32 _width, u32 _height, u32 _channels);
 
-	static void loadDataToGpu(const char* _data, u32 _faceWidth, u32 _bpp);
+	static void loadDataToGpu(const u8* _data, u32 _faceWidth, u32 _channels);
 	static void extractFace(
-		const char* _pSrc,	// source
-		char* _pDst,		// destination
+		const u8* _pSrc,	// source
+		u8* _pDst,			// destination
 		u32 _srcRowLength,	// pixels
 		u32 _dstRowLength,	// pixels
 		u32 _offsetX,		// pixels
 		u32 _offsetY,		// pixels
-		u32 _bpp
+		u32 _channels
 	);
 };
 
