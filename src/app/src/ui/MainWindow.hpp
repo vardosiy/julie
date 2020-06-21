@@ -18,7 +18,6 @@ class MainWindow;
 }
 
 namespace jl {
-class Model;
 class Material;
 }
 
@@ -53,9 +52,6 @@ private:
 	void onGlLoaded();
 
 	void setupUi();
-	void setupRoom();
-
-	float getDeltaTime();
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
@@ -68,7 +64,6 @@ private:
 	app::ScopedConnection m_glLoadedConnection;
 
 	std::unique_ptr<SceneWrapper> m_sceneWrapper;
-	std::unique_ptr<jl::Model> m_roomModel;
 
 	jl::Camera m_camera;
 	FreeflyCameraController m_cameraController;

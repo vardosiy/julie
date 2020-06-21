@@ -11,8 +11,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace details
-{
+namespace details {
 
 struct ScopedFlagSwitcher
 {
@@ -55,10 +54,8 @@ ViewPropertiesWidget::ViewPropertiesWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-void ViewPropertiesWidget::update(float _dt) noexcept
+void ViewPropertiesWidget::update() noexcept
 {
-	m_camController->update(_dt);
-
 	const jl::Camera* camera = m_camController->getCamera();
 	m_ui->lbl_camPosValue->setText(vecToString(camera->getPosition()));
 	m_ui->lbl_camViewDirectionValue->setText(vecToString(camera->getViewTarget()));

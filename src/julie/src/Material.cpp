@@ -9,7 +9,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-void Material::bind() const
+void Material::bind() const noexcept
 {
 	if (m_shader)
 	{
@@ -42,6 +42,13 @@ void Material::setShader(const Shader* _shader) noexcept
 const std::vector<Material::Property>& Material::getProperties() const noexcept
 {
 	return m_properties;
+}
+
+//-----------------------------------------------------------------------------
+
+void jl::Material::clearProperties() noexcept
+{
+	m_properties.clear();
 }
 
 //-----------------------------------------------------------------------------

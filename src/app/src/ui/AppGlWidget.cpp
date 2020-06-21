@@ -94,6 +94,12 @@ void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
 void AppGlWidget::setScene(SceneWrapper* _sceneWrapper) noexcept
 {
 	m_sceneWrapper = _sceneWrapper;
+
+	if (m_sceneWrapper)
+	{
+		auto& lightsHolder = m_sceneWrapper->getLightsHolder();
+		lightsHolder.addPointLight(jl::PointLightData{ glm::vec3(1.0f), glm::vec3(1.0f) });
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -116,46 +122,6 @@ void AppGlWidget::resetSelectedObj()
 	m_selectedObject = nullptr;
 	m_selectedObjDistance = std::numeric_limits<float>::max();
 }
-
-//-----------------------------------------------------------------------------
-
-//void AppGlWidget::refreshIntersections()
-//{
-//	if (!m_sceneWrapper)
-//	{
-//		return;
-//	}
-//
-//	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
-//	{
-//		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::IsIntersected;
-//		_objWrapper.setRenderFlags(flags);
-//	});
-//
-//	m_sceneWrapper->forEachObject([this](ObjectWrapper& _i)
-//	{
-//		if (_i.getModel() == nullptr ||
-//			_i.getName() == m_uninteractibleObjName ||
-//			_i.getRenderFlags() & jl::Object::RenderFlags::IsIntersected)
-//			return;
-//
-//		const jl::boxf worldBoxI = _i.getWorldMatrix() * _i.getModel()->getBoundingBox();
-//		m_sceneWrapper->forEachObject([this, &_i, &worldBoxI](ObjectWrapper& _j)
-//		{
-//			if (&_j == &_i ||
-//				_j.getModel() == nullptr ||
-//				_j.getName() == m_uninteractibleObjName)
-//				return;
-//
-//			const jl::boxf worldBoxJ = _j.getWorldMatrix() * _j.getModel()->getBoundingBox();
-//			if (jl::intersect(worldBoxI, worldBoxJ))
-//			{
-//				_i.setRenderFlags(_i.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
-//				_j.setRenderFlags(_j.getRenderFlags() | jl::Object::RenderFlags::IsIntersected);
-//			}
-//		});
-//	});
-//}
 
 //-----------------------------------------------------------------------------
 

@@ -15,10 +15,10 @@ public:
 	ObjectWrapper(ObjectWrapper&& _rhs) = default;
 	ObjectWrapper& operator=(ObjectWrapper&& _rhs) = default;
 
+//-----------------------------------------------------------------------------
 	jl::Object& getInternalObject() noexcept;
 	const jl::Object& getInternalObject() const noexcept;
 
-//-----------------------------------------------------------------------------
 	const std::string& getName() const noexcept;
 	void setName(std::string _name) noexcept;
 

@@ -32,12 +32,13 @@ public:
 	};
 
 //-----------------------------------------------------------------------------
-	void bind() const;
+	void bind() const noexcept;
 
 	const Shader* getShader() const noexcept;
 	void setShader(const Shader* _shader) noexcept;
 
 	const std::vector<Property>& getProperties() const noexcept;
+	void clearProperties() noexcept;
 
 	void setProperty(const std::string& _name, float				_val) noexcept { setPropertyCommon(_name, _val); }
 	void setProperty(const std::string& _name, s32					_val) noexcept { setPropertyCommon(_name, _val); }

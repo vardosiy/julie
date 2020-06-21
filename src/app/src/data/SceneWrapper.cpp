@@ -36,7 +36,7 @@ void SceneWrapper::removeObject(std::string_view _name) noexcept
 		const jl::Object& obj = it->getInternalObject();
 
 		m_objWrappers.erase(it);
-		m_scene->removeObject(obj);
+		m_scene->eraseObject(obj);
 	}
 }
 

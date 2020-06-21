@@ -18,7 +18,7 @@ class ViewPropertiesWidget : public QWidget
 public:
 	explicit ViewPropertiesWidget(QWidget* parent = nullptr);
 
-	void update(float _dt) noexcept;
+	void update() noexcept;
 
 	void setGlWidget(AppGlWidget* _glWidget) noexcept;
 	void setCameraController(FreeflyCameraController* _camContoller) noexcept;
