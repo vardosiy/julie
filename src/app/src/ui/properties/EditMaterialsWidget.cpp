@@ -1,4 +1,4 @@
-#include "ui/props/EditMaterialsWidget.hpp"
+#include "ui/properties/EditMaterialsWidget.hpp"
 #include "ui_EditableVec4Widget.h"
 
 #include "julie/managers/MaterialsManager.hpp"

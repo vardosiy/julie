@@ -1,4 +1,4 @@
-#include "ui/props/EditableVec3Widget.hpp"
+#include "ui/properties/EditableVec3Widget.hpp"
 #include "ui_EditableVec3Widget.h"
 
 #include "ui/UiUtils.hpp"

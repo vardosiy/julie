@@ -1,4 +1,4 @@
-#include "ui/props/PropertyTypes.hpp"
+#include "ui/properties/PropertyTypes.hpp"
 
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/Material.hpp"

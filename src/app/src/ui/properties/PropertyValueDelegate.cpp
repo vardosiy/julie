@@ -1,9 +1,9 @@
-#include "ui/props/PropertyValueDelegate.hpp"
-#include "ui/props/PropertyTypes.hpp"
-#include "ui/props/EditableResourcePathWidget.hpp"
-#include "ui/props/EditableVec3Widget.hpp"
-#include "ui/props/EditableVec4Widget.hpp"
-#include "ui/props/EditMaterialsWidget.hpp"
+#include "ui/properties/PropertyValueDelegate.hpp"
+#include "ui/properties/PropertyTypes.hpp"
+#include "ui/properties/EditableResourcePathWidget.hpp"
+#include "ui/properties/EditableVec3Widget.hpp"
+#include "ui/properties/EditableVec4Widget.hpp"
+#include "ui/properties/EditMaterialsWidget.hpp"
 
 #include "ui/UiUtils.hpp"
 

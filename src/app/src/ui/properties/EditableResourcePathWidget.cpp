@@ -1,4 +1,4 @@
-#include "ui/props/EditableResourcePathWidget.hpp"
+#include "ui/properties/EditableResourcePathWidget.hpp"
 #include "ui_EditableResourcePathWidget.h"
 
 #include "julie/managers/ResourceManager.hpp"

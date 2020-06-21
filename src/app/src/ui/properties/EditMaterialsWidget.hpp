@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui/props/PropertyTypes.hpp"
+#include "ui/properties/PropertyTypes.hpp"
 
 #include <QComboBox>
 
