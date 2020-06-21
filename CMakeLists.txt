@@ -35,6 +35,7 @@ include(${scripts_dir}/cmake/SetupFilters.cmake)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER cmake_autogen)
+
 set(3rd_party_targets_group	3rd-party)
 set(tests_targets_group		tests)
 
@@ -49,8 +50,6 @@ set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP gen)
 #------------------------------------------------------------------------------
 # 3rd-party libs
 message("--------------------Loading 3rd-party libs--------------------")
-
-include_directories(${boost_dir})
 
 set(BUILD_SHARED_LIBS OFF)
 set(BUILD_STATIC_LIBS ON)

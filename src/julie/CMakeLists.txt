@@ -10,6 +10,8 @@ target_include_directories(julie PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(julie utils)
 target_link_libraries(julie glad)
 
+target_include_directories(julie PUBLIC ${boost_dir})
+
 target_include_directories(julie PUBLIC ${3rd_party_dir}/glm)
 target_link_libraries(julie glm_static)
 
