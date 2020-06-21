@@ -20,6 +20,7 @@ public:
 	const QVariant& getValue() const noexcept;
 	void setValue(const ModelUiWrapper& _value) noexcept;
 	void setValue(const TextureUiWrapper& _value) noexcept;
+	void setValue(const ShaderUiWrapper& _value) noexcept;
 
 //-----------------------------------------------------------------------------
 private slots:

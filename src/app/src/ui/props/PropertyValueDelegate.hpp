@@ -15,4 +15,8 @@ public:
 	void setModelData(QWidget* _editor, QAbstractItemModel* _model, const QModelIndex& _idx) const override;
 
 	QString displayText(const QVariant& _value, const QLocale& _locale) const override;
+
+private:
+	template<typename TData, typename TEditor>
+	void setWidgetData(const QVariant& _data, QWidget* _editor) const;
 };

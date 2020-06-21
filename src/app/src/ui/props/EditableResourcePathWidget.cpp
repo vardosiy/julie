@@ -40,6 +40,15 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 		}
 		m_value = QVariant::fromValue(TextureUiWrapper{ path, texture });
 	}
+	else if (m_value.canConvert<ShaderUiWrapper>())
+	{
+		jl::Shader* shader = nullptr;
+		if (!path.isEmpty())
+		{
+			shader = ResourceManager::getInstance().loadShader(path.toStdString());
+		}
+		m_value = QVariant::fromValue(ShaderUiWrapper{ path, shader });
+	}
 
 	return m_value;
 }
@@ -49,13 +58,7 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 void EditableResourcePathWidget::setValue(const ModelUiWrapper& _value) noexcept
 {
 	m_value = QVariant::fromValue(_value);
-
-	QString modelPath;
-	if (_value.value)
-	{
-		modelPath = ResourceManager::getInstance().findSourceFile(*_value.value).c_str();
-	}
-	m_ui->text_path->setText(modelPath);
+	m_ui->text_path->setText(_value.filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,13 +66,15 @@ void EditableResourcePathWidget::setValue(const ModelUiWrapper& _value) noexcept
 void EditableResourcePathWidget::setValue(const TextureUiWrapper& _value) noexcept
 {
 	m_value = QVariant::fromValue(_value);
+	m_ui->text_path->setText(_value.filePath);
+}
 
-	QString texturePath;
-	if (_value.value)
-	{
-		texturePath = ResourceManager::getInstance().findSourceFile(*_value.value).c_str();
-	}
-	m_ui->text_path->setText(texturePath);
+//-----------------------------------------------------------------------------
+
+void EditableResourcePathWidget::setValue(const ShaderUiWrapper& _value) noexcept
+{
+	m_value = QVariant::fromValue(_value);
+	m_ui->text_path->setText(_value.filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,6 +93,10 @@ void EditableResourcePathWidget::onOpenFilePressed()
 	else if (m_value.canConvert<TextureUiWrapper>())
 	{
 		path = selectFile("Select Texture", "Textures (*.png *.jpg *.tga)");
+	}
+	else if (m_value.canConvert<ShaderUiWrapper>())
+	{
+		path = selectFile("Select Shader", "Shader Data (*.shdata)");
 	}
 	m_ui->text_path->setText(path);
 }
