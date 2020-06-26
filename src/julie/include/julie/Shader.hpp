@@ -48,7 +48,7 @@ public:
 private:
 	Shader(u32 _programId);
 
-	s32 getUniformLocation(const std::string& _name) const;
+	s32 findUniformLocation(const std::string& _name) const;
 
 	static u32 loadShader(u32 _type, std::string_view _source) noexcept;
 	static u32 loadProgram(u32 _vsId, u32 _fsId) noexcept;

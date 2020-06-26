@@ -44,10 +44,10 @@ private:
 
 	static const std::string u_ambientColor;
 	static const std::string u_ambientWeight;
-	static const std::string u_directionalLightColor;
-	static const std::string u_lightDirection;
 	static const std::string u_pointLightColor;
 	static const std::string u_lightPosition;
+	static const std::string u_directionalLightColor;
+	static const std::string u_lightDirection;
 };
 
 //-----------------------------------------------------------------------------

@@ -23,10 +23,10 @@ const std::string CommonUniformsBinder::u_fogColor				= "u_fogColor";
 
 const std::string CommonUniformsBinder::u_ambientColor			= "u_ambientColor";
 const std::string CommonUniformsBinder::u_ambientWeight			= "u_ambientWeight";
-const std::string CommonUniformsBinder::u_directionalLightColor	= "u_directionalLightColor";
-const std::string CommonUniformsBinder::u_lightDirection		= "u_lightDirection";
 const std::string CommonUniformsBinder::u_pointLightColor		= "u_pointLightColor";
 const std::string CommonUniformsBinder::u_lightPosition			= "u_lightPosition";
+const std::string CommonUniformsBinder::u_directionalLightColor	= "u_directionalLightColor";
+const std::string CommonUniformsBinder::u_lightDirection		= "u_lightDirection";
 
 //-----------------------------------------------------------------------------
 

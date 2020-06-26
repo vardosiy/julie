@@ -81,75 +81,75 @@ void Shader::bind() const noexcept
 
 bool Shader::hasUniform(const std::string& _name) const noexcept
 {
-	return getUniformLocation(_name) != -1;
+	return findUniformLocation(_name) != -1;
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, s32 _val) const
 {
-	glUniform1i(getUniformLocation(_name), _val);
+	glUniform1i(findUniformLocation(_name), _val);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, float _val) const
 {
-	glUniform1f(getUniformLocation(_name), _val);
+	glUniform1f(findUniformLocation(_name), _val);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::vec2& _val) const
 {
-	glUniform2f(getUniformLocation(_name), _val.x, _val.y);
+	glUniform2f(findUniformLocation(_name), _val.x, _val.y);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::vec3& _val) const
 {
-	glUniform3f(getUniformLocation(_name), _val.x, _val.y, _val.z);
+	glUniform3f(findUniformLocation(_name), _val.x, _val.y, _val.z);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::vec4& _val) const
 {
-	glUniform4f(getUniformLocation(_name), _val.x, _val.y, _val.z, _val.w);
+	glUniform4f(findUniformLocation(_name), _val.x, _val.y, _val.z, _val.w);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, const glm::mat4& _val) const
 {
-	glUniformMatrix4fv(getUniformLocation(_name), 1, false, glm::value_ptr(_val));
+	glUniformMatrix4fv(findUniformLocation(_name), 1, false, glm::value_ptr(_val));
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, u32 _count, const s32* _val) const
 {
-	glUniform1iv(getUniformLocation(_name), _count, _val);
+	glUniform1iv(findUniformLocation(_name), _count, _val);
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const
 {
-	glUniform3fv(getUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
+	glUniform3fv(findUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
 }
 
 //-----------------------------------------------------------------------------
 
 void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const
 {
-	glUniform4fv(getUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
+	glUniform4fv(findUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
 }
 
 //-----------------------------------------------------------------------------
 
-s32 Shader::getUniformLocation(const std::string& _name) const
+s32 Shader::findUniformLocation(const std::string& _name) const
 {
 	s32 location = -1;
 
