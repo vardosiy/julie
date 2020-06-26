@@ -4,19 +4,19 @@
 
 #include <QComboBox>
 
-class EditMaterialsWidget : public QComboBox
+class SelectMaterialWidget : public QComboBox
 {
 	Q_OBJECT
 
 public:
-	explicit EditMaterialsWidget(QWidget* _parent = nullptr);
+	explicit SelectMaterialWidget(QWidget* _parent = nullptr);
 
 	const MaterialUiWrapper& getValue() const noexcept;
-	void setValue(const MaterialUiWrapper& _data) noexcept;
+	void setValue(const MaterialUiWrapper& _value) noexcept;
 
 private slots:
 	void onMaterialChanged(const QString& _materialName);
 
 private:
-	MaterialUiWrapper m_data;
+	MaterialUiWrapper m_value;
 };

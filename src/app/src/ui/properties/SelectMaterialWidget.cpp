@@ -1,12 +1,11 @@
-#include "ui/properties/EditMaterialsWidget.hpp"
-#include "ui_EditableVec4Widget.h"
+#include "ui/properties/SelectMaterialWidget.hpp"
 
 #include "julie/managers/MaterialsManager.hpp"
 #include "julie/Mesh.hpp"
 
 //-----------------------------------------------------------------------------
 
-EditMaterialsWidget::EditMaterialsWidget(QWidget* _parent)
+SelectMaterialWidget::SelectMaterialWidget(QWidget* _parent)
 	: QComboBox(_parent)
 {
 	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
@@ -14,32 +13,32 @@ EditMaterialsWidget::EditMaterialsWidget(QWidget* _parent)
 		addItem(QString::fromStdString(_name));
 	});
 
-	connect(this, qOverload<const QString&>(&QComboBox::currentIndexChanged), this, &EditMaterialsWidget::onMaterialChanged);
+	connect(this, qOverload<const QString&>(&QComboBox::currentIndexChanged), this, &SelectMaterialWidget::onMaterialChanged);
 }
 
 //-----------------------------------------------------------------------------
 
-const MaterialUiWrapper& EditMaterialsWidget::getValue() const noexcept
+const MaterialUiWrapper& SelectMaterialWidget::getValue() const noexcept
 {
-	return m_data;
+	return m_value;
 }
 
 //-----------------------------------------------------------------------------
 
-void EditMaterialsWidget::setValue(const MaterialUiWrapper& _data) noexcept
+void SelectMaterialWidget::setValue(const MaterialUiWrapper& _value) noexcept
 {
-	m_data = _data;
-	setCurrentText(m_data.materialName);
+	m_value = _value;
+	setCurrentText(m_value.materialName);
 }
 
 //-----------------------------------------------------------------------------
 
-void EditMaterialsWidget::onMaterialChanged(const QString& _materialName)
+void SelectMaterialWidget::onMaterialChanged(const QString& _materialName)
 {
-	m_data.materialName = _materialName;
+	m_value.materialName = _materialName;
 
 	const jl::Material* material = MaterialsManager::getInstance().findMaterial(_materialName.toStdString());
-	m_data.mesh->setMaterial(material);
+	m_value.mesh->setMaterial(material);
 }
 
 //-----------------------------------------------------------------------------
