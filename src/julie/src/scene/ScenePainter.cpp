@@ -67,9 +67,8 @@ void ScenePainter::drawModel(const Model& _model, const Camera& _cam, const glm:
 			{
 				material->bind();
 
-				CommonUniformsBinder uniformBinder(*shader);
-				uniformBinder.setupCommon(_cam, _worldMat);
-				uniformBinder.setupLights(m_scene.getLightsHolder());
+				CommonUniformsBinder uniformBinder(m_scene, _cam, _worldMat);
+				uniformBinder.bind(*shader);
 
 				Renderer::draw(mesh);
 			}

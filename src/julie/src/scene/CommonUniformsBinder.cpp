@@ -30,79 +30,58 @@ const std::string CommonUniformsBinder::u_lightPosition			= "u_lightPosition";
 
 //-----------------------------------------------------------------------------
 
-CommonUniformsBinder::CommonUniformsBinder(const Shader& _shader) noexcept
-	: m_shader(_shader)
+CommonUniformsBinder::CommonUniformsBinder(
+	const Scene& _scene,
+	const Camera& _camera,
+	const glm::mat4& _worldMatrix
+) noexcept
+	: m_scene(_scene)
+	, m_camera(_camera)
+	, m_worldMatrix(_worldMatrix)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CommonUniformsBinder::setupCommon(const Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept
+void CommonUniformsBinder::bind(const Shader& _shader) const noexcept
 {
-	bindUniform(u_W,			_worldMatrix);
-	bindUniform(u_WVP,			_camera.getViewProjectionMatrix() * _worldMatrix);
-	bindUniform(u_camPosition,	_camera.getPosition());
+	auto bindUniform = [&_shader](const std::string& _name, const auto& _val)
+	{
+		if (_shader.hasUniform(_name))
+			_shader.setUniform(_name, _val);
+	};
+	auto bindUniformArr = [&_shader](const std::string& _name, const auto& _arr)
+	{
+		if (_shader.hasUniform(_name))
+			_shader.setUniform(_name, _arr.size(), _arr.data());
+	};
+
+	_shader.bind();
+
+	bindUniform(u_W,			m_worldMatrix);
+	bindUniform(u_WVP,			m_camera.getViewProjectionMatrix() * m_worldMatrix);
+	bindUniform(u_camPosition,	m_camera.getPosition());
 	bindUniform(u_time,			Globals::s_timeTotal);
-}
 
-//-----------------------------------------------------------------------------
-
-void CommonUniformsBinder::setupFog(const FogData& _fogData) const noexcept
-{
-	bindUniform(u_fogStart, _fogData.start);
-	bindUniform(u_fogRange, _fogData.range);
-	bindUniform(u_fogColor, _fogData.color);
-}
-
-//-----------------------------------------------------------------------------
-
-void CommonUniformsBinder::setupLights(const LightsHolder& _lightsHolder) const noexcept
-{
-	bindUniform(u_ambientColor,				_lightsHolder.getAmbientLightData().color);
-	bindUniform(u_ambientWeight,			_lightsHolder.getAmbientLightData().weight);
-
-	bindUniform(u_directionalLightColor,	_lightsHolder.getDirectionalLightsColors());
-	bindUniform(u_lightDirection,			_lightsHolder.getDirectionalLightsDirections());
-
-	bindUniform(u_pointLightColor,			_lightsHolder.getPointLightsColors());
-	bindUniform(u_lightPosition,			_lightsHolder.getPointLightsPositions());
-}
-
-//-----------------------------------------------------------------------------
-
-template<typename T>
-void CommonUniformsBinder::bindUniform(const std::string& _name, const T& _val) const noexcept
-{
-	if (m_shader.hasUniform(_name))
+	if (const FogData* fogData = m_scene.getFogData())
 	{
-		m_shader.setUniform(_name, _val);
+		bindUniform(u_fogStart,	fogData->start);
+		bindUniform(u_fogRange,	fogData->range);
+		bindUniform(u_fogColor,	fogData->color);
 	}
-};
 
-//-----------------------------------------------------------------------------
-
-template<typename T>
-void CommonUniformsBinder::bindUniform(const std::string& _name, const std::vector<T>& _val) const noexcept
-{
-	if (m_shader.hasUniform(_name))
 	{
-		m_shader.setUniform(_name, _val.size(), _val.data());
+		const LightsHolder& lightsHolder = m_scene.getLightsHolder();
+
+		bindUniform(u_ambientColor,				lightsHolder.getAmbientLightData().color);
+		bindUniform(u_ambientWeight,			lightsHolder.getAmbientLightData().weight);
+
+		bindUniformArr(u_pointLightColor,		lightsHolder.getPointLightsColors());
+		bindUniformArr(u_lightPosition,			lightsHolder.getPointLightsPositions());
+		bindUniformArr(u_directionalLightColor,	lightsHolder.getDirectionalLightsColors());
+		bindUniformArr(u_lightDirection,		lightsHolder.getDirectionalLightsDirections());
 	}
 }
-
-//-----------------------------------------------------------------------------
-
-//	"u_depthAdjust"
-//	"u_tilingFactor"
-//	"u_dMax"
-//	"u_depthDispl"
-//	"u_specularPower"
-//	"u_step"
-//	"u_limit"
-//	"u_near"
-//	"u_far"
-//	"u_clarity"
-//	"u_fade"
 
 //-----------------------------------------------------------------------------
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "julie/core/Types.hpp"
-
-#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
 
 #include <string>
 #include <vector>
@@ -13,30 +11,26 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
+class Scene;
 class Camera;
 class Shader;
 class LightsHolder;
-struct FogData;
 
 class CommonUniformsBinder
 {
-//-----------------------------------------------------------------------------
 public:
-	CommonUniformsBinder(const Shader& _shader) noexcept;
+	CommonUniformsBinder(
+		const Scene& _scene,
+		const Camera& _camera,
+		const glm::mat4& _worldMatrix
+	) noexcept;
 
-	void setupCommon(const Camera& _camera, const glm::mat4x4& _worldMatrix) const noexcept;
-	void setupFog(const FogData& _fogData) const noexcept;
-	void setupLights(const LightsHolder& _lightsHolder) const noexcept;
+	void bind(const Shader& _shader) const noexcept;
 
-//-----------------------------------------------------------------------------
 private:
-	template<typename T>
-	void bindUniform(const std::string& _name, const T& _val) const noexcept;
-	template<typename T>
-	void bindUniform(const std::string& _name, const std::vector<T>& _val) const noexcept;
-
-//-----------------------------------------------------------------------------
-	const Shader& m_shader;
+	const Scene& m_scene;
+	const Camera& m_camera;
+	const glm::mat4& m_worldMatrix;
 
 //-----------------------------------------------------------------------------
 	static const std::string u_W;
