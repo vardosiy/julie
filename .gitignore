@@ -8,8 +8,11 @@ lib/
 build/
 __pycache__/
 scripts/python/__pycache__/
-src/application/Log.log
-src/application/SaveFile.json
+src/app/Log.log
+src/app/SaveFile.json
+src/app/res/models/
+src/app/res/textures/
+src/app/res/shaders/composed/
 
 # generated and local-specific cmake files
 Autogen.cmake
