@@ -1,1 +1,1 @@
-set(local_boost_dir "C:/dipl/boost/boost_1_71_0")
+set(local_boost_dir "E:/CommonLibs/boost/boost_1_72_0")
