@@ -11,28 +11,6 @@
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-struct ScopedFlagSwitcher
-{
-	ScopedFlagSwitcher(bool& _val)
-		: m_value(_val)
-	{
-		m_value = !m_value;
-	}
-
-	~ScopedFlagSwitcher()
-	{
-		m_value = !m_value;
-	}
-
-	bool& m_value;
-};
-
-} // namespace details
-
-//-----------------------------------------------------------------------------
-
 ViewPropertiesWidget::ViewPropertiesWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_glWidget(nullptr)
@@ -72,7 +50,7 @@ void ViewPropertiesWidget::setGlWidget(AppGlWidget* _glWidget) noexcept
 
 void ViewPropertiesWidget::setCameraController(FreeflyCameraController* _camContoller) noexcept
 {
-	details::ScopedFlagSwitcher switcher(m_editingValue);
+	ScopedFlagSwitcher switcher(m_editingValue);
 
 	m_camController = _camContoller;
 
@@ -92,7 +70,7 @@ void ViewPropertiesWidget::onCamMoveSpeedChanged(int _value)
 {
 	if (!m_editingValue)
 	{
-		details::ScopedFlagSwitcher switcher(m_editingValue);
+		ScopedFlagSwitcher switcher(m_editingValue);
 
 		const float newValue = static_cast<float>(_value) * 0.01f;
 		m_camController->setCameraMoveSpeed(newValue);
@@ -106,7 +84,7 @@ void ViewPropertiesWidget::onCamRotateSpeedChanged(int _value)
 {
 	if (!m_editingValue)
 	{
-		details::ScopedFlagSwitcher switcher(m_editingValue);
+		ScopedFlagSwitcher switcher(m_editingValue);
 
 		const float newValue = static_cast<float>(_value) * 0.01f;
 		m_camController->setCameraRotateSpeed(newValue);
@@ -120,7 +98,7 @@ void ViewPropertiesWidget::onCamMoveSpeedChanged(float _value)
 {
 	if (!m_editingValue)
 	{
-		details::ScopedFlagSwitcher switcher(m_editingValue);
+		ScopedFlagSwitcher switcher(m_editingValue);
 
 		m_camController->setCameraMoveSpeed(_value);
 		m_ui->sld_camMoveSpeed->setValue(static_cast<int>(_value * 100.0f));
@@ -133,7 +111,7 @@ void ViewPropertiesWidget::onCamRotateSpeedChanged(float _value)
 {
 	if (!m_editingValue)
 	{
-		details::ScopedFlagSwitcher switcher(m_editingValue);
+		ScopedFlagSwitcher switcher(m_editingValue);
 
 		m_camController->setCameraRotateSpeed(_value);
 		m_ui->sld_camRotateSpeed->setValue(static_cast<int>(_value * 100.0f));

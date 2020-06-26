@@ -1,9 +1,10 @@
 #include "ui/PropertiesWidget.hpp"
+#include "ui/UiUtils.hpp"
 #include "ui_PropertiesWidget.h"
 
-#include "ui/props/MaterialPropertyValueVisitor.hpp"
-#include "ui/props/PropertyValueDelegate.hpp"
-#include "ui/props/PropertyTypes.hpp"
+#include "ui/properties/MaterialPropertyValueVisitor.hpp"
+#include "ui/properties/PropertyValueDelegate.hpp"
+#include "ui/properties/PropertyTypes.hpp"
 
 #include "data/ObjectWrapper.hpp"
 
@@ -24,11 +25,10 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 	m_ui = std::make_unique<Ui::PropertiesWidget>();
 	m_ui->setupUi(this);
 
-	m_ui->treev_properties->setModel(&m_propertiesTableModel);
-
 	m_propertiesTableModel.setHeaderData(k_nameColIdx, Qt::Horizontal, "Property");
 	m_propertiesTableModel.setHeaderData(k_valueColIdx, Qt::Horizontal, "Value");
 
+	m_ui->treev_properties->setModel(&m_propertiesTableModel);
 	m_ui->treev_properties->setItemDelegateForColumn(k_valueColIdx, new PropertyValueDelegate(m_ui->treev_properties));
 
 	connect(&m_propertiesTableModel, &QStandardItemModel::dataChanged, this, &PropertiesWidget::onDataChanged);
@@ -48,7 +48,6 @@ void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
 	else
 	{
 		reset();
-
 		m_propertiesTableModel.setRowCount(2); // model + transform
 
 		const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx);
@@ -72,8 +71,14 @@ void PropertiesWidget::setActiveEntity(jl::Material& _material)
 			return;
 		}
 	}
+	else
+	{
+		reset();
+		m_propertiesTableModel.setRowCount(2); // shader + uniforms
+	}
 
-	reset();
+
+	m_activeEntity = nullptr;
 	refreshMaterialProperties(_material);
 	m_activeEntity = &_material;
 }
@@ -132,43 +137,35 @@ void PropertiesWidget::refreshObjectSize()
 
 void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 {
-	const QModelIndex rootIdx;
 	int propNum = 0;
-
 	{
-		QString filePath;
-
 		jl::Model* model = _object.getModel();
-		if (model)
-		{
-			filePath = ResourceManager::getInstance().findSourceFile(*model).c_str();
-		}
+		const QVariant value = QVariant::fromValue(ModelUiWrapper{ findSourceFile(model), model });
+		setPropertyRow(propNum, "Model", value);
 
-		const QVariant value = QVariant::fromValue(ModelUiWrapper{ filePath, model });
-		setPropertyRow(propNum, rootIdx, "Model", value);
-		refreshMeshes(model, index(propNum, k_nameColIdx, rootIdx));
+		refreshMeshes(model, index(propNum, k_nameColIdx));
 
 		++propNum;
 	}
 	{
-		const QModelIndex transformIdx = index(propNum, k_nameColIdx, rootIdx);
-		setHeaderRow(propNum, rootIdx, "Transform");
+		const QModelIndex transformIdx = index(propNum, k_nameColIdx);
+		setHeaderRow(propNum, "Transform");
 
 		int transfromNum = 0;
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setPosition(_val); };
 			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition(), editCallback });
-			setPropertyRow(transfromNum++, transformIdx, "Position", pos);
+			setPropertyRow(transfromNum++, "Position", pos, transformIdx);
 		}
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setSize(_val); };
 			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize(), editCallback });
-			setPropertyRow(transfromNum++, transformIdx, "Scale", size);
+			setPropertyRow(transfromNum++, "Scale", size, transformIdx);
 		}
 		{
 			auto editCallback = [&_object](const glm::vec3& _val) { _object.setRotation(_val); };
 			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation(), editCallback });
-			setPropertyRow(transfromNum++, transformIdx, "Rotation", rotation);
+			setPropertyRow(transfromNum++, "Rotation", rotation, transformIdx);
 		}
 		ASSERT(transfromNum == k_transformsNum);
 
@@ -198,7 +195,7 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model, const QModelIndex& _pare
 			}
 
 			const QVariant value = QVariant::fromValue(MaterialUiWrapper{ materialName, &mesh });
-			setPropertyRow(i, _parent, meshMaterialtemplate.arg(i + 1), value);
+			setPropertyRow(i, meshMaterialtemplate.arg(i + 1), value, _parent);
 		}
 	}
 }
@@ -207,28 +204,18 @@ void PropertiesWidget::refreshMeshes(jl::Model* _model, const QModelIndex& _pare
 
 void PropertiesWidget::refreshMaterialProperties(jl::Material& _material)
 {
-	m_propertiesTableModel.setRowCount(2); // properties + shader
-
-	const QModelIndex rootIdx;
 	int propNum = 0;
-
 	{
-		QString filePath;
-
 		const jl::Shader* shader = _material.getShader();
-		if (shader)
-		{
-			filePath = ResourceManager::getInstance().findSourceFile(*shader).c_str();
-		}
-
-		const QVariant value = QVariant::fromValue(ShaderUiWrapper{ filePath, shader });
-		setPropertyRow(propNum++, rootIdx, "Shader", value);
+		const QVariant value = QVariant::fromValue(ShaderUiWrapper{ findSourceFile(shader), shader });
+		setPropertyRow(propNum++, "Shader", value);
 	}
 	{
-		setHeaderRow(propNum, rootIdx, "Uniforms");
-		refreshUniforms(_material, index(propNum, k_nameColIdx, rootIdx));
+		setHeaderRow(propNum, "Uniforms");
+		refreshUniforms(_material, index(propNum, k_nameColIdx));
 		++propNum;
 	}
+	ASSERT(propNum == 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +231,7 @@ void PropertiesWidget::refreshUniforms(jl::Material& _material, const QModelInde
 	{
 		const QString name = QString::fromStdString(properties[i].name);
 		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, properties[i].name), properties[i].value);
-		setPropertyRow(i, _parent, name, value);
+		setPropertyRow(i, name, value, _parent);
 	}
 }
 
@@ -272,7 +259,7 @@ void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _
 		_object.setModel(modelWrapper.value);
 
 		refreshObjectSize();
-		refreshMeshes(_object.getModel(), index(_idx.row(), k_nameColIdx));
+		refreshMeshes(modelWrapper.value, index(_idx.row(), k_nameColIdx));
 	}
 }
 
@@ -309,7 +296,7 @@ void PropertiesWidget::setChildRowCount(int _rows, const QModelIndex& _parent)
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name)
+void PropertiesWidget::setHeaderRow(int _row, const QString& _name, const QModelIndex& _parent)
 {
 	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
 	setCellValue(index(_row, k_valueColIdx, _parent), "", false);
@@ -317,7 +304,7 @@ void PropertiesWidget::setHeaderRow(int _row, const QModelIndex& _parent, const 
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value)
+void PropertiesWidget::setPropertyRow(int _row, const QString& _name, const QVariant& _value, const QModelIndex& _parent)
 {
 	setCellValue(index(_row, k_nameColIdx, _parent), _name, false);
 	setCellValue(index(_row, k_valueColIdx, _parent), _value, true);

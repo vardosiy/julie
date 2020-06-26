@@ -52,8 +52,8 @@ private:
 //-----------------------------------------------------------------------------
 	void setChildRowCount(int _rows, const QModelIndex& _parent);
 
-	void setHeaderRow(int _row, const QModelIndex& _parent, const QString& _name);
-	void setPropertyRow(int _row, const QModelIndex& _parent, const QString& _name, const QVariant& _value);
+	void setHeaderRow(int _row, const QString& _name, const QModelIndex& _parent = QModelIndex());
+	void setPropertyRow(int _row, const QString& _name, const QVariant& _value, const QModelIndex& _parent = QModelIndex());
 	void setCellValue(const QModelIndex& _idx, const QVariant& _value, bool _enableEditing);
 
 	QModelIndex index(int _row, int _col, const QModelIndex& _parent = QModelIndex());
@@ -70,7 +70,6 @@ private:
 	static constexpr int k_transformsNum = 3;
 
 	static constexpr int k_transformRowIdx = 1;
-	static constexpr int k_propertiesRowIdx = 1;
 };
 
 //-----------------------------------------------------------------------------

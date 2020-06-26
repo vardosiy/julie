@@ -2,8 +2,7 @@
 #include "ui/properties/PropertyTypes.hpp"
 #include "ui/properties/EditableResourcePathWidget.hpp"
 #include "ui/properties/EditableVec3Widget.hpp"
-#include "ui/properties/EditableVec4Widget.hpp"
-#include "ui/properties/EditMaterialsWidget.hpp"
+#include "ui/properties/SelectMaterialWidget.hpp"
 
 #include "ui/UiUtils.hpp"
 
@@ -32,7 +31,7 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* _parent, const QStyleOptio
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		return new EditMaterialsWidget(_parent);
+		return new SelectMaterialWidget(_parent);
 	}
 	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
@@ -72,7 +71,7 @@ void PropertyValueDelegate::setEditorData(QWidget* _editor, const QModelIndex& _
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		setWidgetData<MaterialUiWrapper, EditMaterialsWidget>(_idx.data(), _editor);
+		setWidgetData<MaterialUiWrapper, SelectMaterialWidget>(_idx.data(), _editor);
 	}
 	else if (_idx.data().canConvert<FloatValUiWrapper>())
 	{
@@ -105,7 +104,7 @@ void PropertyValueDelegate::setModelData(QWidget* _editor, QAbstractItemModel* _
 	}
 	else if (_idx.data().canConvert<MaterialUiWrapper>())
 	{
-		const EditMaterialsWidget* materialsBox = qobject_cast<EditMaterialsWidget*>(_editor);
+		const SelectMaterialWidget* materialsBox = qobject_cast<SelectMaterialWidget*>(_editor);
 		_model->setData(_idx, QVariant::fromValue(materialsBox->getValue()));
 	}
 	else if (_idx.data().canConvert<FloatValUiWrapper>())

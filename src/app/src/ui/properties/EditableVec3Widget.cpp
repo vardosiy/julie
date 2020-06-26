@@ -87,11 +87,10 @@ void EditableVec3Widget::setupSpinBoxes(double _min, double _max, double _step, 
 	m_ui->dsb_y->setRange(_min, _max);
 	m_ui->dsb_z->setRange(_min, _max);
 
-	m_editingValue = true;
+	ScopedFlagSwitcher switcher(m_editingValue);
 	m_ui->dsb_x->setValue(_value.x);
 	m_ui->dsb_y->setValue(_value.y);
 	m_ui->dsb_z->setValue(_value.z);
-	m_editingValue = false;
 }
 
 //-----------------------------------------------------------------------------
