@@ -14,7 +14,6 @@ namespace jl {
 Camera::Camera(float _near, float _far, float _fov)
 	: m_pos(0.0f)
 	, m_target(k_camDirection)
-	, m_upVector(0.0f)
 	, m_rotation(0.0f)
 	, m_isModified(true)
 	, m_aspect(1.0f)
@@ -117,14 +116,6 @@ void Camera::setRotation(const glm::vec3& _vec) noexcept
 {
 	m_rotation = _vec;
 	rotate(glm::vec2(0.0f, 0.0f));
-}
-
-//-----------------------------------------------------------------------------
-
-void Camera::setUpVector(const glm::vec3& _vec) noexcept
-{
-	m_upVector = _vec;
-	m_isModified = true;
 }
 
 //-----------------------------------------------------------------------------

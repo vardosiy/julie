@@ -34,7 +34,6 @@ public:
 
 	void setPosition(const glm::vec3& _vec) noexcept;
 	void setRotation(const glm::vec3& _vec) noexcept;
-	void setUpVector(const glm::vec3& _vec) noexcept;
 
 	void move(const glm::vec3& _vec) noexcept;
 	void rotate(const glm::vec2& _vec) noexcept;
@@ -52,7 +51,6 @@ private:
 //-----------------------------------------------------------------------------
 	glm::vec3 m_pos;
 	glm::vec3 m_target;
-	glm::vec3 m_upVector;
 	glm::vec2 m_rotation;
 
 	float m_aspect;
