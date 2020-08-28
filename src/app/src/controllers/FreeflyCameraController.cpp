@@ -49,8 +49,6 @@ void FreeflyCameraController::update(float _dt) noexcept
 	{
 		m_camera->rotate(camRotation);
 	}
-
-	m_camera->update();
 }
 
 //-----------------------------------------------------------------------------

@@ -15,7 +15,6 @@ Camera::Camera(float _near, float _far, float _fov)
 	: m_pos(0.0f)
 	, m_target(k_camDirection)
 	, m_rotation(0.0f)
-	, m_isModified(true)
 	, m_aspect(1.0f)
 	, m_near(_near)
 	, m_far(_far)
@@ -23,74 +22,9 @@ Camera::Camera(float _near, float _far, float _fov)
 	, m_viewMatrix(1.0f)
 	, m_projectionMatrix(1.0f)
 	, m_viewProjectionMatrix(1.0f)
+	, m_isTransformModified(true)
+	, m_isProjectionModified(true)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void Camera::update()
-{
-	if (m_isModified)
-	{
-		recalculateMatrices();
-		m_isModified = false;
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::vec3& Camera::getPosition() const noexcept
-{
-	return m_pos;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::vec3& Camera::getViewTarget() const noexcept
-{
-	return m_target;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Camera::getViewMatrix() const noexcept
-{
-	return m_viewMatrix;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Camera::getProjectionMatrix() const noexcept
-{
-	return m_projectionMatrix;
-}
-
-//-----------------------------------------------------------------------------
-
-const glm::mat4& Camera::getViewProjectionMatrix() const noexcept
-{
-	return m_viewProjectionMatrix;
-}
-
-//-----------------------------------------------------------------------------
-
-float Camera::getNear() const noexcept
-{
-	return m_near;
-}
-
-//-----------------------------------------------------------------------------
-
-float Camera::getFar() const noexcept
-{
-	return m_far;
-}
-
-//-----------------------------------------------------------------------------
-
-float Camera::getFov() const noexcept
-{
-	return m_fov;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +32,31 @@ float Camera::getFov() const noexcept
 void Camera::setAspect(float _val) noexcept
 {
 	m_aspect = _val;
-	m_isModified = true;
+	m_isProjectionModified = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Camera::setNear(float _val) noexcept
+{
+	m_near = _val;
+	m_isProjectionModified = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Camera::setFar(float _val) noexcept
+{
+	m_far = _val;
+	m_isProjectionModified = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Camera::setFov(float _val) noexcept
+{
+	m_fov = _val;
+	m_isProjectionModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +65,7 @@ void Camera::setPosition(const glm::vec3& _vec) noexcept
 {
 	m_pos = _vec;
 	m_target = m_pos + k_camDirection;
-	m_isModified = true;
+	m_isTransformModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -116,6 +74,41 @@ void Camera::setRotation(const glm::vec3& _vec) noexcept
 {
 	m_rotation = _vec;
 	rotate(glm::vec2(0.0f, 0.0f));
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Camera::getViewMatrix() const noexcept
+{
+	if (m_isTransformModified)
+	{
+		m_viewMatrix = lookAt(m_pos, m_target, constants::axis::y);
+		m_isTransformModified = false;
+	}
+	return m_viewMatrix;
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Camera::getProjectionMatrix() const noexcept
+{
+	if (m_isProjectionModified)
+	{
+		m_projectionMatrix = glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
+		m_isProjectionModified = false;
+	}
+	return m_projectionMatrix;
+}
+
+//-----------------------------------------------------------------------------
+
+const glm::mat4& Camera::getViewProjectionMatrix() const noexcept
+{
+	if (m_isTransformModified || m_isProjectionModified)
+	{
+		m_viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
+	}
+	return m_viewProjectionMatrix;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +125,7 @@ void Camera::move(const glm::vec3& _vec) noexcept
 	m_pos.y += _vec.y;
 	m_target.y += _vec.y;
 
-	m_isModified = true;
+	m_isTransformModified = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -148,16 +141,7 @@ void Camera::rotate(const glm::vec2& _vec) noexcept
 	const glm::vec4 rotated = yRotationMat * (xRotationMat * glm::vec4(k_camDirection, 1.0));
 	m_target = m_pos + glm::vec3(rotated.x, rotated.y, rotated.z);
 
-	m_isModified = true;
-}
-
-//-----------------------------------------------------------------------------
-
-void Camera::recalculateMatrices()
-{
-	m_viewMatrix			= lookAt(m_pos, m_target, constants::axis::y);
-	m_projectionMatrix		= glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
-	m_viewProjectionMatrix	= m_projectionMatrix * m_viewMatrix;
+	m_isTransformModified = true;
 }
 
 //-----------------------------------------------------------------------------
