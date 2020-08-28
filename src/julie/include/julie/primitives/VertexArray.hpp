@@ -5,7 +5,8 @@
 #include "julie/primitives/IndexBuffer.hpp"
 
 #include <boost/noncopyable.hpp>
-#include <boost/optional.hpp>
+
+#include <optional>
 
 //-----------------------------------------------------------------------------
 
@@ -13,7 +14,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class VertexArray
+class VertexArray : boost::noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
@@ -21,12 +22,9 @@ public:
 	~VertexArray();
 
 	VertexArray(VertexArray&& _rhs) noexcept;
-	VertexArray& operator= (VertexArray&& _rhs) noexcept;
+	VertexArray& operator=(VertexArray&& _rhs) noexcept;
 
 	void bind() const noexcept;
-
-	void setVertexBuffer(VertexBuffer&& _buffer) noexcept;
-	void setIndexBuffer(IndexBuffer&& _buffer) noexcept;
 
 	VertexBuffer* getVertexBuffer() noexcept;
 	IndexBuffer* getIndexBuffer() noexcept;
@@ -34,15 +32,18 @@ public:
 	const VertexBuffer* getVertexBuffer() const noexcept;
 	const IndexBuffer* getIndexBuffer() const noexcept;
 
+	void setVertexBuffer(VertexBuffer&& _buffer) noexcept;
+	void setIndexBuffer(IndexBuffer&& _buffer) noexcept;
+
 //-----------------------------------------------------------------------------
 private:
-	void setLayout() noexcept;
+	void setupLayout() noexcept;
 
 //-----------------------------------------------------------------------------
 	u32 m_id;
 
-	boost::optional<VertexBuffer> m_vertexBuffer;
-	boost::optional<IndexBuffer> m_indexBuffer;
+	std::optional<VertexBuffer> m_vertexBuffer;
+	std::optional<IndexBuffer> m_indexBuffer;
 };
 
 //-----------------------------------------------------------------------------

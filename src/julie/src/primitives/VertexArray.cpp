@@ -59,13 +59,41 @@ void VertexArray::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
+VertexBuffer* VertexArray::getVertexBuffer() noexcept
+{
+	return m_vertexBuffer.has_value() ? &m_vertexBuffer.value() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+IndexBuffer* VertexArray::getIndexBuffer() noexcept
+{
+	return m_indexBuffer.has_value() ? &m_indexBuffer.value() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+const VertexBuffer* VertexArray::getVertexBuffer() const noexcept
+{
+	return m_vertexBuffer.has_value() ? &m_vertexBuffer.value() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+const IndexBuffer* VertexArray::getIndexBuffer() const noexcept
+{
+	return m_indexBuffer.has_value() ? &m_indexBuffer.value() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
 void VertexArray::setVertexBuffer(VertexBuffer&& _buffer) noexcept
 {
 	m_vertexBuffer = std::move(_buffer);
 
 	bind();
 	m_vertexBuffer->bind();
-	setLayout();
+	setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -80,35 +108,7 @@ void VertexArray::setIndexBuffer(IndexBuffer&& _buffer) noexcept
 
 //-----------------------------------------------------------------------------
 
-VertexBuffer* VertexArray::getVertexBuffer() noexcept
-{
-	return m_vertexBuffer.get_ptr();
-}
-
-//-----------------------------------------------------------------------------
-
-IndexBuffer* VertexArray::getIndexBuffer() noexcept
-{
-	return m_indexBuffer.get_ptr();
-}
-
-//-----------------------------------------------------------------------------
-
-const VertexBuffer* VertexArray::getVertexBuffer() const noexcept
-{
-	return m_vertexBuffer.get_ptr();
-}
-
-//-----------------------------------------------------------------------------
-
-const IndexBuffer* VertexArray::getIndexBuffer() const noexcept
-{
-	return m_indexBuffer.get_ptr();
-}
-
-//-----------------------------------------------------------------------------
-
-void VertexArray::setLayout() noexcept
+void VertexArray::setupLayout() noexcept
 {
 	constexpr u32 k_vertexAttribsCount = 5;
 	constexpr std::array<u32, k_vertexAttribsCount> sizes = { 3, 2, 3, 3, 3 };
