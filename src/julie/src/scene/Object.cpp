@@ -11,7 +11,6 @@ namespace jl {
 
 Object::Object() noexcept
 	: m_model(nullptr)
-	, m_renderFlags(RenderFlags::DrawModel)
 	, m_worldMatrix(1.0f)
 	, m_isTransformChanged(false)
 {
@@ -19,7 +18,18 @@ Object::Object() noexcept
 
 //-----------------------------------------------------------------------------
 
-Model* Object::getModel() const noexcept
+Object::~Object() = default;
+
+//-----------------------------------------------------------------------------
+
+Model* Object::getModel() noexcept
+{
+	return m_model;
+}
+
+//-----------------------------------------------------------------------------
+
+const Model* Object::getModel() const noexcept
 {
 	return m_model;
 }
@@ -33,20 +43,6 @@ void Object::setModel(Model* _model) noexcept
 
 //-----------------------------------------------------------------------------
 
-s32 Object::getRenderFlags() const noexcept
-{
-	return m_renderFlags;
-}
-
-//-----------------------------------------------------------------------------
-
-void Object::setRenderFlags(s32 _flags) noexcept
-{
-	m_renderFlags = _flags;
-}
-
-//-----------------------------------------------------------------------------
-
 const glm::mat4& Object::getWorldMatrix() const noexcept
 {
 	if (m_isTransformChanged)
@@ -54,7 +50,6 @@ const glm::mat4& Object::getWorldMatrix() const noexcept
 		m_worldMatrix = calculateWorldMatrix(m_transformData);
 		m_isTransformChanged = false;
 	}
-
 	return m_worldMatrix;
 }
 

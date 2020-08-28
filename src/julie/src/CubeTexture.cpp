@@ -67,7 +67,7 @@ CubeTexture::CubeTexture(const u8* _data, u32 _width, u32 _height, u32 _channels
 {
 	bind(0);
 	loadDataToGpu(_data, _width / 4, _channels);
-	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glGenerateMipmap(getType());
 }
 
 //-----------------------------------------------------------------------------

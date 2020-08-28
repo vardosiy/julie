@@ -1,4 +1,4 @@
-#include "julie/scene/CommonUniformsBinder.hpp"
+#include "scene/CommonUniformsBinder.hpp"
 
 #include "julie/Globals.hpp"
 #include "julie/Shader.hpp"

@@ -18,20 +18,12 @@ class Object
 {
 //-----------------------------------------------------------------------------
 public:
-	enum RenderFlags
-	{
-		DrawModel		= 1 << 0,
-		DrawBoundingBox	= 1 << 1
-	};
-
-//-----------------------------------------------------------------------------
 	Object() noexcept;
+	~Object();
 
-	Model* getModel() const noexcept;
+	Model* getModel() noexcept;
+	const Model* getModel() const noexcept;
 	void setModel(Model* _model) noexcept;
-
-	s32 getRenderFlags() const noexcept;
-	void setRenderFlags(s32 _flags) noexcept;
 
 // transform data -------------------------------------------------------------
 	const glm::mat4& getWorldMatrix() const noexcept;
@@ -57,8 +49,6 @@ private:
 
 //-----------------------------------------------------------------------------
 	Model* m_model;
-
-	s32 m_renderFlags;
 
 	TransformData		m_transformData;
 	mutable bool		m_isTransformChanged;

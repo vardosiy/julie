@@ -70,9 +70,7 @@ std::string ShaderCreationHelper::readFileContent(std::string_view _filePath)
 	ASSERTM(file.is_open(), "Can't open file {}", _filePath.data());
 	if (file.is_open())
 	{
-		std::stringstream buffer;
-		buffer << file.rdbuf();
-		fileContent = buffer.str();
+		std::getline(file, fileContent, '\0');
 	}
 
 	return fileContent;

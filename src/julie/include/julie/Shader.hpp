@@ -33,16 +33,16 @@ public:
 //-----------------------------------------------------------------------------
 	bool hasUniform(const std::string& _name) const noexcept;
 
-	void setUniform(const std::string& _name, s32 _val) const;
-	void setUniform(const std::string& _name, float _val) const;
-	void setUniform(const std::string& _name, const glm::vec2& _val) const;
-	void setUniform(const std::string& _name, const glm::vec3& _val) const;
-	void setUniform(const std::string& _name, const glm::vec4& _val) const;
-	void setUniform(const std::string& _name, const glm::mat4& _val) const;
+	void setUniform(const std::string& _name, s32 _val) const noexcept;
+	void setUniform(const std::string& _name, float _val) const noexcept;
+	void setUniform(const std::string& _name, const glm::vec2& _val) const noexcept;
+	void setUniform(const std::string& _name, const glm::vec3& _val) const noexcept;
+	void setUniform(const std::string& _name, const glm::vec4& _val) const noexcept;
+	void setUniform(const std::string& _name, const glm::mat4& _val) const noexcept;
 
-	void setUniform(const std::string& _name, u32 _count, const s32* _val) const;
-	void setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const;
-	void setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const;
+	void setUniform(const std::string& _name, u32 _count, const s32* _val) const noexcept;
+	void setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const noexcept;
+	void setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
@@ -60,6 +60,8 @@ private:
 	mutable UniformsCache m_uniformLocationsCache;
 
 	u32 m_programId;
+
+	static constexpr s32 k_locationUndefined = -1;
 };
 
 //-----------------------------------------------------------------------------

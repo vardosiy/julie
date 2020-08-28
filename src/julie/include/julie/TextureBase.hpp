@@ -43,6 +43,8 @@ protected:
 	TextureBase(s32 _type, u32 _width, u32 _height) noexcept;
 	~TextureBase();
 
+	s32 getType() const noexcept;
+
 	static s32 formatToGlValue(Format _format) noexcept;
 	static s32 fragmentTypeToGlValue(FragmentType _type) noexcept;
 
