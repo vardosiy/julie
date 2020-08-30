@@ -81,77 +81,113 @@ void Shader::bind() const noexcept
 
 bool Shader::hasUniform(const std::string& _name) const noexcept
 {
-	return findUniformLocation(_name) != -1;
+	return findUniformLocation(_name) != k_locationUndefined;
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, s32 _val) const
+void Shader::setUniform(const std::string& _name, s32 _val) const noexcept
 {
-	glUniform1i(findUniformLocation(_name), _val);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform1i(uniformLocation, _val);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, float _val) const
+void Shader::setUniform(const std::string& _name, float _val) const noexcept
 {
-	glUniform1f(findUniformLocation(_name), _val);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform1f(uniformLocation, _val);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, const glm::vec2& _val) const
+void Shader::setUniform(const std::string& _name, const glm::vec2& _val) const noexcept
 {
-	glUniform2f(findUniformLocation(_name), _val.x, _val.y);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform2f(uniformLocation, _val.x, _val.y);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, const glm::vec3& _val) const
+void Shader::setUniform(const std::string& _name, const glm::vec3& _val) const noexcept
 {
-	glUniform3f(findUniformLocation(_name), _val.x, _val.y, _val.z);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform3f(uniformLocation, _val.x, _val.y, _val.z);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, const glm::vec4& _val) const
+void Shader::setUniform(const std::string& _name, const glm::vec4& _val) const noexcept
 {
-	glUniform4f(findUniformLocation(_name), _val.x, _val.y, _val.z, _val.w);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform4f(uniformLocation, _val.x, _val.y, _val.z, _val.w);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, const glm::mat4& _val) const
+void Shader::setUniform(const std::string& _name, const glm::mat4& _val) const noexcept
 {
-	glUniformMatrix4fv(findUniformLocation(_name), 1, false, glm::value_ptr(_val));
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniformMatrix4fv(uniformLocation, 1, false, glm::value_ptr(_val));
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, u32 _count, const s32* _val) const
+void Shader::setUniform(const std::string& _name, u32 _count, const s32* _val) const noexcept
 {
-	glUniform1iv(findUniformLocation(_name), _count, _val);
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform1iv(uniformLocation, _count, _val);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const
+void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec3* _val) const noexcept
 {
-	glUniform3fv(findUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform3fv(uniformLocation, _count, reinterpret_cast<const float*>(_val));
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const
+void Shader::setUniform(const std::string& _name, u32 _count, const glm::vec4* _val) const noexcept
 {
-	glUniform4fv(findUniformLocation(_name), _count, reinterpret_cast<const float*>(_val));
+	const s32 uniformLocation = findUniformLocation(_name);
+	if (uniformLocation != k_locationUndefined)
+	{
+		glUniform4fv(uniformLocation, _count, reinterpret_cast<const float*>(_val));
+	}
 }
 
 //-----------------------------------------------------------------------------
 
 s32 Shader::findUniformLocation(const std::string& _name) const
 {
-	s32 location = -1;
+	s32 location = k_locationUndefined;
 
 	auto it = m_uniformLocationsCache.find(_name);
 	if (it != m_uniformLocationsCache.end())
