@@ -24,6 +24,7 @@ std::unique_ptr<Texture> Texture::loadFromFile(std::string_view _filePath)
 	ASSERTM(channels == 3 || channels == 4, "Unsupported channels count");
 	if (!buffer || width <= 0 || height <= 0 || !(channels == 3 || channels == 4))
 	{
+		stbi_image_free(buffer);
 		return nullptr;
 	}
 
@@ -70,8 +71,8 @@ Texture::Texture(const u8* _data, u32 _width, u32 _height, Format _format, Fragm
 	const s32 format = formatToGlValue(_format);
 	const s32 fragmentType = fragmentTypeToGlValue(_fragmentType);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, format, fragmentType, _data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(getType(), 0, format, _width, _height, 0, format, fragmentType, _data);
+	glGenerateMipmap(getType());
 }
 
 //-----------------------------------------------------------------------------

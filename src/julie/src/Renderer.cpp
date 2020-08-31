@@ -145,8 +145,8 @@ s32 Renderer::polygonModeToGlValue(PolygonMode _mode) noexcept
 {
 	switch (_mode)
 	{
-	case PolygonMode::Fill: return GL_FILL;
-	case PolygonMode::Line: return GL_LINE;
+		case PolygonMode::Fill: return GL_FILL;
+		case PolygonMode::Line: return GL_LINE;
 	}
 
 	ASSERT(0);

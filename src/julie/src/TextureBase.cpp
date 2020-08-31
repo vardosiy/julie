@@ -53,7 +53,7 @@ u32 TextureBase::getHeight() const noexcept
 void TextureBase::bind(u16 _slot) const noexcept
 {
 	glActiveTexture(GL_TEXTURE0 + _slot);
-	glBindTexture(m_type, m_id);
+	glBindTexture(getType(), m_id);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,22 +61,29 @@ void TextureBase::bind(u16 _slot) const noexcept
 void TextureBase::setTiling(TextureTiling _tiling) noexcept
 {
 	const float tiling = tilingToGlValue(_tiling);
-	glTexParameterf(m_type, GL_TEXTURE_WRAP_S, tiling);
-	glTexParameterf(m_type, GL_TEXTURE_WRAP_T, tiling);
+	glTexParameterf(getType(), GL_TEXTURE_WRAP_S, tiling);
+	glTexParameterf(getType(), GL_TEXTURE_WRAP_T, tiling);
 }
 
 //-----------------------------------------------------------------------------
 
 void TextureBase::setMagnificationFilteringMode(TextureFiltering _mode) noexcept
 {
-	glTexParameteri(m_type, GL_TEXTURE_MAG_FILTER, filteringToGlValue(_mode));
+	glTexParameteri(getType(), GL_TEXTURE_MAG_FILTER, filteringToGlValue(_mode));
 }
 
 //-----------------------------------------------------------------------------
 
 void TextureBase::setMinificationFilteringMode(TextureFiltering _mode) noexcept
 {
-	glTexParameteri(m_type, GL_TEXTURE_MIN_FILTER, filteringToGlValue(_mode));
+	glTexParameteri(getType(), GL_TEXTURE_MIN_FILTER, filteringToGlValue(_mode));
+}
+
+//-----------------------------------------------------------------------------
+
+s32 TextureBase::getType() const noexcept
+{
+	return m_type;
 }
 
 //-----------------------------------------------------------------------------

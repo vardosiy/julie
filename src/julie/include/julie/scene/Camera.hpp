@@ -17,22 +17,25 @@ class Camera
 public:
 	Camera(float _near, float _far, float _fov);
 
-	float getAspect() const noexcept					{ return m_aspect; }
-	float getNear() const noexcept						{ return m_near; }
-	float getFar() const noexcept						{ return m_far; }
-	float getFov() const noexcept						{ return m_fov; }
+//-----------------------------------------------------------------------------
+	float getAspect() const noexcept	{ return m_aspect; }
+	float getNear() const noexcept		{ return m_near; }
+	float getFar() const noexcept		{ return m_far; }
+	float getFov() const noexcept		{ return m_fov; }
 
 	void setAspect(float _val) noexcept;
 	void setNear(float _val) noexcept;
 	void setFar(float _val) noexcept;
 	void setFov(float _val) noexcept;
 
+//-----------------------------------------------------------------------------
 	const glm::vec3& getPosition() const noexcept		{ return m_pos; }
 	const glm::vec3& getViewTarget() const noexcept		{ return m_target; }
 
 	void setPosition(const glm::vec3& _vec) noexcept;
 	void setRotation(const glm::vec3& _vec) noexcept;
 
+//-----------------------------------------------------------------------------
 	const glm::mat4& getViewMatrix() const noexcept;
 	const glm::mat4& getProjectionMatrix() const noexcept;
 	const glm::mat4& getViewProjectionMatrix() const noexcept;

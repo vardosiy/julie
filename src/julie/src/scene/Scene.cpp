@@ -10,17 +10,22 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-void Scene::render(const Camera& _cam) const
+void Scene::render(const Camera& _cam, bool drawBoundingBoxes) const
 {
 	ScenePainter painter(*this);
-	painter.draw(_cam);
+	painter.drawModels(_cam);
+
+	if (drawBoundingBoxes)
+	{
+		painter.drawBoundingBoxes(_cam);
+	}
 }
 
 //-----------------------------------------------------------------------------
 
 const FogData* Scene::getFogData() const noexcept
 {
-	return m_fogData.get_ptr();
+	return m_fogData.has_value() ? &m_fogData.value() : nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +51,7 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addObject(ObjectPtr&& _obj) noexcept
+void Scene::addObject(ObjectPtr&& _obj)
 {
 	ASSERT(_obj);
 	if (_obj)
@@ -57,14 +62,14 @@ void Scene::addObject(ObjectPtr&& _obj) noexcept
 
 //-----------------------------------------------------------------------------
 
-u32 Scene::getObjectsCount() const noexcept
+size_t Scene::getObjectsCount() const noexcept
 {
 	return m_objects.size();
 }
 
 //-----------------------------------------------------------------------------
 
-Object& Scene::getObject(u32 _idx)
+Object& Scene::getObject(size_t _idx)
 {
 	ASSERT(_idx < m_objects.size());
 	return *m_objects[_idx];
@@ -72,7 +77,7 @@ Object& Scene::getObject(u32 _idx)
 
 //-----------------------------------------------------------------------------
 
-const Object& Scene::getObject(u32 _idx) const
+const Object& Scene::getObject(size_t _idx) const
 {
 	ASSERT(_idx < m_objects.size());
 	return *m_objects[_idx];
@@ -80,7 +85,7 @@ const Object& Scene::getObject(u32 _idx) const
 
 //-----------------------------------------------------------------------------
 
-Scene::ObjectPtr Scene::eraseObject(u32 _idx) noexcept
+Scene::ObjectPtr Scene::eraseObject(size_t _idx) noexcept
 {
 	ObjectPtr result;
 
