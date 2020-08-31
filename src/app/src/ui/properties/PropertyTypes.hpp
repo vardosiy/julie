@@ -25,7 +25,7 @@ struct ModelUiWrapper
 struct TextureUiWrapper
 {
 	QString filePath;
-	const jl::Texture* value = nullptr;
+	jl::Texture* value = nullptr;
 };
 
 struct ShaderUiWrapper

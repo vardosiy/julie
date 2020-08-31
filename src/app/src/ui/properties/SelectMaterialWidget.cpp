@@ -37,7 +37,7 @@ void SelectMaterialWidget::onMaterialChanged(const QString& _materialName)
 {
 	m_value.materialName = _materialName;
 
-	const jl::Material* material = MaterialsManager::getInstance().findMaterial(_materialName.toStdString());
+	jl::Material* material = MaterialsManager::getInstance().findMaterial(_materialName.toStdString());
 	m_value.mesh->setMaterial(material);
 }
 

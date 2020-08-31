@@ -26,10 +26,10 @@ public:
 	Model(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept;
 	Model(std::vector<Mesh>&& _meshes) noexcept;
 
-	u32 getMeshesCount() const noexcept;
+	size_t getMeshesCount() const noexcept;
 
-	Mesh& getMesh(u32 _idx) noexcept;
-	const Mesh& getMesh(u32 _idx) const noexcept;
+	Mesh& getMesh(size_t _idx) noexcept;
+	const Mesh& getMesh(size_t _idx) const noexcept;
 
 	const aabbf& getBoundingBox() const noexcept;
 

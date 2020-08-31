@@ -116,10 +116,10 @@ Json::Value JsonProjectSaver::saveMaterials()
 {
 	Json::Value result;
 
-	const jl::Material& defaultMaterial = MaterialsManager::getInstance().getDefaultMaterial();
+	const jl::Material* defaultMaterial = MaterialsManager::getInstance().findMaterial("Default");
 	MaterialsManager::getInstance().forEachMaterial([&result, &defaultMaterial](const std::string& _name, const jl::Material& _material)
 	{
-		if (&_material == &defaultMaterial)
+		if (&_material == defaultMaterial)
 		{
 			return;
 		}
@@ -199,8 +199,8 @@ Json::Value JsonProjectSaver::saveModel(const jl::Model& _model)
 {
 	Json::Value meshMaterials;
 
-	const jl::u32 meshesCount = _model.getMeshesCount();
-	for (jl::u32 i = 0; i < meshesCount; ++i)
+	const size_t meshesCount = _model.getMeshesCount();
+	for (size_t i = 0; i < meshesCount; ++i)
 	{
 		const jl::Mesh& mesh = _model.getMesh(i);
 

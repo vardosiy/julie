@@ -203,15 +203,15 @@ void JsonProjectRestorer::restoreModel(const Json::Value& _json, ObjectWrapper& 
 		return;
 	}
 
-	jl::u32 materialsToRead = 0;
+	Json::Value::ArrayIndex materialsToRead = 0;
 
 	const Json::Value& meshMaterials = _json[k_meshMaterials];
 	if (meshMaterials.isArray())
 	{
-		materialsToRead = std::min(static_cast<jl::u32>(meshMaterials.size()), model->getMeshesCount());
+		materialsToRead = std::min(meshMaterials.size(), static_cast<Json::Value::ArrayIndex>(model->getMeshesCount()));
 	}
 
-	for (jl::u32 i = 0; i < materialsToRead; ++i)
+	for (Json::Value::ArrayIndex i = 0; i < materialsToRead; ++i)
 	{
 		const std::string materialName = meshMaterials[i].asString();
 		if (!materialName.empty())

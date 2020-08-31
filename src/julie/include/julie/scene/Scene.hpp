@@ -5,11 +5,11 @@
 #include "julie/scene/FogData.hpp"
 #include "julie/scene/lights/LightsHolder.hpp"
 
-#include <boost/optional.hpp>
 #include <boost/noncopyable.hpp>
 
 #include <memory>
 #include <vector>
+#include <optional>
 
 //-----------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ public:
 	using ObjectPtr = std::unique_ptr<Object>;
 
 //-----------------------------------------------------------------------------
-	void render(const Camera& _cam) const;
+	void render(const Camera& _cam, bool drawBoundingBoxes) const;
 
 	const FogData* getFogData() const noexcept;
 	void setFogData(const FogData& _data) noexcept;
@@ -35,13 +35,13 @@ public:
 	const LightsHolder& getLightsHolder() const noexcept;
 
 //-----------------------------------------------------------------------------
-	void addObject(ObjectPtr&& _obj) noexcept;
-	u32 getObjectsCount() const noexcept;
+	void addObject(ObjectPtr&& _obj);
+	size_t getObjectsCount() const noexcept;
 
-	Object& getObject(u32 _idx);
-	const Object& getObject(u32 _idx) const;
+	Object& getObject(size_t _idx);
+	const Object& getObject(size_t _idx) const;
 
-	ObjectPtr eraseObject(u32 _idx) noexcept;
+	ObjectPtr eraseObject(size_t _idx) noexcept;
 	ObjectPtr eraseObject(const Object& _obj) noexcept;
 
 //-----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ private:
 	std::vector<ObjectPtr> m_objects;
 
 	LightsHolder m_lightsHolder;
-	boost::optional<FogData> m_fogData;
+	std::optional<FogData> m_fogData;
 };
 
 //-----------------------------------------------------------------------------

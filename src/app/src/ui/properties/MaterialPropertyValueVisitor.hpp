@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	QVariant operator() (const jl::Texture* _value) const noexcept
+	QVariant operator() (jl::Texture* _value) const noexcept
 	{
 		return QVariant::fromValue(TextureUiWrapper{ findSourceFile(_value), _value });
 	}

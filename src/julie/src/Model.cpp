@@ -33,23 +33,23 @@ Model::Model(std::vector<Mesh>&& _meshes) noexcept
 
 //-----------------------------------------------------------------------------
 
-u32 Model::getMeshesCount() const noexcept
+size_t Model::getMeshesCount() const noexcept
 {
 	return m_meshes.size();
 }
 
 //-----------------------------------------------------------------------------
 
-Mesh& Model::getMesh(u32 _idx) noexcept
+Mesh& Model::getMesh(size_t _idx) noexcept
 {
-	return m_meshes.at(_idx);
+	return m_meshes[_idx];
 }
 
 //-----------------------------------------------------------------------------
 
-const Mesh& Model::getMesh(u32 _idx) const noexcept
+const Mesh& Model::getMesh(size_t _idx) const noexcept
 {
-	return m_meshes.at(_idx);
+	return m_meshes[_idx];
 }
 
 //-----------------------------------------------------------------------------
@@ -63,31 +63,33 @@ const aabbf& Model::getBoundingBox() const noexcept
 
 aabbf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
 {
-	auto minFinder = [&_meshes](auto&& _valueGetter) -> float
+	auto minFinder = [&_meshes](int _dimensionIdx) -> float
 	{
 		float min = std::numeric_limits<float>::max();
 		for (const Mesh& mesh : _meshes)
 		{
-			min = std::min(min, _valueGetter(mesh));
+			const float meshValue = mesh.getBoundingBox().min[_dimensionIdx];
+			min = std::min(min, meshValue);
 		}
 		return min;
 	};
-	const float leftmost	= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.x; });
-	const float lowest		= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.y; });
-	const float farthest	= minFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().min.z; });
+	const float leftmost	= minFinder(0);
+	const float lowest		= minFinder(1);
+	const float farthest	= minFinder(2);
 
-	auto maxFinder = [&_meshes](auto&& _valueGetter) -> float
+	auto maxFinder = [&_meshes](int _dimensionIdx) -> float
 	{
 		float max = std::numeric_limits<float>::lowest();
 		for (const Mesh& mesh : _meshes)
 		{
-			max = std::max(max, _valueGetter(mesh));
+			const float meshValue = mesh.getBoundingBox().max[_dimensionIdx];
+			max = std::max(max, meshValue);
 		}
 		return max;
 	};
-	const float rightmost	= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.x; });
-	const float highest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.y; });
-	const float closest		= maxFinder([](const Mesh& _mesh) { return _mesh.getBoundingBox().max.z; });
+	const float rightmost	= maxFinder(0);
+	const float highest		= maxFinder(1);
+	const float closest		= maxFinder(2);
 
 	return aabbf{
 		glm::vec3{ leftmost, lowest, farthest },

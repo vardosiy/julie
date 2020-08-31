@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	void operator() (const Texture* _texture) const noexcept
+	void operator() (Texture* _texture) const noexcept
 	{
 		if (_texture)
 		{
@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-	void operator() (const CubeTexture* _texture) const noexcept
+	void operator() (CubeTexture* _texture) const noexcept
 	{
 		if (_texture)
 		{

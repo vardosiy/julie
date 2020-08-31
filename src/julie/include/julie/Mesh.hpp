@@ -3,6 +3,7 @@
 #include "julie/core/Types.hpp"
 #include "julie/core/Aabb.hpp"
 #include "julie/Vertex.hpp"
+#include "julie/Material.hpp"
 #include "julie/primitives/VertexArray.hpp"
 
 #include <boost/noncopyable.hpp>
@@ -29,8 +30,9 @@ public:
 //-----------------------------------------------------------------------------
 	void bind() const;
 
+	Material* getMaterial() noexcept;
 	const Material* getMaterial() const noexcept;
-	void setMaterial(const Material* _material) noexcept;
+	void setMaterial(Material* _material) noexcept;
 
 	u64 getIndeciesCount() const noexcept;
 	const aabbf& getBoundingBox() const noexcept;
@@ -43,7 +45,7 @@ private:
 	VertexArray m_vertexArray;
 	aabbf m_boundingBox;
 
-	const Material* m_material;
+	Material* m_material;
 };
 
 //-----------------------------------------------------------------------------

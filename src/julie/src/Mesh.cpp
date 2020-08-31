@@ -47,14 +47,20 @@ void Mesh::bind() const
 
 //-----------------------------------------------------------------------------
 
-const Material* Mesh::getMaterial() const noexcept
+Material* Mesh::getMaterial() noexcept
 {
 	return m_material;
 }
 
 //-----------------------------------------------------------------------------
 
-void Mesh::setMaterial(const Material* _material) noexcept
+const Material* Mesh::getMaterial() const noexcept
+{
+	return m_material;
+}
+//-----------------------------------------------------------------------------
+
+void Mesh::setMaterial(Material* _material) noexcept
 {
 	m_material = _material;
 }
@@ -78,18 +84,21 @@ const aabbf& Mesh::getBoundingBox() const noexcept
 
 aabbf Mesh::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept
 {
-	auto maxFinder = [&_vertices](auto&& _predicate)
+	auto maxFinder = [&_vertices](int _dimensionIdx)
 	{
-		return std::max_element(_vertices.begin(), _vertices.end(), _predicate);
+		return std::max_element(_vertices.begin(), _vertices.end(), [_dimensionIdx](const Vertex& _lhs, const Vertex& _rhs)
+		{
+			return _lhs.pos[_dimensionIdx] > _rhs.pos[_dimensionIdx];
+		});
 	};
 
-	const Vertex& leftmost	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x > _rhs.pos.x; });
-	const Vertex& lowest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y > _rhs.pos.y; });
-	const Vertex& farthest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z > _rhs.pos.z; });
+	const Vertex& leftmost	= *maxFinder(0);
+	const Vertex& lowest	= *maxFinder(1);
+	const Vertex& farthest	= *maxFinder(2);
 
-	const Vertex& rightmost	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.x < _rhs.pos.x; });
-	const Vertex& highest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.y < _rhs.pos.y; });
-	const Vertex& closest	= *maxFinder([](const Vertex& _lhs, const Vertex& _rhs) { return _lhs.pos.z < _rhs.pos.z; });
+	const Vertex& rightmost	= *maxFinder(0);
+	const Vertex& highest	= *maxFinder(1);
+	const Vertex& closest	= *maxFinder(2);
 
 	return aabbf{
 		glm::vec3{ leftmost.pos.x, lowest.pos.y, farthest.pos.z },
