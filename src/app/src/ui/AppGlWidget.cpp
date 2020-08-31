@@ -72,14 +72,14 @@ void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
 
 void AppGlWidget::drawBoundingBoxes(bool _val) noexcept
 {
-	m_sceneWrapper->forEachObject([_val](ObjectWrapper& _objWrapper)
-	{
-		const jl::s32 flags = _val ?
-			_objWrapper.getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox :
-			_objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
+	//m_sceneWrapper->forEachObject([_val](ObjectWrapper& _objWrapper)
+	//{
+	//	const jl::s32 flags = _val ?
+	//		_objWrapper.getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox :
+	//		_objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
 
-		_objWrapper.setRenderFlags(flags);
-	});
+	//	_objWrapper.setRenderFlags(flags);
+	//});
 }
 
 //-----------------------------------------------------------------------------
@@ -113,11 +113,11 @@ void AppGlWidget::setActionHandler(IEntityActionHandler* _handler) noexcept
 
 void AppGlWidget::resetSelectedObj()
 {
-	m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
-	{
-		const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
-		_objWrapper.setRenderFlags(flags);
-	});
+	//m_sceneWrapper->forEachObject([](ObjectWrapper& _objWrapper)
+	//{
+	//	const jl::s32 flags = _objWrapper.getRenderFlags() & ~jl::Object::RenderFlags::DrawBoundingBox;
+	//	_objWrapper.setRenderFlags(flags);
+	//});
 
 	m_selectedObject = nullptr;
 	m_selectedObjDistance = std::numeric_limits<float>::max();
@@ -313,8 +313,8 @@ void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 	{
 		LOG_INFO("[AppGlWidget] Selected object: {}", m_selectedObject->getName());
 
-		const jl::s32 flags = m_selectedObject->getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox;
-		m_selectedObject->setRenderFlags(flags);
+		//const jl::s32 flags = m_selectedObject->getRenderFlags() | jl::Object::RenderFlags::DrawBoundingBox;
+		//m_selectedObject->setRenderFlags(flags);
 
 		if (m_actionHandler)
 		{

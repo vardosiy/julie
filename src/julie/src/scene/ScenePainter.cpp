@@ -1,14 +1,16 @@
 #include "scene/ScenePainter.hpp"
+#include "scene/CommonUniformsBinder.hpp"
 
 #include "julie/scene/Scene.hpp"
 #include "julie/scene/Object.hpp"
 #include "julie/scene/Camera.hpp"
-#include "julie/scene/CommonUniformsBinder.hpp"
 
 #include "julie/Material.hpp"
 #include "julie/Shader.hpp"
 #include "julie/Model.hpp"
 #include "julie/Renderer.hpp"
+
+#include "PropertyBinder.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -27,27 +29,33 @@ ScenePainter::~ScenePainter() = default;
 
 //-----------------------------------------------------------------------------
 
-void ScenePainter::draw(const Camera& _cam) const
+void ScenePainter::drawModels(const Camera& _cam) const
 {
-	const u32 objectsCount = m_scene.getObjectsCount();
-	for (u32 i = 0; i < objectsCount; ++i)
+	const size_t objectsCount = m_scene.getObjectsCount();
+	for (size_t i = 0; i < objectsCount; ++i)
 	{
 		const Object& object = m_scene.getObject(i);
 
-		const Model* model = object.getModel();
-		if (!model)
-		{
-			continue;
-		}
-
-		const s32 renderFlags = object.getRenderFlags();
-		if (renderFlags & jl::Object::RenderFlags::DrawModel)
+		if (const Model* model = object.getModel())
 		{
 			drawModel(*model, _cam, object.getWorldMatrix());
 		}
-		if (renderFlags & jl::Object::RenderFlags::DrawBoundingBox)
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void ScenePainter::drawBoundingBoxes(const Camera& _cam) const
+{
+	const size_t objectsCount = m_scene.getObjectsCount();
+	for (size_t i = 0; i < objectsCount; ++i)
+	{
+		const Object& object = m_scene.getObject(i);
+
+		if (const Model* model = object.getModel())
 		{
-			drawBox(*model, _cam, object.getWorldMatrix());
+			const glm::mat4 transform = _cam.getViewProjectionMatrix() * object.getWorldMatrix();
+			Renderer::draw(model->getBoundingBox(), glm::vec4(1.0f), transform);
 		}
 	}
 }
@@ -56,8 +64,8 @@ void ScenePainter::draw(const Camera& _cam) const
 
 void ScenePainter::drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept
 {
-	const u32 meshesCount = _model.getMeshesCount();
-	for (u32 i = 0; i < meshesCount; ++i)
+	const size_t meshesCount = _model.getMeshesCount();
+	for (size_t i = 0; i < meshesCount; ++i)
 	{
 		const Mesh& mesh = _model.getMesh(i);
 
@@ -65,7 +73,13 @@ void ScenePainter::drawModel(const Model& _model, const Camera& _cam, const glm:
 		{
 			if (const Shader* shader = material->getShader())
 			{
-				material->bind();
+				shader->bind();
+				s16 textureSlotsCounter = 0;
+				for (const auto& property : material->getProperties())
+				{
+					PropertyBinder binder(*shader, property.name, textureSlotsCounter);
+					std::visit(binder, property.value);
+				}
 
 				CommonUniformsBinder uniformBinder(m_scene, _cam, _worldMat);
 				uniformBinder.bind(*shader);
@@ -74,14 +88,6 @@ void ScenePainter::drawModel(const Model& _model, const Camera& _cam, const glm:
 			}
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-
-void ScenePainter::drawBox(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept
-{
-	const glm::mat4 transform = _cam.getViewProjectionMatrix() * _worldMat;
-	Renderer::draw(_model.getBoundingBox(), glm::vec4(1.0f), transform);
 }
 
 //-----------------------------------------------------------------------------

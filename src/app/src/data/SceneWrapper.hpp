@@ -4,6 +4,9 @@
 
 #include "julie/scene/Scene.hpp"
 
+#include <functional>
+#include <algorithm>
+
 //-----------------------------------------------------------------------------
 
 class SceneWrapper
@@ -34,7 +37,7 @@ private:
 
 inline void SceneWrapper::render(const jl::Camera& _cam) const
 {
-	m_scene->render(_cam);
+	m_scene->render(_cam, false);
 }
 
 inline jl::LightsHolder& SceneWrapper::getLightsHolder() noexcept

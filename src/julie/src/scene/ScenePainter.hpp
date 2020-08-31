@@ -20,11 +20,11 @@ public:
 	ScenePainter(const Scene& _scene);
 	~ScenePainter();
 
-	void draw(const Camera& _cam) const;
+	void drawModels(const Camera& _cam) const;
+	void drawBoundingBoxes(const Camera& _cam) const;
 
 private:
 	void drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept;
-	void drawBox(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept;
 
 	const Scene& m_scene;
 };

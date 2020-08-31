@@ -25,9 +25,6 @@ public:
 	jl::Model* getModel() const noexcept;
 	void setModel(jl::Model* _model) noexcept;
 
-	jl::s32 getRenderFlags() const noexcept;
-	void setRenderFlags(jl::s32 _flags) noexcept;
-
 //-----------------------------------------------------------------------------
 	const glm::mat4& getWorldMatrix() const noexcept;
 
@@ -91,16 +88,6 @@ inline void ObjectWrapper::setModel(jl::Model* _model) noexcept
 	m_scale = glm::vec3(1.0f);
 	recalcTransform();
 	recalcSize();
-}
-
-inline jl::s32 ObjectWrapper::getRenderFlags() const noexcept
-{
-	return m_object->getRenderFlags();
-}
-
-inline void ObjectWrapper::setRenderFlags(jl::s32 _flags) noexcept
-{
-	m_object->setRenderFlags(_flags);
 }
 
 inline const glm::mat4& ObjectWrapper::getWorldMatrix() const noexcept
