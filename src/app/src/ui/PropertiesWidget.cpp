@@ -10,10 +10,26 @@
 
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
+#include "julie/UniformType.hpp"
 #include "julie/Model.hpp"
 #include "julie/Material.hpp"
 
 #include "utils/Utils.hpp"
+
+#include <string>
+
+//-----------------------------------------------------------------------------
+
+struct GetPropertyTypeStrVisitor
+{
+	std::string operator() (float) const noexcept					{ return std::string(utils::toString(jl::UniformType::Float)); }
+	std::string operator() (jl::s32) const noexcept					{ return std::string(utils::toString(jl::UniformType::Int)); }
+	std::string operator() (const glm::vec2&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec2)); }
+	std::string operator() (const glm::vec3&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec3)); }
+	std::string operator() (const glm::vec4&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec4)); }
+	std::string operator() (const jl::Texture*) const noexcept		{ return std::string(utils::toString(jl::UniformType::Texture2D)); }
+	std::string operator() (const jl::CubeTexture*) const noexcept	{ return std::string(utils::toString(jl::UniformType::CubeTexture)); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -229,9 +245,11 @@ void PropertiesWidget::refreshUniforms(jl::Material& _material, const QModelInde
 
 	for (int i = 0; i < propertiesCount; ++i)
 	{
-		const QString name = QString::fromStdString(properties[i].name);
-		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, properties[i].name), properties[i].value);
-		setPropertyRow(i, name, value, _parent);
+		const jl::Material::Property& prop = properties[i];
+
+		const std::string name = fmt::format("{} [{}]", prop.name, std::visit(GetPropertyTypeStrVisitor{}, prop.value));
+		const QVariant value = std::visit(MaterialPropertyValueVisitor(_material, prop.name), prop.value);
+		setPropertyRow(i, QString::fromStdString(name), value, _parent);
 	}
 }
 
@@ -274,12 +292,12 @@ void PropertiesWidget::onMaterialChanged(const QModelIndex& _idx, jl::Material& 
 		TextureUiWrapper textureWrapper = qvariant_cast<TextureUiWrapper>(_idx.data());
 		_material.setProperty(props[_idx.row()].name, textureWrapper.value);
 
-		const jl::Shader* shader =
-			textureWrapper.value ?
-			MaterialsManager::getInstance().getTextureShader() :
-			MaterialsManager::getInstance().getColorShader();
+		//const jl::Shader* shader =
+		//	textureWrapper.value ?
+		//	MaterialsManager::getInstance().getTextureShader() :
+		//	MaterialsManager::getInstance().getColorShader();
 
-		_material.setShader(shader);
+		//_material.setShader(shader);
 	}
 }
 
