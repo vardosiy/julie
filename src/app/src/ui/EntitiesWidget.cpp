@@ -122,13 +122,11 @@ void EntitiesWidget::addObject(const std::string& _name)
 void EntitiesWidget::addMaterial(const std::string& _name)
 {
 	jl::Material& material = MaterialsManager::getInstance().createMaterial(_name);
-	material.setShader(MaterialsManager::getInstance().getColorShader());
-	material.setProperty("u_shininess",		128.0f);
-	material.setProperty("u_opacity",		1.0f);
-	material.setProperty("u_matAmbient",	glm::vec3(1.0f));
-	material.setProperty("u_matDiffuse",	glm::vec3(1.0f));
-	material.setProperty("u_matSpecular",	glm::vec3(1.0f));
-	material.setProperty("u_texture2D",		static_cast<const jl::Texture*>(nullptr));
+	const jl::Material* defaultMaterial = MaterialsManager::getInstance().findMaterial("Default");
+	if (defaultMaterial)
+	{
+		material = *defaultMaterial;
+	}
 
 	m_materialsNamesList.append(_name.c_str());
 	m_materialsListModel.setStringList(m_materialsNamesList);
@@ -183,7 +181,7 @@ void EntitiesWidget::deleteMaterial(const QString& _name)
 
 	if (jl::Material* material = materialsMgr.findMaterial(materialName))
 	{
-		replaceMaterialInAllMeshes(material, &materialsMgr.getDefaultMaterial());
+		replaceMaterialInAllMeshes(material, materialsMgr.findMaterial("Default"));
 
 		materialsMgr.deleteMaterial(materialName);
 		m_materialsNamesList.removeOne(_name);
@@ -218,7 +216,7 @@ void EntitiesWidget::deleteEntities(
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new)
+void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material* _new)
 {
 	if (!m_sceneWrapper)
 	{
@@ -229,8 +227,8 @@ void EntitiesWidget::replaceMaterialInAllMeshes(const jl::Material* _old, const 
 	{
 		if (jl::Model* model = _objWrapper.getModel())
 		{
-			const jl::u32 meshesCount = model->getMeshesCount();
-			for (jl::u32 i = 0; i < meshesCount; i++)
+			const size_t meshesCount = model->getMeshesCount();
+			for (size_t i = 0; i < meshesCount; i++)
 			{
 				jl::Mesh& mesh = model->getMesh(i);
 

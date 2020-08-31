@@ -51,7 +51,7 @@ private:
 	void deleteMaterial(const QString& _name);
 	void deleteEntities(const QItemSelectionModel& _selectionModel, std::function<void(const QString&)>&& _deleteFun);
 
-	void replaceMaterialInAllMeshes(const jl::Material* _old, const jl::Material* _new);
+	void replaceMaterialInAllMeshes(jl::Material* _old, jl::Material* _new);
 	void refreshMaterialsList();
 
 	std::string computeObjectName() const;

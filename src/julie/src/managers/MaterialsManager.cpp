@@ -8,53 +8,9 @@
 
 //-----------------------------------------------------------------------------
 
-const std::string MaterialsManager::k_defaultMaterialName = "Default";
-
-//-----------------------------------------------------------------------------
-
-MaterialsManager::MaterialsManager()
-{
-	jl::Material& material = createMaterial(k_defaultMaterialName);
-	material.setShader(getColorShader());
-	material.setProperty("u_shininess",		128.0f);
-	material.setProperty("u_opacity",		1.0f);
-	material.setProperty("u_matAmbient",	glm::vec3(1.0f));
-	material.setProperty("u_matDiffuse",	glm::vec3(1.0f));
-	material.setProperty("u_matSpecular",	glm::vec3(0.0f));
-	material.setProperty("u_texture2D",		static_cast<const jl::Texture*>(nullptr));
-}
-
-//-----------------------------------------------------------------------------
-
-MaterialsManager::~MaterialsManager() = default;
-
-//-----------------------------------------------------------------------------
-
 void MaterialsManager::clear() noexcept
 {
 	m_materials.clear();
-}
-
-//-----------------------------------------------------------------------------
-
-jl::Shader* MaterialsManager::getColorShader() const noexcept
-{
-	return ResourceManager::getInstance().loadShader("res/shaders/MaterialColorShader.shdata");
-}
-
-//-----------------------------------------------------------------------------
-
-jl::Shader* MaterialsManager::getTextureShader() const noexcept
-{
-	return ResourceManager::getInstance().loadShader("res/shaders/MaterialTextureShader.shdata");
-}
-
-//-----------------------------------------------------------------------------
-
-jl::Material& MaterialsManager::getDefaultMaterial() const noexcept
-{
-	ASSERT(findMaterial(k_defaultMaterialName));
-	return *findMaterial(k_defaultMaterialName);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,11 +39,7 @@ jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noe
 
 void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 {
-	ASSERTM(_name != k_defaultMaterialName, "Can not delete default material");
-	if (_name != k_defaultMaterialName)
-	{
-		m_materials.erase(_name);
-	}
+	m_materials.erase(_name);
 }
 
 //-----------------------------------------------------------------------------

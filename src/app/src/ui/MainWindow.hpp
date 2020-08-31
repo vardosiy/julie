@@ -52,6 +52,7 @@ private:
 	void onGlLoaded();
 
 	void setupUi();
+	void setupDefaultMaterial();
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;

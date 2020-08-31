@@ -9,7 +9,6 @@
 
 #include "utils/Utils.hpp"
 
-#include <filesystem>
 #include <fstream>
 
 #include <assimp/Importer.hpp>
@@ -19,6 +18,11 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
+
+//-----------------------------------------------------------------------------
+
+const std::string ModelCreationHelper::k_colorShaderPath = "res/shaders/MaterialColorShader.shdata";
+const std::string ModelCreationHelper::k_textureShaderPath = "res/shaders/MaterialTextureShader.shdata";
 
 //-----------------------------------------------------------------------------
 
@@ -43,6 +47,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _fileP
 std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 {
 	FILE* pFile = fopen(_filePath.data(), "r");
+	ASSERT(pFile);
 	if (!pFile)
 	{
 		return nullptr;
@@ -80,9 +85,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 
 	fclose(pFile);
 
-	auto model = std::make_unique<Model>(vertices, indices);
-	model->getMesh(0).setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
-	return model;
+	return std::make_unique<Model>(vertices, indices);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +97,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 
 	if (scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode)
 	{
-		ModelCreationHelper helper(_filePath, _loadMaterials);
+		ModelCreationHelper helper(std::filesystem::path(_filePath).parent_path(), _loadMaterials);
 		helper.processNode(scene->mRootNode, scene);
 		return std::make_unique<Model>(std::move(helper.m_meshes));
 	}
@@ -104,8 +107,8 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 
 //-----------------------------------------------------------------------------
 
-ModelCreationHelper::ModelCreationHelper(std::string_view _filePath, bool _loadMaterials)
-	: m_filePath(_filePath)
+ModelCreationHelper::ModelCreationHelper(std::filesystem::path _directory, bool _loadMaterials)
+	: m_directory(_directory)
 	, m_loadMaterials(_loadMaterials)
 {
 }
@@ -134,24 +137,23 @@ void ModelCreationHelper::processNode(aiNode* _node, const aiScene* _scene)
 
 Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) const
 {
+	auto assimpVecToGlm3 = [](const aiVector3D& _vec) { return glm::vec3{ _vec.x, _vec.y, _vec.z }; };
+	auto assimpVecToGlm2 = [](const aiVector3D& _vec) { return glm::vec2{ _vec.x, _vec.y }; };
+
 	std::vector<Vertex> vertices(_mesh->mNumVertices);
 	std::vector<index_t> indices;
 
 	for (u32 i = 0; i < _mesh->mNumVertices; ++i)
 	{
-		vertices[i].pos = glm::vec3{ _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
+		ASSERT(_mesh->mVertices);
+		ASSERT(_mesh->mTangents);
+		ASSERT(_mesh->mBitangents);
 
-		vertices[i].norm = glm::vec3{ 0.0f };
-		if (_mesh->mNormals)
-		{
-			vertices[i].norm = glm::vec3{ _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
-		}
-
-		vertices[i].uv = glm::vec2{ 0.0f };
-		if (_mesh->mTextureCoords[0])
-		{
-			vertices[i].uv = glm::vec2{ _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
-		}
+		vertices[i].pos			= assimpVecToGlm3(_mesh->mVertices[i]);
+		vertices[i].tangent		= assimpVecToGlm3(_mesh->mTangents[i]);
+		vertices[i].bitangent	= assimpVecToGlm3(_mesh->mBitangents[i]);
+		vertices[i].norm		= _mesh->mNormals			? assimpVecToGlm3(_mesh->mNormals[i])			: glm::vec3{ 0.0f };
+		vertices[i].uv			= _mesh->mTextureCoords[0]	? assimpVecToGlm2(_mesh->mTextureCoords[0][i])	: glm::vec2{ 0.0f };
 	}
 
 	for (u32 i = 0; i < _mesh->mNumFaces; ++i)
@@ -169,10 +171,6 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) cons
 	{
 		Material& material = processMaterial(_scene->mMaterials[_mesh->mMaterialIndex]);
 		mesh.setMaterial(&material);
-	}
-	else
-	{
-		mesh.setMaterial(&MaterialsManager::getInstance().getDefaultMaterial());
 	}
 
 	return mesh;
@@ -203,37 +201,48 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		_material->Get(AI_MATKEY_OPACITY, opacity);
 		material.setProperty("u_opacity", opacity);
 	}
+	{
+		aiColor3D ambient;
+		aiColor3D diffuse;
+		aiColor3D specular;
 
-	aiColor3D color;
-	if (_material->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS)
-	{
-		material.setProperty("u_matAmbient", glm::vec3(color.r, color.g, color.b));
-	}
-	if (_material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
-	{
-		material.setProperty("u_matDiffuse", glm::vec3(color.r, color.g, color.b));
-	}
-	if (_material->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS)
-	{
-		material.setProperty("u_matSpecular", glm::vec3(color.r, color.g, color.b));
-	}
+		_material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+		_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+		_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 
-	Texture* texture = nullptr;
-	if (_material->GetTextureCount(aiTextureType_DIFFUSE) == 1)
+		material.setProperty("u_matAmbient", glm::vec3(ambient.r, ambient.g, ambient.b));
+		material.setProperty("u_matDiffuse", glm::vec3(diffuse.r, diffuse.g, diffuse.b));
+		material.setProperty("u_matSpecular", glm::vec3(specular.r, specular.g, specular.b));
+	}
 	{
-		aiString textureName;
-		_material->GetTexture(aiTextureType_DIFFUSE, 0, &textureName);
+		Texture* diffuseTexture = loadTexture(_material, aiTextureType_DIFFUSE);
+		material.setProperty("u_texDiffuse", diffuseTexture);
 
-		std::filesystem::path texturePath = std::filesystem::path(m_filePath).parent_path() / textureName.C_Str();
-		texture = ResourceManager::getInstance().loadTexture(texturePath.string());
-		ASSERT(texture);
+
+		const std::string& shaderPath = diffuseTexture ? k_textureShaderPath : k_colorShaderPath;
+		material.setShader(ResourceManager::getInstance().loadShader(shaderPath));
 	}
 
-	const Shader* shader = texture ? materialsMgr.getTextureShader() : materialsMgr.getColorShader();
-	material.setProperty("u_texture2D", texture);
-	material.setShader(shader);
+	material.setProperty("u_texNormals", loadTexture(_material, aiTextureType_HEIGHT));
 
 	return material;
+}
+
+//-----------------------------------------------------------------------------
+
+Texture* ModelCreationHelper::loadTexture(const aiMaterial* _material, aiTextureType _texType) const
+{
+	Texture* texture = nullptr;
+	if (_material->GetTextureCount(_texType) == 1)
+	{
+		aiString textureName;
+		_material->GetTexture(_texType, 0, &textureName);
+
+		std::filesystem::path texturePath = m_directory / textureName.C_Str();
+		texture = ResourceManager::getInstance().loadTexture(texturePath.generic_string());
+		ASSERT(texture);
+	}
+	return texture;
 }
 
 //-----------------------------------------------------------------------------

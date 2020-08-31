@@ -11,7 +11,10 @@
 #include "save_restore/JsonProjectRestorer.hpp"
 
 #include "julie/managers/AppController.hpp"
+#include "julie/managers/ResourceManager.hpp"
+#include "julie/managers/MaterialsManager.hpp"
 #include "julie/Globals.hpp"
+#include "julie/Material.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -51,28 +54,6 @@ MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
 	JsonProjectSaver::save(file, *m_sceneWrapper);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::setupUi()
-{
-	m_ui = std::make_unique<Ui::MainWindow>();
-	m_ui->setupUi(this);
-
-	m_ui->oglw_screen->setActionHandler(this);
-
-	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
-	m_entitisWdg->setEntityActionHandler(this);
-	m_ui->dock_entities->setWidget(m_entitisWdg);
-
-	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
-	m_ui->dock_props->setWidget(m_propertiesWdg);
-
-	m_viewPropertiesWdg = new ViewPropertiesWidget(m_ui->dock_viewProps);
-	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
-	m_viewPropertiesWdg->setCameraController(&m_cameraController);
-	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +130,46 @@ void MainWindow::onGlLoaded()
 	m_ui->oglw_screen->setCamera(&m_camera);
 
 	m_entitisWdg->setScene(m_sceneWrapper.get());
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::setupUi()
+{
+	m_ui = std::make_unique<Ui::MainWindow>();
+	m_ui->setupUi(this);
+
+	m_ui->oglw_screen->setActionHandler(this);
+
+	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
+	m_entitisWdg->setEntityActionHandler(this);
+	m_ui->dock_entities->setWidget(m_entitisWdg);
+
+	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
+	m_ui->dock_props->setWidget(m_propertiesWdg);
+
+	m_viewPropertiesWdg = new ViewPropertiesWidget(m_ui->dock_viewProps);
+	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
+	m_viewPropertiesWdg->setCameraController(&m_cameraController);
+	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::setupDefaultMaterial()
+{
+	jl::Material& material = MaterialsManager::getInstance().createMaterial("Default");
+
+	const jl::Shader* shader = ResourceManager::getInstance().loadShader("res/shaders/MaterialColorShader.shdata");
+	material.setShader(shader);
+
+	material.setProperty("u_shininess",		128.0f);
+	material.setProperty("u_opacity",		1.0f);
+	material.setProperty("u_matAmbient",	glm::vec3(1.0f));
+	material.setProperty("u_matDiffuse",	glm::vec3(1.0f));
+	material.setProperty("u_matSpecular",	glm::vec3(1.0f));
+	material.setProperty("u_texDiffuse",	static_cast<jl::Texture*>(nullptr));
+	material.setProperty("u_texNormals",	static_cast<jl::Texture*>(nullptr));
 }
 
 //-----------------------------------------------------------------------------
