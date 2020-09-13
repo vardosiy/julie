@@ -17,7 +17,7 @@ constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(s
 } // namespace details
 
 template<typename T>
-constexpr std::enable_if_t<std::is_enum_v<T>, bool> isEnumValueValid(const T _value) noexcept;
+constexpr std::enable_if_t<std::is_enum_v<T>, bool> isValid(const T _value) noexcept;
 
 template<typename T>
 constexpr std::enable_if_t<std::is_enum_v<T>, T> fromString(std::string_view _str) noexcept;
@@ -48,7 +48,7 @@ template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value &
 constexpr T& operator|= (T& _lhs, T _rhs);
 
 template<typename T, typename = std::enable_if_t<EnableBitOperations<T>::value && std::is_enum_v<T>>>
-constexpr T operator&= (T _lhs, T _rhs);
+constexpr T& operator&= (T& _lhs, T _rhs);
 
 //-----------------------------------------------------------------------------
 
@@ -83,11 +83,11 @@ constexpr std::string_view toString(const _enum _value) noexcept									\
 																									\
 	constexpr auto k_enumValuesNames{ details::getEnumNamesFromValues<k_valuesCount>(k_valuesStr) };\
 																									\
-	if (isEnumValueValid(_value))																	\
+	if (isValid(_value))																			\
 	{																								\
 		return k_enumValuesNames[static_cast<std::size_t>(_value)];									\
 	}																								\
-	return "";																						\
+	return std::string_view();																		\
 }																									\
 }
 
