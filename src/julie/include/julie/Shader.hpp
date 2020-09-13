@@ -2,8 +2,9 @@
 
 #include "julie/core/Types.hpp"
 
+#include "utils/Noncopyable.hpp"
+
 #include <glm/glm.hpp>
-#include <boost/noncopyable.hpp>
 
 #include <memory>
 #include <string_view>
@@ -17,7 +18,7 @@ namespace jl {
 
 class Model;
 
-class Shader : boost::noncopyable
+class Shader : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:

@@ -4,7 +4,7 @@
 #include "julie/primitives/VertexBuffer.hpp"
 #include "julie/primitives/IndexBuffer.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 #include <optional>
 
@@ -14,7 +14,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class VertexArray : boost::noncopyable
+class VertexArray : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:

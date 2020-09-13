@@ -2,7 +2,8 @@
 
 #include "julie/scene/lights/LightsData.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
+
 #include <vector>
 
 //-----------------------------------------------------------------------------
@@ -13,7 +14,7 @@ namespace jl {
 
 class Shader;
 
-class LightsHolder : boost::noncopyable
+class LightsHolder : utils::Noncopyable
 {
 public:
 	const AmbientLightData& getAmbientLightData() const noexcept;

@@ -5,7 +5,7 @@
 #include "julie/scene/FogData.hpp"
 #include "julie/scene/lights/LightsHolder.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 #include <memory>
 #include <vector>
@@ -19,7 +19,7 @@ namespace jl {
 
 class Camera;
 
-class Scene : boost::noncopyable
+class Scene : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:

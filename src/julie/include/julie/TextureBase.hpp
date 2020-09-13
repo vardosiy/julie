@@ -2,7 +2,7 @@
 
 #include "julie/core/Types.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace jl {
 enum class TextureTiling;
 enum class TextureFiltering;
 
-class TextureBase : boost::noncopyable
+class TextureBase : utils::Noncopyable
 {
 public:
 	u32 getHandle() const noexcept;

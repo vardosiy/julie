@@ -3,7 +3,7 @@
 #include "julie/core/Types.hpp"
 #include "julie/Vertex.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class IndexBuffer : boost::noncopyable
+class IndexBuffer : utils::Noncopyable
 {
 public:
 	IndexBuffer(const index_t* _data, u64 _count) noexcept;

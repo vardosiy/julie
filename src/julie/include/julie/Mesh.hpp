@@ -6,7 +6,7 @@
 #include "julie/Material.hpp"
 #include "julie/primitives/VertexArray.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 #include <vector>
 
@@ -18,14 +18,14 @@ namespace jl {
 
 class Material;
 
-class Mesh : boost::noncopyable
+class Mesh : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
 	Mesh(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept;
 
-	Mesh(Mesh&& _rhs) noexcept;
-	Mesh& operator=(Mesh&& _rhs) noexcept;
+	Mesh(Mesh&&) = default;
+	Mesh& operator=(Mesh&&) = default;
 
 //-----------------------------------------------------------------------------
 	void bind() const;

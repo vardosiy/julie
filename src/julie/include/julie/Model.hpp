@@ -4,7 +4,7 @@
 #include "julie/core/Aabb.hpp"
 #include "julie/Mesh.hpp"
 
-#include <boost/noncopyable.hpp>
+#include "utils/Noncopyable.hpp"
 
 #include <vector>
 #include <memory>
@@ -16,7 +16,7 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Model : boost::noncopyable
+class Model : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
@@ -25,6 +25,9 @@ public:
 //-----------------------------------------------------------------------------
 	Model(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _indices) noexcept;
 	Model(std::vector<Mesh>&& _meshes) noexcept;
+
+	Model(Model&&) = default;
+	Model& operator=(Model&&) = default;
 
 	size_t getMeshesCount() const noexcept;
 

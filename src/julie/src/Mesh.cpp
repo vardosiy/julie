@@ -20,26 +20,6 @@ Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<index_t>& _in
 
 //-----------------------------------------------------------------------------
 
-Mesh::Mesh(Mesh&& _rhs) noexcept
-	: m_vertexArray(std::move(_rhs.m_vertexArray))
-	, m_boundingBox(_rhs.m_boundingBox)
-	, m_material(_rhs.m_material)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-Mesh& Mesh::operator=(Mesh&& _rhs) noexcept
-{
-	std::swap(m_vertexArray, _rhs.m_vertexArray);
-	std::swap(m_boundingBox, _rhs.m_boundingBox);
-	std::swap(m_material, _rhs.m_material);
-
-	return *this;
-}
-
-//-----------------------------------------------------------------------------
-
 void Mesh::bind() const
 {
 	m_vertexArray.bind();
