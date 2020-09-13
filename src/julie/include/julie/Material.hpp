@@ -40,7 +40,7 @@ public:
 	const std::vector<Property>& getProperties() const noexcept;
 	void clearProperties() noexcept;
 
-	template<typename T, typename = std::enable_if_t< VariantHasAlternative_v<T, Property::TValue> >>
+	template<typename T, typename = std::enable_if_t< utils::VariantHasAlternative_v<T, Property::TValue> >>
 	void setProperty(const std::string& _name, const T& _val) noexcept;
 
 //-----------------------------------------------------------------------------

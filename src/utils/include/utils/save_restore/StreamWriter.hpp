@@ -39,7 +39,8 @@ std::enable_if_t<std::is_arithmetic_v<T>> StreamWriter::write(T _value)
 template<typename T>
 std::enable_if_t<std::is_enum_v<T>> StreamWriter::write(T _value)
 {
-	write(static_cast<int>(_value));
+	auto value = static_cast<std::underlying_type_t<T>>(_value);
+	write(value);
 }
 
 //-----------------------------------------------------------------------------

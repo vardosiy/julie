@@ -72,7 +72,7 @@ void IndexBuffer::bind() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void IndexBuffer::bufferData(const index_t* _data, u64 _count) noexcept
+void IndexBuffer::bufferData(const index_t* _data, u64 _count)
 {
 	ASSERT(_count * sizeof(index_t) <= m_size);
 
