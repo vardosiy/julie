@@ -38,19 +38,20 @@ uniform vec3 u_lightPosition[POINT_LIGHTS_COUNT];
 
 void main()
 {
-	vec3 normalW = normalize(v_normW);
+	vec3 normal = normalize(v_normW);
 	vec3 toEye = normalize(u_camPosition - v_posW);
 
+	vec3 ambientLight = u_ambientColor * u_matAmbient;
 	vec3 diffuseLight = vec3(0.0, 0.0, 0.0);
 	vec3 specularLight = vec3(0.0, 0.0, 0.0);
 
 #if DIRECTIONAL_LIGHTS_COUNT > 0
 	for(int i = 0; i < DIRECTIONAL_LIGHTS_COUNT; ++i)
 	{
-		float diffuseIntensity = max( dot(normalW, -u_lightDirection[i]), 0.0 );
+		float diffuseIntensity = max( dot(normal, -u_lightDirection[i]), 0.0 );
 		diffuseLight += u_directionalLightColor[i] * (diffuseIntensity * u_matDiffuse);
 
-		vec3 reflectionDir = normalize( reflect(u_lightDirection[i], normalW) );
+		vec3 reflectionDir = normalize( reflect(u_lightDirection[i], normal) );
 		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shininess );
 		specularLight += u_directionalLightColor[i] * (specularIntensity * u_matSpecular);
 	}
@@ -61,17 +62,15 @@ void main()
 	{
 		vec3 lightDirection = normalize(v_posW - u_lightPosition[i]);
 
-		float diffuseIntensity = max( dot(normalW, -lightDirection), 0.0 );
+		float diffuseIntensity = max( dot(normal, -lightDirection), 0.0 );
 		diffuseLight += u_pointLightColor[i] * (diffuseIntensity * u_matDiffuse);
 
-		vec3 reflectionDir = normalize( reflect(lightDirection, normalW) );
+		vec3 reflectionDir = normalize( reflect(lightDirection, normal) );
 		float specularIntensity = pow( max( dot(reflectionDir, toEye), 0.0 ), u_shininess );
 		specularLight += u_pointLightColor[i] * (specularIntensity * u_matSpecular);
 	}
 #endif
 
-	vec3 ambientLight = u_ambientColor * u_matAmbient;
-
-	o_color = vec4( mix(diffuseLight, ambientLight, u_ambientWeight), 1.0 ) + vec4(specularLight, 1.0);
-	o_color.a = u_opacity;
+	vec3 color = mix(diffuseLight, ambientLight, u_ambientWeight) + specularLight;
+	o_color = vec4(color, u_opacity);
 }
