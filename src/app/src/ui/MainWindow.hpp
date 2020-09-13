@@ -3,7 +3,9 @@
 #include "CommonDefs.hpp"
 #include "ui/IEntityActionHandler.hpp"
 
+#include "data/SceneWrapper.hpp"
 #include "controllers/FreeflyCameraController.hpp"
+
 #include "julie/scene/Camera.hpp"
 
 #include <QMainWindow>
@@ -18,6 +20,7 @@ class MainWindow;
 }
 
 namespace jl {
+class Scene;
 class Material;
 }
 
@@ -64,7 +67,7 @@ private:
 	QTimer m_updateTimer;
 	app::ScopedConnection m_glLoadedConnection;
 
-	std::unique_ptr<SceneWrapper> m_sceneWrapper;
+	SceneWrapper m_sceneWrapper;
 
 	jl::Camera m_camera;
 	FreeflyCameraController m_cameraController;

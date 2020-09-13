@@ -71,6 +71,8 @@ protected:
 
 //-----------------------------------------------------------------------------
 private:
+	void initScene();
+
 	void processKeyboardModifiers(Qt::KeyboardModifiers _modifiers);
 	void processObjectSelection(const jl::rayf& _ray);
 

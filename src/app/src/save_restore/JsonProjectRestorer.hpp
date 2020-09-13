@@ -1,9 +1,11 @@
 #pragma once
 
+#include "data/SceneWrapper.hpp"
+
 #include <json/json.h>
 
 #include <istream>
-#include <memory>
+#include <optional>
 
 namespace jl {
 class Model;
@@ -11,7 +13,6 @@ class Material;
 class LightsHolder;
 }
 
-class SceneWrapper;
 class ObjectWrapper;
 
 class JsonProjectRestorer
@@ -19,7 +20,7 @@ class JsonProjectRestorer
 public:
 	JsonProjectRestorer(std::istream& _stream);
 
-	std::unique_ptr<SceneWrapper> extractScene();
+	std::optional<SceneWrapper> extractScene();
 
 private:
 	static void restoreMaterials(const Json::Value& _json);
@@ -31,5 +32,5 @@ private:
 	static void restoreLights(const Json::Value& _json, jl::LightsHolder& _lightsHolder);
 
 private:
-	std::unique_ptr<SceneWrapper> m_sceneWrapper;
+	std::optional<SceneWrapper> m_sceneWrapper;
 };

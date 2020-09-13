@@ -4,7 +4,6 @@
 #include "ui/ViewPropertiesWidget.hpp"
 #include "ui_MainWindow.h"
 
-#include "data/SceneWrapper.hpp"
 #include "data/ObjectWrapper.hpp"
 
 #include "save_restore/JsonProjectSaver.hpp"
@@ -13,6 +12,7 @@
 #include "julie/managers/AppController.hpp"
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
+#include "julie/scene/Scene.hpp"
 #include "julie/Globals.hpp"
 #include "julie/Material.hpp"
 
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_updateTimer(this)
 	, m_camera(0.1f, 100.0f, 30.0f)
 {
-	m_camera.setPosition(glm::vec3(1.0f, 2.0f, 5.0f));
+	m_camera.setPosition(glm::vec3(0.0f));
 	m_cameraController.setCameraMoveSpeed(3.0f);
 	m_cameraController.setCameraRotateSpeed(2.0f);
 	m_cameraController.setCamera(&m_camera);
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QMainWindow* parent)
 MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
-	JsonProjectSaver::save(file, *m_sceneWrapper);
+	JsonProjectSaver::save(file, m_sceneWrapper);
 }
 
 //-----------------------------------------------------------------------------
@@ -118,18 +118,19 @@ void MainWindow::onGlLoaded()
 	if (file.is_open())
 	{
 		JsonProjectRestorer restorer(file);
-		m_sceneWrapper = restorer.extractScene();
-	}
-	else
-	{
-		m_sceneWrapper = std::make_unique<SceneWrapper>();
+		std::optional<SceneWrapper> restoredScene = restorer.extractScene();
+
+		if (restoredScene)
+		{
+			m_sceneWrapper = std::move(restoredScene).value();
+		}
 	}
 
 	AppController::setContextOwner(m_ui->oglw_screen);
-	m_ui->oglw_screen->setScene(m_sceneWrapper.get());
+	m_ui->oglw_screen->setScene(&m_sceneWrapper);
 	m_ui->oglw_screen->setCamera(&m_camera);
 
-	m_entitisWdg->setScene(m_sceneWrapper.get());
+	m_entitisWdg->setScene(&m_sceneWrapper);
 }
 
 //-----------------------------------------------------------------------------

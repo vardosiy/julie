@@ -66,7 +66,7 @@ JsonProjectRestorer::JsonProjectRestorer(std::istream& _stream)
 
 //-----------------------------------------------------------------------------
 
-std::unique_ptr<SceneWrapper> JsonProjectRestorer::extractScene()
+std::optional<SceneWrapper> JsonProjectRestorer::extractScene()
 {
 	return std::move(m_sceneWrapper);
 }
@@ -158,7 +158,7 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 
 void JsonProjectRestorer::restoreScene(const Json::Value& _json)
 {
-	m_sceneWrapper = std::make_unique<SceneWrapper>();
+	m_sceneWrapper = SceneWrapper{};
 
 	for (const Json::Value& object : _json[k_objects])
 	{
@@ -183,7 +183,7 @@ void JsonProjectRestorer::restoreObject(const Json::Value& _json)
 
 	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
 	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));
-	wrapper.setSize(details::jsonToVec3(_json[k_size]));
+	wrapper.setScale(details::jsonToVec3(_json[k_size])); // TODO
 }
 
 //-----------------------------------------------------------------------------

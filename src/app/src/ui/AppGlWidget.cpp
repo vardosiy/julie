@@ -7,6 +7,9 @@
 
 #include "managers/InputManager.hpp"
 
+#include "julie/managers/ResourceManager.hpp"
+#include "julie/managers/MaterialsManager.hpp"
+
 #include "julie/Globals.hpp"
 #include "julie/Renderer.hpp"
 #include "julie/Model.hpp"
@@ -143,6 +146,8 @@ void AppGlWidget::initializeGL()
 	glLineWidth(2.0f);
 
 	m_glLoadedSignal();
+
+	initScene();
 }
 
 //-----------------------------------------------------------------------------
@@ -257,12 +262,50 @@ void AppGlWidget::wheelEvent(QWheelEvent* _event)
 	{
 		const float scaleFactor = _event->angleDelta().y() > 0 ? 1.1f : 0.9f;
 
-		const glm::vec3& originalScale = m_selectedObject->getSize();
+		const glm::vec3& originalScale = m_selectedObject->getScale();
 		const glm::vec3 newScale = originalScale * scaleFactor;
 
-		m_selectedObject->setSize(newScale);
+		m_selectedObject->setScale(newScale);
 		m_actionHandler->onObjectScaled(*m_selectedObject);
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+std::unique_ptr<jl::Model> model;
+void AppGlWidget::initScene()
+{
+	ResourceManager& resourceMgr = ResourceManager::getInstance();
+	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
+
+	jl::Texture* texture = resourceMgr.loadTexture("res/textures/ULW1541_10453.jpg");
+	ASSERT(texture);
+	jl::Shader* shader = resourceMgr.loadShader("res/shaders/composed/SimpleTexture.shdata");
+	ASSERT(shader);
+
+	jl::Material& material = materialsMgr.createMaterial("material");
+	material.setShader(shader);
+	material.setProperty("u_texture2D", texture);
+
+	std::vector<jl::Vertex> vertices(4);
+	vertices[0].pos = glm::vec3(-1.0f, -1.0f, 0.0f);
+	vertices[1].pos = glm::vec3(-1.0f,  1.0f, 0.0f);
+	vertices[2].pos = glm::vec3( 1.0f, -1.0f, 0.0f);
+	vertices[3].pos = glm::vec3( 1.0f,  1.0f, 0.0f);
+	vertices[0].uv = glm::vec2(0.0f, 0.0f);
+	vertices[1].uv = glm::vec2(0.0f, 1.0f);
+	vertices[2].uv = glm::vec2(1.0f, 0.0f);
+	vertices[3].uv = glm::vec2(1.0f, 1.0f);
+	std::vector<jl::index_t> indecies = {
+		0, 1, 2,
+		1, 2, 3
+	};
+
+	model = std::make_unique<jl::Model>(vertices, indecies);
+	model->getMesh(0).setMaterial(&material);
+
+	ObjectWrapper& obj = m_sceneWrapper->createObject("obj");
+	obj.setModel(model.get());
 }
 
 //-----------------------------------------------------------------------------
@@ -291,23 +334,25 @@ void AppGlWidget::processKeyboardModifiers(Qt::KeyboardModifiers _modifiers)
 
 void AppGlWidget::processObjectSelection(const jl::rayf& _ray)
 {
+	return;
+
 	resetSelectedObj();
 
-	m_sceneWrapper->forEachObject([&_ray, this](ObjectWrapper& _objWrapper)
-	{
-		if (const jl::Model* _model = _objWrapper.getModel())
-		{
-			const jl::aabbf boxWorld = _objWrapper.getWorldMatrix() * _model->getBoundingBox();
+	//m_sceneWrapper->forEachObject([&_ray, this](ObjectWrapper& _objWrapper)
+	//{
+	//	if (const jl::Model* _model = _objWrapper.getModel())
+	//	{
+	//		const jl::aabbf boxWorld = _objWrapper.getWorldMatrix() * _model->getBoundingBox();
 
-			float nearPos = 0.0f;
-			float farPos = 0.0f;
-			if (jl::intersects(boxWorld, _ray, nearPos, farPos) && nearPos < m_selectedObjDistance)
-			{
-				m_selectedObject = &_objWrapper;
-				m_selectedObjDistance = nearPos;
-			}
-		}
-	});
+	//		float nearPos = 0.0f;
+	//		float farPos = 0.0f;
+	//		if (jl::intersects(boxWorld, _ray, nearPos, farPos) && nearPos < m_selectedObjDistance)
+	//		{
+	//			m_selectedObject = &_objWrapper;
+	//			m_selectedObjDistance = nearPos;
+	//		}
+	//	}
+	//});
 
 	if (m_selectedObject)
 	{

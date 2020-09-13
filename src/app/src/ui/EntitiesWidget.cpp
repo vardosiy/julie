@@ -47,10 +47,10 @@ void EntitiesWidget::setScene(SceneWrapper* _sceneWrapper)
 
 	if (m_sceneWrapper)
 	{
-		m_sceneWrapper->forEachObject([this](ObjectWrapper& _objWrapper)
+		for (const ObjectWrapper& objWrapper : *m_sceneWrapper)
 		{
-			m_objectsNamesList.append(_objWrapper.getName().c_str());
-		});
+			m_objectsNamesList.append(objWrapper.getName().c_str());
+		}
 		m_objectsListModel.setStringList(m_objectsNamesList);
 
 		refreshMaterialsList();
@@ -223,9 +223,9 @@ void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material
 		return;
 	}
 
-	m_sceneWrapper->forEachObject([_old, _new](ObjectWrapper& _objWrapper)
+	for (ObjectWrapper& objWrapper : *m_sceneWrapper)
 	{
-		if (jl::Model* model = _objWrapper.getModel())
+		if (jl::Model* model = objWrapper.getModel())
 		{
 			const size_t meshesCount = model->getMeshesCount();
 			for (size_t i = 0; i < meshesCount; i++)
@@ -239,7 +239,7 @@ void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material
 				}
 			}
 		}
-	});
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -276,9 +276,10 @@ void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 			ASSERT(m_sceneWrapper);
 			if (m_sceneWrapper)
 			{
-				if (ObjectWrapper* objWrapper = m_sceneWrapper->findObject(entityName))
+				auto it = m_sceneWrapper->findObject(entityName);
+				if (it != m_sceneWrapper->end())
 				{
-					m_actionHandler->objectSelected(*objWrapper);
+					m_actionHandler->objectSelected(*it);
 				}
 			}
 		}
@@ -302,7 +303,7 @@ std::string EntitiesWidget::computeObjectName() const
 {
 	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
 	{
-		return m_sceneWrapper->findObject(_name) != nullptr;
+		return m_sceneWrapper->findObject(_name) != m_sceneWrapper->end();
 	});
 }
 

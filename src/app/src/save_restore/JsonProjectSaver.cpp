@@ -161,10 +161,10 @@ Json::Value JsonProjectSaver::saveMaterial(const jl::Material& _material)
 Json::Value JsonProjectSaver::saveScene(const SceneWrapper& _sceneWrapper)
 {
 	Json::Value objects;
-	_sceneWrapper.forEachObject([&objects](const ObjectWrapper& _objWrapper)
+	for (const ObjectWrapper& objWrapper : _sceneWrapper)
 	{
-		objects.append(saveObject(_objWrapper));
-	});
+		objects.append(saveObject(objWrapper));
+	}
 
 	Json::Value result;
 	result[k_lights] = saveLights(_sceneWrapper.getLightsHolder());
@@ -183,7 +183,7 @@ Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
 
 	result[k_position]	= details::vec3ToJson(_objWrapper.getPosition());
 	result[k_rotation]	= details::vec3ToJson(_objWrapper.getRotation());
-	result[k_size]		= details::vec3ToJson(_objWrapper.getSize());
+	result[k_size]		= details::vec3ToJson(_objWrapper.getScale());
 
 	if (const jl::Model* model = _objWrapper.getModel())
 	{

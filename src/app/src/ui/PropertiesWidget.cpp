@@ -22,13 +22,13 @@
 
 struct GetPropertyTypeStrVisitor
 {
-	std::string operator() (float) const noexcept					{ return std::string(utils::toString(jl::UniformType::Float)); }
-	std::string operator() (jl::s32) const noexcept					{ return std::string(utils::toString(jl::UniformType::Int)); }
-	std::string operator() (const glm::vec2&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec2)); }
-	std::string operator() (const glm::vec3&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec3)); }
-	std::string operator() (const glm::vec4&) const noexcept		{ return std::string(utils::toString(jl::UniformType::Vec4)); }
-	std::string operator() (const jl::Texture*) const noexcept		{ return std::string(utils::toString(jl::UniformType::Texture2D)); }
-	std::string operator() (const jl::CubeTexture*) const noexcept	{ return std::string(utils::toString(jl::UniformType::CubeTexture)); }
+	std::string_view operator() (float) const noexcept					{ return utils::toString(jl::UniformType::Float); }
+	std::string_view operator() (jl::s32) const noexcept				{ return utils::toString(jl::UniformType::Int); }
+	std::string_view operator() (const glm::vec2&) const noexcept		{ return utils::toString(jl::UniformType::Vec2); }
+	std::string_view operator() (const glm::vec3&) const noexcept		{ return utils::toString(jl::UniformType::Vec3); }
+	std::string_view operator() (const glm::vec4&) const noexcept		{ return utils::toString(jl::UniformType::Vec4); }
+	std::string_view operator() (const jl::Texture*) const noexcept		{ return utils::toString(jl::UniformType::Texture2D); }
+	std::string_view operator() (const jl::CubeTexture*) const noexcept	{ return utils::toString(jl::UniformType::CubeTexture); }
 };
 
 //-----------------------------------------------------------------------------
@@ -142,8 +142,8 @@ void PropertiesWidget::refreshObjectSize()
 
 	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx);
 
-	auto editCallback = [obj](const glm::vec3& _val) { obj->setSize(_val); };
-	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getSize(), editCallback });
+	auto editCallback = [obj](const glm::vec3& _val) { obj->setScale(_val); };
+	const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ obj->getScale(), editCallback });
 	setCellValue(index(1, k_valueColIdx, transformIdx), size, true);
 
 	m_activeEntity = obj;
@@ -174,8 +174,8 @@ void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
 			setPropertyRow(transfromNum++, "Position", pos, transformIdx);
 		}
 		{
-			auto editCallback = [&_object](const glm::vec3& _val) { _object.setSize(_val); };
-			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getSize(), editCallback });
+			auto editCallback = [&_object](const glm::vec3& _val) { _object.setScale(_val); };
+			const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getScale(), editCallback });
 			setPropertyRow(transfromNum++, "Scale", size, transformIdx);
 		}
 		{
