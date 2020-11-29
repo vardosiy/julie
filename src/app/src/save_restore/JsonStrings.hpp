@@ -9,7 +9,7 @@ constexpr char* k_lights			= "lights";
 constexpr char* k_objects			= "objects";
 constexpr char* k_position			= "position";
 constexpr char* k_rotation			= "rotation";
-constexpr char* k_size				= "size";
+constexpr char* k_scale				= "scale";
 
 constexpr char* k_model				= "model";
 constexpr char* k_meshMaterials		= "meshMaterials";

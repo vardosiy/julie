@@ -36,13 +36,15 @@ public:
 
 //-----------------------------------------------------------------------------
 	void addObject(ObjectPtr&& _obj);
-	size_t getObjectsCount() const noexcept;
 
-	Object& getObject(size_t _idx);
-	const Object& getObject(size_t _idx) const;
+	int getObjectsCount() const noexcept;
+	Object& getObject(int _idx);
+	const Object& getObject(int _idx) const;
 
-	ObjectPtr eraseObject(size_t _idx) noexcept;
-	ObjectPtr eraseObject(const Object& _obj) noexcept;
+	int findObjectIdx(const Object& _obj) const noexcept;
+	const Object* findObjectByName(std::string_view _name) const noexcept;
+
+	ObjectPtr eraseObject(int _idx) noexcept;
 
 //-----------------------------------------------------------------------------
 private:

@@ -1,11 +1,11 @@
 #include "save_restore/JsonProjectRestorer.hpp"
 #include "save_restore/JsonStrings.hpp"
 
-#include "data/SceneWrapper.hpp"
-#include "data/ObjectWrapper.hpp"
-
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
+
+#include "julie/scene/Scene.hpp"
+#include "julie/scene/Object.hpp"
 
 #include "julie/Mesh.hpp"
 #include "julie/Model.hpp"
@@ -15,6 +15,8 @@
 #include "julie/scene/Scene.hpp"
 #include "julie/scene/Object.hpp"
 #include "julie/scene/lights/LightsHolder.hpp"
+
+#include "utils/Assert.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -61,14 +63,15 @@ JsonProjectRestorer::JsonProjectRestorer(std::istream& _stream)
 	_stream >> root;
 
 	restoreMaterials(root[k_materials]);
-	restoreScene(root[k_scene]);
+
+	m_scene = restoreScene(root[k_scene]);
 }
 
 //-----------------------------------------------------------------------------
 
-std::optional<SceneWrapper> JsonProjectRestorer::extractScene()
+std::optional<jl::Scene> JsonProjectRestorer::extractScene()
 {
-	return std::move(m_sceneWrapper);
+	return std::move(m_scene);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,75 +159,82 @@ void JsonProjectRestorer::restoreMaterialProperties(const Json::Value& _json, jl
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectRestorer::restoreScene(const Json::Value& _json)
+jl::Scene JsonProjectRestorer::restoreScene(const Json::Value& _json)
 {
-	m_sceneWrapper = SceneWrapper{};
+	jl::Scene scene;
 
-	for (const Json::Value& object : _json[k_objects])
+	for (const Json::Value& objectJson : _json[k_objects])
 	{
-		restoreObject(object);
+		std::unique_ptr<jl::Object> object = restoreObject(objectJson);
+		scene.addObject(std::move(object));
 	}
 
-	restoreLights(_json[k_lights], m_sceneWrapper->getLightsHolder());
+	restoreLights(_json[k_lights], scene.getLightsHolder());
+
+	return scene;
 }
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectRestorer::restoreObject(const Json::Value& _json)
+jl::Scene::ObjectPtr JsonProjectRestorer::restoreObject(const Json::Value& _json)
 {
-	std::string objName = _json[k_name].asString();
-	ObjectWrapper& wrapper = m_sceneWrapper->createObject(std::move(objName));
+	auto object = std::make_unique<jl::Object>();
+
+	const std::string objectName = _json[k_name].asString();
+	object->setName(objectName);
 
 	const Json::Value& modelJson = _json[k_model];
 	if (!_json.isNull())
 	{
-		restoreModel(modelJson, wrapper);
+		jl::Model* model = restoreModel(modelJson);
+		object->setModel(model);
 	}
 
-	wrapper.setPosition(details::jsonToVec3(_json[k_position]));
-	wrapper.setRotation(details::jsonToVec3(_json[k_rotation]));
-	wrapper.setScale(details::jsonToVec3(_json[k_size])); // TODO
+	object->setPosition(details::jsonToVec3(_json[k_position]));
+	object->setRotation(details::jsonToVec3(_json[k_rotation]));
+	object->setScale(details::jsonToVec3(_json[k_scale]));
+
+	return object;
 }
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectRestorer::restoreModel(const Json::Value& _json, ObjectWrapper& _objWrapper)
+jl::Model* JsonProjectRestorer::restoreModel(const Json::Value& _json)
 {
 	const std::string modelPath = _json[k_path].asString();
 	if (modelPath.empty())
 	{
-		return;
+		return nullptr;
 	}
 
 	jl::Model* model = ResourceManager::getInstance().loadModel(modelPath, false /* _loadMaterials */);
 	ASSERT(model);
-	if (!model)
+	if (model)
 	{
-		return;
-	}
+		Json::Value::ArrayIndex materialsToRead = 0;
 
-	Json::Value::ArrayIndex materialsToRead = 0;
-
-	const Json::Value& meshMaterials = _json[k_meshMaterials];
-	if (meshMaterials.isArray())
-	{
-		materialsToRead = std::min(meshMaterials.size(), static_cast<Json::Value::ArrayIndex>(model->getMeshesCount()));
-	}
-
-	for (Json::Value::ArrayIndex i = 0; i < materialsToRead; ++i)
-	{
-		const std::string materialName = meshMaterials[i].asString();
-		if (!materialName.empty())
+		const Json::Value& meshMaterials = _json[k_meshMaterials];
+		if (meshMaterials.isArray())
 		{
-			jl::Material* material = MaterialsManager::getInstance().findMaterial(materialName);
-			ASSERT(material);
+			const size_t meshesCount = model->getMeshesCount();
+			materialsToRead = std::min(meshMaterials.size(), static_cast<Json::Value::ArrayIndex>(meshesCount));
+		}
 
-			jl::Mesh& mesh = model->getMesh(i);
-			mesh.setMaterial(material);
+		for (Json::Value::ArrayIndex i = 0; i < materialsToRead; ++i)
+		{
+			const std::string materialName = meshMaterials[i].asString();
+			if (!materialName.empty())
+			{
+				jl::Material* material = MaterialsManager::getInstance().findMaterial(materialName);
+				ASSERT(material);
+
+				jl::Mesh& mesh = model->getMesh(i);
+				mesh.setMaterial(material);
+			}
 		}
 	}
 
-	_objWrapper.setModel(model);
+	return model;
 }
 
 //-----------------------------------------------------------------------------

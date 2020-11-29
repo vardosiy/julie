@@ -2,9 +2,6 @@
 
 #include "ui/AppGlWidget.hpp"
 
-#include "data/SceneWrapper.hpp"
-#include "data/ObjectWrapper.hpp"
-
 #include "managers/InputManager.hpp"
 
 #include "julie/managers/ResourceManager.hpp"
@@ -14,8 +11,8 @@
 #include "julie/Renderer.hpp"
 #include "julie/Model.hpp"
 #include "julie/scene/Scene.hpp"
-#include "julie/scene/Camera.hpp"
 #include "julie/scene/Object.hpp"
+#include "julie/scene/Camera.hpp"
 
 #include "julie/IntersectionsDetectionHelpers.hpp"
 
@@ -29,7 +26,7 @@
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 	, m_camera(nullptr)
-	, m_sceneWrapper(nullptr)
+	, m_scene(nullptr)
 	, m_actionHandler(nullptr)
 	, m_selectedObject(nullptr)
 	, m_selectedObjDistance(0.0f)
@@ -94,13 +91,13 @@ void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setScene(SceneWrapper* _sceneWrapper) noexcept
+void AppGlWidget::setScene(jl::Scene* _scene) noexcept
 {
-	m_sceneWrapper = _sceneWrapper;
+	m_scene = _scene;
 
-	if (m_sceneWrapper)
+	if (m_scene)
 	{
-		auto& lightsHolder = m_sceneWrapper->getLightsHolder();
+		auto& lightsHolder = m_scene->getLightsHolder();
 		lightsHolder.addPointLight(jl::PointLightData{ glm::vec3(1.0f), glm::vec3(1.0f) });
 	}
 }
@@ -170,14 +167,14 @@ void AppGlWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (m_sceneWrapper && m_camera)
+	if (m_scene && m_camera)
 	{
 		if (m_prerenderCommand)
 		{
 			m_prerenderCommand();
 		}
 
-		m_sceneWrapper->render(*m_camera);
+		m_scene->render(*m_camera);
 
 		if (m_postrenderCommand)
 		{
@@ -228,7 +225,7 @@ void AppGlWidget::mouseReleaseEvent(QMouseEvent* _event)
 {
 	if (_event->button() == Qt::MouseButton::LeftButton)
 	{
-		if (m_sceneWrapper && m_camera)
+		if (m_scene && m_camera)
 		{
 			const jl::rayf mouseRay = calcRayFromMouseClick(_event->pos(), *m_camera);
 			processObjectSelection(mouseRay);
@@ -304,8 +301,10 @@ void AppGlWidget::initScene()
 	model = std::make_unique<jl::Model>(vertices, indecies);
 	model->getMesh(0).setMaterial(&material);
 
-	ObjectWrapper& obj = m_sceneWrapper->createObject("obj");
-	obj.setModel(model.get());
+	auto object = std::make_unique<jl::Object>();
+	object->setName("Obj");
+	object->setModel(model.get());
+	m_scene->addObject(std::move(object));
 }
 
 //-----------------------------------------------------------------------------

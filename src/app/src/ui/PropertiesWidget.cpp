@@ -6,10 +6,9 @@
 #include "ui/properties/PropertyValueDelegate.hpp"
 #include "ui/properties/PropertyTypes.hpp"
 
-#include "data/ObjectWrapper.hpp"
-
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
+#include "julie/scene/Object.hpp"
 #include "julie/UniformType.hpp"
 #include "julie/Model.hpp"
 #include "julie/Material.hpp"
@@ -52,11 +51,11 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setActiveEntity(ObjectWrapper& _object)
+void PropertiesWidget::setActiveEntity(jl::Object& _object)
 {
-	if (std::holds_alternative<ObjectWrapper*>(m_activeEntity))
+	if (std::holds_alternative<jl::Object*>(m_activeEntity))
 	{
-		if (std::get<ObjectWrapper*>(m_activeEntity) == &_object)
+		if (std::get<jl::Object*>(m_activeEntity) == &_object)
 		{
 			return;
 		}
@@ -111,12 +110,12 @@ void PropertiesWidget::reset()
 
 void PropertiesWidget::refreshObjectPos()
 {
-	if (!std::holds_alternative<ObjectWrapper*>(m_activeEntity))
+	if (!std::holds_alternative<jl::Object*>(m_activeEntity))
 	{
 		return;
 	}
 
-	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
+	jl::Object* obj = std::get<jl::Object*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
 	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx);
@@ -132,12 +131,12 @@ void PropertiesWidget::refreshObjectPos()
 
 void PropertiesWidget::refreshObjectSize()
 {
-	if (!std::holds_alternative<ObjectWrapper*>(m_activeEntity))
+	if (!std::holds_alternative<jl::Object*>(m_activeEntity))
 	{
 		return;
 	}
 
-	ObjectWrapper* obj = std::get<ObjectWrapper*>(m_activeEntity);
+	jl::Object* obj = std::get<jl::Object*>(m_activeEntity);
 	m_activeEntity = nullptr;
 
 	const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx);
@@ -151,7 +150,7 @@ void PropertiesWidget::refreshObjectSize()
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectProperties(ObjectWrapper& _object)
+void PropertiesWidget::refreshObjectProperties(jl::Object& _object)
 {
 	int propNum = 0;
 	{
@@ -257,9 +256,9 @@ void PropertiesWidget::refreshUniforms(jl::Material& _material, const QModelInde
 
 void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles)
 {
-	if (std::holds_alternative<ObjectWrapper*>(m_activeEntity))
+	if (std::holds_alternative<jl::Object*>(m_activeEntity))
 	{
-		onObjectChanged(_topLeft, *std::get<ObjectWrapper*>(m_activeEntity));
+		onObjectChanged(_topLeft, *std::get<jl::Object*>(m_activeEntity));
 	}
 	else if (std::holds_alternative<jl::Material*>(m_activeEntity))
 	{
@@ -269,7 +268,7 @@ void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIn
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object)
+void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _object)
 {
 	if (_idx.data().canConvert<ModelUiWrapper>())
 	{

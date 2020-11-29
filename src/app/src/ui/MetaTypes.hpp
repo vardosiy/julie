@@ -7,12 +7,25 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
-class Mesh;
-class Model;
+class Object;
 class Material;
+
+class Model;
 class Texture;
 class Shader;
 }
+
+//-----------------------------------------------------------------------------
+
+struct ObjectUiWrapper
+{
+	jl::Object* value = nullptr;
+};
+
+struct MaterialUiWrapper
+{
+	jl::Material* value = nullptr;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -48,14 +61,6 @@ struct ColorUiWrapper
 	std::function<void(const glm::vec3&)> editCallback;
 };
 
-//-----------------------------------------------------------------------------
-
-struct MaterialUiWrapper
-{
-	QString materialName;
-	jl::Mesh* mesh = nullptr;
-};
-
 struct FloatValUiWrapper
 {
 	float value{ 0.0f };
@@ -64,14 +69,15 @@ struct FloatValUiWrapper
 
 //-----------------------------------------------------------------------------
 
+Q_DECLARE_METATYPE(ObjectUiWrapper)
+Q_DECLARE_METATYPE(MaterialUiWrapper)
+
 Q_DECLARE_METATYPE(ModelUiWrapper)
 Q_DECLARE_METATYPE(TextureUiWrapper)
 Q_DECLARE_METATYPE(ShaderUiWrapper)
 
 Q_DECLARE_METATYPE(TransformVecUiWrapper)
 Q_DECLARE_METATYPE(ColorUiWrapper)
-
-Q_DECLARE_METATYPE(MaterialUiWrapper)
 Q_DECLARE_METATYPE(FloatValUiWrapper)
 
 //-----------------------------------------------------------------------------

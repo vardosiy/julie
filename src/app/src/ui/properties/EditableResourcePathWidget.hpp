@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui/properties/PropertyTypes.hpp"
+#include "ui/MetaTypes.hpp"
 
 #include <QWidget>
 #include <QVariant>

@@ -1,10 +1,5 @@
 #include "julie/managers/MaterialsManager.hpp"
-#include "julie/managers/ResourceManager.hpp"
-
 #include "julie/Material.hpp"
-#include "julie/Shader.hpp"
-
-#include "utils/Utils.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -15,76 +10,78 @@ void MaterialsManager::clear() noexcept
 
 //-----------------------------------------------------------------------------
 
+size_t MaterialsManager::getMaterialsCount() const noexcept
+{
+	return m_materials.size();
+}
+
+//-----------------------------------------------------------------------------
+
 jl::Material& MaterialsManager::createMaterial(const std::string& _name) noexcept
 {
-	std::unique_ptr<jl::Material>& material = m_materials[_name];
+	jl::Material* result = findMaterial(_name);
 
-	if (!material)
+	if (!result)
 	{
-		material.reset(new jl::Material);
+		auto& material = m_materials.emplace_back(new jl::Material);
+		material->setName(_name);
+
+		result = material.get();
 	}
 
-	return *material;
+	return *result;
 }
 
 //-----------------------------------------------------------------------------
 
 jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noexcept
 {
-	auto it = m_materials.find(_name);
-	return it != m_materials.end() ? it->second.get() : nullptr;
+	auto it = std::find_if(m_materials.begin(), m_materials.end(), [&_name](const auto& _material)
+	{
+		return _material->getName() == _name;
+	});
+	return it != m_materials.end() ? it->get() : nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
 void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 {
-	m_materials.erase(_name);
+	auto removeIt = std::remove_if(m_materials.begin(), m_materials.end(), [&_name](const auto& _material)
+	{
+		return _material->getName() == _name;
+	});
+	m_materials.erase(removeIt, m_materials.end());
 }
 
 //-----------------------------------------------------------------------------
 
-void MaterialsManager::deleteMaterial(jl::Material& _material) noexcept
+void MaterialsManager::deleteMaterial(const jl::Material& _material) noexcept
 {
-	const std::string materialName = findMaterialName(_material);
-	if (!materialName.empty())
+	auto removeIt = std::remove_if(m_materials.begin(), m_materials.end(), [&_material](const auto& _mat)
 	{
-		deleteMaterial(materialName);
+		return _mat.get() == &_material;
+	});
+	m_materials.erase(removeIt, m_materials.end());
+}
+
+//-----------------------------------------------------------------------------
+
+void MaterialsManager::forEachMaterial(const std::function<void(jl::Material&)>& _callback)
+{
+	for (auto& material : m_materials)
+	{
+		_callback(*material);
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-std::string MaterialsManager::findMaterialName(const jl::Material& _material) const noexcept
+void MaterialsManager::forEachMaterial(const std::function<void(const jl::Material&)>& _callback) const
 {
-	for (const auto& [name, material] : m_materials)
+	for (auto& material : m_materials)
 	{
-		if (material.get() == &_material)
-		{
-			return name;
-		}
-	}
-
-	return "";
-}
-
-//-----------------------------------------------------------------------------
-
-void MaterialsManager::forEachMaterial(const std::function<void(const std::string&, jl::Material&)>& _callback)
-{
-	for (auto& [name, material] : m_materials)
-	{
-		_callback(name, *material);
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void MaterialsManager::forEachMaterial(const std::function<void(const std::string&, const jl::Material&)>& _callback) const
-{
-	for (auto& [name, material] : m_materials)
-	{
-		_callback(name, *material);
+		_callback(*material);
 	}
 }
 

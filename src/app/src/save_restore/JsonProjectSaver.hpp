@@ -6,25 +6,25 @@
 #include <ostream>
 
 namespace jl {
+class Scene;
+class Object;
+
 class Model;
 class Material;
 class LightsHolder;
 }
 
-class SceneWrapper;
-class ObjectWrapper;
-
 class JsonProjectSaver
 {
 public:
-	static void save(std::ostream& _stream, const SceneWrapper& _sceneWrapper);
+	static void save(std::ostream& _stream, const jl::Scene& _scene);
 
 private:
 	static Json::Value saveMaterials();
 	static Json::Value saveMaterial(const jl::Material& _material);
 
-	static Json::Value saveScene(const SceneWrapper& _sceneWrapper);
-	static Json::Value saveObject(const ObjectWrapper& _objWrapper);
+	static Json::Value saveScene(const jl::Scene& _scene);
+	static Json::Value saveObject(const jl::Object& _object);
 	static Json::Value saveModel(const jl::Model& _model);
 
 	static Json::Value saveLights(const jl::LightsHolder& _lightsHolder);

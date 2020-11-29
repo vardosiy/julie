@@ -32,6 +32,12 @@ constexpr std::array<std::string_view, EnumValuesCount> getEnumNamesFromValues(s
 }
 
 template<typename T>
+constexpr std::enable_if_t<std::is_enum_v<T>, bool> isValid(const T _value) noexcept
+{
+	return static_cast<int>(_value) >= 0 && static_cast<int>(_value) < static_cast<int>(T::Count);
+}
+
+template<typename T>
 constexpr std::underlying_type_t<T> toUnderlying(T _val)
 {
 	return static_cast<std::underlying_type_t<T>>(_val);
@@ -40,16 +46,6 @@ constexpr std::underlying_type_t<T> toUnderlying(T _val)
 //-----------------------------------------------------------------------------
 
 } // namespace details
-
-//-----------------------------------------------------------------------------
-
-template<typename T>
-constexpr std::enable_if_t<std::is_enum_v<T>, bool> isValid(const T _value) noexcept
-{
-	return
-		static_cast<int>(_value) >= 0 &&
-		static_cast<int>(_value) < static_cast<int>(T::Count);
-}
 
 //-----------------------------------------------------------------------------
 

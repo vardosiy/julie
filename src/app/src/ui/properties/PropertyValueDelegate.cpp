@@ -1,10 +1,12 @@
 #include "ui/properties/PropertyValueDelegate.hpp"
-#include "ui/properties/PropertyTypes.hpp"
 #include "ui/properties/EditableResourcePathWidget.hpp"
 #include "ui/properties/EditableVec3Widget.hpp"
 #include "ui/properties/SelectMaterialWidget.hpp"
 
+#include "ui/MetaTypes.hpp"
 #include "ui/UiUtils.hpp"
+
+#include "julie/Material.hpp"
 
 #include <QDoubleSpinBox>
 
@@ -154,7 +156,7 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 	else if (_value.canConvert<MaterialUiWrapper>())
 	{
 		const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_value);
-		result = materialWrapper.materialName;
+		result = materialWrapper.material->getName().c_str();
 	}
 	else if (_value.canConvert<FloatValUiWrapper>())
 	{

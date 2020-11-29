@@ -3,9 +3,9 @@
 #include "CommonDefs.hpp"
 #include "ui/IEntityActionHandler.hpp"
 
-#include "data/SceneWrapper.hpp"
 #include "controllers/FreeflyCameraController.hpp"
 
+#include "julie/scene/Scene.hpp"
 #include "julie/scene/Camera.hpp"
 
 #include <QMainWindow>
@@ -24,8 +24,6 @@ class Scene;
 class Material;
 }
 
-class SceneWrapper;
-class ObjectWrapper;
 class EntitiesWidget;
 class PropertiesWidget;
 class ViewPropertiesWidget;
@@ -39,12 +37,12 @@ public:
 	explicit MainWindow(QMainWindow* parent = nullptr);
 	~MainWindow() override;
 
-	void objectSelected(ObjectWrapper& _objWrapper) override;
+	void objectSelected(jl::Object& _object) override;
 	void materialSelected(jl::Material& _material) override;
 	void resetSelection() override;
 
-	void onObjectMoved(ObjectWrapper& _objWrapper) override;
-	void onObjectScaled(ObjectWrapper& _objWrapper) override;
+	void onObjectMoved(jl::Object& _object) override;
+	void onObjectScaled(jl::Object& _object) override;
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -67,9 +65,9 @@ private:
 	QTimer m_updateTimer;
 	app::ScopedConnection m_glLoadedConnection;
 
-	SceneWrapper m_sceneWrapper;
-
+	jl::Scene m_scene;
 	jl::Camera m_camera;
+
 	FreeflyCameraController m_cameraController;
 
 	static constexpr std::string_view k_saveFile = "SaveFile.json";

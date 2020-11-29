@@ -1,6 +1,7 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
+#include "julie/Entity.hpp"
 
 #include <glm/glm.hpp>
 #include <string>
@@ -14,7 +15,7 @@ namespace jl {
 class Camera;
 class Model;
 
-class Object
+class Object : public Entity
 {
 //-----------------------------------------------------------------------------
 public:

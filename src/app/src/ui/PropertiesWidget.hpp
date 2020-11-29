@@ -3,8 +3,6 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-#include <boost/optional.hpp>
-
 #include <memory>
 #include <variant>
 
@@ -16,10 +14,9 @@ class PropertiesWidget;
 
 namespace jl {
 class Model;
+class Object;
 class Material;
 }
-
-class ObjectWrapper;
 
 class PropertiesWidget : public QWidget
 {
@@ -29,7 +26,7 @@ class PropertiesWidget : public QWidget
 public:
 	explicit PropertiesWidget(QWidget* parent = nullptr);
 
-	void setActiveEntity(ObjectWrapper& _object);
+	void setActiveEntity(jl::Object& _object);
 	void setActiveEntity(jl::Material& _material);
 	void reset();
 
@@ -38,7 +35,7 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	void refreshObjectProperties(ObjectWrapper& _object);
+	void refreshObjectProperties(jl::Object& _object);
 	void refreshMeshes(jl::Model* _model, const QModelIndex& _parent);
 
 	void refreshMaterialProperties(jl::Material& _material);
@@ -46,7 +43,7 @@ private:
 
 //-----------------------------------------------------------------------------
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
-	void onObjectChanged(const QModelIndex& _idx, ObjectWrapper& _object);
+	void onObjectChanged(const QModelIndex& _idx, jl::Object& _object);
 	void onMaterialChanged(const QModelIndex& _idx, jl::Material& _material);
 
 //-----------------------------------------------------------------------------
@@ -62,7 +59,7 @@ private:
 	std::unique_ptr<Ui::PropertiesWidget> m_ui;
 	QStandardItemModel m_propertiesTableModel;
 
-	std::variant<ObjectWrapper*, jl::Material*, std::nullptr_t> m_activeEntity;
+	std::variant<jl::Object*, jl::Material*, std::nullptr_t> m_activeEntity;
 
 	static constexpr int k_nameColIdx = 0;
 	static constexpr int k_valueColIdx = 1;

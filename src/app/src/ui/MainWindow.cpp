@@ -4,8 +4,6 @@
 #include "ui/ViewPropertiesWidget.hpp"
 #include "ui_MainWindow.h"
 
-#include "data/ObjectWrapper.hpp"
-
 #include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonProjectRestorer.hpp"
 
@@ -53,14 +51,14 @@ MainWindow::MainWindow(QMainWindow* parent)
 MainWindow::~MainWindow()
 {
 	std::ofstream file(k_saveFile.data());
-	JsonProjectSaver::save(file, m_sceneWrapper);
+	JsonProjectSaver::save(file, m_scene);
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::objectSelected(ObjectWrapper& _objWrapper)
+void MainWindow::objectSelected(jl::Object& _object)
 {
-	m_propertiesWdg->setActiveEntity(_objWrapper);
+	m_propertiesWdg->setActiveEntity(_object);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,14 +79,14 @@ void MainWindow::resetSelection()
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectMoved(ObjectWrapper& _objWrapper)
+void MainWindow::onObjectMoved(jl::Object& _object)
 {
 	m_propertiesWdg->refreshObjectPos();
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectScaled(ObjectWrapper& _objWrapper)
+void MainWindow::onObjectScaled(jl::Object& _object)
 {
 	m_propertiesWdg->refreshObjectSize();
 }
@@ -118,19 +116,21 @@ void MainWindow::onGlLoaded()
 	if (file.is_open())
 	{
 		JsonProjectRestorer restorer(file);
-		std::optional<SceneWrapper> restoredScene = restorer.extractScene();
+		std::optional<jl::Scene> restoredScene = restorer.extractScene();
 
 		if (restoredScene)
 		{
-			m_sceneWrapper = std::move(restoredScene).value();
+			m_scene = std::move(restoredScene.value());
 		}
 	}
 
 	AppController::setContextOwner(m_ui->oglw_screen);
-	m_ui->oglw_screen->setScene(&m_sceneWrapper);
+	m_ui->oglw_screen->setScene(&m_scene);
 	m_ui->oglw_screen->setCamera(&m_camera);
 
-	m_entitisWdg->setScene(&m_sceneWrapper);
+	m_entitisWdg->setScene(&m_scene);
+
+	setupDefaultMaterial();
 }
 
 //-----------------------------------------------------------------------------
@@ -171,6 +171,8 @@ void MainWindow::setupDefaultMaterial()
 	material.setProperty("u_matSpecular",	glm::vec3(1.0f));
 	material.setProperty("u_texDiffuse",	static_cast<jl::Texture*>(nullptr));
 	material.setProperty("u_texNormals",	static_cast<jl::Texture*>(nullptr));
+
+	m_entitisWdg->setDefaultMaterial(&material);
 }
 
 //-----------------------------------------------------------------------------

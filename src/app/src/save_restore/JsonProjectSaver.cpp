@@ -1,9 +1,6 @@
 #include "save_restore/JsonProjectSaver.hpp"
 #include "save_restore/JsonStrings.hpp"
 
-#include "data/SceneWrapper.hpp"
-#include "data/ObjectWrapper.hpp"
-
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
 
@@ -100,12 +97,12 @@ private:
 
 //-----------------------------------------------------------------------------
 
-void JsonProjectSaver::save(std::ostream& _stream, const SceneWrapper& _sceneWrapper)
+void JsonProjectSaver::save(std::ostream& _stream, const jl::Scene& _scene)
 {
 	Json::Value root;
 
 	root[k_materials] = saveMaterials();
-	root[k_scene] = saveScene(_sceneWrapper);
+	root[k_scene] = saveScene(_scene);
 
 	_stream << root;
 }
@@ -158,16 +155,19 @@ Json::Value JsonProjectSaver::saveMaterial(const jl::Material& _material)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveScene(const SceneWrapper& _sceneWrapper)
+Json::Value JsonProjectSaver::saveScene(const jl::Scene& _scene)
 {
 	Json::Value objects;
-	for (const ObjectWrapper& objWrapper : _sceneWrapper)
+
+	const size_t objectsCount = _scene.getObjectsCount();
+	for (size_t i = 0; i < objectsCount; ++i)
 	{
-		objects.append(saveObject(objWrapper));
+		const jl::Object& object = _scene.getObject(i);
+		objects.append(saveObject(object));
 	}
 
 	Json::Value result;
-	result[k_lights] = saveLights(_sceneWrapper.getLightsHolder());
+	result[k_lights] = saveLights(_scene.getLightsHolder());
 	result[k_objects] = std::move(objects);
 
 	return result;
@@ -175,17 +175,17 @@ Json::Value JsonProjectSaver::saveScene(const SceneWrapper& _sceneWrapper)
 
 //-----------------------------------------------------------------------------
 
-Json::Value JsonProjectSaver::saveObject(const ObjectWrapper& _objWrapper)
+Json::Value JsonProjectSaver::saveObject(const jl::Object& _object)
 {
 	Json::Value result;
 
-	result[k_name]		= _objWrapper.getName();
+	result[k_name]		= _object.getName();
 
-	result[k_position]	= details::vec3ToJson(_objWrapper.getPosition());
-	result[k_rotation]	= details::vec3ToJson(_objWrapper.getRotation());
-	result[k_size]		= details::vec3ToJson(_objWrapper.getScale());
+	result[k_position]	= details::vec3ToJson(_object.getPosition());
+	result[k_rotation]	= details::vec3ToJson(_object.getRotation());
+	result[k_scale]		= details::vec3ToJson(_object.getScale());
 
-	if (const jl::Model* model = _objWrapper.getModel())
+	if (const jl::Model* model = _object.getModel())
 	{
 		result[k_model] = saveModel(*model);
 	}

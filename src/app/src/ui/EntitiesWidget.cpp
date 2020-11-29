@@ -1,12 +1,16 @@
 #include "ui/EntitiesWidget.hpp"
 #include "ui_EntitiesWidget.h"
 
-#include "data/SceneWrapper.hpp"
+#include "ui/entities/EntityDelegate.hpp"
+#include "ui/MetaTypes.hpp"
 
 #include "julie/managers/MaterialsManager.hpp"
-#include "julie/Mesh.hpp"
-#include "julie/Model.hpp"
 #include "julie/Material.hpp"
+#include "julie/Model.hpp"
+#include "julie/Mesh.hpp"
+
+#include "julie/scene/Scene.hpp"
+#include "julie/scene/Object.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -14,16 +18,19 @@
 
 EntitiesWidget::EntitiesWidget(QWidget* parent)
 	: QWidget(parent)
-	, m_objectsListModel(this)
-	, m_materialsListModel(this)
-	, m_sceneWrapper(nullptr)
+	, m_objectsModel(this)
+	, m_materialsModel(this)
+	, m_scene(nullptr)
 	, m_actionHandler(nullptr)
 {
 	m_ui = std::make_unique<Ui::EntitiesWidget>();
 	m_ui->setupUi(this);
 
-	m_ui->listv_objects->setModel(&m_objectsListModel);
-	m_ui->listv_materials->setModel(&m_materialsListModel);
+	m_ui->listv_objects->setModel(&m_objectsModel);
+	m_ui->listv_objects->setItemDelegateForColumn(0, new EntityDelegate(m_ui->listv_objects));
+
+	m_ui->listv_materials->setModel(&m_materialsModel);
+	m_ui->listv_materials->setItemDelegateForColumn(0, new EntityDelegate(m_ui->listv_materials));
 
 	connect(m_ui->btn_add,		&QPushButton::released,			this, &EntitiesWidget::onAddEntityBtnReleased);
 	connect(m_ui->btn_delete,	&QPushButton::released,			this, &EntitiesWidget::onDeleteEntityBtnReleased);
@@ -41,20 +48,29 @@ EntitiesWidget::EntitiesWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::setScene(SceneWrapper* _sceneWrapper)
+void EntitiesWidget::setScene(jl::Scene* _scene)
 {
-	m_sceneWrapper = _sceneWrapper;
+	m_scene = _scene;
 
-	if (m_sceneWrapper)
+	if (m_scene)
 	{
-		for (const ObjectWrapper& objWrapper : *m_sceneWrapper)
-		{
-			m_objectsNamesList.append(objWrapper.getName().c_str());
-		}
-		m_objectsListModel.setStringList(m_objectsNamesList);
+		const int objectsCount = m_scene->getObjectsCount();
+		m_objectsModel.setRowCount(objectsCount);
 
-		refreshMaterialsList();
+		for (int i = 0; i < objectsCount; ++i)
+		{
+			const QModelIndex idx = m_objectsModel.index(i, 0);
+			const QVariant data = QVariant::fromValue(ObjectUiWrapper{ &m_scene->getObject(i) });
+			m_objectsModel.setData(idx, data);
+		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::setDefaultMaterial(jl::Material* _material)
+{
+	m_defaultMaterial = _material;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,8 +106,8 @@ void EntitiesWidget::onAddEntityBtnReleased()
 	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while adding entity");
 	if (m_ui->tab_objects->isVisible())
 	{
-		ASSERT(m_sceneWrapper);
-		if (m_sceneWrapper)
+		ASSERT(m_scene);
+		if (m_scene)
 		{
 			addObject(computeObjectName());
 		}
@@ -111,10 +127,13 @@ void EntitiesWidget::onAddEntityBtnReleased()
 
 void EntitiesWidget::addObject(const std::string& _name)
 {
-	m_sceneWrapper->createObject(_name);
+	auto object = std::make_unique<jl::Object>();
+	object->setName(_name);
 
-	m_objectsNamesList.append(_name.c_str());
-	m_objectsListModel.setStringList(m_objectsNamesList);
+	QVariant value = QVariant::fromValue(ObjectUiWrapper{ object.get() });
+	appendItemToModel(m_objectsModel, value);
+
+	m_scene->addObject(std::move(object));
 }
 
 //-----------------------------------------------------------------------------
@@ -122,14 +141,24 @@ void EntitiesWidget::addObject(const std::string& _name)
 void EntitiesWidget::addMaterial(const std::string& _name)
 {
 	jl::Material& material = MaterialsManager::getInstance().createMaterial(_name);
-	const jl::Material* defaultMaterial = MaterialsManager::getInstance().findMaterial("Default");
-	if (defaultMaterial)
+
+	if (m_defaultMaterial)
 	{
-		material = *defaultMaterial;
+		material = *m_defaultMaterial;
 	}
 
-	m_materialsNamesList.append(_name.c_str());
-	m_materialsListModel.setStringList(m_materialsNamesList);
+	QVariant value = QVariant::fromValue(MaterialUiWrapper{ &material });
+	appendItemToModel(m_materialsModel, value);
+}
+
+//-----------------------------------------------------------------------------
+
+void EntitiesWidget::appendItemToModel(QAbstractItemModel& _model, const QVariant& _value)
+{
+	_model.insertRow(_model.rowCount());
+
+	const QModelIndex idx = _model.index(_model.rowCount() - 1, 0);
+	_model.setData(idx, _value);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,8 +168,8 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 	ASSERTM(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible(), "Unhandled case while removing entity");
 	if (m_ui->tab_objects->isVisible())
 	{
-		ASSERT(m_sceneWrapper);
-		if (m_sceneWrapper)
+		ASSERT(m_scene);
+		if (m_scene)
 		{
 			auto deleteFun = std::bind(&EntitiesWidget::deleteObject, this, std::placeholders::_1);
 			deleteEntities(*m_ui->listv_objects->selectionModel(), deleteFun);
@@ -160,32 +189,24 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::deleteObject(const QString& _name)
+void EntitiesWidget::deleteObject(const QModelIndex& _idx)
 {
-	m_sceneWrapper->removeObject(_name.toStdString());
-
-	auto itNames = std::find(m_objectsNamesList.begin(), m_objectsNamesList.end(), _name);
-	if (itNames != m_objectsNamesList.end())
-	{
-		m_objectsNamesList.erase(itNames);
-		m_objectsListModel.setStringList(m_objectsNamesList);
-	}
+	m_scene->eraseObject(_idx.row());
+	m_objectsModel.removeRow(_idx.row());
 }
 
 //-----------------------------------------------------------------------------
 
-void EntitiesWidget::deleteMaterial(const QString& _name)
+void EntitiesWidget::deleteMaterial(const QModelIndex& _idx)
 {
-	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
-	const std::string materialName = _name.toStdString();
+	const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_idx.data());
 
-	if (jl::Material* material = materialsMgr.findMaterial(materialName))
+	if (m_defaultMaterial != materialWrapper.value)
 	{
-		replaceMaterialInAllMeshes(material, materialsMgr.findMaterial("Default"));
+		replaceMaterialInAllMeshes(materialWrapper.value, m_defaultMaterial);
 
-		materialsMgr.deleteMaterial(materialName);
-		m_materialsNamesList.removeOne(_name);
-		m_materialsListModel.setStringList(m_materialsNamesList);
+		MaterialsManager::getInstance().deleteMaterial(*materialWrapper.value);
+		m_materialsModel.removeRow(_idx.row());
 	}
 }
 
@@ -193,39 +214,35 @@ void EntitiesWidget::deleteMaterial(const QString& _name)
 
 void EntitiesWidget::deleteEntities(
 	const QItemSelectionModel& _selectionModel,
-	std::function<void(const QString&)>&& _deleteFun
+	std::function<void(const QModelIndex&)>&& _deleteFun
 )
 {
 	const QModelIndexList indexList = _selectionModel.selectedIndexes();
 
-	if (!indexList.empty())
+	ASSERT(std::is_sorted(indexList.begin(), indexList.end(), [](const QModelIndex& _lhs, const QModelIndex& _rhs)
 	{
-		std::vector<QString> itemsToRemove;
-		itemsToRemove.reserve(indexList.size());
+		return _lhs.row() < _rhs.row();
+	}));
 
-		for (const QModelIndex& index : indexList)
-		{
-			itemsToRemove.emplace_back(index.data().toString());
-		}
-		for (const QString& itemName : itemsToRemove)
-		{
-			_deleteFun(itemName);
-		}
-	}
+	std::for_each(indexList.rbegin(), indexList.rend(), [deleter = std::move(_deleteFun)](const QModelIndex& _idx)
+	{
+		deleter(_idx);
+	});
 }
 
 //-----------------------------------------------------------------------------
 
 void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material* _new)
 {
-	if (!m_sceneWrapper)
+	if (!m_scene)
 	{
 		return;
 	}
 
-	for (ObjectWrapper& objWrapper : *m_sceneWrapper)
+	const int objectsCount = m_scene->getObjectsCount();
+	for (int i = 0; i < objectsCount; ++i)
 	{
-		if (jl::Model* model = objWrapper.getModel())
+		if (jl::Model* model = m_scene->getObject(i).getModel())
 		{
 			const size_t meshesCount = model->getMeshesCount();
 			for (size_t i = 0; i < meshesCount; i++)
@@ -246,13 +263,15 @@ void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material
 
 void EntitiesWidget::refreshMaterialsList()
 {
-	m_materialsNamesList.clear();
+	MaterialsManager& mgr = MaterialsManager::getInstance();
+	m_materialsModel.setRowCount(mgr.getMaterialsCount());
 
-	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	int counter = 0;
+	mgr.forEachMaterial([&counter, this](jl::Material& _material)
 	{
-		m_materialsNamesList.append(_name.c_str());
+		QVariant data = QVariant::fromValue(MaterialUiWrapper{ &_material });
+		m_materialsModel.setData(m_materialsModel.index(counter++, 0), data);
 	});
-	m_materialsListModel.setStringList(m_materialsNamesList);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,27 +287,18 @@ void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 	const QModelIndexList indexList = _selection.indexes();
 	if (indexList.size() == 1)
 	{
-		const std::string entityName = indexList.back().data().toString().toStdString();
+		const QModelIndex& idx = indexList.back();
 
-		ASSERT(m_ui->tab_objects->isVisible() || m_ui->tab_materials->isVisible());
-		if (m_ui->tab_objects->isVisible())
+		ASSERT(idx.data().canConvert<ObjectUiWrapper>() || idx.data().canConvert<MaterialUiWrapper>());
+		if (idx.data().canConvert<ObjectUiWrapper>())
 		{
-			ASSERT(m_sceneWrapper);
-			if (m_sceneWrapper)
-			{
-				auto it = m_sceneWrapper->findObject(entityName);
-				if (it != m_sceneWrapper->end())
-				{
-					m_actionHandler->objectSelected(*it);
-				}
-			}
+			const ObjectUiWrapper objWrapper = qvariant_cast<ObjectUiWrapper>(idx.data());
+			m_actionHandler->objectSelected(*objWrapper.value);
 		}
-		else if (m_ui->tab_materials->isVisible())
+		else if (idx.data().canConvert<MaterialUiWrapper>())
 		{
-			if (jl::Material* material = MaterialsManager::getInstance().findMaterial(entityName))
-			{
-				m_actionHandler->materialSelected(*material);
-			}
+			MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(idx.data());
+			m_actionHandler->materialSelected(*materialWrapper.value);
 		}
 	}
 	else
@@ -303,7 +313,7 @@ std::string EntitiesWidget::computeObjectName() const
 {
 	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
 	{
-		return m_sceneWrapper->findObject(_name) != m_sceneWrapper->end();
+		return m_scene->findObjectByName(_name) != nullptr;
 	});
 }
 

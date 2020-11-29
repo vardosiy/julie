@@ -1,6 +1,7 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
+#include "julie/Entity.hpp"
 
 #include "utils/TypeTraits.hpp"
 
@@ -20,7 +21,7 @@ class Shader;
 class Texture;
 class CubeTexture;
 
-class Material
+class Material : public Entity
 {
 //-----------------------------------------------------------------------------
 public:

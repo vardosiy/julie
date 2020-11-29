@@ -62,57 +62,61 @@ void Scene::addObject(ObjectPtr&& _obj)
 
 //-----------------------------------------------------------------------------
 
-size_t Scene::getObjectsCount() const noexcept
+int Scene::getObjectsCount() const noexcept
 {
-	return m_objects.size();
+	return static_cast<int>(m_objects.size());
 }
 
 //-----------------------------------------------------------------------------
 
-Object& Scene::getObject(size_t _idx)
+Object& Scene::getObject(int _idx)
 {
-	ASSERT(_idx < m_objects.size());
+	ASSERT(_idx >= 0 && _idx < m_objects.size());
 	return *m_objects[_idx];
 }
 
 //-----------------------------------------------------------------------------
 
-const Object& Scene::getObject(size_t _idx) const
+const Object& Scene::getObject(int _idx) const
 {
-	ASSERT(_idx < m_objects.size());
+	ASSERT(_idx >= 0 && _idx < m_objects.size());
 	return *m_objects[_idx];
 }
 
 //-----------------------------------------------------------------------------
 
-Scene::ObjectPtr Scene::eraseObject(size_t _idx) noexcept
-{
-	ObjectPtr result;
-
-	if (_idx < m_objects.size())
-	{
-		auto it = m_objects.begin() + _idx;
-
-		result.swap(*it);
-		m_objects.erase(it);
-	}
-
-	return result;
-}
-
-//-----------------------------------------------------------------------------
-
-Scene::ObjectPtr Scene::eraseObject(const Object& _obj) noexcept
+int Scene::findObjectIdx(const Object& _obj) const noexcept
 {
 	auto it = std::find_if(m_objects.begin(), m_objects.end(), [&_obj](const ObjectPtr& _objPtr)
 	{
 		return _objPtr.get() == &_obj;
 	});
 
+	return it != m_objects.end() ? std::distance(m_objects.begin(), it) : -1;
+}
+
+//-----------------------------------------------------------------------------
+
+const Object* Scene::findObjectByName(std::string_view _name) const noexcept
+{
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [&_name](const ObjectPtr& _objPtr)
+	{
+		return _objPtr->getName() == _name;
+	});
+
+	return it != m_objects.end() ? it->get() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+Scene::ObjectPtr Scene::eraseObject(int _idx) noexcept
+{
 	ObjectPtr result;
 
-	if (it != m_objects.end())
+	if (_idx >= 0 && _idx < m_objects.size())
 	{
+		auto it = m_objects.begin() + _idx;
+
 		result.swap(*it);
 		m_objects.erase(it);
 	}

@@ -5,6 +5,16 @@
 
 //-----------------------------------------------------------------------------
 
+namespace jl {
+class Object;
+class Scene;
+}
+
+using ObjectT = jl::Object;
+using SceneT = jl::Scene;
+
+//-----------------------------------------------------------------------------
+
 using Clock			= std::chrono::high_resolution_clock;
 using TimePoint		= std::chrono::time_point<Clock>;
 using Seconds		= std::chrono::seconds;

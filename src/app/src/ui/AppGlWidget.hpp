@@ -17,11 +17,10 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
+class Scene;
+class Object;
 class Camera;
 }
-
-class SceneWrapper;
-class ObjectWrapper;
 
 class AppGlWidget : public QOpenGLWidget, public IOpenGlContextOwner
 {
@@ -47,7 +46,7 @@ public:
 	void drawBoundingBoxes(bool _val) noexcept;
 
 	void setCamera(jl::Camera* _camera) noexcept;
-	void setScene(SceneWrapper* _sceneWrapper) noexcept;
+	void setScene(jl::Scene* _scene) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
 
 	void resetSelectedObj();
@@ -87,10 +86,10 @@ private:
 	std::function<void()> m_postrenderCommand;
 
 	jl::Camera* m_camera;
-	SceneWrapper* m_sceneWrapper;
+	jl::Scene* m_scene;
 	IEntityActionHandler* m_actionHandler;
 
-	ObjectWrapper* m_selectedObject;
+	jl::Object* m_selectedObject;
 	float m_selectedObjDistance;
 
 	boost::optional<glm::vec3> m_prevMousePos;

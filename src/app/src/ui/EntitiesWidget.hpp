@@ -4,8 +4,7 @@
 
 #include <QWidget>
 #include <QItemSelection>
-#include <QStringList>
-#include <QStringListModel>
+#include <QStandardItemModel>
 
 #include <memory>
 #include <functional>
@@ -17,10 +16,9 @@ class EntitiesWidget;
 }
 
 namespace jl {
+class Scene;
 class Material;
 }
-
-class SceneWrapper;
 
 class EntitiesWidget : public QWidget
 {
@@ -30,7 +28,8 @@ class EntitiesWidget : public QWidget
 public:
 	explicit EntitiesWidget(QWidget* parent = nullptr);
 
-	void setScene(SceneWrapper* _sceneWrapper);
+	void setScene(jl::Scene* _scene);
+	void setDefaultMaterial(jl::Material* _material);
 	void setEntityActionHandler(IEntityActionHandler* _handler);
 
 //-----------------------------------------------------------------------------
@@ -47,12 +46,14 @@ private:
 	void addObject(const std::string& _name);
 	void addMaterial(const std::string& _name);
 
-	void deleteObject(const QString& _name);
-	void deleteMaterial(const QString& _name);
-	void deleteEntities(const QItemSelectionModel& _selectionModel, std::function<void(const QString&)>&& _deleteFun);
+	void deleteObject(const QModelIndex& _idx);
+	void deleteMaterial(const QModelIndex& _idx);
+	void deleteEntities(const QItemSelectionModel& _selectionModel, std::function<void(const QModelIndex&)>&& _deleteFun);
 
 	void replaceMaterialInAllMeshes(jl::Material* _old, jl::Material* _new);
 	void refreshMaterialsList();
+
+	static void appendItemToModel(QAbstractItemModel& _model, const QVariant& _value);
 
 	std::string computeObjectName() const;
 	std::string computeMaterialName() const;
@@ -64,12 +65,11 @@ private:
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::EntitiesWidget> m_ui;
 
-	QStringList			m_objectsNamesList;
-	QStringListModel	m_objectsListModel;
-	QStringList			m_materialsNamesList;
-	QStringListModel	m_materialsListModel;
+	QStandardItemModel m_objectsModel;
+	QStandardItemModel m_materialsModel;
 
-	SceneWrapper* m_sceneWrapper;
+	jl::Scene* m_scene;
+	jl::Material* m_defaultMaterial;
 	IEntityActionHandler* m_actionHandler;
 
 	static constexpr std::string_view k_defaultObjectName = "Object_000";
