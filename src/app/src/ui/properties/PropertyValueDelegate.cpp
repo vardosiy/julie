@@ -156,7 +156,7 @@ QString PropertyValueDelegate::displayText(const QVariant& _value, const QLocale
 	else if (_value.canConvert<MaterialUiWrapper>())
 	{
 		const MaterialUiWrapper materialWrapper = qvariant_cast<MaterialUiWrapper>(_value);
-		result = materialWrapper.material->getName().c_str();
+		result = materialWrapper.value->getName().c_str();
 	}
 	else if (_value.canConvert<FloatValUiWrapper>())
 	{

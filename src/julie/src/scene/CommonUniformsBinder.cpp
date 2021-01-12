@@ -38,7 +38,17 @@ CommonUniformsBinder::CommonUniformsBinder(
 	: m_scene(_scene)
 	, m_camera(_camera)
 	, m_worldMatrix(_worldMatrix)
+	, m_lightPositions(nullptr)
+	, m_lightColors(nullptr)
 {
+}
+
+//-----------------------------------------------------------------------------
+
+void CommonUniformsBinder::setLights(const std::vector<glm::vec3>& _positions, const std::vector<glm::vec3>& _colors) noexcept
+{
+	m_lightPositions = &_positions;
+	m_lightColors = &_colors;
 }
 
 //-----------------------------------------------------------------------------
@@ -70,16 +80,16 @@ void CommonUniformsBinder::bind(const Shader& _shader) const noexcept
 		bindUniform(u_fogColor,	fogData->color);
 	}
 
+	const AmbientLightData& ambient = m_scene.getAmbientLightData();
+	bindUniform(u_ambientColor, ambient.color);
+	bindUniform(u_ambientWeight, ambient.weight);
+
+	if (m_lightPositions && m_lightPositions)
 	{
-		const LightsHolder& lightsHolder = m_scene.getLightsHolder();
-
-		bindUniform(u_ambientColor,				lightsHolder.getAmbientLightData().color);
-		bindUniform(u_ambientWeight,			lightsHolder.getAmbientLightData().weight);
-
-		bindUniformArr(u_pointLightColor,		lightsHolder.getPointLightsColors());
-		bindUniformArr(u_lightPosition,			lightsHolder.getPointLightsPositions());
-		bindUniformArr(u_directionalLightColor,	lightsHolder.getDirectionalLightsColors());
-		bindUniformArr(u_lightDirection,		lightsHolder.getDirectionalLightsDirections());
+		bindUniformArr(u_pointLightColor, *m_lightPositions);
+		bindUniformArr(u_lightPosition, *m_lightPositions);
+		//bindUniformArr(u_directionalLightColor,	lightsHolder.getDirectionalLightsColors());
+		//bindUniformArr(u_lightDirection,		lightsHolder.getDirectionalLightsDirections());
 	}
 }
 

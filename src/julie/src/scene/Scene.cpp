@@ -1,8 +1,9 @@
 #include "julie/scene/Scene.hpp"
-
-#include "scene/ScenePainter.hpp"
+#include "julie/Axis.hpp"
 
 #include "utils/Utils.hpp"
+
+#include <glm/gtx/transform.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -10,15 +11,41 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-void Scene::render(const Camera& _cam, bool drawBoundingBoxes) const
+Scene::Scene() noexcept
+	: m_entitiesMgr(m_componentsMgr)
+	, m_transformProcessSystem(m_componentsMgr)
+	, m_renderSystem(*this, m_componentsMgr)
 {
-	ScenePainter painter(*this);
-	painter.drawModels(_cam);
+}
 
-	if (drawBoundingBoxes)
-	{
-		painter.drawBoundingBoxes(_cam);
-	}
+Scene::~Scene() noexcept = default;
+
+//-----------------------------------------------------------------------------
+
+void Scene::update(std::chrono::milliseconds _dt)
+{
+	m_transformProcessSystem.update();
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::render(const Camera& _cam)
+{
+	m_renderSystem.update(_cam);
+}
+
+//-----------------------------------------------------------------------------
+
+const AmbientLightData& Scene::getAmbientLightData() const noexcept
+{
+	return m_ambientLightData;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setAmbientLightData(const AmbientLightData& _data) noexcept
+{
+	m_ambientLightData = _data;
 }
 
 //-----------------------------------------------------------------------------
@@ -30,20 +57,6 @@ const FogData* Scene::getFogData() const noexcept
 
 //-----------------------------------------------------------------------------
 
-LightsHolder& Scene::getLightsHolder() noexcept
-{
-	return m_lightsHolder;
-}
-
-//-----------------------------------------------------------------------------
-
-const LightsHolder& Scene::getLightsHolder() const noexcept
-{
-	return m_lightsHolder;
-}
-
-//-----------------------------------------------------------------------------
-
 void Scene::setFogData(const FogData& _data) noexcept
 {
 	m_fogData = _data;
@@ -51,78 +64,19 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::addObject(ObjectPtr&& _obj)
-{
-	ASSERT(_obj);
-	if (_obj)
-	{
-		m_objects.emplace_back(std::move(_obj));
-	}
-}
+ecs::Entity& Scene::createEntity(std::string _name)				{ return m_entitiesMgr.create(std::move(_name)); }
+ecs::Entity* Scene::findEntity(ecs::EntityId _id) noexcept		{ return m_entitiesMgr.find(_id); }
+void Scene::removeEntity(ecs::EntityId _id) noexcept			{ m_entitiesMgr.remove(_id); }
+
+size_t Scene::getEntitiesCount() const noexcept					{ return m_entitiesMgr.getCount(); }
 
 //-----------------------------------------------------------------------------
 
-int Scene::getObjectsCount() const noexcept
-{
-	return static_cast<int>(m_objects.size());
-}
+ecs::EntitiesMgr::Iterator Scene::begin() noexcept				{ return m_entitiesMgr.begin(); }
+ecs::EntitiesMgr::Iterator Scene::end() noexcept				{ return m_entitiesMgr.end(); }
 
-//-----------------------------------------------------------------------------
-
-Object& Scene::getObject(int _idx)
-{
-	ASSERT(_idx >= 0 && _idx < m_objects.size());
-	return *m_objects[_idx];
-}
-
-//-----------------------------------------------------------------------------
-
-const Object& Scene::getObject(int _idx) const
-{
-	ASSERT(_idx >= 0 && _idx < m_objects.size());
-	return *m_objects[_idx];
-}
-
-//-----------------------------------------------------------------------------
-
-int Scene::findObjectIdx(const Object& _obj) const noexcept
-{
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [&_obj](const ObjectPtr& _objPtr)
-	{
-		return _objPtr.get() == &_obj;
-	});
-
-	return it != m_objects.end() ? std::distance(m_objects.begin(), it) : -1;
-}
-
-//-----------------------------------------------------------------------------
-
-const Object* Scene::findObjectByName(std::string_view _name) const noexcept
-{
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [&_name](const ObjectPtr& _objPtr)
-	{
-		return _objPtr->getName() == _name;
-	});
-
-	return it != m_objects.end() ? it->get() : nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-Scene::ObjectPtr Scene::eraseObject(int _idx) noexcept
-{
-	ObjectPtr result;
-
-	if (_idx >= 0 && _idx < m_objects.size())
-	{
-		auto it = m_objects.begin() + _idx;
-
-		result.swap(*it);
-		m_objects.erase(it);
-	}
-
-	return result;
-}
+ecs::EntitiesMgr::ConstIterator Scene::begin() const noexcept	{ return m_entitiesMgr.begin(); }
+ecs::EntitiesMgr::ConstIterator Scene::end() const noexcept		{ return m_entitiesMgr.end(); }
 
 //-----------------------------------------------------------------------------
 

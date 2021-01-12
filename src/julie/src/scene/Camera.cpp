@@ -12,18 +12,9 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 Camera::Camera(float _near, float _far, float _fov)
-	: m_pos(0.0f)
-	, m_target(k_camDirection)
-	, m_rotation(0.0f)
-	, m_aspect(1.0f)
-	, m_near(_near)
+	: m_near(_near)
 	, m_far(_far)
 	, m_fov(_fov)
-	, m_viewMatrix(1.0f)
-	, m_projectionMatrix(1.0f)
-	, m_viewProjectionMatrix(1.0f)
-	, m_isTransformModified(true)
-	, m_isProjectionModified(true)
 {
 }
 

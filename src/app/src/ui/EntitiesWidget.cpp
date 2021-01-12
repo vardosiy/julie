@@ -10,7 +10,6 @@
 #include "julie/Mesh.hpp"
 
 #include "julie/scene/Scene.hpp"
-#include "julie/scene/Object.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -54,14 +53,14 @@ void EntitiesWidget::setScene(jl::Scene* _scene)
 
 	if (m_scene)
 	{
-		const int objectsCount = m_scene->getObjectsCount();
+		const int objectsCount = m_scene->getEntitiesCount();
 		m_objectsModel.setRowCount(objectsCount);
 
 		for (int i = 0; i < objectsCount; ++i)
 		{
 			const QModelIndex idx = m_objectsModel.index(i, 0);
-			const QVariant data = QVariant::fromValue(ObjectUiWrapper{ &m_scene->getObject(i) });
-			m_objectsModel.setData(idx, data);
+			//const QVariant data = QVariant::fromValue(ObjectUiWrapper{ &m_scene->getObject(i) });
+			//m_objectsModel.setData(idx, data);
 		}
 	}
 }
@@ -127,13 +126,10 @@ void EntitiesWidget::onAddEntityBtnReleased()
 
 void EntitiesWidget::addObject(const std::string& _name)
 {
-	auto object = std::make_unique<jl::Object>();
-	object->setName(_name);
+	//QVariant value = QVariant::fromValue(ObjectUiWrapper{ object.get() });
+	//appendItemToModel(m_objectsModel, value);
 
-	QVariant value = QVariant::fromValue(ObjectUiWrapper{ object.get() });
-	appendItemToModel(m_objectsModel, value);
-
-	m_scene->addObject(std::move(object));
+	m_scene->createEntity(_name);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +187,7 @@ void EntitiesWidget::onDeleteEntityBtnReleased()
 
 void EntitiesWidget::deleteObject(const QModelIndex& _idx)
 {
-	m_scene->eraseObject(_idx.row());
+	//m_scene->eraseObject(_idx.row());
 	m_objectsModel.removeRow(_idx.row());
 }
 
@@ -239,24 +235,24 @@ void EntitiesWidget::replaceMaterialInAllMeshes(jl::Material* _old, jl::Material
 		return;
 	}
 
-	const int objectsCount = m_scene->getObjectsCount();
-	for (int i = 0; i < objectsCount; ++i)
-	{
-		if (jl::Model* model = m_scene->getObject(i).getModel())
-		{
-			const size_t meshesCount = model->getMeshesCount();
-			for (size_t i = 0; i < meshesCount; i++)
-			{
-				jl::Mesh& mesh = model->getMesh(i);
+	//const int objectsCount = m_scene->getObjectsCount();
+	//for (int i = 0; i < objectsCount; ++i)
+	//{
+	//	if (jl::Model* model = m_scene->getObject(i).getModel())
+	//	{
+	//		const size_t meshesCount = model->getMeshesCount();
+	//		for (size_t i = 0; i < meshesCount; i++)
+	//		{
+	//			jl::Mesh& mesh = model->getMesh(i);
 
-				const jl::Material* meshMaterial = mesh.getMaterial();
-				if (meshMaterial == _old)
-				{
-					mesh.setMaterial(_new);
-				}
-			}
-		}
-	}
+	//			const jl::Material* meshMaterial = mesh.getMaterial();
+	//			if (meshMaterial == _old)
+	//			{
+	//				mesh.setMaterial(_new);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 //-----------------------------------------------------------------------------
@@ -311,10 +307,11 @@ void EntitiesWidget::onEntitySelected(const QItemSelection& _selection)
 
 std::string EntitiesWidget::computeObjectName() const
 {
-	return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
-	{
-		return m_scene->findObjectByName(_name) != nullptr;
-	});
+	return "";
+	//return computeEntityName(k_defaultObjectName, [this](const std::string& _name)
+	//{
+	//	return m_scene->findObjectByName(_name) != nullptr;
+	//});
 }
 
 //-----------------------------------------------------------------------------

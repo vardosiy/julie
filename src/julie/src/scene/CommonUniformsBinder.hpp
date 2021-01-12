@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <string>
@@ -14,7 +15,6 @@ namespace jl {
 class Scene;
 class Camera;
 class Shader;
-class LightsHolder;
 
 class CommonUniformsBinder
 {
@@ -25,12 +25,17 @@ public:
 		const glm::mat4& _worldMatrix
 	) noexcept;
 
+	void setLights(const std::vector<glm::vec3>& _positions, const std::vector<glm::vec3>& _colors) noexcept;
+
 	void bind(const Shader& _shader) const noexcept;
 
 private:
 	const Scene& m_scene;
 	const Camera& m_camera;
 	const glm::mat4& m_worldMatrix;
+
+	const std::vector<glm::vec3>* m_lightPositions;
+	const std::vector<glm::vec3>* m_lightColors;
 
 //-----------------------------------------------------------------------------
 	static const std::string u_W;

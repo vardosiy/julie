@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -10,20 +10,8 @@ namespace jl {
 
 struct AmbientLightData
 {
-	glm::vec3 color;
-	float weight;
-};
-
-struct DirectionalLightData
-{
-	glm::vec3 color;
-	glm::vec3 direction;
-};
-
-struct PointLightData
-{
-	glm::vec3 color;
-	glm::vec3 position;
+	glm::vec3 color{ 1.0f };
+	float weight{ 0.6f };
 };
 
 //-----------------------------------------------------------------------------

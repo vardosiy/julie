@@ -1,7 +1,6 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
-#include "julie/Entity.hpp"
 
 #include "utils/TypeTraits.hpp"
 
@@ -21,7 +20,7 @@ class Shader;
 class Texture;
 class CubeTexture;
 
-class Material : public Entity
+class Material
 {
 //-----------------------------------------------------------------------------
 public:
@@ -35,6 +34,9 @@ public:
 	};
 
 //-----------------------------------------------------------------------------
+	const std::string& getName() const noexcept		{ return m_name; }
+	void setName(std::string _name) noexcept		{ m_name = std::move(_name); }
+
 	const Shader* getShader() const noexcept		{ return m_shader; }
 	void setShader(const Shader* _shader) noexcept	{ m_shader = _shader; }
 
@@ -46,8 +48,9 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	const Shader* m_shader = nullptr;
+	std::string m_name;
 	std::vector<Property> m_properties;
+	const Shader* m_shader = nullptr;
 };
 
 //-----------------------------------------------------------------------------

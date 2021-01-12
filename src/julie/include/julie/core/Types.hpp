@@ -1,6 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <chrono>
+
+//-----------------------------------------------------------------------------
+
+using Clock			= std::chrono::high_resolution_clock;
+using TimePoint		= std::chrono::time_point<Clock>;
+using Seconds		= std::chrono::seconds;
+using Milliseconds	= std::chrono::milliseconds;
 
 //-----------------------------------------------------------------------------
 

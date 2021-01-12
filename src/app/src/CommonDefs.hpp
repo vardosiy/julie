@@ -15,13 +15,6 @@ using SceneT = jl::Scene;
 
 //-----------------------------------------------------------------------------
 
-using Clock			= std::chrono::high_resolution_clock;
-using TimePoint		= std::chrono::time_point<Clock>;
-using Seconds		= std::chrono::seconds;
-using Milliseconds	= std::chrono::milliseconds;
-
-//-----------------------------------------------------------------------------
-
 namespace app {
 
 using Connection		= boost::signals2::connection;

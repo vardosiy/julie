@@ -20,13 +20,13 @@ ViewPropertiesWidget::ViewPropertiesWidget(QWidget* parent)
 	m_ui = std::make_unique<Ui::ViewPropertiesWidget>();
 	m_ui->setupUi(this);
 
-	connect(m_ui->chb_showBb, &QCheckBox::stateChanged, [this](int _value) { m_glWidget->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
+	//connect(m_ui->chb_showBb, &QCheckBox::stateChanged, [this](int _value) { m_glWidget->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
 	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &ViewPropertiesWidget::onFillPolygonsValueChanged);
 
-	connect(m_ui->sld_camMoveSpeed, &QSlider::valueChanged, this, qOverload<int>(&ViewPropertiesWidget::onCamMoveSpeedChanged));
+	connect(m_ui->sld_camMoveSpeed,   &QSlider::valueChanged, this, qOverload<int>(&ViewPropertiesWidget::onCamMoveSpeedChanged));
 	connect(m_ui->sld_camRotateSpeed, &QSlider::valueChanged, this, qOverload<int>(&ViewPropertiesWidget::onCamRotateSpeedChanged));
 
-	connect(m_ui->dsb_camMoveSpeed, qOverload<double>(&QDoubleSpinBox::valueChanged), this, qOverload<float>(&ViewPropertiesWidget::onCamMoveSpeedChanged));
+	connect(m_ui->dsb_camMoveSpeed,   qOverload<double>(&QDoubleSpinBox::valueChanged), this, qOverload<float>(&ViewPropertiesWidget::onCamMoveSpeedChanged));
 	connect(m_ui->dsb_camRotateSpeed, qOverload<double>(&QDoubleSpinBox::valueChanged), this, qOverload<float>(&ViewPropertiesWidget::onCamRotateSpeedChanged));
 }
 

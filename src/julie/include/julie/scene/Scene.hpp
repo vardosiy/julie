@@ -1,14 +1,19 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
-#include "julie/scene/Object.hpp"
+
+#include "julie/scene/AmbientLightData.hpp"
 #include "julie/scene/FogData.hpp"
-#include "julie/scene/lights/LightsHolder.hpp"
+
+#include "julie/ecs/Entity.hpp"
+#include "julie/ecs/EntitiesMgr.hpp"
+#include "julie/ecs/ComponentsMgr.hpp"
+
+#include "julie/ecs/TransformProcessSystem.hpp"
+#include "julie/ecs/RenderSystem.hpp"
 
 #include "utils/Noncopyable.hpp"
 
-#include <memory>
-#include <vector>
 #include <optional>
 
 //-----------------------------------------------------------------------------
@@ -18,39 +23,49 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Camera;
+class ScenePainter;
 
 class Scene : utils::Noncopyable
 {
-//-----------------------------------------------------------------------------
-public:
-	using ObjectPtr = std::unique_ptr<Object>;
+	friend class ScenePainter;
 
 //-----------------------------------------------------------------------------
-	void render(const Camera& _cam, bool drawBoundingBoxes) const;
+public:
+	Scene() noexcept;
+	~Scene() noexcept;
+
+	void update(std::chrono::milliseconds _dt);
+	void render(const Camera& _cam);
+
+	const AmbientLightData& getAmbientLightData() const noexcept;
+	void setAmbientLightData(const AmbientLightData& _data) noexcept;
 
 	const FogData* getFogData() const noexcept;
 	void setFogData(const FogData& _data) noexcept;
 
-	LightsHolder& getLightsHolder() noexcept;
-	const LightsHolder& getLightsHolder() const noexcept;
+//-----------------------------------------------------------------------------
+	ecs::Entity& createEntity(std::string _name);
+	ecs::Entity* findEntity(ecs::EntityId _id) noexcept;
+	void removeEntity(ecs::EntityId _id) noexcept;
+
+	size_t getEntitiesCount() const noexcept;
 
 //-----------------------------------------------------------------------------
-	void addObject(ObjectPtr&& _obj);
+	ecs::EntitiesMgr::Iterator begin() noexcept;
+	ecs::EntitiesMgr::Iterator end() noexcept;
 
-	int getObjectsCount() const noexcept;
-	Object& getObject(int _idx);
-	const Object& getObject(int _idx) const;
-
-	int findObjectIdx(const Object& _obj) const noexcept;
-	const Object* findObjectByName(std::string_view _name) const noexcept;
-
-	ObjectPtr eraseObject(int _idx) noexcept;
+	ecs::EntitiesMgr::ConstIterator begin() const noexcept;
+	ecs::EntitiesMgr::ConstIterator end() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
-	std::vector<ObjectPtr> m_objects;
+	ecs::ComponentsMgr m_componentsMgr;
+	ecs::EntitiesMgr m_entitiesMgr;
 
-	LightsHolder m_lightsHolder;
+	ecs::TransformProcessSystem m_transformProcessSystem;
+	ecs::RenderSystem m_renderSystem;
+
+	AmbientLightData m_ambientLightData;
 	std::optional<FogData> m_fogData;
 };
 

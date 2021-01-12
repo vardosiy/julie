@@ -52,21 +52,21 @@ private:
 	);
 	
 //-----------------------------------------------------------------------------
-	glm::vec3 m_pos;
-	glm::vec3 m_target;
-	glm::vec2 m_rotation;
+	glm::vec3 m_pos{ 0.0f };
+	glm::vec2 m_rotation{ 1.0f };
+	glm::vec3 m_target{ k_camDirection };
 
-	float m_aspect;
-	float m_near;
-	float m_far;
-	float m_fov;
+	float m_aspect{ 1.0f };
+	float m_near{ 0.0f };
+	float m_far{ 1.0f };
+	float m_fov{ 1.0f };
 
-	mutable glm::mat4 m_viewMatrix;
-	mutable glm::mat4 m_projectionMatrix;
-	mutable glm::mat4 m_viewProjectionMatrix;
+	mutable glm::mat4 m_viewMatrix{ 1.0f };
+	mutable glm::mat4 m_projectionMatrix{ 1.0f };
+	mutable glm::mat4 m_viewProjectionMatrix{ 1.0f };
 
-	mutable bool m_isTransformModified;
-	mutable bool m_isProjectionModified;
+	mutable bool m_isTransformModified{ true };
+	mutable bool m_isProjectionModified{ true };
 
 	static constexpr glm::vec3 k_camDirection = -constants::axis::z;
 	static constexpr float k_maxCamRotationX = 0.99999999f;

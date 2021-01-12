@@ -1,36 +1,31 @@
 #pragma once
 
-#include "julie/core/Types.hpp"
-
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 //-----------------------------------------------------------------------------
 
-namespace jl {
+namespace jl::ecs {
 
 //-----------------------------------------------------------------------------
 
-class Scene;
-class Camera;
-class Model;
+class ComponentsMgr;
 
-class ScenePainter
+class TransformProcessSystem
 {
 public:
-	ScenePainter(const Scene& _scene);
-	~ScenePainter();
+	TransformProcessSystem(ComponentsMgr& _componentsMgr);
 
-	void drawModels(const Camera& _cam) const;
-	void drawBoundingBoxes(const Camera& _cam) const;
+	void update();
 
 private:
-	void drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept;
+	static glm::mat4 rotationVecToMat(const glm::vec3& _rotation);
 
-	const Scene& m_scene;
+	ComponentsMgr& m_componentsMgr;
 };
 
 //-----------------------------------------------------------------------------
 
-} // namespace jl
+} // namespace jl::ecs
 
 //-----------------------------------------------------------------------------

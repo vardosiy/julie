@@ -50,8 +50,8 @@ MainWindow::MainWindow(QMainWindow* parent)
 
 MainWindow::~MainWindow()
 {
-	std::ofstream file(k_saveFile.data());
-	JsonProjectSaver::save(file, m_scene);
+	//std::ofstream file(k_saveFile.data());
+	//JsonProjectSaver::save(file, m_scene);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void MainWindow::objectSelected(jl::Object& _object)
 void MainWindow::materialSelected(jl::Material& _material)
 {
 	m_propertiesWdg->setActiveEntity(_material);
-	m_ui->oglw_screen->resetSelectedObj();
+	//m_ui->oglw_screen->resetSelectedObj();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void MainWindow::materialSelected(jl::Material& _material)
 void MainWindow::resetSelection()
 {
 	m_propertiesWdg->reset();
-	m_ui->oglw_screen->resetSelectedObj();
+	//m_ui->oglw_screen->resetSelectedObj();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,15 +95,19 @@ void MainWindow::onObjectScaled(jl::Object& _object)
 
 void MainWindow::update()
 {
+	using namespace std::chrono;
+
 	static TimePoint s_lastTime = Clock::now();
 	const TimePoint currentTime = Clock::now();
 
-	auto durationFloat = std::chrono::duration_cast<std::chrono::duration<float>>(currentTime - s_lastTime);
+	auto delta = currentTime - s_lastTime;
 	s_lastTime = currentTime;
 
-	jl::Globals::s_timeTotal += durationFloat.count();
-	m_cameraController.update(durationFloat.count());
+	float deltaf = duration_cast<duration<float>>(delta).count();
+	jl::Globals::s_timeTotal += deltaf;
+	m_cameraController.update(deltaf);
 
+	m_scene.update(duration_cast<milliseconds>(delta));
 	m_viewPropertiesWdg->update();
 	m_ui->oglw_screen->repaint();
 }
@@ -112,17 +116,17 @@ void MainWindow::update()
 
 void MainWindow::onGlLoaded()
 {
-	std::ifstream file(k_saveFile.data());
-	if (file.is_open())
-	{
-		JsonProjectRestorer restorer(file);
-		std::optional<jl::Scene> restoredScene = restorer.extractScene();
+	//std::ifstream file(k_saveFile.data());
+	//if (file.is_open())
+	//{
+	//	JsonProjectRestorer restorer(file);
+	//	std::optional<jl::Scene> restoredScene = restorer.extractScene();
 
-		if (restoredScene)
-		{
-			m_scene = std::move(restoredScene.value());
-		}
-	}
+	//	if (restoredScene)
+	//	{
+	//		m_scene = std::move(restoredScene.value());
+	//	}
+	//}
 
 	AppController::setContextOwner(m_ui->oglw_screen);
 	m_ui->oglw_screen->setScene(&m_scene);
@@ -161,7 +165,7 @@ void MainWindow::setupDefaultMaterial()
 {
 	jl::Material& material = MaterialsManager::getInstance().createMaterial("Default");
 
-	const jl::Shader* shader = ResourceManager::getInstance().loadShader("res/shaders/MaterialColorShader.shdata");
+	const jl::Shader* shader = ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata");
 	material.setShader(shader);
 
 	material.setProperty("u_shininess",		128.0f);

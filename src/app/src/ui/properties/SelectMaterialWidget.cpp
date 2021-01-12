@@ -8,10 +8,10 @@
 SelectMaterialWidget::SelectMaterialWidget(QWidget* _parent)
 	: QComboBox(_parent)
 {
-	MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
-	{
-		addItem(QString::fromStdString(_name));
-	});
+	//MaterialsManager::getInstance().forEachMaterial([this](const std::string& _name, const jl::Material&)
+	//{
+	//	addItem(QString::fromStdString(_name));
+	//});
 
 	connect(this, qOverload<const QString&>(&QComboBox::currentIndexChanged), this, &SelectMaterialWidget::onMaterialChanged);
 }
@@ -28,17 +28,17 @@ const MaterialUiWrapper& SelectMaterialWidget::getValue() const noexcept
 void SelectMaterialWidget::setValue(const MaterialUiWrapper& _value) noexcept
 {
 	m_value = _value;
-	setCurrentText(m_value.materialName);
+	//setCurrentText(m_value.materialName);
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectMaterialWidget::onMaterialChanged(const QString& _materialName)
 {
-	m_value.materialName = _materialName;
+	//m_value.materialName = _materialName;
 
 	jl::Material* material = MaterialsManager::getInstance().findMaterial(_materialName.toStdString());
-	m_value.mesh->setMaterial(material);
+	//m_value.mesh->setMaterial(material);
 }
 
 //-----------------------------------------------------------------------------
