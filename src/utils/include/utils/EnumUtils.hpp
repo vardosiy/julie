@@ -7,8 +7,6 @@
 
 namespace utils {
 
-//-----------------------------------------------------------------------------
-
 template<typename T>
 constexpr std::enable_if_t<std::is_enum_v<T>, T> fromString(std::string_view _str) noexcept;
 
