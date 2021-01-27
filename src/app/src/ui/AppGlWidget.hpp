@@ -7,9 +7,9 @@
 #include "julie/core/Aabb.hpp"
 #include "julie/managers/AppController.hpp"
 
-#include <glm/glm.hpp>
-
 #include <QOpenGLWidget>
+
+#include <glm/glm.hpp>
 
 #include <functional>
 
@@ -27,12 +27,6 @@ class AppGlWidget : public QOpenGLWidget, public IOpenGlContextOwner
 
 //-----------------------------------------------------------------------------
 public:
-	enum class DrawMode
-	{
-		Fill,
-		Edges
-	};
-
 	using GlLoadedSignal = app::Signal<void()>;
 
 //-----------------------------------------------------------------------------
@@ -41,7 +35,7 @@ public:
 
 	void makeContextCurrent() override;
 
-	void setDrawMode(DrawMode _drawMode) noexcept;
+	void setWireframeModeEnabled(bool _val) noexcept;
 
 	void setCamera(jl::Camera* _camera) noexcept;
 	void setScene(jl::Scene* _scene) noexcept;
@@ -60,8 +54,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 private:
-	void initScene();
-
 	void processKeyboardModifiers(Qt::KeyboardModifiers _modifiers);
 
 //-----------------------------------------------------------------------------

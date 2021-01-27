@@ -34,7 +34,7 @@ inline QString vecToString(const glm::vec4& _vec)
 template<typename T>
 inline QString findSourceFile(const T* _resource)
 {
-	return _resource ? ResourceManager::getInstance().findSourceFile(*_resource).c_str() : "";
+	return _resource ? jl::ResourceManager::getInstance().findSourceFile(*_resource).c_str() : "";
 }
 
 //-----------------------------------------------------------------------------

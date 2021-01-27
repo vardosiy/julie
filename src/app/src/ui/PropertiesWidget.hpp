@@ -1,5 +1,7 @@
 #pragma once
 
+#include "julie/ecs/Entity.hpp"
+
 #include <QWidget>
 #include <QStandardItemModel>
 
@@ -14,7 +16,6 @@ class PropertiesWidget;
 
 namespace jl {
 class Model;
-class Object;
 class Material;
 }
 
@@ -26,16 +27,16 @@ class PropertiesWidget : public QWidget
 public:
 	explicit PropertiesWidget(QWidget* parent = nullptr);
 
-	void setActiveEntity(jl::Object& _object);
-	void setActiveEntity(jl::Material& _material);
+	void setActiveItem(jl::EntityRef _entity);
+	void setActiveItem(jl::Material& _material);
 	void reset();
 
-	void refreshObjectPos();
-	void refreshObjectSize();
+	void refreshEntityPos();
+	void refreshEntitySize();
 
 //-----------------------------------------------------------------------------
 private:
-	void refreshObjectProperties(jl::Object& _object);
+	void refreshEntityProperties(jl::EntityRef _entity);
 	void refreshMeshes(jl::Model* _model, const QModelIndex& _parent);
 
 	void refreshMaterialProperties(jl::Material& _material);
@@ -43,7 +44,7 @@ private:
 
 //-----------------------------------------------------------------------------
 	void onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles);
-	void onObjectChanged(const QModelIndex& _idx, jl::Object& _object);
+	void onEntityChanged(const QModelIndex& _idx, jl::EntityRef _entity);
 	void onMaterialChanged(const QModelIndex& _idx, jl::Material& _material);
 
 //-----------------------------------------------------------------------------
@@ -59,7 +60,7 @@ private:
 	std::unique_ptr<Ui::PropertiesWidget> m_ui;
 	QStandardItemModel m_propertiesTableModel;
 
-	std::variant<jl::Object*, jl::Material*, std::nullptr_t> m_activeEntity;
+	std::variant<jl::EntityRef, jl::Material*, std::nullptr_t> m_activeItem;
 
 	static constexpr int k_nameColIdx = 0;
 	static constexpr int k_valueColIdx = 1;

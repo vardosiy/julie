@@ -2,11 +2,11 @@
 
 //-----------------------------------------------------------------------------
 
-namespace jl::ecs {
+namespace jl {
 
 //-----------------------------------------------------------------------------
 
-Entity::Entity(EntityId _id, ComponentsMgr& _componentsMgr) noexcept
+EntityRef::EntityRef(EntityId _id, ecs::ComponentsMgr& _componentsMgr) noexcept
 	: m_id(_id)
 	, m_componentsMgr(&_componentsMgr)
 {
@@ -14,13 +14,13 @@ Entity::Entity(EntityId _id, ComponentsMgr& _componentsMgr) noexcept
 
 //-----------------------------------------------------------------------------
 
-EntityId Entity::getId() const  noexcept
+EntityId EntityRef::getId() const  noexcept
 {
 	return m_id;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace jl::ecs
+} // namespace jl
 
 //-----------------------------------------------------------------------------

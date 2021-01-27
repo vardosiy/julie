@@ -1,4 +1,4 @@
-#include "julie/primitives/VertexArray.hpp"
+#include "primitives/VertexArray.hpp"
 #include "julie/Vertex.hpp"
 
 #include "utils/Utils.hpp"

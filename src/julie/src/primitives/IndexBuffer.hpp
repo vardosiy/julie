@@ -1,7 +1,6 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
-#include "julie/Vertex.hpp"
 
 #include "utils/Noncopyable.hpp"
 
@@ -14,7 +13,7 @@ namespace jl {
 class IndexBuffer : utils::Noncopyable
 {
 public:
-	IndexBuffer(const index_t* _data, u64 _count) noexcept;
+	IndexBuffer(const u32* _data, u64 _count) noexcept;
 	IndexBuffer(u64 _size) noexcept;
 	~IndexBuffer();
 
@@ -22,7 +21,7 @@ public:
 	IndexBuffer& operator=(IndexBuffer&& _rhs) noexcept;
 
 	void bind() const noexcept;
-	void bufferData(const index_t* _data, u64 _count);
+	void bufferData(const u32* _data, u64 _count);
 
 	u64 getCount() const noexcept;
 

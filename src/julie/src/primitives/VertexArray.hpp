@@ -1,8 +1,9 @@
 #pragma once
 
 #include "julie/core/Types.hpp"
-#include "julie/primitives/VertexBuffer.hpp"
-#include "julie/primitives/IndexBuffer.hpp"
+
+#include "primitives/VertexBuffer.hpp"
+#include "primitives/IndexBuffer.hpp"
 
 #include "utils/Noncopyable.hpp"
 

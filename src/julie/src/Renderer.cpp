@@ -100,7 +100,7 @@ void Renderer::setBackPolygonsMode(PolygonMode _mode) noexcept
 void Renderer::draw(const Mesh& _mesh) noexcept
 {
 	_mesh.bind();
-	glDrawElements(GL_TRIANGLES, _mesh.getIndeciesCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, _mesh.getIndicesCount(), GL_UNSIGNED_INT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void Renderer::draw(const aabbf& _box, const glm::vec4& _color, const glm::mat4&
 
 	vertexBuffer->bufferData(vertBuf, std::size(vertBuf), 0);
 
-	index_t indexBuf[] = {
+	u32 indexBuf[] = {
 		0, 4, 1, 5, 2, 6, 3, 7,
 		0, 1, 4, 5, 2, 3, 6, 7,
 		0, 2, 1, 3, 4, 6, 5, 7

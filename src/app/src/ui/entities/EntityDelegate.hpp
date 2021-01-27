@@ -31,10 +31,10 @@ private:
 template<typename T>
 inline void EntityDelegate::runOnItem(const QVariant& _data, T&& _callback)
 {
-	ASSERT(_data.canConvert<ObjectUiWrapper>() || _data.canConvert<MaterialUiWrapper>());
-	if (_data.canConvert<ObjectUiWrapper>())
+	ASSERT(_data.canConvert<EntityIdUiWrapper>() || _data.canConvert<MaterialUiWrapper>());
+	if (_data.canConvert<EntityIdUiWrapper>())
 	{
-		const ObjectUiWrapper wrapper = qvariant_cast<ObjectUiWrapper>(_data);
+		const EntityIdUiWrapper wrapper = qvariant_cast<EntityIdUiWrapper>(_data);
 		_callback(wrapper);
 	}
 	else if (_data.canConvert<MaterialUiWrapper>())

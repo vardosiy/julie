@@ -64,19 +64,70 @@ void Scene::setFogData(const FogData& _data) noexcept
 
 //-----------------------------------------------------------------------------
 
-ecs::Entity& Scene::createEntity(std::string _name)				{ return m_entitiesMgr.create(std::move(_name)); }
-ecs::Entity* Scene::findEntity(ecs::EntityId _id) noexcept		{ return m_entitiesMgr.find(_id); }
-void Scene::removeEntity(ecs::EntityId _id) noexcept			{ m_entitiesMgr.remove(_id); }
+EntityRef Scene::createEntity(std::string _name)
+{
+	EntityRef entity = m_entitiesMgr.create();
+	entity.addComponent<TagComponent>(std::move(_name));
+	entity.addComponent<TransformComponent>();
 
-size_t Scene::getEntitiesCount() const noexcept					{ return m_entitiesMgr.getCount(); }
+	return entity;
+}
 
 //-----------------------------------------------------------------------------
 
-ecs::EntitiesMgr::Iterator Scene::begin() noexcept				{ return m_entitiesMgr.begin(); }
-ecs::EntitiesMgr::Iterator Scene::end() noexcept				{ return m_entitiesMgr.end(); }
+void Scene::removeEntity(EntityId _id) noexcept
+{
+	m_entitiesMgr.remove(_id);
+}
 
-ecs::EntitiesMgr::ConstIterator Scene::begin() const noexcept	{ return m_entitiesMgr.begin(); }
-ecs::EntitiesMgr::ConstIterator Scene::end() const noexcept		{ return m_entitiesMgr.end(); }
+//-----------------------------------------------------------------------------
+
+size_t Scene::getEntitiesCount() const noexcept
+{
+	return m_entitiesMgr.getCount();
+}
+
+//-----------------------------------------------------------------------------
+
+std::optional<EntityRef> Scene::getEntity(size_t _idx) noexcept
+{
+	return m_entitiesMgr.get(_idx);
+}
+
+//-----------------------------------------------------------------------------
+
+std::optional<EntityRef> Scene::findEntity(EntityId _id) noexcept
+{
+	return m_entitiesMgr.find(_id);
+}
+
+//-----------------------------------------------------------------------------
+
+EntityIterator Scene::begin() noexcept
+{
+	return m_entitiesMgr.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+EntityIterator Scene::end() noexcept
+{
+	return m_entitiesMgr.end();
+}
+
+//-----------------------------------------------------------------------------
+
+ConstEntityIterator Scene::begin() const noexcept
+{
+	return m_entitiesMgr.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+ConstEntityIterator Scene::end() const noexcept
+{
+	return m_entitiesMgr.end();
+}
 
 //-----------------------------------------------------------------------------
 

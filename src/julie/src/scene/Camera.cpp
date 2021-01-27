@@ -124,7 +124,7 @@ void Camera::move(const glm::vec3& _vec) noexcept
 void Camera::rotate(const glm::vec2& _vec) noexcept
 {
 	m_rotation += _vec;
-	m_rotation.x = std::clamp(m_rotation.x, -k_maxCamRotationX, k_maxCamRotationX);
+	m_rotation.x = std::max(-k_maxCamRotationX, std::min(k_maxCamRotationX, _vec.x));
 
 	const glm::mat4 xRotationMat = glm::rotate(m_rotation.x, constants::axis::x);
 	const glm::mat4 yRotationMat = glm::rotate(m_rotation.y, constants::axis::y);

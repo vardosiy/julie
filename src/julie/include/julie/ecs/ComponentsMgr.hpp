@@ -5,17 +5,13 @@
 #include "julie/ecs/ComponentsContainer.hpp"
 #include "julie/ecs/ComponentsContainerRef.hpp"
 
+#include "utils/TypeTraits.hpp"
+
 //-----------------------------------------------------------------------------
 
 namespace jl::ecs {
 
 //-----------------------------------------------------------------------------
-
-template<int N1, int N2>
-struct is_greater
-{
-	static constexpr bool value = N1 > N2;
-};
 
 class ComponentsMgr
 {
@@ -27,22 +23,23 @@ public:
 	T* get(EntityId _id) noexcept;
 
 	template<typename T>
+	const T* get(EntityId _id) const noexcept;
+
+	template<typename T>
 	void remove(EntityId _id) noexcept;
 
 	template<typename T>
 	ConcreteComponentContainerRef<T> view() noexcept;
 
-	template<typename ... Args, typename = std::enable_if_t< is_greater<sizeof...(Args), 1>::value > >
+	template<typename ... Args, typename = std::enable_if_t<utils::IsGreater_v<sizeof...(Args), 1>> >
 	ComponentsContainerRef<Args...> view() noexcept;
 
 private:
-	using AllComponentsContainer = ComponentsContainer<
-		TagComponent,
-		TransformComponent,
-		ModelComponent,
-		RenderComponent,
-		LightSourceComponent
-	>;
+	using AllComponentsContainer = ComponentsContainer<TagComponent,
+													   TransformComponent,
+													   ModelComponent,
+													   RenderComponent,
+													   LightSourceComponent>;
 
 	AllComponentsContainer m_componentsContainer;
 };
@@ -78,6 +75,26 @@ inline T* ComponentsMgr::get(EntityId _id) noexcept
 		const size_t idx = it->second;
 		result = &concreteContainer.m_container[idx];
 	}
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+inline const T* ComponentsMgr::get(EntityId _id) const noexcept
+{
+	ConcreteComponentContainer<T>& concreteContainer = m_componentsContainer.getContainer<T>();
+
+	T* result = nullptr;
+
+	auto it = concreteContainer.m_lookupTable.find(_id);
+	if (it != concreteContainer.m_lookupTable.end())
+	{
+		const size_t idx = it->second;
+		result = &concreteContainer.m_container[idx];
+	}
+
 	return result;
 }
 

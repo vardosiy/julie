@@ -13,8 +13,8 @@ public:
 	using ValueType = V;
 
 public:
-	constexpr Identifier() noexcept					: m_value(static_cast<V>(0)) {}
-	constexpr Identifier(const V& _val) noexcept	: m_value(_val) {}
+	constexpr Identifier() :				m_value(static_cast<V>(0)) {}
+	constexpr Identifier(const V& _val) :	m_value(_val) {}
 
 	constexpr Identifier(const Identifier<T, V>&) = default;
 	constexpr Identifier(Identifier<T, V>&&) = default;
@@ -22,7 +22,7 @@ public:
 	constexpr Identifier<T, V>& operator= (const Identifier<T, V>&) = default;
 	constexpr Identifier<T, V>& operator= (Identifier<T, V>&&) = default;
 
-	constexpr const ValueType& getValue() const noexcept { return m_value; }
+	constexpr const V& getValue() const noexcept { return m_value; }
 
 	constexpr bool operator== (const Identifier<T, V>& _rhs) const noexcept { return m_value == _rhs.m_value; }
 	constexpr bool operator!= (const Identifier<T, V>& _rhs) const noexcept { return !(this == _rhs); }
@@ -47,6 +47,6 @@ struct hash< utils::Identifier<T, V> >
 	}
 };
 
-}
+} // namespace std
 
 //-----------------------------------------------------------------------------

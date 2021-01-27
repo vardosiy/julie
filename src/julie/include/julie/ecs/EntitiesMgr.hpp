@@ -1,6 +1,7 @@
 #pragma once
 
 #include "julie/ecs/Entity.hpp"
+#include "julie/ecs/EntityIterator.hpp"
 
 #include <string>
 #include <vector>
@@ -18,26 +19,22 @@ class EntitiesMgr
 {
 //-----------------------------------------------------------------------------
 public:
-	using Iterator = std::vector<Entity>::iterator;
-	using ConstIterator = std::vector<Entity>::const_iterator;
-	
-//-----------------------------------------------------------------------------
-	EntitiesMgr(ComponentsMgr& _componentsMgr) noexcept;
+	explicit EntitiesMgr(ComponentsMgr& _componentsMgr) noexcept;
 	~EntitiesMgr() noexcept;
 
-	Entity create(std::string name);
+	EntityRef create();
 	void remove(EntityId _id) noexcept;
 
 	size_t getCount() const noexcept;
-	std::optional<Entity> get(size_t _idx) noexcept;
-	std::optional<Entity> find(EntityId _id) noexcept;
+	std::optional<EntityRef> get(size_t _idx) noexcept;
+	std::optional<EntityRef> find(EntityId _id) noexcept;
 
 //-----------------------------------------------------------------------------
-	Iterator begin() noexcept;
-	Iterator end() noexcept;
+	EntityIterator begin() noexcept;
+	EntityIterator end() noexcept;
 
-	ConstIterator begin() const noexcept;
-	ConstIterator end() const noexcept;
+	ConstEntityIterator begin() const noexcept;
+	ConstEntityIterator end() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:

@@ -10,9 +10,10 @@
 #include "julie/managers/AppController.hpp"
 #include "julie/managers/ResourceManager.hpp"
 #include "julie/managers/MaterialsManager.hpp"
-#include "julie/scene/Scene.hpp"
+
 #include "julie/Globals.hpp"
 #include "julie/Material.hpp"
+#include "julie/Model.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -29,12 +30,12 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_updateTimer(this)
 	, m_camera(0.1f, 100.0f, 30.0f)
 {
-	m_camera.setPosition(glm::vec3(0.0f));
+	m_camera.setPosition(glm::vec3{ 0.0f });
 	m_cameraController.setCameraMoveSpeed(3.0f);
 	m_cameraController.setCameraRotateSpeed(2.0f);
 	m_cameraController.setCamera(&m_camera);
 
-	setupUi();
+	initUi();
 
 	connect(&m_updateTimer, &QTimer::timeout, this, &MainWindow::update);
 	m_updateTimer.start(1);
@@ -56,39 +57,37 @@ MainWindow::~MainWindow()
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::objectSelected(jl::Object& _object)
+void MainWindow::entitySelected(jl::EntityRef _entity)
 {
-	m_propertiesWdg->setActiveEntity(_object);
+	//m_propertiesWdg->setActiveItem(_entity);
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::materialSelected(jl::Material& _material)
 {
-	m_propertiesWdg->setActiveEntity(_material);
-	//m_ui->oglw_screen->resetSelectedObj();
+	//m_propertiesWdg->setActiveItem(_material);
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::resetSelection()
 {
-	m_propertiesWdg->reset();
-	//m_ui->oglw_screen->resetSelectedObj();
+	//m_propertiesWdg->reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectMoved(jl::Object& _object)
+void MainWindow::onEntityMoved(jl::EntityRef _entity)
 {
-	m_propertiesWdg->refreshObjectPos();
+	//m_propertiesWdg->refreshEntityPos();
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onObjectScaled(jl::Object& _object)
+void MainWindow::onEntityScaled(jl::EntityRef _entity)
 {
-	m_propertiesWdg->refreshObjectSize();
+	//m_propertiesWdg->refreshEntitySize();
 }
 
 //-----------------------------------------------------------------------------
@@ -116,6 +115,42 @@ void MainWindow::update()
 
 void MainWindow::onGlLoaded()
 {
+	AppController::setContextOwner(m_ui->oglw_screen);
+	m_ui->oglw_screen->setScene(&m_scene);
+	m_ui->oglw_screen->setCamera(&m_camera);
+
+	//m_entitisWdg->setScene(&m_scene);
+
+	initDefaultMaterial();
+	initScene();
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::initUi()
+{
+	m_ui = std::make_unique<Ui::MainWindow>();
+	m_ui->setupUi(this);
+
+	m_ui->oglw_screen->setActionHandler(this);
+
+	//m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
+	//m_entitisWdg->setEntityActionHandler(this);
+	//m_ui->dock_entities->setWidget(m_entitisWdg);
+
+	//m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
+	//m_ui->dock_props->setWidget(m_propertiesWdg);
+
+	m_viewPropertiesWdg = new ViewPropertiesWidget(m_ui->dock_viewProps);
+	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
+	m_viewPropertiesWdg->setCameraController(&m_cameraController);
+	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
+}
+
+//-----------------------------------------------------------------------------
+
+void MainWindow::initScene()
+{
 	//std::ifstream file(k_saveFile.data());
 	//if (file.is_open())
 	//{
@@ -128,55 +163,52 @@ void MainWindow::onGlLoaded()
 	//	}
 	//}
 
-	AppController::setContextOwner(m_ui->oglw_screen);
-	m_ui->oglw_screen->setScene(&m_scene);
-	m_ui->oglw_screen->setCamera(&m_camera);
+	jl::ResourceManager& resourceMgr = jl::ResourceManager::getInstance();
+	jl::MaterialsManager& materialsMgr = jl::MaterialsManager::getInstance();
 
-	m_entitisWdg->setScene(&m_scene);
+	jl::Model* model = resourceMgr.loadModel("res/models/mustang/mustang_GT.obj", false);
+	ASSERT(model);
 
-	setupDefaultMaterial();
+	jl::Material* material = materialsMgr.findMaterial("Default");
+	const size_t meshesCount = model->getMeshesCount();
+	for (size_t i = 0; i < meshesCount; ++i)
+	{
+		model->getMesh(i).setMaterial(material);
+	}
+
+	{
+		jl::EntityRef obj = m_scene.createEntity("some_name");
+		obj.addComponent<ModelComponent>(model);
+		TransformComponent* objTransform = obj.getComponent<TransformComponent>();
+		objTransform->pos = glm::vec3{ 0.0f, 0.0f, -1.0f };
+		objTransform->scale = glm::vec3{ 0.01f };
+	}
+	{
+		jl::EntityRef light = m_scene.createEntity("light");
+		light.addComponent<LightSourceComponent>(glm::vec3{ 0.0f }, glm::vec3{ 1.0f });
+		TransformComponent* lightTransform = light.getComponent<TransformComponent>();
+		lightTransform->pos = glm::vec3{ 0.0f, 2.0f, -1.0f };
+	}
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::setupUi()
+void MainWindow::initDefaultMaterial()
 {
-	m_ui = std::make_unique<Ui::MainWindow>();
-	m_ui->setupUi(this);
+	jl::Material& material = jl::MaterialsManager::getInstance().createMaterial("Default");
 
-	m_ui->oglw_screen->setActionHandler(this);
-
-	m_entitisWdg = new EntitiesWidget(m_ui->dock_entities);
-	m_entitisWdg->setEntityActionHandler(this);
-	m_ui->dock_entities->setWidget(m_entitisWdg);
-
-	m_propertiesWdg = new PropertiesWidget(m_ui->dock_props);
-	m_ui->dock_props->setWidget(m_propertiesWdg);
-
-	m_viewPropertiesWdg = new ViewPropertiesWidget(m_ui->dock_viewProps);
-	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
-	m_viewPropertiesWdg->setCameraController(&m_cameraController);
-	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::setupDefaultMaterial()
-{
-	jl::Material& material = MaterialsManager::getInstance().createMaterial("Default");
-
-	const jl::Shader* shader = ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata");
+	const jl::Shader* shader = jl::ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata");
 	material.setShader(shader);
 
 	material.setProperty("u_shininess",		128.0f);
 	material.setProperty("u_opacity",		1.0f);
-	material.setProperty("u_matAmbient",	glm::vec3(1.0f));
-	material.setProperty("u_matDiffuse",	glm::vec3(1.0f));
-	material.setProperty("u_matSpecular",	glm::vec3(1.0f));
+	material.setProperty("u_matAmbient",	glm::vec3{ 1.0f });
+	material.setProperty("u_matDiffuse",	glm::vec3{ 1.0f });
+	material.setProperty("u_matSpecular",	glm::vec3{ 1.0f });
 	material.setProperty("u_texDiffuse",	static_cast<jl::Texture*>(nullptr));
 	material.setProperty("u_texNormals",	static_cast<jl::Texture*>(nullptr));
 
-	m_entitisWdg->setDefaultMaterial(&material);
+	//m_entitisWdg->setDefaultMaterial(&material);
 }
 
 //-----------------------------------------------------------------------------

@@ -20,7 +20,7 @@ ViewPropertiesWidget::ViewPropertiesWidget(QWidget* parent)
 	m_ui = std::make_unique<Ui::ViewPropertiesWidget>();
 	m_ui->setupUi(this);
 
-	//connect(m_ui->chb_showBb, &QCheckBox::stateChanged, [this](int _value) { m_glWidget->drawBoundingBoxes(_value == Qt::CheckState::Checked); });
+	//connect(m_ui->chb_showBb, &QCheckBox::stateChanged, [this](int _value) { m_glWidget->setWireframeModeEnabled(_value == Qt::CheckState::Checked); });
 	connect(m_ui->chb_fillPolygons, &QCheckBox::stateChanged, this, &ViewPropertiesWidget::onFillPolygonsValueChanged);
 
 	connect(m_ui->sld_camMoveSpeed,   &QSlider::valueChanged, this, qOverload<int>(&ViewPropertiesWidget::onCamMoveSpeedChanged));
@@ -122,23 +122,7 @@ void ViewPropertiesWidget::onCamRotateSpeedChanged(float _value)
 
 void ViewPropertiesWidget::onFillPolygonsValueChanged(int _state)
 {
-	AppGlWidget::DrawMode drawMode = AppGlWidget::DrawMode::Fill;
-
-	switch (_state)
-	{
-	case Qt::CheckState::Checked:
-		drawMode = AppGlWidget::DrawMode::Fill;
-		break;
-
-	case Qt::CheckState::Unchecked:
-		drawMode = AppGlWidget::DrawMode::Edges;
-		break;
-
-	default:
-		ASSERT(0);
-	}
-
-	m_glWidget->setDrawMode(drawMode);
+	m_glWidget->setWireframeModeEnabled(_state == Qt::CheckState::Checked);
 }
 
 //-----------------------------------------------------------------------------

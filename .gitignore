@@ -1,22 +1,28 @@
-# VS stuff
+# VS
 .vs/
 .vscode/
 
-# generated items
+# CLion
+.idea/
+cmake-build-debug/
+
+# generated
 bin/
 lib/
 build/
+Autogen.cmake
+
+# python generated
 __pycache__/
 scripts/python/__pycache__/
+
+# app generated
 src/app/Log.log
 src/app/SaveFile.json
+
+# resources
 src/app/res/models/
 src/app/res/textures/
-src/app/res/shaders/composed/
-
-# generated and local-specific cmake files
-Autogen.cmake
-LocalConfig.cmake
 
 # file extenstions
 *.pyc

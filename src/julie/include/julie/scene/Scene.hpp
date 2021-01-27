@@ -23,12 +23,9 @@ namespace jl {
 //-----------------------------------------------------------------------------
 
 class Camera;
-class ScenePainter;
 
 class Scene : utils::Noncopyable
 {
-	friend class ScenePainter;
-
 //-----------------------------------------------------------------------------
 public:
 	Scene() noexcept;
@@ -37,6 +34,7 @@ public:
 	void update(std::chrono::milliseconds _dt);
 	void render(const Camera& _cam);
 
+//-----------------------------------------------------------------------------
 	const AmbientLightData& getAmbientLightData() const noexcept;
 	void setAmbientLightData(const AmbientLightData& _data) noexcept;
 
@@ -44,18 +42,18 @@ public:
 	void setFogData(const FogData& _data) noexcept;
 
 //-----------------------------------------------------------------------------
-	ecs::Entity& createEntity(std::string _name);
-	ecs::Entity* findEntity(ecs::EntityId _id) noexcept;
-	void removeEntity(ecs::EntityId _id) noexcept;
+	EntityRef createEntity(std::string _name);
+	void removeEntity(EntityId _id) noexcept;
 
 	size_t getEntitiesCount() const noexcept;
+	std::optional<EntityRef> getEntity(size_t _idx) noexcept;
+	std::optional<EntityRef> findEntity(EntityId _id) noexcept;
 
-//-----------------------------------------------------------------------------
-	ecs::EntitiesMgr::Iterator begin() noexcept;
-	ecs::EntitiesMgr::Iterator end() noexcept;
+	EntityIterator begin() noexcept;
+	EntityIterator end() noexcept;
 
-	ecs::EntitiesMgr::ConstIterator begin() const noexcept;
-	ecs::EntitiesMgr::ConstIterator end() const noexcept;
+	ConstEntityIterator begin() const noexcept;
+	ConstEntityIterator end() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:

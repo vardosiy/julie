@@ -10,7 +10,6 @@
 #include "scene/CommonUniformsBinder.hpp"
 #include "PropertyBinder.hpp"
 
-#include "julie/Globals.hpp"
 #include "julie/Axis.hpp"
 
 #include <glm/gtx/transform.hpp>
@@ -92,7 +91,6 @@ void RenderSystem::drawModel(const Model& _model, const Camera& _cam, const glm:
 	for (size_t i = 0; i < meshesCount; ++i)
 	{
 		const Mesh& mesh = _model.getMesh(i);
-
 		if (const Material* material = mesh.getMaterial())
 		{
 			if (const Shader* shader = material->getShader())

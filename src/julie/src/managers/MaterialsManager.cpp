@@ -3,6 +3,10 @@
 
 //-----------------------------------------------------------------------------
 
+namespace jl {
+
+//-----------------------------------------------------------------------------
+
 void MaterialsManager::clear() noexcept
 {
 	m_materials.clear();
@@ -17,13 +21,13 @@ size_t MaterialsManager::getMaterialsCount() const noexcept
 
 //-----------------------------------------------------------------------------
 
-jl::Material& MaterialsManager::createMaterial(const std::string& _name) noexcept
+Material& MaterialsManager::createMaterial(const std::string& _name) noexcept
 {
-	jl::Material* result = findMaterial(_name);
+	Material* result = findMaterial(_name);
 
 	if (!result)
 	{
-		auto& material = m_materials.emplace_back(new jl::Material);
+		auto& material = m_materials.emplace_back(new Material);
 		material->setName(_name);
 
 		result = material.get();
@@ -34,7 +38,7 @@ jl::Material& MaterialsManager::createMaterial(const std::string& _name) noexcep
 
 //-----------------------------------------------------------------------------
 
-jl::Material* MaterialsManager::findMaterial(const std::string& _name) const noexcept
+Material* MaterialsManager::findMaterial(const std::string& _name) const noexcept
 {
 	auto it = std::find_if(m_materials.begin(), m_materials.end(), [&_name](const auto& _material)
 	{
@@ -56,7 +60,7 @@ void MaterialsManager::deleteMaterial(const std::string& _name) noexcept
 
 //-----------------------------------------------------------------------------
 
-void MaterialsManager::deleteMaterial(const jl::Material& _material) noexcept
+void MaterialsManager::deleteMaterial(const Material& _material) noexcept
 {
 	auto removeIt = std::remove_if(m_materials.begin(), m_materials.end(), [&_material](const auto& _mat)
 	{
@@ -67,7 +71,7 @@ void MaterialsManager::deleteMaterial(const jl::Material& _material) noexcept
 
 //-----------------------------------------------------------------------------
 
-void MaterialsManager::forEachMaterial(const std::function<void(jl::Material&)>& _callback)
+void MaterialsManager::forEachMaterial(const std::function<void(Material&)>& _callback)
 {
 	for (auto& material : m_materials)
 	{
@@ -77,12 +81,16 @@ void MaterialsManager::forEachMaterial(const std::function<void(jl::Material&)>&
 
 //-----------------------------------------------------------------------------
 
-void MaterialsManager::forEachMaterial(const std::function<void(const jl::Material&)>& _callback) const
+void MaterialsManager::forEachMaterial(const std::function<void(const Material&)>& _callback) const
 {
 	for (auto& material : m_materials)
 	{
 		_callback(*material);
 	}
 }
+
+//-----------------------------------------------------------------------------
+
+} // namespace jl
 
 //-----------------------------------------------------------------------------

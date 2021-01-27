@@ -37,12 +37,12 @@ public:
 	explicit MainWindow(QMainWindow* parent = nullptr);
 	~MainWindow() override;
 
-	void objectSelected(jl::Object& _object) override;
+	void entitySelected(jl::EntityRef _entity) override;
 	void materialSelected(jl::Material& _material) override;
 	void resetSelection() override;
 
-	void onObjectMoved(jl::Object& _object) override;
-	void onObjectScaled(jl::Object& _object) override;
+	void onEntityMoved(jl::EntityRef _entity) override;
+	void onEntityScaled(jl::EntityRef _entity) override;
 
 //-----------------------------------------------------------------------------
 private slots:
@@ -52,8 +52,9 @@ private slots:
 private:
 	void onGlLoaded();
 
-	void setupUi();
-	void setupDefaultMaterial();
+	void initUi();
+	void initScene();
+	void initDefaultMaterial();
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
@@ -70,7 +71,7 @@ private:
 
 	FreeflyCameraController m_cameraController;
 
-	static constexpr std::string_view k_saveFile = "SaveFile.json";
+	static constexpr std::string_view k_saveFile{ "SaveFile.json" };
 };
 
 //-----------------------------------------------------------------------------

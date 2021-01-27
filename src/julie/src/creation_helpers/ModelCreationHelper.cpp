@@ -9,8 +9,6 @@
 
 #include "utils/Utils.hpp"
 
-#include <fstream>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -38,8 +36,6 @@ std::unique_ptr<Model> ModelCreationHelper::loadFromFile(std::string_view _fileP
 	{
 		return loadAssimp(_filePath, _loadMaterials);
 	}
-
-	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +51,7 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 
 	s32 verticesCount = 0;
 	fscanf_s(pFile, "%*s %d", &verticesCount);
-	ASSERTM(verticesCount > 0, "Vercices count has invalid value in file {}", _filePath);
+	ASSERTM(verticesCount > 0, "Vertices count has invalid value in file {}", _filePath);
 
 	std::vector<Vertex> vertices(verticesCount);
 	for (Vertex& vertex : vertices)
@@ -72,9 +68,9 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 
 	s32 indicesCount = 0;
 	fscanf_s(pFile, "%*s %d", &indicesCount);
-	ASSERTM(indicesCount > 0, "Vercices count has invalid value in file {}", _filePath);
+	ASSERTM(indicesCount > 0, "Vertices count has invalid value in file {}", _filePath);
 
-	std::vector<index_t> indices(indicesCount);
+	std::vector<u32> indices(indicesCount);
 	for (s32 i = 0; i < indicesCount; i += 3)
 	{
 		fscanf_s(
@@ -93,11 +89,14 @@ std::unique_ptr<Model> ModelCreationHelper::loadNfg(std::string_view _filePath)
 std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePath, bool _loadMaterials)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filePath.data(), aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
+	const int importFlags = aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_FlipUVs;
+	const aiScene* scene = importer.ReadFile(_filePath.data(), importFlags);
 
 	if (scene && scene->mFlags != AI_SCENE_FLAGS_INCOMPLETE && scene->mRootNode)
 	{
-		ModelCreationHelper helper(std::filesystem::path(_filePath).parent_path(), _loadMaterials);
+		const std::filesystem::path fileDir = std::filesystem::path(_filePath).parent_path();
+
+		ModelCreationHelper helper(fileDir, _loadMaterials);
 		helper.processNode(scene->mRootNode, scene);
 		return std::make_unique<Model>(std::move(helper.m_meshes));
 	}
@@ -108,12 +107,10 @@ std::unique_ptr<Model> ModelCreationHelper::loadAssimp(std::string_view _filePat
 //-----------------------------------------------------------------------------
 
 ModelCreationHelper::ModelCreationHelper(std::filesystem::path _directory, bool _loadMaterials)
-	: m_directory(_directory)
+	: m_directory(std::move(_directory))
 	, m_loadMaterials(_loadMaterials)
 {
 }
-
-//-----------------------------------------------------------------------------
 
 ModelCreationHelper::~ModelCreationHelper() = default;
 
@@ -141,7 +138,7 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) cons
 	auto assimpVecToGlm2 = [](const aiVector3D& _vec) { return glm::vec2{ _vec.x, _vec.y }; };
 
 	std::vector<Vertex> vertices(_mesh->mNumVertices);
-	std::vector<index_t> indices;
+	std::vector<u32> indices;
 
 	for (u32 i = 0; i < _mesh->mNumVertices; ++i)
 	{
@@ -152,8 +149,8 @@ Mesh ModelCreationHelper::processMesh(aiMesh* _mesh, const aiScene* _scene) cons
 		vertices[i].pos			= assimpVecToGlm3(_mesh->mVertices[i]);
 		vertices[i].tangent		= assimpVecToGlm3(_mesh->mTangents[i]);
 		vertices[i].bitangent	= assimpVecToGlm3(_mesh->mBitangents[i]);
-		vertices[i].norm		= _mesh->mNormals			? assimpVecToGlm3(_mesh->mNormals[i])			: glm::vec3{ 0.0f };
-		vertices[i].uv			= _mesh->mTextureCoords[0]	? assimpVecToGlm2(_mesh->mTextureCoords[0][i])	: glm::vec2{ 0.0f };
+		vertices[i].norm		= _mesh->mNormals ? assimpVecToGlm3(_mesh->mNormals[i]) : glm::vec3{ 0.0f };
+		vertices[i].uv			= _mesh->mTextureCoords[0] ? assimpVecToGlm2(_mesh->mTextureCoords[0][i]) : glm::vec2{ 0.0f };
 	}
 
 	for (u32 i = 0; i < _mesh->mNumFaces; ++i)
@@ -210,9 +207,9 @@ Material& ModelCreationHelper::processMaterial(aiMaterial* _material) const
 		_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 		_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 
-		material.setProperty("u_matAmbient", glm::vec3(ambient.r, ambient.g, ambient.b));
-		material.setProperty("u_matDiffuse", glm::vec3(diffuse.r, diffuse.g, diffuse.b));
-		material.setProperty("u_matSpecular", glm::vec3(specular.r, specular.g, specular.b));
+		material.setProperty("u_matAmbient", glm::vec3{ ambient.r, ambient.g, ambient.b });
+		material.setProperty("u_matDiffuse", glm::vec3{ diffuse.r, diffuse.g, diffuse.b });
+		material.setProperty("u_matSpecular", glm::vec3{ specular.r, specular.g, specular.b });
 	}
 	{
 		Texture* diffuseTexture = loadTexture(_material, aiTextureType_DIFFUSE);

@@ -2,8 +2,10 @@
 
 #include "utils/Identifier.hpp"
 
-namespace jl::ecs {
+namespace jl {
 
 using EntityId = utils::Identifier<class EntityIdClass, int>;
 
-} // jl::ecs
+constexpr EntityId k_invalidEntityId{ 0 };
+
+} // namespace jl

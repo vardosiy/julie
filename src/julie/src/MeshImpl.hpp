@@ -2,13 +2,13 @@
 
 #include "julie/core/Types.hpp"
 #include "julie/core/Aabb.hpp"
-#include "julie/Mesh.hpp"
+#include "julie/Vertex.hpp"
+
+#include "primitives/VertexArray.hpp"
 
 #include "utils/Noncopyable.hpp"
 
 #include <vector>
-#include <memory>
-#include <string_view>
 
 //-----------------------------------------------------------------------------
 
@@ -16,32 +16,36 @@ namespace jl {
 
 //-----------------------------------------------------------------------------
 
-class Model : utils::Noncopyable
+class Material;
+
+class MeshImpl : utils::Noncopyable
 {
 //-----------------------------------------------------------------------------
 public:
-	static std::unique_ptr<Model> loadFromFile(std::string_view _filePath, bool _loadMaterials);
+	MeshImpl(const std::vector<Vertex>& _vertices, const std::vector<u32>& _indices) noexcept;
+
+	MeshImpl(MeshImpl&&) = default;
+	MeshImpl& operator=(MeshImpl&&) = default;
 
 //-----------------------------------------------------------------------------
-	Model(const std::vector<Vertex>& _vertices, const std::vector<u32>& _indices) noexcept;
-	Model(std::vector<Mesh>&& _meshes) noexcept;
+	void bind() const;
 
-	Model(Model&&) = default;
-	Model& operator=(Model&&) = default;
+	Material* getMaterial() noexcept;
+	const Material* getMaterial() const noexcept;
+	void setMaterial(Material* _material) noexcept;
 
-	size_t getMeshesCount() const noexcept;
-	Mesh& getMesh(size_t _idx) noexcept;
-	const Mesh& getMesh(size_t _idx) const noexcept;
-
+	u64 getIndicesCount() const noexcept;
 	const aabbf& getBoundingBox() const noexcept;
 
 //-----------------------------------------------------------------------------
 private:
-	static aabbf calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept;
+	static aabbf calculateBoundingBox(const std::vector<Vertex>& _vertices) noexcept;
 
 //-----------------------------------------------------------------------------
-	std::vector<Mesh> m_meshes;
+	VertexArray m_vertexArray;
 	aabbf m_boundingBox;
+
+	Material* m_material;
 };
 
 //-----------------------------------------------------------------------------

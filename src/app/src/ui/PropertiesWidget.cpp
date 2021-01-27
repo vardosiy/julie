@@ -34,7 +34,7 @@ struct GetPropertyTypeStrVisitor
 PropertiesWidget::PropertiesWidget(QWidget* parent)
 	: QWidget(parent)
 	, m_propertiesTableModel(0, 2, this)
-	, m_activeEntity(nullptr)
+	, m_activeItem(nullptr)
 {
 	m_ui = std::make_unique<Ui::PropertiesWidget>();
 	m_ui->setupUi(this);
@@ -50,11 +50,11 @@ PropertiesWidget::PropertiesWidget(QWidget* parent)
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setActiveEntity(jl::Object& _object)
+void PropertiesWidget::setActiveItem(jl::EntityRef _entity)
 {
-	if (std::holds_alternative<jl::Object*>(m_activeEntity))
+	if (std::holds_alternative<jl::EntityRef>(m_activeItem))
 	{
-		if (std::get<jl::Object*>(m_activeEntity) == &_object)
+		if (std::get<jl::EntityRef>(m_activeItem) == _entity)
 		{
 			return;
 		}
@@ -69,18 +69,18 @@ void PropertiesWidget::setActiveEntity(jl::Object& _object)
 		m_propertiesTableModel.insertColumns(0, 2, transformIdx);
 	}
 
-	m_activeEntity = nullptr;
-	refreshObjectProperties(_object);
-	m_activeEntity = &_object;
+	m_activeItem = nullptr;
+	refreshEntityProperties(_entity);
+	m_activeItem = _entity;
 }
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::setActiveEntity(jl::Material& _material)
+void PropertiesWidget::setActiveItem(jl::Material& _material)
 {
-	if (std::holds_alternative<jl::Material*>(m_activeEntity))
+	if (std::holds_alternative<jl::Material*>(m_activeItem))
 	{
-		if (std::get<jl::Material*>(m_activeEntity) == &_material)
+		if (std::get<jl::Material*>(m_activeItem) == &_material)
 		{
 			return;
 		}
@@ -92,43 +92,43 @@ void PropertiesWidget::setActiveEntity(jl::Material& _material)
 	}
 
 
-	m_activeEntity = nullptr;
+	m_activeItem = nullptr;
 	refreshMaterialProperties(_material);
-	m_activeEntity = &_material;
+	m_activeItem = &_material;
 }
 
 //-----------------------------------------------------------------------------
 
 void PropertiesWidget::reset()
 {
-	m_activeEntity = nullptr;
+	m_activeItem = nullptr;
 	m_propertiesTableModel.setRowCount(0);
 }
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectPos()
+void PropertiesWidget::refreshEntityPos()
 {
-	//if (!std::holds_alternative<jl::Object*>(m_activeEntity))
+	//if (!std::holds_alternative<jl::EntityRef>(m_activeItem))
 	//{
 	//	return;
 	//}
 
-	//jl::Object* obj = std::get<jl::Object*>(m_activeEntity);
-	//m_activeEntity = nullptr;
+	//jl::EntityRef entity = std::get<jl::EntityRef>(m_activeItem);
+	//m_activeItem = nullptr;
 
 	//const QModelIndex transformIdx = index(k_transformRowIdx, k_nameColIdx);
 
-	//auto editCallback = [obj](const glm::vec3& _val) { obj->setPosition(_val); };
+	//auto editCallback = [entity](const glm::vec3& _val) { obj->setPosition(_val); };
 	//const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ obj->getPosition(), editCallback });
 	//setCellValue(index(0, k_valueColIdx, transformIdx), pos, true);
 
-	//m_activeEntity = obj;
+	//m_activeItem = obj;
 }
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectSize()
+void PropertiesWidget::refreshEntitySize()
 {
 	//if (!std::holds_alternative<jl::Object*>(m_activeEntity))
 	//{
@@ -149,69 +149,87 @@ void PropertiesWidget::refreshObjectSize()
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::refreshObjectProperties(jl::Object& _object)
+void PropertiesWidget::refreshEntityProperties(jl::EntityRef _entity)
 {
-	//int propNum = 0;
-	//{
-	//	jl::Model* model = _object.getModel();
-	//	const QVariant value = QVariant::fromValue(ModelUiWrapper{ findSourceFile(model), model });
-	//	setPropertyRow(propNum, "Model", value);
+	int propNum = 0;
 
-	//	refreshMeshes(model, index(propNum, k_nameColIdx));
+	const ModelComponent* modelCmpnt = _entity.getComponent<ModelComponent>();
+	if (modelCmpnt)
+	{
+		setHeaderRow(propNum, "ModelComponent");
+		QModelIndex modelCmpntIdx = index(propNum, k_nameColIdx);
 
-	//	++propNum;
-	//}
-	//{
-	//	const QModelIndex transformIdx = index(propNum, k_nameColIdx);
-	//	setHeaderRow(propNum, "Transform");
+		int prop = 0;
 
-	//	int transfromNum = 0;
-	//	{
-	//		auto editCallback = [&_object](const glm::vec3& _val) { _object.setPosition(_val); };
-	//		const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ _object.getPosition(), editCallback });
-	//		setPropertyRow(transfromNum++, "Position", pos, transformIdx);
-	//	}
-	//	{
-	//		auto editCallback = [&_object](const glm::vec3& _val) { _object.setScale(_val); };
-	//		const QVariant size = QVariant::fromValue(TransformVecUiWrapper{ _object.getScale(), editCallback });
-	//		setPropertyRow(transfromNum++, "Scale", size, transformIdx);
-	//	}
-	//	{
-	//		auto editCallback = [&_object](const glm::vec3& _val) { _object.setRotation(_val); };
-	//		const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ _object.getRotation(), editCallback });
-	//		setPropertyRow(transfromNum++, "Rotation", rotation, transformIdx);
-	//	}
-	//	ASSERT(transfromNum == k_transformsNum);
+		std::string modelPath = jl::ResourceManager::getInstance().findSourceFile(*modelCmpnt->model);
+		setPropertyRow(prop, "Model Path", QString::fromStdString(modelPath), modelCmpntIdx);
+		++prop;
 
-	//	++propNum;
-	//}
-	//ASSERT(propNum == 2);
+		setHeaderRow(prop, "Mesh Materials", modelCmpntIdx);
+		refreshMeshes(modelCmpnt->model, index(prop, k_nameColIdx, modelCmpntIdx));
+		++propNum;
+	}
+
+	const TransformComponent* transformCmpnt = _entity.getComponent<TransformComponent>();
+	if (transformCmpnt)
+	{
+		setHeaderRow(propNum, "TransformComponent");
+		const QModelIndex transformCmpntIdx = index(propNum, k_nameColIdx);
+
+		int transformNum = 0;
+		{
+			auto editCallback = [_entity](const glm::vec3& _val) mutable
+			{
+				_entity.getComponent<TransformComponent>()->pos = _val;
+			};
+
+			const QVariant pos = QVariant::fromValue(TransformVecUiWrapper{ transformCmpnt->pos, editCallback });
+			setPropertyRow(transformNum++, "Position", pos, transformCmpntIdx);
+		}
+		{
+			auto editCallback = [_entity](const glm::vec3& _val) mutable
+			{
+				_entity.getComponent<TransformComponent>()->scale = _val;
+			};
+
+			const QVariant scale = QVariant::fromValue(TransformVecUiWrapper{ transformCmpnt->scale, editCallback });
+			setPropertyRow(transformNum++, "Scale", scale, transformCmpntIdx);
+		}
+		{
+			auto editCallback = [_entity](const glm::vec3& _val) mutable
+			{
+				_entity.getComponent<TransformComponent>()->rotation = _val;
+			};
+
+			const QVariant rotation = QVariant::fromValue(TransformVecUiWrapper{ transformCmpnt->rotation, editCallback });
+			setPropertyRow(transformNum++, "Rotation", rotation, transformCmpntIdx);
+		}
+		ASSERT(transformNum == k_transformsNum);
+
+		++propNum;
+	}
+
+	ASSERT(propNum == 2);
 }
 
 //-----------------------------------------------------------------------------
 
 void PropertiesWidget::refreshMeshes(jl::Model* _model, const QModelIndex& _parent)
 {
-	//const int meshesCount = _model ? static_cast<int>(_model->getMeshesCount()) : 0;
-	//setChildRowCount(meshesCount, _parent);
+	const int meshesCount = _model ? static_cast<int>(_model->getMeshesCount()) : 0;
+	setChildRowCount(meshesCount, _parent);
 
-	//if (meshesCount > 0)
-	//{
-	//	const QString meshMaterialtemplate = "Mesh %1 Material";
-	//	for (int i = 0; i < meshesCount; ++i)
-	//	{
-	//		jl::Mesh& mesh = _model->getMesh(i);
+	if (meshesCount > 0)
+	{
+		const QString meshMaterialTemplate = "Mesh %1 Material";
+		for (int i = 0; i < meshesCount; ++i)
+		{
+			jl::Mesh& mesh = _model->getMesh(i);
 
-	//		QString materialName;
-	//		if (const jl::Material* material = mesh.getMaterial())
-	//		{
-	//			materialName = MaterialsManager::getInstance().findMaterialName(*material).c_str();
-	//		}
-
-	//		const QVariant value = QVariant::fromValue(MaterialUiWrapper{ materialName, &mesh });
-	//		setPropertyRow(i, meshMaterialtemplate.arg(i + 1), value, _parent);
-	//	}
-	//}
+			const QVariant value = QVariant::fromValue(MaterialUiWrapper{ mesh.getMaterial() });
+			setPropertyRow(i, meshMaterialTemplate.arg(i + 1), value, _parent);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -255,19 +273,19 @@ void PropertiesWidget::refreshUniforms(jl::Material& _material, const QModelInde
 
 void PropertiesWidget::onDataChanged(const QModelIndex& _topLeft, const QModelIndex& _bottomRight, const QVector<int>& _roles)
 {
-	if (std::holds_alternative<jl::Object*>(m_activeEntity))
+	if (std::holds_alternative<jl::EntityRef>(m_activeItem))
 	{
-		onObjectChanged(_topLeft, *std::get<jl::Object*>(m_activeEntity));
+		onEntityChanged(_topLeft, std::get<jl::EntityRef>(m_activeItem));
 	}
-	else if (std::holds_alternative<jl::Material*>(m_activeEntity))
+	else if (std::holds_alternative<jl::Material*>(m_activeItem))
 	{
-		onMaterialChanged(_topLeft, *std::get<jl::Material*>(m_activeEntity));
+		onMaterialChanged(_topLeft, *std::get<jl::Material*>(m_activeItem));
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-void PropertiesWidget::onObjectChanged(const QModelIndex& _idx, jl::Object& _object)
+void PropertiesWidget::onEntityChanged(const QModelIndex& _idx, jl::EntityRef _entity)
 {
 	//if (_idx.data().canConvert<ModelUiWrapper>())
 	//{

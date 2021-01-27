@@ -4,21 +4,14 @@
 
 #include "managers/InputManager.hpp"
 
-#include "julie/managers/ResourceManager.hpp"
-#include "julie/managers/MaterialsManager.hpp"
-
 #include "julie/Globals.hpp"
 #include "julie/Renderer.hpp"
-#include "julie/Model.hpp"
 #include "julie/scene/Scene.hpp"
 #include "julie/scene/Camera.hpp"
-
-#include "julie/IntersectionsDetectionHelpers.hpp"
 
 #include "utils/Utils.hpp"
 
 #include <QKeyEvent>
-#include <QMouseEvent>
 
 //-----------------------------------------------------------------------------
 
@@ -46,12 +39,9 @@ void AppGlWidget::makeContextCurrent()
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setDrawMode(DrawMode _drawMode) noexcept
+void AppGlWidget::setWireframeModeEnabled(bool _val) noexcept
 {
-	const auto polygonsMode =
-		_drawMode == DrawMode::Edges ?
-		jl::Renderer::PolygonMode::Line :
-		jl::Renderer::PolygonMode::Fill;
+	const auto polygonsMode = _val ? jl::Renderer::PolygonMode::Line : jl::Renderer::PolygonMode::Fill;
 
 	m_prerenderCommand = [polygonsMode]()
 	{
@@ -106,8 +96,6 @@ void AppGlWidget::initializeGL()
 	glLineWidth(2.0f);
 
 	m_glLoadedSignal();
-
-	initScene();
 }
 
 //-----------------------------------------------------------------------------
@@ -169,47 +157,6 @@ void AppGlWidget::keyReleaseEvent(QKeyEvent* _event)
 
 		processKeyboardModifiers(_event->modifiers());
 	}
-}
-
-//-----------------------------------------------------------------------------
-
-std::unique_ptr<jl::Model> model;
-void AppGlWidget::initScene()
-{
-	ResourceManager& resourceMgr = ResourceManager::getInstance();
-	MaterialsManager& materialsMgr = MaterialsManager::getInstance();
-
-	jl::Texture* texture = resourceMgr.loadTexture("res/textures/ULW1541_10453.jpg");
-	ASSERT(texture);
-	jl::Shader* shader = resourceMgr.loadShader("res/shaders/composed/SimpleTexture.shdata");
-	ASSERT(shader);
-
-	jl::Material& material = materialsMgr.createMaterial("material");
-	material.setShader(shader);
-	material.setProperty("u_texture2D", texture);
-	material.setProperty("u_color", glm::vec4{ 1.0f });
-
-	std::vector<jl::Vertex> vertices(4);
-	vertices[0].pos = glm::vec3(-1.0f, -1.0f, 0.0f);
-	vertices[1].pos = glm::vec3(-1.0f,  1.0f, 0.0f);
-	vertices[2].pos = glm::vec3( 1.0f, -1.0f, 0.0f);
-	vertices[3].pos = glm::vec3( 1.0f,  1.0f, 0.0f);
-	vertices[0].uv = glm::vec2(0.0f, 0.0f);
-	vertices[1].uv = glm::vec2(0.0f, 1.0f);
-	vertices[2].uv = glm::vec2(1.0f, 0.0f);
-	vertices[3].uv = glm::vec2(1.0f, 1.0f);
-	std::vector<jl::index_t> indecies = {
-		0, 1, 2,
-		1, 2, 3
-	};
-
-	model = std::make_unique<jl::Model>(vertices, indecies);
-	model->getMesh(0).setMaterial(&material);
-
-	jl::ecs::Entity& entity = m_scene->createEntity("some_name");
-	entity.addComponent<ModelComponent>(model.get());
-	TransformComponent* a = entity.getComponent<TransformComponent>();
-	a->pos = glm::vec3{ 0.0f, 0.0f, -1.0f };
 }
 
 //-----------------------------------------------------------------------------

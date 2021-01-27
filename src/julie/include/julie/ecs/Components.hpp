@@ -8,12 +8,6 @@ namespace jl {
 class Model;
 }
 
-//-----------------------------------------------------------------------------
-
-//namespace jl::ecs {
-
-//-----------------------------------------------------------------------------
-
 struct TagComponent
 {
 	TagComponent(std::string _tag) noexcept
@@ -32,7 +26,6 @@ struct TransformComponent
 		: pos(_pos)
 		, scale(_scale)
 		, rotation(_rotation)
-		, worldMat(1.0f)
 	{
 	}
 
@@ -41,6 +34,11 @@ struct TransformComponent
 	glm::vec3 pos{ 0.0f };
 	glm::vec3 scale{ 1.0f };
 	glm::vec3 rotation{ 0.0f };
+	glm::mat4 worldMat{ 1.0f };
+};
+
+struct WorldMatComponent
+{
 	glm::mat4 worldMat{ 1.0f };
 };
 
@@ -73,9 +71,3 @@ struct ModelComponent
 
 	jl::Model* model{ nullptr };
 };
-
-//-----------------------------------------------------------------------------
-
-//} // namespace jl::ecs
-
-//-----------------------------------------------------------------------------

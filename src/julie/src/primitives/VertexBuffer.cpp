@@ -1,4 +1,4 @@
-#include "julie/primitives/VertexBuffer.hpp"
+#include "primitives/VertexBuffer.hpp"
 
 #include "utils/Utils.hpp"
 

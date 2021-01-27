@@ -90,7 +90,6 @@ template<typename ... Args>
 template<typename T>
 inline ConcreteComponentContainerRef<T>& ComponentsContainerRef<Args...>::getContainer() noexcept
 {
-	using test = decltype(*this);
 	static_assert(
 		std::is_base_of_v< ConcreteComponentContainerRef<T>, std::decay_t<decltype(*this)> >,
 		"ComponentsContainer doesn't containe components of specified type"

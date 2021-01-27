@@ -27,7 +27,7 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 		jl::Model* model = nullptr;
 		if (!path.isEmpty())
 		{
-			model = ResourceManager::getInstance().loadModel(path.toStdString(), true /* _loadMaterials */);
+			model = jl::ResourceManager::getInstance().loadModel(path.toStdString(), true /* _loadMaterials */);
 		}
 		m_value = QVariant::fromValue(ModelUiWrapper{ path, model });
 	}
@@ -36,7 +36,7 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 		jl::Texture* texture = nullptr;
 		if (!path.isEmpty())
 		{
-			texture = ResourceManager::getInstance().loadTexture(path.toStdString());
+			texture = jl::ResourceManager::getInstance().loadTexture(path.toStdString());
 		}
 		m_value = QVariant::fromValue(TextureUiWrapper{ path, texture });
 	}
@@ -45,7 +45,7 @@ const QVariant& EditableResourcePathWidget::getValue() const noexcept
 		jl::Shader* shader = nullptr;
 		if (!path.isEmpty())
 		{
-			shader = ResourceManager::getInstance().loadShader(path.toStdString());
+			shader = jl::ResourceManager::getInstance().loadShader(path.toStdString());
 		}
 		m_value = QVariant::fromValue(ShaderUiWrapper{ path, shader });
 	}

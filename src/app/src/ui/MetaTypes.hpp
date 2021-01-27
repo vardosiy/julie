@@ -1,5 +1,7 @@
 #pragma once
 
+#include "julie/ecs/EntityId.hpp"
+
 #include <QMetaType>
 #include <glm/vec3.hpp>
 #include <functional>
@@ -7,9 +9,7 @@
 //-----------------------------------------------------------------------------
 
 namespace jl {
-class Object;
 class Material;
-
 class Model;
 class Texture;
 class Shader;
@@ -17,9 +17,9 @@ class Shader;
 
 //-----------------------------------------------------------------------------
 
-struct ObjectUiWrapper
+struct EntityIdUiWrapper
 {
-	jl::Object* value = nullptr;
+	jl::EntityId value = jl::k_invalidEntityId;
 };
 
 struct MaterialUiWrapper
@@ -69,7 +69,7 @@ struct FloatValUiWrapper
 
 //-----------------------------------------------------------------------------
 
-Q_DECLARE_METATYPE(ObjectUiWrapper)
+Q_DECLARE_METATYPE(EntityIdUiWrapper)
 Q_DECLARE_METATYPE(MaterialUiWrapper)
 
 Q_DECLARE_METATYPE(ModelUiWrapper)

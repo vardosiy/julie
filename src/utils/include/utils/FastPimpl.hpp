@@ -44,7 +44,7 @@ inline FastPimpl<T, Size, Align>::~FastPimpl()
 	static_assert(Size  == sizeof(T),  "Actual size of type used in FastPimpl does not match the specified one");
 	static_assert(Align == alignof(T), "Actual alignment of type used in FastPimpl does not match the specified one");
 
-	get().~T();
+	get()->~T();
 }
 
 template<typename T, size_t Size, size_t Align>

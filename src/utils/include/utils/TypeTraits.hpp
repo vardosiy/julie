@@ -24,6 +24,17 @@ constexpr bool VariantHasAlternative_v = VariantHasAlternative<TVariant, T>::val
 
 //-----------------------------------------------------------------------------
 
+template<int N1, int N2>
+struct IsGreater
+{
+	static constexpr bool value = N1 > N2;
+};
+
+template<int N1, int N2>
+constexpr bool IsGreater_v = IsGreater<N1, N2>::value;
+
+//-----------------------------------------------------------------------------
+
 } // namespace utils
 
 //-----------------------------------------------------------------------------
