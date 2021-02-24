@@ -6,9 +6,7 @@
 #include <glm/vec3.hpp>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 class Camera
@@ -29,8 +27,8 @@ public:
 	void setFov(float _val) noexcept;
 
 //-----------------------------------------------------------------------------
-	const glm::vec3& getPosition() const noexcept		{ return m_pos; }
-	const glm::vec3& getViewTarget() const noexcept		{ return m_target; }
+	const glm::vec3& getPosition() const noexcept	{ return m_pos; }
+	const glm::vec3& getViewTarget() const noexcept	{ return m_target; }
 
 	void setPosition(const glm::vec3& _vec) noexcept;
 	void setRotation(const glm::vec3& _vec) noexcept;
@@ -73,7 +71,5 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 #include "julie/managers/AppController.hpp"
 
+#include "MeshImpl.hpp"
+
 //-----------------------------------------------------------------------------
 
 IOpenGlContextOwner* AppController::s_contextOwner = nullptr;

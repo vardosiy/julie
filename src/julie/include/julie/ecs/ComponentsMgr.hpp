@@ -8,9 +8,7 @@
 #include "utils/TypeTraits.hpp"
 
 //-----------------------------------------------------------------------------
-
 namespace jl::ecs {
-
 //-----------------------------------------------------------------------------
 
 class ComponentsMgr
@@ -51,13 +49,13 @@ inline T& ComponentsMgr::emplace(EntityId _id, Args&& ... _args)
 {
 	ConcreteComponentContainer<T>& concreteContainer = m_componentsContainer.getContainer<T>();
 
-	concreteContainer.m_container.emplace_back(std::forward<Args>(_args)...);
+	T& result = concreteContainer.m_container.emplace_back(std::forward<Args>(_args)...);
 	const size_t addedIdx = concreteContainer.m_container.size() - 1;
 
 	concreteContainer.m_lookupTable[_id] = addedIdx;
 	concreteContainer.m_reverseLookupTable[addedIdx] = _id;
 
-	return concreteContainer.m_container.back();
+	return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +131,5 @@ inline ConcreteComponentContainerRef<T> ComponentsMgr::view() noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl::ecs
-
 //-----------------------------------------------------------------------------

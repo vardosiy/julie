@@ -6,9 +6,7 @@
 #include <glm/gtx/transform.hpp>
 
 //-----------------------------------------------------------------------------
-
 namespace jl::ecs {
-
 //-----------------------------------------------------------------------------
 
 TransformProcessSystem::TransformProcessSystem(ComponentsMgr& _componentsMgr)
@@ -43,7 +41,5 @@ glm::mat4 TransformProcessSystem::rotationVecToMat(const glm::vec3& _rotation)
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl::ecs
-
 //-----------------------------------------------------------------------------

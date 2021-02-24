@@ -1,5 +1,7 @@
 #pragma once
 
+#include "julie/Material.hpp"
+
 #include "utils/Singleton.hpp"
 
 #include <functional>
@@ -7,12 +9,8 @@
 #include <memory>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
-
-class Material;
 
 class MaterialsManager : public utils::Singleton<MaterialsManager>
 {
@@ -43,7 +41,5 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

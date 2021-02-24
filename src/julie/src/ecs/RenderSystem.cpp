@@ -5,6 +5,7 @@
 #include "julie/Model.hpp"
 #include "julie/Mesh.hpp"
 #include "julie/Shader.hpp"
+#include "julie/Material.hpp"
 #include "julie/Renderer.hpp"
 
 #include "scene/CommonUniformsBinder.hpp"
@@ -15,9 +16,7 @@
 #include <glm/gtx/transform.hpp>
 
 //-----------------------------------------------------------------------------
-
 namespace jl::ecs {
-
 //-----------------------------------------------------------------------------
 
 RenderSystem::RenderSystem(const Scene& _scene, ComponentsMgr& _componentsMgr) noexcept
@@ -65,10 +64,10 @@ void RenderSystem::updateLightsCache()
 
 void RenderSystem::drawScene(const Camera& _cam) const noexcept
 {
-	auto view = m_componentsMgr.view<TransformComponent, ModelComponent>();
+	auto view = m_componentsMgr.view<WorldMatComponent, ModelComponent>();
 
 	auto& models = view.getContainer<ModelComponent>();
-	auto& transforms = view.getContainer<TransformComponent>();
+	auto& worldMats = view.getContainer<WorldMatComponent>();
 
 	const size_t modelsCount = models.m_containerRef.size();
 	for (size_t i = 0; i < modelsCount; ++i)
@@ -76,8 +75,8 @@ void RenderSystem::drawScene(const Camera& _cam) const noexcept
 		const ModelComponent& modelComponent = models.m_containerRef[i];
 
 		const EntityId currId = models.m_reverseLookupTableRef[i];
-		const size_t transformIdx = transforms.m_lookupTableRef[currId];
-		const glm::mat4& worldMat = transforms.m_containerRef[transformIdx].worldMat;
+		const size_t transformIdx = worldMats.m_lookupTableRef[currId];
+		const glm::mat4& worldMat = worldMats.m_containerRef[transformIdx].worldMat;
 
 		drawModel(*modelComponent.model, _cam, worldMat);
 	}
@@ -114,7 +113,5 @@ void RenderSystem::drawModel(const Model& _model, const Camera& _cam, const glm:
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl::ecs
-
 //-----------------------------------------------------------------------------

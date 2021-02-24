@@ -5,9 +5,7 @@
 #include <algorithm>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 std::unique_ptr<Model> Model::loadFromFile(std::string_view _filePath, bool _loadMaterials)
@@ -98,7 +96,5 @@ aabbf Model::calculateBoundingBox(const std::vector<Mesh>& _meshes) noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

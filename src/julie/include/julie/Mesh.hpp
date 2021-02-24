@@ -7,10 +7,10 @@
 #include "utils/Noncopyable.hpp"
 #include "utils/FastPimpl.hpp"
 
+#include <vector>
+
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 class Material;
@@ -38,13 +38,11 @@ public:
 
 //-----------------------------------------------------------------------------
 private:
-	static constexpr size_t k_implSize{ 12 };
+	static constexpr size_t k_implSize{ 96 };
 	static constexpr size_t k_implAlign{ 8 };
 	utils::FastPimpl<MeshImpl, k_implSize, k_implAlign> m_impl;
 };
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

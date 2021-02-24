@@ -2,16 +2,14 @@
 #include "julie/Model.hpp"
 #include "julie/Shader.hpp"
 
-#include "julie/primitives/VertexArray.hpp"
+#include "primitives/VertexArray.hpp"
 
 #include "utils/Utils.hpp"
 
 #include <glad/glad.h>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 std::unique_ptr<Shader> Renderer::s_shader;
@@ -154,7 +152,5 @@ s32 Renderer::polygonModeToGlValue(PolygonMode _mode) noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

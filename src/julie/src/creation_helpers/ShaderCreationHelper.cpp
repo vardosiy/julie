@@ -8,9 +8,7 @@
 #include <fstream>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 std::unique_ptr<Shader> ShaderCreationHelper::loadFromFile(std::string_view _filePath)
@@ -77,7 +75,5 @@ std::string ShaderCreationHelper::readFileContent(std::string_view _filePath)
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

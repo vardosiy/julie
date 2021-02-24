@@ -34,11 +34,12 @@ struct TransformComponent
 	glm::vec3 pos{ 0.0f };
 	glm::vec3 scale{ 1.0f };
 	glm::vec3 rotation{ 0.0f };
-	glm::mat4 worldMat{ 1.0f };
 };
 
 struct WorldMatComponent
 {
+	WorldMatComponent() noexcept = default;
+
 	glm::mat4 worldMat{ 1.0f };
 };
 

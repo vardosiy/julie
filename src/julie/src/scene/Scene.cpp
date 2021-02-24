@@ -6,9 +6,7 @@
 #include <glm/gtx/transform.hpp>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 Scene::Scene() noexcept
@@ -69,6 +67,7 @@ EntityRef Scene::createEntity(std::string _name)
 	EntityRef entity = m_entitiesMgr.create();
 	entity.addComponent<TagComponent>(std::move(_name));
 	entity.addComponent<TransformComponent>();
+	entity.addComponent<WorldMatComponent>();
 
 	return entity;
 }
@@ -130,7 +129,5 @@ ConstEntityIterator Scene::end() const noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

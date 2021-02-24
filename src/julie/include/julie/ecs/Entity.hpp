@@ -8,9 +8,7 @@ class EntitiesMgr;
 }
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 class EntityIterator;
@@ -31,8 +29,8 @@ public:
 	EntityRef(EntityRef&&) noexcept = default;
 	EntityRef& operator= (EntityRef&&) noexcept = default;
 
-	bool operator== (EntityRef _rhs) const noexcept { return getId() == _rhs.getId(); }
-	bool operator!= (EntityRef _rhs) const noexcept { return !(*this == _rhs); }
+	bool operator== (EntityRef _rhs) const noexcept;
+	bool operator!= (EntityRef _rhs) const noexcept;
 
 //-----------------------------------------------------------------------------
 	EntityId getId() const noexcept;
@@ -60,6 +58,16 @@ private:
 
 //-----------------------------------------------------------------------------
 
+inline bool EntityRef::operator== (EntityRef _rhs) const noexcept
+{
+	return m_componentsMgr == _rhs.m_componentsMgr && getId() == _rhs.getId();
+}
+
+inline bool EntityRef::operator!= (EntityRef _rhs) const noexcept
+{
+	return !(*this == _rhs);
+}
+
 template<typename T, typename ... Args>
 inline T& EntityRef::addComponent(Args&& ... _args)
 {
@@ -85,7 +93,5 @@ inline void EntityRef::removeComponent() noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

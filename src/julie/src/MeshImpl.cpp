@@ -6,9 +6,7 @@
 #include <algorithm>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 MeshImpl::MeshImpl(const std::vector<Vertex>& _vertices, const std::vector<u32>& _indices) noexcept
@@ -90,7 +88,5 @@ aabbf MeshImpl::calculateBoundingBox(const std::vector<Vertex>& _vertices) noexc
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

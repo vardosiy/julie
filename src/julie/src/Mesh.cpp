@@ -3,9 +3,7 @@
 #include "MeshImpl.hpp"
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<u32>& _indices) noexcept
@@ -23,6 +21,7 @@ Mesh::Mesh(Mesh&& _rhs) noexcept
 Mesh& Mesh::operator=(Mesh&& _rhs) noexcept
 {
 	*m_impl = std::move(*_rhs.m_impl);
+	return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +61,5 @@ const aabbf& Mesh::getBoundingBox() const noexcept
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------

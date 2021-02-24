@@ -14,9 +14,7 @@
 #include <assimp/postprocess.h>
 
 //-----------------------------------------------------------------------------
-
 namespace jl {
-
 //-----------------------------------------------------------------------------
 
 const std::string ModelCreationHelper::k_colorShaderPath = "res/shaders/MaterialColorShader.shdata";
@@ -243,7 +241,5 @@ Texture* ModelCreationHelper::loadTexture(const aiMaterial* _material, aiTexture
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace jl
-
 //-----------------------------------------------------------------------------
