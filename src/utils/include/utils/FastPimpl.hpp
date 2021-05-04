@@ -3,9 +3,7 @@
 #include <type_traits>
 
 //-----------------------------------------------------------------------------
-
 namespace utils {
-
 //-----------------------------------------------------------------------------
 
 template<typename T, size_t Size, size_t Align>
@@ -41,8 +39,8 @@ inline constexpr FastPimpl<T, Size, Align>::FastPimpl(Args&&... _args)
 template<typename T, size_t Size, size_t Align>
 inline FastPimpl<T, Size, Align>::~FastPimpl()
 {
-	static_assert(Size  == sizeof(T),  "Actual size of type used in FastPimpl does not match the specified one");
-	static_assert(Align == alignof(T), "Actual alignment of type used in FastPimpl does not match the specified one");
+	//static_assert(Size  == sizeof(T),  "Wrong SIZE specified for FastPimpl");
+	//static_assert(Align == alignof(T), "Wrong ALIGNMENT specified for FastPimpl");
 
 	get()->~T();
 }
@@ -60,8 +58,5 @@ inline constexpr const T* FastPimpl<T, Size, Align>::get() const noexcept
 }
 
 //-----------------------------------------------------------------------------
-
-
 } // namespace utils
-
 //-----------------------------------------------------------------------------

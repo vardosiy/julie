@@ -7,9 +7,7 @@
 #include <string_view>
 
 //-----------------------------------------------------------------------------
-
 namespace utils {
-
 //-----------------------------------------------------------------------------
 
 struct AssertData
@@ -34,9 +32,7 @@ inline void assertMessageImpl(AssertData _data, std::string_view _message, Args&
 }
 
 //-----------------------------------------------------------------------------
-
 } // namespace utils
-
 //-----------------------------------------------------------------------------
 
 #define CREATE_ASSERT_DATA(_expr) utils::AssertData{ _expr, __FILE__, __LINE__ }
