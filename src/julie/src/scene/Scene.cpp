@@ -11,40 +11,10 @@ namespace jl {
 
 Scene::Scene() noexcept
 	: m_entitiesMgr(m_componentsMgr)
-	, m_transformProcessSystem(m_componentsMgr)
-	, m_renderSystem(*this, m_componentsMgr)
 {
 }
 
 Scene::~Scene() noexcept = default;
-
-//-----------------------------------------------------------------------------
-
-void Scene::update(std::chrono::milliseconds _dt)
-{
-	m_transformProcessSystem.update();
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::render(const Camera& _cam)
-{
-	m_renderSystem.update(_cam);
-}
-
-//-----------------------------------------------------------------------------
-
-const AmbientLightData& Scene::getAmbientLightData() const noexcept
-{
-	return m_ambientLightData;
-}
-
-//-----------------------------------------------------------------------------
-
-void Scene::setAmbientLightData(const AmbientLightData& _data) noexcept
-{
-	m_ambientLightData = _data;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -55,9 +25,23 @@ const FogData* Scene::getFogData() const noexcept
 
 //-----------------------------------------------------------------------------
 
-void Scene::setFogData(const FogData& _data) noexcept
+void Scene::setFogData(std::optional<FogData> _fogData) noexcept
 {
-	m_fogData = _data;
+	m_fogData = _fogData;
+}
+
+//-----------------------------------------------------------------------------
+
+const AmbientLightData* Scene::getAmbientLightData() const noexcept
+{
+	return m_ambientLightData.has_value() ? &m_ambientLightData.value() : nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void Scene::setAmbientLightData(std::optional<AmbientLightData> _ambientLightData) noexcept
+{
+	m_ambientLightData = _ambientLightData;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,6 +110,13 @@ ConstEntityIterator Scene::begin() const noexcept
 ConstEntityIterator Scene::end() const noexcept
 {
 	return m_entitiesMgr.end();
+}
+
+//-----------------------------------------------------------------------------
+
+ecs::ComponentsMgr& Scene::getComponentsMgr() noexcept
+{
+	return m_componentsMgr;
 }
 
 //-----------------------------------------------------------------------------

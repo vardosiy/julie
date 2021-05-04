@@ -1,5 +1,8 @@
 #pragma once
 
+#include "julie/scene/FogData.hpp"
+#include "julie/scene/AmbientLightData.hpp"
+
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -10,27 +13,27 @@
 namespace jl {
 //-----------------------------------------------------------------------------
 
-class Scene;
 class Camera;
 class Shader;
 
 class CommonUniformsBinder
 {
 public:
-	CommonUniformsBinder(
-		const Scene& _scene,
-		const Camera& _camera,
-		const glm::mat4& _worldMatrix
-	) noexcept;
+	CommonUniformsBinder(const Camera& _camera, const glm::mat4& _worldMat) noexcept;
+
+	void setFog(const FogData& _fog) noexcept;
+	void setAmbientLight(const AmbientLightData& _ambientLight) noexcept;
 
 	void setLights(const std::vector<glm::vec3>& _positions, const std::vector<glm::vec3>& _colors) noexcept;
 
 	void bind(const Shader& _shader) const noexcept;
 
 private:
-	const Scene& m_scene;
 	const Camera& m_camera;
-	const glm::mat4& m_worldMatrix;
+	const glm::mat4& m_worldMat;
+
+	const FogData* m_fog;
+	const AmbientLightData* m_ambientLight;
 
 	const std::vector<glm::vec3>* m_lightPositions;
 	const std::vector<glm::vec3>* m_lightColors;

@@ -1,7 +1,9 @@
 #include <glad/glad.h>
 
 #include "ui/AppGlWidget.hpp"
+#include "ui/IEntityActionHandler.hpp"
 
+#include "core/GameCore.hpp"
 #include "managers/InputManager.hpp"
 
 #include "julie/Globals.hpp"
@@ -17,8 +19,7 @@
 
 AppGlWidget::AppGlWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
-	, m_camera(nullptr)
-	, m_scene(nullptr)
+	, m_core(nullptr)
 	, m_actionHandler(nullptr)
 {
 }
@@ -57,16 +58,9 @@ void AppGlWidget::setWireframeModeEnabled(bool _val) noexcept
 
 //-----------------------------------------------------------------------------
 
-void AppGlWidget::setCamera(jl::Camera* _camera) noexcept
+void AppGlWidget::setGameCore(GameCore* _core) noexcept
 {
-	m_camera = _camera;
-}
-
-//-----------------------------------------------------------------------------
-
-void AppGlWidget::setScene(jl::Scene* _scene) noexcept
-{
-	m_scene = _scene;
+	m_core = _core;
 }
 
 //-----------------------------------------------------------------------------
@@ -105,11 +99,19 @@ void AppGlWidget::resizeGL(int _w, int _h)
 	jl::Globals::s_screenWidth = static_cast<jl::u32>(_w);
 	jl::Globals::s_screenHeight = static_cast<jl::u32>(_h);
 
-	const float fWidth = static_cast<float>(_w);
-	const float fHeight = static_cast<float>(_h);
-	m_camera->setAspect(fWidth / fHeight);
-
 	glViewport(0, 0, _w, _h);
+
+	if (m_core)
+	{
+		const float fWidth = static_cast<float>(_w);
+		const float fHeight = static_cast<float>(_h);
+
+		jl::Camera* cam = m_core->getCamera();
+		if (cam)
+		{
+			cam->setAspect(fWidth / fHeight);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -118,14 +120,14 @@ void AppGlWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (m_scene && m_camera)
+	if (m_core)
 	{
 		if (m_prerenderCommand)
 		{
 			m_prerenderCommand();
 		}
 
-		m_scene->render(*m_camera);
+		m_core->render();
 
 		if (m_postrenderCommand)
 		{

@@ -10,6 +10,8 @@ using TimePoint		= std::chrono::time_point<Clock>;
 using Seconds		= std::chrono::seconds;
 using Milliseconds	= std::chrono::milliseconds;
 
+using DeltaTime		= Milliseconds;
+
 //-----------------------------------------------------------------------------
 namespace jl {
 //-----------------------------------------------------------------------------

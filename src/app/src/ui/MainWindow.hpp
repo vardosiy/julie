@@ -3,10 +3,8 @@
 #include "CommonDefs.hpp"
 #include "ui/IEntityActionHandler.hpp"
 
+#include "core/GameCore.hpp"
 #include "controllers/FreeflyCameraController.hpp"
-
-#include "julie/scene/Scene.hpp"
-#include "julie/scene/Camera.hpp"
 
 #include <QMainWindow>
 #include <QTimer>
@@ -53,8 +51,6 @@ private:
 	void onGlLoaded();
 
 	void initUi();
-	void initScene();
-	void initDefaultMaterial();
 
 //-----------------------------------------------------------------------------
 	std::unique_ptr<Ui::MainWindow> m_ui;
@@ -66,9 +62,7 @@ private:
 	QTimer m_updateTimer;
 	app::ScopedConnection m_glLoadedConnection;
 
-	jl::Scene m_scene;
-	jl::Camera m_camera;
-
+	GameCore m_core;
 	FreeflyCameraController m_cameraController;
 
 	static constexpr std::string_view k_saveFile{ "SaveFile.json" };

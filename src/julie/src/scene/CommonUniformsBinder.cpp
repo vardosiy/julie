@@ -4,7 +4,6 @@
 #include "julie/Shader.hpp"
 #include "julie/scene/Scene.hpp"
 #include "julie/scene/Camera.hpp"
-#include "julie/scene/FogData.hpp"
 
 //-----------------------------------------------------------------------------
 namespace jl {
@@ -28,17 +27,28 @@ const std::string CommonUniformsBinder::u_lightDirection		= "u_lightDirection";
 
 //-----------------------------------------------------------------------------
 
-CommonUniformsBinder::CommonUniformsBinder(
-	const Scene& _scene,
-	const Camera& _camera,
-	const glm::mat4& _worldMatrix
-) noexcept
-	: m_scene(_scene)
-	, m_camera(_camera)
-	, m_worldMatrix(_worldMatrix)
+CommonUniformsBinder::CommonUniformsBinder(const Camera& _camera, const glm::mat4& _worldMat) noexcept
+	: m_camera(_camera)
+	, m_worldMat(_worldMat)
+	, m_fog(nullptr)
+	, m_ambientLight(nullptr)
 	, m_lightPositions(nullptr)
 	, m_lightColors(nullptr)
 {
+}
+
+//-----------------------------------------------------------------------------
+
+void CommonUniformsBinder::setFog(const FogData& _fog) noexcept
+{
+	m_fog = &_fog;
+}
+
+//-----------------------------------------------------------------------------
+
+void CommonUniformsBinder::setAmbientLight(const AmbientLightData& _ambientLight) noexcept
+{
+	m_ambientLight = &_ambientLight;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,26 +76,28 @@ void CommonUniformsBinder::bind(const Shader& _shader) const noexcept
 
 	_shader.bind();
 
-	bindUniform(u_W,			m_worldMatrix);
-	bindUniform(u_WVP,			m_camera.getViewProjectionMatrix() * m_worldMatrix);
+	bindUniform(u_W,			m_worldMat);
+	bindUniform(u_WVP,			m_camera.getViewProjectionMatrix() * m_worldMat);
 	bindUniform(u_camPosition,	m_camera.getPosition());
 	bindUniform(u_time,			Globals::s_timeTotal);
 
-	if (const FogData* fogData = m_scene.getFogData())
+	if (m_fog)
 	{
-		bindUniform(u_fogStart,	fogData->start);
-		bindUniform(u_fogRange,	fogData->range);
-		bindUniform(u_fogColor,	fogData->color);
+		bindUniform(u_fogStart, m_fog->start);
+		bindUniform(u_fogRange, m_fog->range);
+		bindUniform(u_fogColor, m_fog->color);
 	}
 
-	const AmbientLightData& ambient = m_scene.getAmbientLightData();
-	bindUniform(u_ambientColor, ambient.color);
-	bindUniform(u_ambientWeight, ambient.weight);
-
-	if (m_lightPositions && m_lightPositions)
+	if (m_ambientLight)
 	{
-		bindUniformArr(u_pointLightColor, *m_lightPositions);
+		bindUniform(u_ambientColor, m_ambientLight->color);
+		bindUniform(u_ambientWeight, m_ambientLight->weight);
+	}
+
+	if (m_lightPositions && m_lightColors)
+	{
 		bindUniformArr(u_lightPosition, *m_lightPositions);
+		bindUniformArr(u_pointLightColor, *m_lightColors);
 		//bindUniformArr(u_directionalLightColor,	lightsHolder.getDirectionalLightsColors());
 		//bindUniformArr(u_lightDirection,		lightsHolder.getDirectionalLightsDirections());
 	}

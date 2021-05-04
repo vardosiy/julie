@@ -8,6 +8,8 @@ namespace jl {
 class Model;
 }
 
+//-----------------------------------------------------------------------------
+
 struct TagComponent
 {
 	TagComponent(std::string _tag) noexcept
@@ -19,6 +21,8 @@ struct TagComponent
 
 	std::string tag;
 };
+
+//-----------------------------------------------------------------------------
 
 struct TransformComponent
 {
@@ -36,12 +40,16 @@ struct TransformComponent
 	glm::vec3 rotation{ 0.0f };
 };
 
+//-----------------------------------------------------------------------------
+
 struct WorldMatComponent
 {
 	WorldMatComponent() noexcept = default;
 
 	glm::mat4 worldMat{ 1.0f };
 };
+
+//-----------------------------------------------------------------------------
 
 struct LightSourceComponent
 {
@@ -57,9 +65,13 @@ struct LightSourceComponent
 	glm::vec3 color{ 1.0f };
 };
 
+//-----------------------------------------------------------------------------
+
 struct RenderComponent
 {
 };
+
+//-----------------------------------------------------------------------------
 
 struct ModelComponent
 {
@@ -72,3 +84,5 @@ struct ModelComponent
 
 	jl::Model* model{ nullptr };
 };
+
+//-----------------------------------------------------------------------------

@@ -12,14 +12,10 @@ class ComponentsMgr;
 class TransformProcessSystem
 {
 public:
-	TransformProcessSystem(ComponentsMgr& _componentsMgr);
-
-	void update();
+	void update(ComponentsMgr& _componentsMgr);
 
 private:
 	static glm::mat4 rotationVecToMat(const glm::vec3& _rotation);
-
-	ComponentsMgr& m_componentsMgr;
 };
 
 //-----------------------------------------------------------------------------

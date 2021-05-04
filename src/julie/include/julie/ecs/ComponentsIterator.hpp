@@ -21,35 +21,31 @@ class ComponentIterator
 {
 	friend class boost::iterator_core_access;
 
+//-----------------------------------------------------------------------------
 public:
 	explicit ComponentIterator(ComponentsMgr& _componentsMgr) noexcept;
 
 	bool isValid() const noexcept;
 
+//-----------------------------------------------------------------------------
 private:
-	using ComponentsPtrs = std::tuple<Args*...>;
-	using ComponentsRefs = std::tuple<Args&...>; // check why iterator_facade_::reference doesn't work
-
-	ComponentsRefs dereference() const;
 	void increment() noexcept;
+	std::tuple<Args&...> dereference() const noexcept;
 	bool equal(const ComponentIterator& _rhs) const noexcept;
 
+//-----------------------------------------------------------------------------
 	template<typename T, typename ... Tail>
-	bool collectComponents(size_t _idx) const noexcept;
+	bool collectComponents() noexcept;
 
-	template<typename T, typename ... Tail>
-	bool collectComponentsInternal(EntityId _id) const noexcept;
 	template<typename T>
-	void collectComponentsInternal(EntityId _id) const noexcept;
+	bool findComponent(EntityId _id, T*& _cmpnt) noexcept;
 
 	template<typename T, typename ...>
 	size_t getFirstContainerSize() const noexcept;
 
-	template<size_t ... I>
-	static ComponentsRefs dereferenceImpl(const ComponentsPtrs& _ptrs, std::index_sequence<I...>);
-
+//-----------------------------------------------------------------------------
 	size_t m_idx;
-	ComponentsPtrs m_value;
+	std::tuple<Args*...> m_value;
 	ComponentsMgr* m_componentsMgr;
 };
 

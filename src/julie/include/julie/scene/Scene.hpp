@@ -29,15 +29,12 @@ public:
 	Scene() noexcept;
 	~Scene() noexcept;
 
-	void update(std::chrono::milliseconds _dt);
-	void render(const Camera& _cam);
-
 //-----------------------------------------------------------------------------
-	const AmbientLightData& getAmbientLightData() const noexcept;
-	void setAmbientLightData(const AmbientLightData& _data) noexcept;
-
 	const FogData* getFogData() const noexcept;
-	void setFogData(const FogData& _data) noexcept;
+	void setFogData(std::optional<FogData> _fogData) noexcept;
+
+	const AmbientLightData* getAmbientLightData() const noexcept;
+	void setAmbientLightData(std::optional<AmbientLightData> _ambientLightData) noexcept;
 
 //-----------------------------------------------------------------------------
 	EntityRef createEntity(std::string _name);
@@ -54,15 +51,15 @@ public:
 	ConstEntityIterator end() const noexcept;
 
 //-----------------------------------------------------------------------------
+	ecs::ComponentsMgr& getComponentsMgr() noexcept; // FIX THIS PEACE OF SHIT
+
+//-----------------------------------------------------------------------------
 private:
 	ecs::ComponentsMgr m_componentsMgr;
 	ecs::EntitiesMgr m_entitiesMgr;
 
-	ecs::TransformProcessSystem m_transformProcessSystem;
-	ecs::RenderSystem m_renderSystem;
-
-	AmbientLightData m_ambientLightData;
 	std::optional<FogData> m_fogData;
+	std::optional<AmbientLightData> m_ambientLightData;
 };
 
 //-----------------------------------------------------------------------------

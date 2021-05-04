@@ -19,67 +19,47 @@
 namespace jl::ecs {
 //-----------------------------------------------------------------------------
 
-RenderSystem::RenderSystem(const Scene& _scene, ComponentsMgr& _componentsMgr) noexcept
-	: m_scene(_scene)
-	, m_componentsMgr(_componentsMgr)
+void RenderSystem::update(ComponentsMgr& _componentsMgr, const Camera& _cam)
 {
+	updateLightsCache(_componentsMgr);
+	draw(_componentsMgr, _cam);
 }
 
 //-----------------------------------------------------------------------------
 
-void RenderSystem::update(const Camera& _cam)
+void RenderSystem::setFogData(std::optional<FogData> _fogData) noexcept
 {
-	updateLightsCache();
-	drawScene(_cam);
+	m_fogData = _fogData;
 }
 
 //-----------------------------------------------------------------------------
 
-void RenderSystem::updateLightsCache()
+void RenderSystem::setAmbientLightData(std::optional<AmbientLightData> _ambientLightData) noexcept
 {
-	auto view = m_componentsMgr.view<TransformComponent, LightSourceComponent>();
-
-	auto& lights = view.getContainer<LightSourceComponent>();
-	auto& transforms = view.getContainer<TransformComponent>();
-
-	const size_t lightsCount = lights.m_containerRef.size();
-	m_lightsPosCache.resize(lightsCount);
-	m_lightsColorCache.resize(lightsCount);
-
-	for (size_t i = 0; i < lightsCount; ++i)
-	{
-		const LightSourceComponent& lightComponent = lights.m_containerRef[i];
-		m_lightsColorCache[i] = lightComponent.color;
-	}
-
-	for (size_t i = 0; i < lightsCount; ++i)
-	{
-		const EntityId currId = lights.m_reverseLookupTableRef[i];
-		const size_t transformIdx = transforms.m_lookupTableRef[currId];
-		m_lightsPosCache[i] = transforms.m_containerRef[transformIdx].pos;
-	}
+	m_ambientLightData = _ambientLightData;
 }
 
 //-----------------------------------------------------------------------------
 
-void RenderSystem::drawScene(const Camera& _cam) const noexcept
+void RenderSystem::updateLightsCache(ComponentsMgr& _componentsMgr)
 {
-	auto view = m_componentsMgr.view<WorldMatComponent, ModelComponent>();
-
-	auto& models = view.getContainer<ModelComponent>();
-	auto& worldMats = view.getContainer<WorldMatComponent>();
-
-	const size_t modelsCount = models.m_containerRef.size();
-	for (size_t i = 0; i < modelsCount; ++i)
+	size_t i = 0;
+	_componentsMgr.forEach<LightSourceComponent, TransformComponent>([this, &i](LightSourceComponent& _light, TransformComponent& _transform)
 	{
-		const ModelComponent& modelComponent = models.m_containerRef[i];
+		m_lightsColorCache[i] = _light.color;
+		m_lightsPosCache[i] = _transform.pos;
+		++i;
+	});
+}
 
-		const EntityId currId = models.m_reverseLookupTableRef[i];
-		const size_t transformIdx = worldMats.m_lookupTableRef[currId];
-		const glm::mat4& worldMat = worldMats.m_containerRef[transformIdx].worldMat;
+//-----------------------------------------------------------------------------
 
-		drawModel(*modelComponent.model, _cam, worldMat);
-	}
+void RenderSystem::draw(ComponentsMgr& _componentsMgr, const Camera& _cam) const noexcept
+{
+	_componentsMgr.forEach<ModelComponent, WorldMatComponent>([this, &_cam](ModelComponent& _model, WorldMatComponent& _worldMat)
+	{
+		drawModel(*_model.model, _cam, _worldMat.worldMat);
+	});
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +82,11 @@ void RenderSystem::drawModel(const Model& _model, const Camera& _cam, const glm:
 					std::visit(binder, property.value);
 				}
 
-				CommonUniformsBinder uniformBinder(m_scene, _cam, _worldMat);
+				CommonUniformsBinder uniformBinder(_cam, _worldMat);
+
+				if (m_fogData) uniformBinder.setFog(m_fogData.value());
+				if (m_ambientLightData) uniformBinder.setAmbientLight(m_ambientLightData.value());
+
 				uniformBinder.setLights(m_lightsPosCache, m_lightsColorCache);
 				uniformBinder.bind(*shader);
 

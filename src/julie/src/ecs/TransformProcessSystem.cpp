@@ -9,25 +9,16 @@
 namespace jl::ecs {
 //-----------------------------------------------------------------------------
 
-TransformProcessSystem::TransformProcessSystem(ComponentsMgr& _componentsMgr)
-	: m_componentsMgr(_componentsMgr)
+void TransformProcessSystem::update(ComponentsMgr& _componentsMgr)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void TransformProcessSystem::update()
-{
-	auto view = m_componentsMgr.view<TransformComponent>();
-
-	for (TransformComponent& item : view.m_containerRef)
+	_componentsMgr.forEach<TransformComponent, WorldMatComponent>([](TransformComponent& transform, WorldMatComponent& worldMat)
 	{
-		const glm::mat4 scale		= glm::scale(item.scale);
-		const glm::mat4 translate	= glm::translate(item.pos);
-		const glm::mat4 rotation	= rotationVecToMat(item.rotation);
+		const glm::mat4 scale		= glm::scale(transform.scale);
+		const glm::mat4 translate	= glm::translate(transform.pos);
+		const glm::mat4 rotation	= TransformProcessSystem::rotationVecToMat(transform.rotation);
 
-		item.worldMat = translate * (rotation * scale);
-	}
+		worldMat.worldMat = translate * (rotation * scale);
+	});
 }
 
 //-----------------------------------------------------------------------------

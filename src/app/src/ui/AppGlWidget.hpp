@@ -1,10 +1,7 @@
 #pragma once
 
 #include "CommonDefs.hpp"
-#include "ui/IEntityActionHandler.hpp"
 
-#include "julie/core/Types.hpp"
-#include "julie/core/Aabb.hpp"
 #include "julie/managers/AppController.hpp"
 
 #include <QOpenGLWidget>
@@ -15,11 +12,8 @@
 
 //-----------------------------------------------------------------------------
 
-namespace jl {
-class Scene;
-class Object;
-class Camera;
-}
+class GameCore;
+class IEntityActionHandler;
 
 class AppGlWidget : public QOpenGLWidget, public IOpenGlContextOwner
 {
@@ -37,8 +31,7 @@ public:
 
 	void setWireframeModeEnabled(bool _val) noexcept;
 
-	void setCamera(jl::Camera* _camera) noexcept;
-	void setScene(jl::Scene* _scene) noexcept;
+	void setGameCore(GameCore* _core) noexcept;
 	void setActionHandler(IEntityActionHandler* _handler) noexcept;
 
 	app::Connection registerOnGlLoaded(const GlLoadedSignal::slot_type& _callback);
@@ -62,8 +55,7 @@ private:
 	std::function<void()> m_prerenderCommand;
 	std::function<void()> m_postrenderCommand;
 
-	jl::Camera* m_camera;
-	jl::Scene* m_scene;
+	GameCore* m_core;
 	IEntityActionHandler* m_actionHandler;
 };
 

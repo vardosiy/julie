@@ -12,7 +12,9 @@ class ComponentsMgr;
 namespace jl {
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
 namespace details {
+//-----------------------------------------------------------------------------
 
 template<typename It, typename Value>
 class EntityIteratorBase
@@ -22,40 +24,35 @@ class EntityIteratorBase
 									 boost::use_default,			// traversal
 									 Value>							// reference
 {
-	using Adaptor = 
-		typename boost::iterator_adaptor<EntityIteratorBase<It, Value>,
-										 It,
-										 Value,
-										 boost::use_default,
-										 Value>;
 public:
 	EntityIteratorBase(It _it, ecs::ComponentsMgr& _componentsMgr)
-		: Adaptor(_it)
+		: iterator_adaptor_(_it)
 		, m_componentsMgr(_componentsMgr)
 	{
 	}
 
+protected:
+	using EntityIteratorBase_t = EntityIteratorBase<It, Value>;
+
 private:
-	typename Adaptor::reference dereference() const
+	typename Value dereference() const
 	{
-		return Entity(*this->base(), m_componentsMgr);
+		return Value(*this->base(), m_componentsMgr);
 	}
 
 	ecs::ComponentsMgr& m_componentsMgr;
 };
 
+//-----------------------------------------------------------------------------
 } // namespace details
-
 //-----------------------------------------------------------------------------
 
 class EntityIterator
 	: public details::EntityIteratorBase<std::vector<EntityId>::iterator, EntityRef>
 {
-	using Base = details::EntityIteratorBase<std::vector<EntityId>::iterator, EntityRef>;
-
 public:
-	EntityIterator(Base::base_type _it, ecs::ComponentsMgr& _componentsMgr)
-		: Base(_it, _componentsMgr)
+	EntityIterator(EntityIteratorBase_t::base_type _it, ecs::ComponentsMgr& _componentsMgr)
+		: EntityIteratorBase_t(_it, _componentsMgr)
 	{
 	}
 };
@@ -65,11 +62,9 @@ public:
 class ConstEntityIterator
 	: public details::EntityIteratorBase<std::vector<EntityId>::const_iterator, const EntityRef>
 {
-	using Base = details::EntityIteratorBase<std::vector<EntityId>::const_iterator, const EntityRef>;
-
 public:
-	ConstEntityIterator(Base::base_type _it, ecs::ComponentsMgr& _componentsMgr)
-		: Base(_it, _componentsMgr)
+	ConstEntityIterator(EntityIteratorBase_t::base_type _it, ecs::ComponentsMgr& _componentsMgr)
+		: EntityIteratorBase_t(_it, _componentsMgr)
 	{
 	}
 };

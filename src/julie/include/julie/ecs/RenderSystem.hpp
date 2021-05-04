@@ -1,14 +1,16 @@
 #pragma once
 
+#include "julie/scene/FogData.hpp"
+#include "julie/scene/AmbientLightData.hpp"
+
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <chrono>
 #include <vector>
+#include <optional>
 
 namespace jl {
 class Camera;
-class Scene;
 class Model;
 }
 
@@ -22,23 +24,24 @@ class RenderSystem
 {
 //-----------------------------------------------------------------------------
 public:
-	RenderSystem(const Scene& _scene, ComponentsMgr& _componentsMgr) noexcept;
+	void update(ComponentsMgr& _componentsMgr, const Camera& _cam);
 
-	void update(const Camera& _cam);
+	void setFogData(std::optional<FogData> _fogData) noexcept;
+	void setAmbientLightData(std::optional<AmbientLightData> _ambientLightData) noexcept;
 
 //-----------------------------------------------------------------------------
 private:
-	void updateLightsCache();
+	void updateLightsCache(ComponentsMgr& _componentsMgr);
 
-	void drawScene(const Camera& _cam) const noexcept;
+	void draw(ComponentsMgr& _componentsMgr, const Camera& _cam) const noexcept;
 	void drawModel(const Model& _model, const Camera& _cam, const glm::mat4& _worldMat) const noexcept;
 
 //-----------------------------------------------------------------------------
-	const Scene& m_scene;
-	ComponentsMgr& m_componentsMgr;
-
 	std::vector<glm::vec3> m_lightsPosCache;
 	std::vector<glm::vec3> m_lightsColorCache;
+
+	std::optional<FogData> m_fogData;
+	std::optional<AmbientLightData> m_ambientLightData;
 };
 
 //-----------------------------------------------------------------------------

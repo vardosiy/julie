@@ -28,12 +28,10 @@ MainWindow::MainWindow(QMainWindow* parent)
 	, m_entitisWdg(nullptr)
 	, m_propertiesWdg(nullptr)
 	, m_updateTimer(this)
-	, m_camera(0.1f, 100.0f, 30.0f)
 {
-	m_camera.setPosition(glm::vec3{ 0.0f });
 	m_cameraController.setCameraMoveSpeed(3.0f);
 	m_cameraController.setCameraRotateSpeed(2.0f);
-	m_cameraController.setCamera(&m_camera);
+	m_cameraController.setCamera(m_core.getCamera());
 
 	initUi();
 
@@ -106,7 +104,7 @@ void MainWindow::update()
 	jl::Globals::s_timeTotal += deltaf;
 	m_cameraController.update(deltaf);
 
-	m_scene.update(duration_cast<milliseconds>(delta));
+	m_core.update(duration_cast<DeltaTime>(delta));
 	m_viewPropertiesWdg->update();
 	m_ui->oglw_screen->repaint();
 }
@@ -116,13 +114,7 @@ void MainWindow::update()
 void MainWindow::onGlLoaded()
 {
 	AppController::setContextOwner(m_ui->oglw_screen);
-	m_ui->oglw_screen->setScene(&m_scene);
-	m_ui->oglw_screen->setCamera(&m_camera);
-
-	//m_entitisWdg->setScene(&m_scene);
-
-	initDefaultMaterial();
-	initScene();
+	m_ui->oglw_screen->setGameCore(&m_core);
 }
 
 //-----------------------------------------------------------------------------
@@ -145,70 +137,6 @@ void MainWindow::initUi()
 	m_viewPropertiesWdg->setGlWidget(m_ui->oglw_screen);
 	m_viewPropertiesWdg->setCameraController(&m_cameraController);
 	m_ui->dock_viewProps->setWidget(m_viewPropertiesWdg);
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::initScene()
-{
-	//std::ifstream file(k_saveFile.data());
-	//if (file.is_open())
-	//{
-	//	JsonProjectRestorer restorer(file);
-	//	std::optional<jl::Scene> restoredScene = restorer.extractScene();
-
-	//	if (restoredScene)
-	//	{
-	//		m_scene = std::move(restoredScene.value());
-	//	}
-	//}
-
-	jl::ResourceManager& resourceMgr = jl::ResourceManager::getInstance();
-	jl::MaterialsManager& materialsMgr = jl::MaterialsManager::getInstance();
-
-	jl::Model* model = resourceMgr.loadModel("res/models/mustang/mustang_GT.obj", false);
-	ASSERT(model);
-
-	jl::Material* material = materialsMgr.findMaterial("Default");
-	const size_t meshesCount = model->getMeshesCount();
-	for (size_t i = 0; i < meshesCount; ++i)
-	{
-		model->getMesh(i).setMaterial(material);
-	}
-
-	{
-		jl::EntityRef obj = m_scene.createEntity("some_name");
-		obj.addComponent<ModelComponent>(model);
-		TransformComponent* objTransform = obj.getComponent<TransformComponent>();
-		objTransform->pos = glm::vec3{ 0.0f, 0.0f, -1.0f };
-		objTransform->scale = glm::vec3{ 0.01f };
-	}
-	{
-		jl::EntityRef light = m_scene.createEntity("light");
-		light.addComponent<LightSourceComponent>(glm::vec3{ 0.0f }, glm::vec3{ 1.0f });
-		TransformComponent* lightTransform = light.getComponent<TransformComponent>();
-		lightTransform->pos = glm::vec3{ 0.0f, 2.0f, -1.0f };
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void MainWindow::initDefaultMaterial()
-{
-	jl::Material& material = jl::MaterialsManager::getInstance().createMaterial("Default");
-
-	const jl::Shader* shader = jl::ResourceManager::getInstance().loadShader("res/shaders/composed/MaterialColorShader.shdata");
-	material.setShader(shader);
-
-	material.setProperty("u_shininess",		128.0f);
-	material.setProperty("u_opacity",		1.0f);
-	material.setProperty("u_matAmbient",	glm::vec3{ 1.0f });
-	material.setProperty("u_matDiffuse",	glm::vec3{ 1.0f });
-	material.setProperty("u_matSpecular",	glm::vec3{ 1.0f });
-	material.setProperty("u_texDiffuse",	static_cast<jl::Texture*>(nullptr));
-	material.setProperty("u_texNormals",	static_cast<jl::Texture*>(nullptr));
-
-	//m_entitisWdg->setDefaultMaterial(&material);
 }
 
 //-----------------------------------------------------------------------------
